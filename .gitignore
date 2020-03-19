@@ -1,0 +1,25 @@
+# ignore all bin directories
+# matches "bin" in any subfolder
+bin/
+# ignore all target directories
+target/
+# ignore all files ending with ~
+*~
+# ignore metadata directories
+.metadata
+# ignore DS_Store and files starting with ._ (for Mac)
+.DS_Store
+# ignore .idea and .iml
+.idea/
+*.iml
+# Compiled class file
+*.class
+# Log file
+*.log
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
