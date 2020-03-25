@@ -11,7 +11,7 @@ target/
 .DS_Store
 # ignore .idea and .iml
 .idea/
-*.iml
+AM37.iml
 # Compiled class file
 *.class
 # Log file

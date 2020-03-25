@@ -1,6 +1,8 @@
 package it.polimi.ingsw;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static  java.util.function.BooleanSupplier.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;;
+
 import org.junit.jupiter.api.Test;
 
 /**
