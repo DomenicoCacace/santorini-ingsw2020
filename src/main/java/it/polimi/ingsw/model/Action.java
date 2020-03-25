@@ -8,13 +8,13 @@ public class Action {
     private Cell targetCell;
     private Block targetBlock;
 
-    public Action(ActionType type, Worker targetWorker, Cell targetCell) {
+    public Action(Worker targetWorker, Cell targetCell) {
         this.type = ActionType.MOVE;
         this.targetWorker = targetWorker;
         this.targetCell = targetCell;
     }
 
-    public Action(ActionType type, Worker targetWorker, Cell targetCell, Block targetBlock) {
+    public Action(Worker targetWorker, Cell targetCell, Block targetBlock) {
         this.type = ActionType.BUILD;
         this.targetWorker = targetWorker;
         this.targetCell = targetCell;
@@ -24,8 +24,8 @@ public class Action {
     public void applier(){
         switch (type){
             case MOVE:
-                this.targetWorker.getPosition().setOccupiedBy(null);
-                this.targetWorker.setPosition(targetCell);
+                targetWorker.getPosition().setOccupiedBy(null);
+                targetWorker.setPosition(targetCell);
                 targetCell.setOccupiedBy(targetWorker);
                 break;
             case BUILD:
