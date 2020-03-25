@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import java.util.Objects;
+
 import static java.lang.Math.*;
 
 public class Cell {
@@ -64,4 +66,18 @@ public class Cell {
 
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof Cell))
+            return false;
+        Cell cell = (Cell)obj;
+        return (cell.coordX == coordX) && (cell.coordY == coordY);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(coordX, coordY);
+    }
 }
