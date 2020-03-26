@@ -3,10 +3,15 @@ package it.polimi.ingsw.model;
 
 
 public class Action {
+
     private ActionType type;
     private Worker targetWorker;
     private Cell targetCell;
     private Block targetBlock;
+
+    public ActionType getType() {
+        return type;
+    }
 
     public Action(Worker targetWorker, Cell targetCell) {
         this.type = ActionType.MOVE;
