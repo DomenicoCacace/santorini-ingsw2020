@@ -16,13 +16,37 @@ public class Player {
     private Boolean hasBuilt;
     private Boolean disconnected;
     private Boolean winner;
+
+    public void setWorkers(List<Cell> cells) {
+        for(Cell cell: cells) {
+
+            if(cell.getOccupiedBy() == null) {
+                Worker worker = new Worker(cell, this);
+                workers.add(worker);
+            }
+            else {
+                //TODO: manage already occupied cells
+            }
+        }
+    }
+
     private Game game;
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
+    public Player(String name, God god, Color color) {
+        this.name = name;
+        this.god = god;
+        this.color = color;
+    }
 
     public void setAction(Action action) {
         this.action = action;
     }
 
-    public void useAction(Action action){
+    public void useAction(){
         game.validateAction(action);
     }
 

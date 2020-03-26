@@ -18,7 +18,7 @@ class ActionTest {
 
     @BeforeEach
     void setUp() {
-        player = new Player();
+        player = new Player("name", new God("artemis"), Color.BLUE);
         board = new GameBoard();
         block = Block.LEVEL1;
         startingCell = board.getCell(3, 2);

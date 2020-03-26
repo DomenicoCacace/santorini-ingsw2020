@@ -16,6 +16,7 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public boolean isMoveActionValid(Action action) { // TODO
         //
+        System.out.println("moveActionValid in RuleSetBase");
         return false;
     }
 

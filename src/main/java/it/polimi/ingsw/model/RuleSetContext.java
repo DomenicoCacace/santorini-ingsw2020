@@ -14,7 +14,10 @@ public class RuleSetContext {
 
     public int propagateEffect() { return 0;}
 
-    public boolean validateMoveAction(Action action) {return false; }
+    public boolean validateMoveAction(Action action) {
+        strategy.isMoveActionValid(action);
+        return false;
+    }
 
     public boolean validateBuildAction(Action action) { return false;}
 

@@ -13,6 +13,12 @@ public class Game {
     public Game(GameBoard gameBoard, List<Player> players) {
         this.gameBoard = gameBoard;
         this.players = players;
+        for(Player player : players) {
+            player.setGame(this);
+        }
+        //just for testing
+        currentRuleSet = new RuleSetContext();
+        currentRuleSet.setStrategy(new RuleSetBase());
     }
 
     public Turn getCurrentTurn() { return currentTurn; }
