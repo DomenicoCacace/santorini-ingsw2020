@@ -2,17 +2,18 @@ package it.polimi.ingsw.model;
 
 import java.util.List;
 
-public class Turn {
+public class Turn implements Memento<Turn> {
     private int turnNumber;
     private Player currentPlayer;
     private RuleSetStrategy ruleSetStrategy;
-    private List<Player> playersOrder;
 
-    public Turn(int turnNumber, Player currentPlayer, RuleSetStrategy ruleSetStrategy) {
+
+    public Turn(int turnNumber, Player currentPlayer) {
         this.turnNumber = turnNumber;
         this.currentPlayer = currentPlayer;
-        this.ruleSetStrategy = ruleSetStrategy;
+        this.ruleSetStrategy = currentPlayer.getGod().getStrategy();
     }
+
 
     public int getTurnNumber() {
         return turnNumber;
@@ -38,11 +39,15 @@ public class Turn {
         this.ruleSetStrategy = ruleSetStrategy;
     }
 
-    public List<Player> getPlayersOrder() {
-        return playersOrder;
+    @Override
+    public Turn saveState() {
+        return new Turn(this.turnNumber, this.currentPlayer);
     }
 
-    public void setPlayersOrder(List<Player> playersOrder) {
-        this.playersOrder = playersOrder;
+    @Override
+    public void restoreState(Turn savedState) {
+        this.turnNumber = savedState.getTurnNumber();
+        this.currentPlayer = savedState.getCurrentPlayer();
+        this.ruleSetStrategy = savedState.getRuleSetStrategy();
     }
 }

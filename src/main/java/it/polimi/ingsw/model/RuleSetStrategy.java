@@ -10,4 +10,5 @@ public interface RuleSetStrategy {
     boolean checkWinCondition(Action action);
     List<Cell> getWalkableCells(Worker worker);
     List<Cell> getBuildableCells(Worker worker);
+    void setGame(Game game);
 }

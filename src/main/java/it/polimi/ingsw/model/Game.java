@@ -10,6 +10,7 @@ public class Game {
     private List<Player> players;
     private RuleSetContext currentRuleSet;
 
+
     public Game(GameBoard gameBoard, List<Player> players) {
         this.gameBoard = gameBoard;
         this.players = players;
@@ -19,6 +20,7 @@ public class Game {
         //just for testing
         currentRuleSet = new RuleSetContext();
         currentRuleSet.setStrategy(new RuleSetBase());
+        currentRuleSet.setGame(this); //linea aggiunta per il test di getWalkable -- questa operazione è solo per il testing
     }
 
     public Turn getCurrentTurn() { return currentTurn; }
@@ -43,6 +45,18 @@ public class Game {
         return currentRuleSet.getWalkableCells(worker);
     }
 
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
+    }
+
+    public void setCurrentRuleSet(RuleSetContext currentRuleSet) {
+        this.currentRuleSet = currentRuleSet;
+    }
+
     public void apply(Action action){
         action.applier();
     }
@@ -61,18 +75,36 @@ public class Game {
         }
     }
 
-    public void resetTurn(){
-        // da definire !!!
+
+
+    public Player nextPlayer() {
+        return players.get(((players.indexOf(currentTurn.getCurrentPlayer()) + 1) % players.size()));
     }
-    public void endTurn(){
-        // da definire !!!
+
+
+
+
+    public void generateNextTurn(){
+
+        nextTurn = new Turn(currentTurn.getTurnNumber() +1, nextPlayer());
+
+        for(Player player: players){
+            currentRuleSet.setStrategy(player.getGod().getStrategy());
+            currentRuleSet.doEffect(nextTurn);
+        }
+
+
+
+        currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
+        currentTurn = nextTurn;
     }
-    public Turn generateNextTurn(){
-        // da definire !!!
-        return null;
-    }
-    public void applyEndTurnEffects(){
-        // da definire !!!
-    }
+
+
+
+
+    // savedTurn = game.currentTurn.saveState(); controller will save the state in this way
+
+
+
 
 }

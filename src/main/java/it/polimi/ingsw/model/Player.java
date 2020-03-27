@@ -2,20 +2,35 @@ package it.polimi.ingsw.model;
 
 import java.util.List;
 
-public class Player {
-    private String name;
-    private God god;
+public class Player implements Memento<Player> {
+    private final String name;
+    private final God god;
     private List<Worker> workers;
     private Worker selectedWorker;
     private Cell selectedCell;
     private Block selectedBlock;
     private Action action;
-    private Color color;
+    private final Color color;
     private Boolean hasMoved;
     private Boolean hasMovedUp;
     private Boolean hasBuilt;
     private Boolean disconnected;
     private Boolean winner;
+    private Game game;
+
+
+
+
+
+    public Player(String name, God god, Color color) {
+        this.name = name;
+        this.god = god;
+        this.color = color;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 
     public void setWorkers(List<Cell> cells) {
         for(Cell cell: cells) {
@@ -30,16 +45,12 @@ public class Player {
         }
     }
 
-    private Game game;
-
-    public void setGame(Game game) {
-        this.game = game;
+    public void saveWorkers(List<Worker> workers) {
+        this.workers = workers;
     }
 
-    public Player(String name, God god, Color color) {
-        this.name = name;
-        this.god = god;
-        this.color = color;
+    public List<Worker> getWorkers() {
+        return workers;
     }
 
     public void setAction(Action action) {
@@ -54,16 +65,8 @@ public class Player {
         return god;
     }
 
-    public void setGod(God god) {
-        this.god = god;
-    }
-
     public Color getColor() {
         return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     public boolean getHasMoved() {
@@ -119,4 +122,23 @@ public class Player {
         return winner;
     }
 
+    @Override
+    public Player saveState() {
+
+        Player savedPlayer = new Player(this.name, this.god, this.color);
+        savedPlayer.setHasBuilt(this.hasBuilt);
+        savedPlayer.setHasMoved(this.hasMoved);
+        savedPlayer.setHasMovedUp(this.hasMovedUp);
+        savedPlayer.saveWorkers(this.workers);
+        return savedPlayer;
+
+    }
+
+    @Override
+    public void restoreState(Player savedState) {
+        this.hasBuilt = savedState.getHasBuilt();
+        this.hasMoved = savedState.getHasMoved();
+        this.hasMovedUp = savedState.getHasMovedUp();
+        this.workers = savedState.getWorkers();
+    }
 }

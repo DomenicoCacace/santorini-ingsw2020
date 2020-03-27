@@ -10,6 +10,14 @@ public class Cell {
     private Worker occupiedBy;
     private Block block;
 
+    public Cell(int coordX, int coordY, boolean hasDome, Worker occupiedBy, Block block) {
+        this.coordX = coordX;
+        this.coordY = coordY;
+        this.hasDome = hasDome;
+        this.occupiedBy = occupiedBy;
+        this.block = block;
+    }
+
     public Cell(int coordX, int coordY) {
         this.coordX = coordX;
         this.coordY = coordY;
@@ -30,7 +38,7 @@ public class Cell {
 
 
 
-    public boolean HasDome() {
+    public boolean hasDome() {
         return hasDome;
     }
 
@@ -64,6 +72,17 @@ public class Cell {
     public int heightDifference(Cell cell){
         return cell.block.getHeight() - this.block.getHeight();
 
+    }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "coordX=" + coordX +
+                ", coordY=" + coordY +
+                ", hasDome=" + hasDome +
+               // ", occupiedBy=" + occupiedBy +
+                ", block=" + block +
+                '}';
     }
 
     @Override
