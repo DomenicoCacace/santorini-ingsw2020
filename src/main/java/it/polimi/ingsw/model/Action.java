@@ -5,7 +5,13 @@ package it.polimi.ingsw.model;
 public class Action {
 
     private ActionType type;
+
+    public Worker getTargetWorker() {
+        return targetWorker;
+    }
+
     private Worker targetWorker;
+
     private Cell targetCell;
     private Block targetBlock;
 
@@ -26,7 +32,13 @@ public class Action {
         this.targetBlock = targetBlock;
     }
 
-    public void applier(){
+    public Cell getStartingCell() {
+        return targetWorker.getPosition();
+    }
+    public Cell getTargetCell() {
+        return targetCell;
+    }
+    public void applier() {
         switch (type){
             case MOVE:
                 targetWorker.getPosition().setOccupiedBy(null);

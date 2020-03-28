@@ -40,6 +40,7 @@ class GameTest {
         moveAction = new Action(worker, destCell);
         buildAction = new Action(worker, destCellBuild, block);
 
+
     }
 
     @Test
@@ -56,3 +57,5 @@ class GameTest {
 
     }
 }
+
+

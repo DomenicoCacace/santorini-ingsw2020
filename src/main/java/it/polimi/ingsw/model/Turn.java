@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
-import java.util.List;
+import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
+import it.polimi.ingsw.model.utilities.Memento;
 
 public class Turn implements Memento<Turn> {
     private int turnNumber;

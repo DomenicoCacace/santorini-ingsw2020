@@ -30,13 +30,9 @@ public class Cell {
         return coordX;
     }
 
-
-
     public int getCoordY() {
         return coordY;
     }
-
-
 
     public boolean hasDome() {
         return hasDome;
@@ -73,6 +69,7 @@ public class Cell {
         return cell.block.getHeight() - this.block.getHeight();
 
     }
+
 
     @Override
     public String toString() {

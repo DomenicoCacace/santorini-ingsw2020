@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.utilities.Memento;
+
 import java.util.List;
 
 public class Player implements Memento<Player> {
@@ -17,10 +19,6 @@ public class Player implements Memento<Player> {
     private Boolean disconnected;
     private Boolean winner;
     private Game game;
-
-
-
-
 
     public Player(String name, God god, Color color) {
         this.name = name;

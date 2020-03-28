@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
+
 public class God {
     private String name;
-
+    public RuleSetStrategy strategy;
     public God(String name) {
         this.name = name;
     }
@@ -10,8 +12,6 @@ public class God {
     public String getName() {
         return name;
     }
-
-    public RuleSetStrategy strategy;
 
     public void setName(String name) {
         this.name = name;
