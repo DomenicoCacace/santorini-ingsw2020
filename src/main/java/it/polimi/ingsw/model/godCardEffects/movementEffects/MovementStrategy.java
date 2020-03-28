@@ -1,4 +1,9 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.godCardEffects.movementEffects;
+
+import it.polimi.ingsw.model.Action;
+import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
 
 import java.util.List;
 

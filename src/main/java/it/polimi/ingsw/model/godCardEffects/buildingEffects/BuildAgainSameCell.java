@@ -1,8 +1,12 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.godCardEffects.buildingEffects;
+
+import it.polimi.ingsw.model.Action;
+import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Worker;
 
 import java.util.List;
 
-public class BuildAgainSameCell extends BuildingStrategy{
+public class BuildAgainSameCell extends BuildingStrategy {
 
     @Override
     public boolean isBuildActionValid(Action action) {

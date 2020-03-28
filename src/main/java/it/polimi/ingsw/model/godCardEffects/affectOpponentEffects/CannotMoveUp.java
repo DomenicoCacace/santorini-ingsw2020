@@ -1,4 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.godCardEffects.affectOpponentEffects;
+
+import it.polimi.ingsw.model.Turn;
 
 public class CannotMoveUp extends AffectOpponentActions {
 
