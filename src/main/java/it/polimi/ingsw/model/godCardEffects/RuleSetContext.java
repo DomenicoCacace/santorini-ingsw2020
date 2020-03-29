@@ -56,7 +56,7 @@ public class RuleSetContext implements Memento<RuleSetContext> {
     }
 
     public List<Cell> getBuildableCells(Worker worker) {
-        return null;
+        return strategy.getBuildableCells(worker);
     }
 
     @Override

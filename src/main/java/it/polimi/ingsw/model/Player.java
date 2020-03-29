@@ -13,11 +13,11 @@ public class Player implements Memento<Player> {
     private Block selectedBlock;
     private Action action;
     private final Color color;
-    private Boolean hasMoved;
-    private Boolean hasMovedUp;
-    private Boolean hasBuilt;
-    private Boolean disconnected;
-    private Boolean winner;
+    private boolean hasMoved;
+    private boolean hasMovedUp;
+    private boolean hasBuilt;
+    private boolean disconnected;
+    private boolean winner;
     private Game game;
 
     public Player(String name, God god, Color color) {

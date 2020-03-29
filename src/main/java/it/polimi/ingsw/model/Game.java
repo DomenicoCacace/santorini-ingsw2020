@@ -49,6 +49,8 @@ public class Game {
         return currentRuleSet.getWalkableCells(worker);
     }
 
+    public  List<Cell> getBuildableCells(Worker worker) { return currentRuleSet.getBuildableCells(worker); }
+
     public Player getWinner() {
         return winner;
     }
