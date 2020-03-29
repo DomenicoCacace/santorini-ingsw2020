@@ -11,11 +11,18 @@ public interface RuleSetStrategy {
     int propagateEffect();
 
     boolean isMoveActionValid(Action action);
+
     boolean isBuildActionValid(Action action);
+
     boolean checkWinCondition(Action action);
+
     boolean checkLoseCondition(Action action);
+
     List<Cell> getWalkableCells(Worker worker);
+
     List<Cell> getBuildableCells(Worker worker);
+
     boolean checkLoseCondition();
+
     void setGame(Game game);
 }

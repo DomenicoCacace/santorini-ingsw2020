@@ -7,6 +7,7 @@ import java.util.List;
 public class Player implements Memento<Player> {
     private final String name;
     private final God god;
+    private final Color color;
     private List<Worker> workers;
     private Worker selectedWorker;
     private Cell selectedCell;
@@ -30,19 +31,6 @@ public class Player implements Memento<Player> {
         this.game = game;
     }
 
-    public void setWorkers(List<Cell> cells) {
-        for(Cell cell: cells) {
-
-            if(cell.getOccupiedBy() == null) {
-                Worker worker = new Worker(cell, this);
-                workers.add(worker);
-            }
-            else {
-                //TODO: manage already occupied cells
-            }
-        }
-    }
-
     public void saveWorkers(List<Worker> workers) {
         this.workers = workers;
     }
@@ -51,11 +39,23 @@ public class Player implements Memento<Player> {
         return workers;
     }
 
+    public void setWorkers(List<Cell> cells) {
+        for (Cell cell : cells) {
+
+            if (cell.getOccupiedBy() == null) {
+                Worker worker = new Worker(cell, this);
+                workers.add(worker);
+            } else {
+                //TODO: manage already occupied cells
+            }
+        }
+    }
+
     public void setAction(Action action) {
         this.action = action;
     }
 
-    public void useAction(){
+    public void useAction() {
         game.validateAction(action);
     }
 
@@ -104,20 +104,20 @@ public class Player implements Memento<Player> {
         this.selectedBlock = selectedBlock;
     }
 
-    public void setDisconnected(Boolean disconnected) {
-        this.disconnected = disconnected;
-    }
-
     public boolean isDisconnected() {
         return disconnected;
     }
 
-    public void setWinner(Boolean winner) {
-        this.winner = winner;
+    public void setDisconnected(Boolean disconnected) {
+        this.disconnected = disconnected;
     }
 
     public boolean isWinner() {
         return winner;
+    }
+
+    public void setWinner(Boolean winner) {
+        this.winner = winner;
     }
 
     @Override

@@ -7,9 +7,9 @@ import java.util.List;
 
 public class RuleSetBase implements RuleSetStrategy {
 
+    protected Game game;
     private List<Cell> walkableCells;
     private List<Cell> buildableCells;
-    protected Game game;
 
     @Override
     public void setGame(Game game) {
@@ -57,7 +57,7 @@ public class RuleSetBase implements RuleSetStrategy {
          * to check if the player can make a move
          */
         int legalCells = 0;
-        for (Worker worker: game.getCurrentTurn().getCurrentPlayer().getWorkers())
+        for (Worker worker : game.getCurrentTurn().getCurrentPlayer().getWorkers())
             legalCells += getWalkableCells(worker).size();
 
         return legalCells == 0;
@@ -66,7 +66,7 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        for(Cell cell: game.getGameBoard().getAllCells()) {
+        for (Cell cell : game.getGameBoard().getAllCells()) {
             if (worker.getPosition().calculateDistance(cell) == 1 && worker.getPosition().heightDifference(cell) <= 1 && cell.getOccupiedBy() == null && !cell.hasDome())
                 cells.add(cell);
         }
@@ -76,7 +76,7 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        for(Cell cell: game.getGameBoard().getAllCells()) {
+        for (Cell cell : game.getGameBoard().getAllCells()) {
             if (worker.getPosition().calculateDistance(cell) == 1 && cell.getOccupiedBy() == null && !cell.hasDome())
                 cells.add(cell);
         }

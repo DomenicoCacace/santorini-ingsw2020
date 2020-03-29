@@ -3,8 +3,9 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
 
 public class God {
-    private String name;
     public RuleSetStrategy strategy;
+    private String name;
+
     public God(String name) {
         this.name = name;
     }

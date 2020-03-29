@@ -3,8 +3,8 @@ package it.polimi.ingsw.model;
 import java.util.List;
 
 public class Worker {
-    private Cell position;
     private final Player owner;
+    private Cell position;
     private List<Cell> buildableCells;
     private List<Cell> walkableCells;
 
@@ -40,7 +40,6 @@ public class Worker {
     public void setWalkableCells(List<Cell> walkableCells) {
         this.walkableCells = walkableCells;
     }
-
 
 
 }

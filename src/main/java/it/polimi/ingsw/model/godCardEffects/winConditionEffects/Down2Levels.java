@@ -10,6 +10,6 @@ public class Down2Levels extends WinConditionStrategy {
 
         return (super.checkWinCondition(action)) || (
                 action.getType() == ActionType.MOVE &&
-                action.getStartingCell().heightDifference(action.getTargetCell()) <= -2);
+                        action.getStartingCell().heightDifference(action.getTargetCell()) <= -2);
     }
 }

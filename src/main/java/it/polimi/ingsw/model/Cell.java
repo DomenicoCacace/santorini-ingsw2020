@@ -2,9 +2,19 @@ package it.polimi.ingsw.model;
 
 import java.util.Objects;
 
-import static java.lang.Math.*;
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
 
 public class Cell {
+
+    /**
+     * This class defines the basic unit of the game board.
+     * It contains information about the coordinates{@link #coordX #coordY} of the cell on the game board,
+     * the worker standing on the cell{@link #occupiedBy} (null if no worker is standing on the cell),
+     * the building elements {@link #block} built on the cell, including a boolean flag {@link #hasDome}
+     * which indicates the presence of a dome on the building, since in some occasions a dome may be built
+     * on non-level 3 building
+     */
     private final int coordX, coordY;
     private boolean hasDome;
     private Worker occupiedBy;
@@ -56,16 +66,16 @@ public class Cell {
 
     public void setBlock(Block block) {
         this.block = block;
-        if (block.equals(Block.DOME)){
+        if (block.equals(Block.DOME)) {
             this.setHasDome(true);
         }
     }
 
-    public int calculateDistance(Cell cell){
+    public int calculateDistance(Cell cell) {
         return max(abs(this.coordX - cell.coordX), abs(this.coordY - cell.coordY));
     }
 
-    public int heightDifference(Cell cell){
+    public int heightDifference(Cell cell) {
         return cell.block.getHeight() - this.block.getHeight();
 
     }
@@ -77,7 +87,7 @@ public class Cell {
                 "coordX=" + coordX +
                 ", coordY=" + coordY +
                 ", hasDome=" + hasDome +
-               // ", occupiedBy=" + occupiedBy +
+                // ", occupiedBy=" + occupiedBy +
                 ", block=" + block +
                 '}';
     }
@@ -88,7 +98,7 @@ public class Cell {
             return true;
         if (!(obj instanceof Cell))
             return false;
-        Cell cell = (Cell)obj;
+        Cell cell = (Cell) obj;
         return (cell.coordX == coordX) && (cell.coordY == coordY);
     }
 

@@ -9,12 +9,8 @@ public class RuleSetContext implements Memento<RuleSetContext> {
 
     private RuleSetStrategy strategy;
 
-    public void setGame(Game game){
+    public void setGame(Game game) {
         strategy.setGame(game);
-    }
-
-    public void setStrategy(RuleSetStrategy strategy) {
-        this.strategy = strategy;
     }
 
     public boolean validateMoveAction(Action action) {
@@ -29,6 +25,10 @@ public class RuleSetContext implements Memento<RuleSetContext> {
 
     public RuleSetStrategy getStrategy() {
         return strategy;
+    }
+
+    public void setStrategy(RuleSetStrategy strategy) {
+        this.strategy = strategy;
     }
 
     public void doEffect(Turn turn) {

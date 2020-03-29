@@ -8,10 +8,6 @@ public class GameBoard implements Memento<GameBoard> {
     private static final int DIMENSION = 5;
     private Cell[][] board;
 
-    public Cell getCell(int x, int y) {
-        return board[x][y];
-    }
-
     public GameBoard() {
         this.board = new Cell[DIMENSION][DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
@@ -21,19 +17,24 @@ public class GameBoard implements Memento<GameBoard> {
         }
     }
 
-    public GameBoard(GameBoard gameBoard){
+    public GameBoard(GameBoard gameBoard) {
         this.board = new Cell[DIMENSION][DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
-                Cell tmpCell = gameBoard.getCell(i,j);
+                Cell tmpCell = gameBoard.getCell(i, j);
                 this.board[i][j] = new Cell(i, j, tmpCell.hasDome(), tmpCell.getOccupiedBy(), tmpCell.getBlock());
             }
         }
     }
+
+    public Cell getCell(int x, int y) {
+        return board[x][y];
+    }
+
     public ArrayList<Cell> getAllCells() {
         ArrayList<Cell> cells = new ArrayList<Cell>();
-        for(int i = 0; i < DIMENSION; i++) {
-            for(int j = 0; j < DIMENSION; j++) {
+        for (int i = 0; i < DIMENSION; i++) {
+            for (int j = 0; j < DIMENSION; j++) {
                 cells.add(getCell(i, j));
             }
         }
@@ -58,7 +59,7 @@ public class GameBoard implements Memento<GameBoard> {
             y = dest.getCoordY() + 1;
 
         if (0 < x && x < DIMENSION &&
-            0 < y && y < DIMENSION)
+                0 < y && y < DIMENSION)
             return this.getCell(x, y);
         return null;
     }
