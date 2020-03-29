@@ -21,7 +21,6 @@ public class GameSetUp {
         gods = new ArrayList<>();
         gods.add(new God("minotaur"));
         gods.get(0).setStrategy(new Push());
-
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
 
@@ -32,15 +31,9 @@ public class GameSetUp {
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);
-
         gods.get(0).getStrategy().setGame(game);
 
         game.setCurrentTurn(new Turn(0, players.get(players.size() - 1)));
-
-        //players.get(0).addWorker(game.getGameBoard().getCell(4,2));
-        players.get(0).addWorker(game.getGameBoard().getCell(3,2));
-        players.get(1).addWorker(game.getGameBoard().getCell(3,1));
-        //players.get(1).addWorker(game.getGameBoard().getCell(1,1));
 
         game.getGameBoard().getCell(3,4).setHasDome(true); //One adjacent cell has a Dome so a worker can't move nor build
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1); //One adjacent cell has a level 2 block on it: a worker can build but cannot move from level0

@@ -73,7 +73,6 @@ public class Game {
 
             case MOVE:
                 if (currentRuleSet.validateMoveAction(action)) {
-                    apply(action);
 
                     if (currentRuleSet.checkWinCondition(action)) {
                         this.winner = currentTurn.getCurrentPlayer();
@@ -81,6 +80,7 @@ public class Game {
                     } else if (currentRuleSet.checkLoseCondition(action)) {
                         //TODO: manage lose stuff
                     }
+                    apply(action);
                 }
                 break;
 

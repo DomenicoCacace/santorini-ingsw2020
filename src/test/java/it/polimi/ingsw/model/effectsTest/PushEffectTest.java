@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PushEffectTest {
 
-    protected List<Player> players;
-    protected Game game;
-    protected List<Worker> workers;
-    protected List<God> gods;
-
+    private List<Player> players;
+    private Game game;
+    private List<Worker> workers;
+    private List<God> gods;
+    private Action minotaurPush;
 
     @BeforeEach
     void SetUp () {
@@ -35,35 +35,33 @@ public class PushEffectTest {
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);
+        gods.get(0).getStrategy().setGame(game);
 
         game.setCurrentTurn(new Turn(0, players.get(players.size() - 1)));
 
-        //players.get(0).addWorker(game.getGameBoard().getCell(4,2));
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
-        //players.get(1).addWorker(game.getGameBoard().getCell(1,1));
-
-        game.getGameBoard().getCell(3, 4).setHasDome(true); //One adjacent cell has a Dome so a worker can't move nor build
-        game.getGameBoard().getCell(3, 1).setBlock(Block.LEVEL1); //One adjacent cell has a level 2 block on it: a worker can build but cannot move from level0
-        game.getGameBoard().getCell(3, 3).setBlock(Block.LEVEL2);
-        game.getGameBoard().getCell(4, 2).setBlock(Block.LEVEL1);
+        game.getGameBoard().getCell(3,4).setHasDome(true); //One adjacent cell has a Dome so a worker can't move nor build
+        game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1); //One adjacent cell has a level 2 block on it: a worker can build but cannot move from level0
+        game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
 
         game.generateNextTurn();
+
     }
 
 
-        private Action minotaurPush;
-
     @Test
     void PushEffectTest () {
+
         Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
 
 
 
         Worker currentWorker = currentPlayer.getWorkers().get(0);
 
         Cell targetCell = game.getGameBoard().getCell(3, 1);
-        Cell pushedCell = new Cell(3, 0);
+        Cell pushedCell = game.getGameBoard().getCell(3,0); //we created a new cell instead of addressing the cell 3,0 of the gameboard.
 
         minotaurPush = new Action(currentWorker, targetCell);
         assertNotNull(game.getGameBoard());
@@ -79,7 +77,7 @@ public class PushEffectTest {
             }
             if (cell.equals(targetCell)) {
                 assertEquals(targetCell.getOccupiedBy().getOwner(), currentPlayer);
-                assertEquals(pushedCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
+                assertEquals(targetCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
                 continue;
             }
             assertNull(cell.getOccupiedBy());
@@ -88,8 +86,45 @@ public class PushEffectTest {
 
     @Test
     void getWalkableCellsTest(){
+        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         currentWorker.setWalkableCells(game.getWalkableCells(currentWorker));
         System.out.println(currentWorker.getWalkableCells().toString());
+    }
+
+    @Test
+    void canPushTest(){
+        players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
+        players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
+        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+        Worker currentWorker = currentPlayer.getWorkers().get(0);
+        Cell startingCell = game.getGameBoard().getCell(1, 2);
+        Cell targetCell = game.getGameBoard().getCell(0, 2);
+        minotaurPush = new Action(currentWorker, targetCell);
+
+        game.validateAction(minotaurPush);
+        assertFalse(game.getCurrentRuleSet().validateMoveAction(minotaurPush)); //we shouldn't be able to do it
+
+        for(Cell cell : game.getGameBoard().getAllCells()) {
+            if (cell.equals(startingCell)) {
+                assertNotNull(currentWorker.getPosition().getOccupiedBy());
+                assertEquals(startingCell.getOccupiedBy().getOwner(), players.get(0));
+                assertEquals(startingCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
+                continue;
+            }
+            if (cell.equals(targetCell)) {
+                assertNotNull(players.get(1).getWorkers().get(0).getPosition().getOccupiedBy());
+                assertEquals(targetCell.getOccupiedBy().getOwner(), players.get(1));
+                assertEquals(targetCell.getOccupiedBy(), players.get(1).getWorkers().get(0));
+                continue;
+            }
+            assertNull(cell.getOccupiedBy());
+        }
+
+
+
+
     }
 }

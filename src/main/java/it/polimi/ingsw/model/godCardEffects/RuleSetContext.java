@@ -15,8 +15,8 @@ public class RuleSetContext implements Memento<RuleSetContext> {
     }
 
     public boolean validateMoveAction(Action action) {
-        strategy.isMoveActionValid(action);
-        return false;
+        return strategy.isMoveActionValid(action);
+        //it returned false
     }
 
     public boolean validateBuildAction(Action action) {
@@ -41,7 +41,7 @@ public class RuleSetContext implements Memento<RuleSetContext> {
     }
 
     public boolean checkWinCondition(Action action) {
-        return false;
+        return strategy.checkWinCondition(action);
     }
 
     public boolean checkLoseCondition(Action action) {

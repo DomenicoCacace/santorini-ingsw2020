@@ -28,7 +28,9 @@ public class GameBoard implements Memento<GameBoard> {
     }
 
     public Cell getCell(int x, int y) {
-        return board[x][y];
+        if (0 <= x && x < DIMENSION && 0 <= y && y < DIMENSION)
+                return board[x][y];
+        return null; //TODO: out of bound
     }
 
     public ArrayList<Cell> getAllCells() {
@@ -58,8 +60,8 @@ public class GameBoard implements Memento<GameBoard> {
         else
             y = dest.getCoordY() + 1;
 
-        if (0 < x && x < DIMENSION &&
-                0 < y && y < DIMENSION)
+        if (0 <= x && x < DIMENSION &&
+                0 <= y && y < DIMENSION)
             return this.getCell(x, y);
         return null;
     }

@@ -41,5 +41,10 @@ public class Worker {
         this.walkableCells = walkableCells;
     }
 
-
+    @Override
+    public String toString() {
+        return "Worker{" +
+                "owner=" + owner +
+                '}';
+    }
 }

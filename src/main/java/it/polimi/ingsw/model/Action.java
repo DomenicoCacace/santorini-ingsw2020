@@ -32,7 +32,8 @@ public class Action {
     }
 
     public Cell getStartingCell() {
-        return targetWorker.getPosition();
+        return this.targetWorker.getPosition();
+
     }
 
     public Cell getTargetCell() {

@@ -83,13 +83,23 @@ public class Cell {
 
     @Override
     public String toString() {
+        if(occupiedBy!=null) {
+            return "Cell{" +
+                    "coordX=" + coordX +
+                    ", coordY=" + coordY +
+                    ", hasDome=" + hasDome +
+                    ", is not empty" +
+                    // ", occupiedBy=" + occupiedBy +
+                    ", block=" + block +
+                    "}\n";
+        }
         return "Cell{" +
                 "coordX=" + coordX +
                 ", coordY=" + coordY +
                 ", hasDome=" + hasDome +
-                // ", occupiedBy=" + occupiedBy +
                 ", block=" + block +
-                '}';
+                "}\n";
+
     }
 
     @Override

@@ -44,6 +44,7 @@ public class Player implements Memento<Player> {
         if (cell.getOccupiedBy() == null) {
             Worker worker = new Worker(cell, this);
             workers.add(worker);
+            cell.setOccupiedBy(worker);
         } else {
             //TODO: manage already occupied cell
         }
