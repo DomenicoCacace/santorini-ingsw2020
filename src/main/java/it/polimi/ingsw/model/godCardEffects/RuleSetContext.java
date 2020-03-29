@@ -9,6 +9,7 @@ public class RuleSetContext implements Memento<RuleSetContext> {
 
     private RuleSetStrategy strategy;
 
+
     public void setGame(Game game) {
         strategy.setGame(game);
     }

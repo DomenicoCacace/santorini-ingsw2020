@@ -33,7 +33,9 @@ public class Push extends MovementStrategy {
         List<Cell> cells = new ArrayList<>();
         for (Cell cell : game.getGameBoard().getAllCells()) {
             if (worker.getPosition().calculateDistance(cell) == 1 &&
-                    //TODO: check rules, might push workers further than one cell
+                    /*TODO: check rules, might push workers further than one cell
+                     * or push workers higher than one level
+                     */
                     worker.getPosition().heightDifference(cell) <= 1 &&
                     !cell.hasDome()) {
                 if ((cell.getOccupiedBy() == null) || (

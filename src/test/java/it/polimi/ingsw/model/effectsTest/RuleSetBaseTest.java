@@ -1,5 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.effectsTest;
 
+import it.polimi.ingsw.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

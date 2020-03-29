@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.utilities.Memento;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Player implements Memento<Player> {
@@ -13,7 +14,6 @@ public class Player implements Memento<Player> {
     private Cell selectedCell;
     private Block selectedBlock;
     private Action action;
-    private final Color color;
     private boolean hasMoved;
     private boolean hasMovedUp;
     private boolean hasBuilt;
@@ -25,6 +25,7 @@ public class Player implements Memento<Player> {
         this.name = name;
         this.god = god;
         this.color = color;
+        this.workers = new ArrayList<>();
     }
 
     public void setGame(Game game) {
@@ -39,15 +40,12 @@ public class Player implements Memento<Player> {
         return workers;
     }
 
-    public void setWorkers(List<Cell> cells) {
-        for (Cell cell : cells) {
-
-            if (cell.getOccupiedBy() == null) {
-                Worker worker = new Worker(cell, this);
-                workers.add(worker);
-            } else {
-                //TODO: manage already occupied cells
-            }
+    public void addWorker(Cell cell) {
+        if (cell.getOccupiedBy() == null) {
+            Worker worker = new Worker(cell, this);
+            workers.add(worker);
+        } else {
+            //TODO: manage already occupied cell
         }
     }
 
