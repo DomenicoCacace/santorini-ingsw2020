@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,5 +27,16 @@ class GameBoardTest {
        cell2 = board.getCell(0,2);
        cellBehind= board.getCellBehind(cell1, cell2); //Has to be null because it would be out of bounds
        assertNull(cellBehind);
+    }
+    @Test
+    void getAdjacentCellsTest(){
+        ArrayList<Cell> cells = new ArrayList<Cell>();
+        Cell cell = board.getCell(2,3);
+        cells = board.getAdjacentCells(cell);
+        System.out.println(cells);
+        cell = board.getCell(0,3);
+        cells = board.getAdjacentCells(cell);
+        System.out.println(cells);
+
     }
 }

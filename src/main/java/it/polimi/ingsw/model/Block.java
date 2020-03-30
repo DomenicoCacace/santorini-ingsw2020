@@ -17,5 +17,4 @@ public enum Block {
         return height;
     }
 
-
 }

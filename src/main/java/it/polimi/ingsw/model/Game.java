@@ -45,10 +45,6 @@ public class Game {
         return currentRuleSet;
     }
 
-    public void setCurrentRuleSet(RuleSetContext currentRuleSet) {
-        this.currentRuleSet = currentRuleSet;
-    }
-
     public List<Cell> getWalkableCells(Worker worker) {
         return currentRuleSet.getWalkableCells(worker);
     }
@@ -57,10 +53,6 @@ public class Game {
 
     public Player getWinner() {
         return winner;
-    }
-
-    public void setWinner(Player winner) {
-        this.winner = winner;
     }
 
     public void apply(Action action) {

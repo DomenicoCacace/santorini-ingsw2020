@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
 import it.polimi.ingsw.model.utilities.Memento;
 
-public class Turn implements Memento<Turn> {
+public class Turn {
     private int turnNumber;
     private Player currentPlayer;
     private RuleSetStrategy ruleSetStrategy;
@@ -28,15 +28,4 @@ public class Turn implements Memento<Turn> {
         return ruleSetStrategy;
     }
 
-    @Override
-    public Turn saveState() {
-        return new Turn(this.turnNumber, this.currentPlayer);
-    }
-
-    @Override
-    public void restoreState(Turn savedState) {
-        this.turnNumber = savedState.getTurnNumber();
-        this.currentPlayer = savedState.getCurrentPlayer();
-        this.ruleSetStrategy = savedState.getRuleSetStrategy();
-    }
 }

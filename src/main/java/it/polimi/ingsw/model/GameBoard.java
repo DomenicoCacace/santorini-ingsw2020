@@ -65,6 +65,19 @@ public class GameBoard implements Memento<GameBoard> {
             return this.getCell(x, y);
         return null;
     }
+    public ArrayList<Cell> getAdjacentCells(Cell cell){
+        ArrayList<Cell> cells = new ArrayList<Cell>();
+        for(int x=cell.getCoordX() -1; x<=cell.getCoordX()+1; x++ ){
+            for(int y=cell.getCoordY() -1; y<=cell.getCoordY()+1; y++ ){
+                if (0 <= x && x < DIMENSION &&
+                        0 <= y && y < DIMENSION &&
+                        (!getCell(x,y).equals(cell)))
+
+                    cells.add(getCell(x,y));
+            }
+        }
+        return cells;
+    }
 
 
     @Override

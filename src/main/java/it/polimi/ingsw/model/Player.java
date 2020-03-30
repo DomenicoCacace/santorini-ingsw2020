@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.utilities.Memento;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player implements Memento<Player> {
+public class Player {
     private final String name;
     private final God god;
     private final Color color;
@@ -30,10 +30,6 @@ public class Player implements Memento<Player> {
 
     public void setGame(Game game) {
         this.game = game;
-    }
-
-    public void saveWorkers(List<Worker> workers) {
-        this.workers = workers;
     }
 
     public List<Worker> getWorkers() {
@@ -119,23 +115,4 @@ public class Player implements Memento<Player> {
         this.winner = winner;
     }
 
-    @Override
-    public Player saveState() {
-
-        Player savedPlayer = new Player(this.name, this.god, this.color);
-        savedPlayer.setHasBuilt(this.hasBuilt);
-        savedPlayer.setHasMoved(this.hasMoved);
-        savedPlayer.setHasMovedUp(this.hasMovedUp);
-        savedPlayer.saveWorkers(this.workers);
-        return savedPlayer;
-
-    }
-
-    @Override
-    public void restoreState(Player savedState) {
-        this.hasBuilt = savedState.getHasBuilt();
-        this.hasMoved = savedState.getHasMoved();
-        this.hasMovedUp = savedState.getHasMovedUp();
-        this.workers = savedState.getWorkers();
-    }
 }
