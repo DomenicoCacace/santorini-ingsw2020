@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
 
 public class God {
-    public RuleSetStrategy strategy;
+    private RuleSetStrategy strategy;
     private String name;
 
     public God(String name) {
@@ -12,10 +12,6 @@ public class God {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public RuleSetStrategy getStrategy() {

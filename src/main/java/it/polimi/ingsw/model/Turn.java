@@ -20,24 +20,12 @@ public class Turn implements Memento<Turn> {
         return turnNumber;
     }
 
-    public void setTurnNumber(int turnNumber) {
-        this.turnNumber = turnNumber;
-    }
-
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public void setCurrentPlayer(Player currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
     public RuleSetStrategy getRuleSetStrategy() {
         return ruleSetStrategy;
-    }
-
-    public void setRuleSetStrategy(RuleSetStrategy ruleSetStrategy) {
-        this.ruleSetStrategy = ruleSetStrategy;
     }
 
     @Override
