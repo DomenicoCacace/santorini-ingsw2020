@@ -5,6 +5,11 @@ public class Action {
 
     private final ActionType type;
     private final Cell targetCell;
+
+    public Block getTargetBlock() {
+        return targetBlock;
+    }
+
     private final Block targetBlock;
     private final Worker targetWorker;
 

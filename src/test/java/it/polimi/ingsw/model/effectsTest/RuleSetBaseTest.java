@@ -16,7 +16,6 @@ class RuleSetBaseTest {
 
     private List<Player> players;
     private Game game;
-    private List<Worker> workers;
     private List<God> gods;
     private Action normalAction;
 
@@ -53,7 +52,6 @@ class RuleSetBaseTest {
         Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         Worker currentWorker = currentPlayer.getWorkers().get(0);
-       // game.getWalkableCells(currentWorker);
         System.out.println(game.getWalkableCells(currentWorker).toString());
     }
 
@@ -62,7 +60,6 @@ class RuleSetBaseTest {
         Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         Worker currentWorker = currentPlayer.getWorkers().get(0);
-       // game.getBuildableCells(currentWorker);
         System.out.println(game.getBuildableCells(currentWorker).toString());
     }
 
@@ -88,6 +85,84 @@ class RuleSetBaseTest {
             }
             assertNull(cell.getOccupiedBy());
         }
+    }
+
+    @Test
+    void isBuildActionValidTest() {
+        Action buildAction;
+        Worker currentWorker;
+        Cell targetCell;
+        Block block;
+
+        game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,1).setHasDome(true);
+        game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL0);
+        game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL2);
+
+
+        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        currentWorker = players.get(0).getWorkers().get(0);
+
+        for (int i = 0; i < game.getPlayers().size(); i++)
+            game.generateNextTurn();
+        targetCell = game.getGameBoard().getCell(3, 1);
+        block = Block.LEVEL1;
+        buildAction = new Action(currentWorker, targetCell, block);
+        game.getBuildableCells(currentWorker);
+        game.validateAction(buildAction);
+        assertEquals(targetCell.getBlock(), Block.DOME);
+        assertTrue(targetCell.hasDome());
+
+        for (int i = 0; i < game.getPlayers().size(); i++)
+            game.generateNextTurn();
+        targetCell = game.getGameBoard().getCell(3, 2);
+        block = Block.LEVEL1;
+        buildAction = new Action(currentWorker, targetCell, block);
+        game.getBuildableCells(currentWorker);
+        game.validateAction(buildAction);
+        assertEquals(targetCell.getBlock(), Block.LEVEL0);
+        assertEquals(targetCell.getOccupiedBy(), currentWorker);
+
+
+        for (int i = 0; i < game.getPlayers().size(); i++)
+            game.generateNextTurn();
+        targetCell = game.getGameBoard().getCell(3, 3);
+        block = Block.LEVEL3;
+        buildAction = new Action(currentWorker, targetCell, block);
+        game.getBuildableCells(currentWorker);
+        game.validateAction(buildAction);
+        assertEquals(targetCell.getBlock(), block);
+        assertFalse(targetCell.hasDome());
+
+        for (int i = 0; i < game.getPlayers().size(); i++)
+            game.generateNextTurn();
+        targetCell = game.getGameBoard().getCell(3, 3);
+        block = Block.LEVEL2;
+        buildAction = new Action(currentWorker, targetCell, block);
+        game.getBuildableCells(currentWorker);
+        game.validateAction(buildAction);
+        assertEquals(targetCell.getBlock(), Block.LEVEL3);
+        assertFalse(targetCell.hasDome());
+
+        for (int i = 0; i < game.getPlayers().size(); i++)
+            game.generateNextTurn();
+        targetCell = game.getGameBoard().getCell(3, 3);
+        block = Block.DOME;
+        buildAction = new Action(currentWorker, targetCell, block);
+        game.getBuildableCells(currentWorker);
+        game.validateAction(buildAction);
+        assertEquals(targetCell.getBlock(), block);
+        assertTrue(targetCell.hasDome());
+
+        for (int i = 0; i < game.getPlayers().size(); i++)
+            game.generateNextTurn();
+        targetCell = game.getGameBoard().getCell(3, 1);
+        block = Block.LEVEL1;
+        buildAction = new Action(currentWorker, targetCell, block);
+        game.getBuildableCells(currentWorker);
+        game.validateAction(buildAction);
+        assertEquals(targetCell.getBlock(), Block.DOME);
+        assertTrue(targetCell.hasDome());
     }
 
 }

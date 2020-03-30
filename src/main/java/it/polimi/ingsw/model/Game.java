@@ -79,7 +79,7 @@ public class Game {
             case BUILD:
                 if (currentRuleSet.validateBuildAction(action))
                     apply(action);
-                //TODO: might need to check win/lose condition for certain gods
+                    //TODO: might need to check win/lose condition for certain gods
                 break;
 
             default:

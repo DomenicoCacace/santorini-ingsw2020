@@ -35,6 +35,7 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public boolean isBuildActionValid(Action action) {
         return getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
+                action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1) &&
                 !game.getCurrentTurn().getCurrentPlayer().getHasBuilt();
     }
 
@@ -66,8 +67,8 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        for (Cell cell : game.getGameBoard().getAllCells()) {
-            if (worker.getPosition().calculateDistance(cell) == 1 && worker.getPosition().heightDifference(cell) <= 1 && cell.getOccupiedBy() == null && !cell.hasDome())
+        for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+            if (worker.getPosition().heightDifference(cell) <= 1 && cell.getOccupiedBy() == null && !cell.hasDome())
                 cells.add(cell);
         }
         return cells;
@@ -76,8 +77,8 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        for (Cell cell : game.getGameBoard().getAllCells()) {
-            if (worker.getPosition().calculateDistance(cell) == 1 && cell.getOccupiedBy() == null && !cell.hasDome())
+        for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+            if (cell.getOccupiedBy() == null && !cell.hasDome())
                 cells.add(cell);
         }
         return cells;

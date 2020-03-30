@@ -79,7 +79,6 @@ public class GameBoard implements Memento<GameBoard> {
         return cells;
     }
 
-
     @Override
     public GameBoard saveState() {
         return new GameBoard(this);

@@ -20,8 +20,7 @@ public class RuleSetContext implements Memento<RuleSetContext> {
     }
 
     public boolean validateBuildAction(Action action) {
-        strategy.isBuildActionValid(action);
-        return false;
+        return strategy.isBuildActionValid(action);
     }
 
     public RuleSetStrategy getStrategy() {
