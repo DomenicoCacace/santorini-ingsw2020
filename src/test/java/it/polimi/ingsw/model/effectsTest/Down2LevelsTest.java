@@ -36,7 +36,7 @@ class Down2LevelsTest {
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);
-        gods.get(0).getStrategy().setGame(game);
+        //gods.get(0).getStrategy().setGame(game);
 
         game.setCurrentTurn(new Turn(0, players.get(players.size() - 1)));
 

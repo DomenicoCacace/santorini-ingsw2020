@@ -10,11 +10,13 @@ public class BuildDome extends BuildingStrategy {
 
     @Override
     public boolean isBuildActionValid(Action action) {
-        return super.isBuildActionValid(action);
+        if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
+                (action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1) || action.getTargetBlock().getHeight()==4) &&
+                buildsAvailable>0 && movedWorker == action.getTargetWorker()){
+            buildsAvailable--;
+            return true;
+        }
+        return false;
     }
 
-    @Override
-    public List<Cell> getBuildableCells(Worker worker) {
-        return super.getBuildableCells(worker);
-    }
 }

@@ -14,9 +14,6 @@ public class Player {
     private Cell selectedCell;
     private Block selectedBlock;
     private Action action;
-    private boolean hasMoved;
-    private boolean hasMovedUp;
-    private boolean hasBuilt;
     private boolean disconnected;
     private boolean winner;
     private Game game;
@@ -30,6 +27,7 @@ public class Player {
 
     public void setGame(Game game) {
         this.game = game;
+        god.getStrategy().setGame(game); //We can either do this here or in the Server class after it called the game constructor.
     }
 
     public List<Worker> getWorkers() {
@@ -62,29 +60,6 @@ public class Player {
         return color;
     }
 
-    public boolean getHasMoved() {
-        return hasMoved;
-    }
-
-    public void setHasMoved(Boolean hasMoved) {
-        this.hasMoved = hasMoved;
-    }
-
-    public boolean getHasMovedUp() {
-        return hasMovedUp;
-    }
-
-    public void setHasMovedUp(Boolean hasMovedUp) {
-        this.hasMovedUp = hasMovedUp;
-    }
-
-    public boolean getHasBuilt() {
-        return hasBuilt;
-    }
-
-    public void setHasBuilt(Boolean hasBuilt) {
-        this.hasBuilt = hasBuilt;
-    }
 
     public void setSelectedWorker(Worker selectedWorker) {
         this.selectedWorker = selectedWorker;

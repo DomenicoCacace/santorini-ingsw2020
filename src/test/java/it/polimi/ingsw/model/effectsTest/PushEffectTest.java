@@ -35,7 +35,7 @@ public class PushEffectTest {
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);
-        gods.get(0).getStrategy().setGame(game);
+       // gods.get(0).getStrategy().setGame(game);
 
         game.setCurrentTurn(new Turn(0, players.get(players.size() - 1)));
 
@@ -52,6 +52,7 @@ public class PushEffectTest {
     @Test
     void PushEffectTest () {
 
+
         Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
@@ -61,11 +62,9 @@ public class PushEffectTest {
         Worker currentWorker = currentPlayer.getWorkers().get(0);
 
         Cell targetCell = game.getGameBoard().getCell(3, 1);
-        Cell pushedCell = game.getGameBoard().getCell(3,0); //we created a new cell instead of addressing the cell 3,0 of the gameboard.
+        Cell pushedCell = game.getGameBoard().getCell(3,0);
 
         minotaurPush = new Action(currentWorker, targetCell);
-        assertNotNull(game.getGameBoard());
-
         game.validateAction(minotaurPush);
 
         for(Cell cell : game.getGameBoard().getAllCells()) {
@@ -82,6 +81,9 @@ public class PushEffectTest {
             }
             assertNull(cell.getOccupiedBy());
         }
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 
     @Test
@@ -90,12 +92,20 @@ public class PushEffectTest {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
-        currentWorker.setWalkableCells(game.getWalkableCells(currentWorker));
-        System.out.println(currentWorker.getWalkableCells().toString());
+        System.out.println(game.getWalkableCells(currentWorker));
     }
 
     @Test
-    void canPushTest(){
+    void getBuildableCellsTest(){
+        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
+        Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
+        System.out.println(game.getBuildableCells(currentWorker));
+    }
+
+    @Test
+    void cannotPushOutsideTest(){
         players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
         Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
@@ -103,9 +113,7 @@ public class PushEffectTest {
         Cell startingCell = game.getGameBoard().getCell(1, 2);
         Cell targetCell = game.getGameBoard().getCell(0, 2);
         minotaurPush = new Action(currentWorker, targetCell);
-
         game.validateAction(minotaurPush);
-        assertFalse(game.getCurrentRuleSet().validateMoveAction(minotaurPush)); //we shouldn't be able to do it
 
         for(Cell cell : game.getGameBoard().getAllCells()) {
             if (cell.equals(startingCell)) {
@@ -122,9 +130,8 @@ public class PushEffectTest {
             }
             assertNull(cell.getOccupiedBy());
         }
-
-
-
-
+        assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 }

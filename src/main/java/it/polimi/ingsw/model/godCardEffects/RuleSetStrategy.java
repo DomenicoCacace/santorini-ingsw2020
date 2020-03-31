@@ -10,6 +10,14 @@ public interface RuleSetStrategy {
     @Deprecated
     int propagateEffect();
 
+    int getMovesAvailable();
+
+    boolean hasMovedUp();
+
+    int getBuildsAvailable();
+
+    Worker getMovedWorker();
+
     boolean isMoveActionValid(Action action);
 
     boolean isBuildActionValid(Action action);

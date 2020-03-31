@@ -8,8 +8,38 @@ import java.util.List;
 public class RuleSetBase implements RuleSetStrategy {
 
     protected Game game;
+    protected int movesAvailable;
+    protected boolean hasMovedUp;
+    protected int buildsAvailable;
+    protected Worker movedWorker;
     private List<Cell> walkableCells;
     private List<Cell> buildableCells;
+
+    public RuleSetBase() {
+        this.movesAvailable = 1;
+        this.buildsAvailable = 1;
+        this.hasMovedUp=false;
+    }
+
+
+    @Override
+    public int getMovesAvailable() {
+        return movesAvailable;
+    }
+    @Override
+    public boolean hasMovedUp() {
+        return hasMovedUp;
+    }
+
+    @Override
+    public int getBuildsAvailable() {
+        return buildsAvailable;
+    }
+
+    @Override
+    public Worker getMovedWorker() {
+        return movedWorker;
+    }
 
     @Override
     public void setGame(Game game) {
@@ -18,7 +48,10 @@ public class RuleSetBase implements RuleSetStrategy {
 
     @Override
     public void doEffect(Turn turn) {
-        //does nothing, gets overrode in AffectOpponentActions classes
+        movesAvailable = 1;
+        buildsAvailable = 1;
+        hasMovedUp= false;
+        this.movedWorker= null;
     }
 
     @Override
@@ -28,15 +61,27 @@ public class RuleSetBase implements RuleSetStrategy {
 
     @Override
     public boolean isMoveActionValid(Action action) {
-        return getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
-                !game.getCurrentTurn().getCurrentPlayer().getHasMoved();
+        if (getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
+                this.movesAvailable>0){
+            movesAvailable--;
+            if(action.getTargetWorker().getPosition().heightDifference(action.getTargetCell()) == 1)
+                hasMovedUp=true;
+            movedWorker = action.getTargetWorker();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean isBuildActionValid(Action action) {
-        return getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
+        if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
                 action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1) &&
-                !game.getCurrentTurn().getCurrentPlayer().getHasBuilt();
+                this.buildsAvailable>0 && movedWorker == action.getTargetWorker()){
+            buildsAvailable--;
+            return true;
+        }
+        return false;
+
     }
 
     @Override

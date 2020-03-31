@@ -18,17 +18,21 @@ public class Push extends MovementStrategy {
 
     @Override
     public boolean isMoveActionValid(Action action) {
-        //if (super.isMoveActionValid(action)){ //if the worker can move in the target cell (checked by walkableCells)
+
            if(getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
-                !game.getCurrentTurn().getCurrentPlayer().getHasMoved()){
+                movesAvailable>0){
                 if (action.getTargetCell().getOccupiedBy()!= null) {
                 Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
                 Action pushAction = new Action(action.getTargetCell().getOccupiedBy(), pushCell); //Create a new Action internally, this action should push the opponent
                 pushAction.applier();
-            }
-            return true;
-        }
-        return false;
+                }
+                movesAvailable--;
+                if(action.getTargetWorker().getPosition().heightDifference(action.getTargetCell()) == 1)
+                   hasMovedUp=true;
+                movedWorker = action.getTargetWorker();
+                return true;
+           }
+           return false;
     }
 
     @Override

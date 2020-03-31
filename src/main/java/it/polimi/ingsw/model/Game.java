@@ -21,8 +21,8 @@ public class Game {
 
         //just for testing
         currentRuleSet = new RuleSetContext();
-        currentRuleSet.setStrategy(new RuleSetBase());
-        currentRuleSet.setGame(this); //linea aggiunta per il test di getWalkable -- questa operazione è solo per il testing
+        //currentRuleSet.setStrategy(new RuleSetBase());
+        //currentRuleSet.setGame(this); //linea aggiunta per il test di getWalkable -- questa operazione è solo per il testing
     }
 
     public Turn getCurrentTurn() {
