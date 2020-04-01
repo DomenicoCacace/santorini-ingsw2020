@@ -16,7 +16,6 @@ public class PushEffectTest {
 
     private List<Player> players;
     private Game game;
-    private List<Worker> workers;
     private List<God> gods;
     private Action minotaurPush;
 
@@ -35,8 +34,6 @@ public class PushEffectTest {
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);
-       // gods.get(0).getStrategy().setGame(game);
-
         game.setCurrentTurn(new Turn(0, players.get(players.size() - 1)));
 
         game.getGameBoard().getCell(3,4).setHasDome(true); //One adjacent cell has a Dome so a worker can't move nor build
@@ -45,20 +42,14 @@ public class PushEffectTest {
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
 
         game.generateNextTurn();
-
     }
 
 
     @Test
     void PushEffectTest () {
-
-
         Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
-
-
-
         Worker currentWorker = currentPlayer.getWorkers().get(0);
 
         Cell targetCell = game.getGameBoard().getCell(3, 1);
@@ -106,9 +97,9 @@ public class PushEffectTest {
 
     @Test
     void cannotPushOutsideTest(){
+        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         Worker currentWorker = currentPlayer.getWorkers().get(0);
         Cell startingCell = game.getGameBoard().getCell(1, 2);
         Cell targetCell = game.getGameBoard().getCell(0, 2);
