@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Action;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Swap extends MovementStrategy {
@@ -11,12 +12,30 @@ public class Swap extends MovementStrategy {
 
     @Override
     public boolean isMoveActionValid(Action action) {
-        System.out.println("Sono in Swap");
+        if(getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
+                movesAvailable>0){
+            if (action.getTargetCell().getOccupiedBy()!= null) {
+                Cell myPreviousCell = action.getStartingCell();
+                Action opponentOnMyPreviousCellAction = new Action(action.getTargetCell().getOccupiedBy(), myPreviousCell);
+                opponentOnMyPreviousCellAction.applier();
+                // perhaps we need a temp cell (2 workers cannot stay at the same time on the same cell)
+            }
+            movesAvailable--;
+            if(action.getTargetCell().heightDifference(action.getTargetWorker().getPosition()) == 1)
+                hasMovedUp=true;
+            movedWorker = action.getTargetWorker();
+            return true;
+        }
         return false;
     }
 
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
-        return super.getWalkableCells(worker);
+        List<Cell> cells = new ArrayList<>();
+        for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+            if (worker.getPosition().heightDifference(cell) <= 1 && !cell.hasDome())
+                cells.add(cell);
+        }
+        return cells;
     }
 }

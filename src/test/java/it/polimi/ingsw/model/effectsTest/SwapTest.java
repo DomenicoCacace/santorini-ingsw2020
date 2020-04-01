@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.effectsTest;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
-import it.polimi.ingsw.model.godCardEffects.winConditionEffects.Down2Levels;
+import it.polimi.ingsw.model.godCardEffects.movementEffects.Swap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ class SwapTest {
     void SetUp () {
         gods = new ArrayList<>();
         gods.add(new God("Apollo"));
-        gods.get(0).setStrategy(new Down2Levels());
+        gods.get(0).setStrategy(new Swap());
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
 
@@ -38,7 +38,7 @@ class SwapTest {
         game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
-        game.getGameBoard().getCell(4,3).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(4,1).setBlock(Block.LEVEL3);
 
         game.generateNextTurn();
     }
