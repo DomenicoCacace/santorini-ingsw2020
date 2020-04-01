@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.effectsTest;
 
 import it.polimi.ingsw.model.God;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
 import it.polimi.ingsw.model.godCardEffects.movementEffects.Push;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ public class PushEffectTest {
 
     private Game game;
     private List<Player> players;
-    private Action moveAction;
+    private MoveAction moveAction;
 
     @BeforeEach
     void SetUp () {
@@ -53,8 +54,8 @@ public class PushEffectTest {
         Cell targetCell = game.getGameBoard().getCell(3, 1);
         Cell pushedCell = game.getGameBoard().getCell(3,0);
 
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         for(Cell cell : game.getGameBoard().getAllCells()) {
             if (cell.equals(pushedCell)) {
@@ -101,8 +102,8 @@ public class PushEffectTest {
 
         Cell startingCell = game.getGameBoard().getCell(1, 2);
         Cell targetCell = game.getGameBoard().getCell(0, 2);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         for(Cell cell : game.getGameBoard().getAllCells()) {
             if (cell.equals(startingCell)) {

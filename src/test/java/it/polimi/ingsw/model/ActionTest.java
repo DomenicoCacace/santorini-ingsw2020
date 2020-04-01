@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.action.Action;
+import it.polimi.ingsw.model.action.BuildAction;
+import it.polimi.ingsw.model.action.MoveAction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,8 +28,8 @@ class ActionTest {
 
     @Test
     void applierMovementActionTest() {
-        Action movementAction = new Action(worker, endingCell);
-        movementAction.applier();
+        Action movementAction = new MoveAction(worker, endingCell);
+        movementAction.apply();
 
         for(Cell cell : board.getAllCells()) {
             if (cell.equals(endingCell)) {
@@ -45,8 +45,8 @@ class ActionTest {
 
     @Test
     void applierBuildActionTest() {
-        Action buildingAction = new Action(worker, endingCell, block);
-        buildingAction.applier();
+        Action buildingAction = new BuildAction(worker, endingCell, block);
+        buildingAction.apply();
         assertEquals(endingCell.getBlock(), block);
 
         for(Cell cell : board.getAllCells()) {

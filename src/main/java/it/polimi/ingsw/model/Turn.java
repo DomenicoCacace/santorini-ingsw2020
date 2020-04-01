@@ -4,9 +4,9 @@ import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
 import it.polimi.ingsw.model.utilities.Memento;
 
 public class Turn {
-    private int turnNumber;
-    private Player currentPlayer;
-    private RuleSetStrategy ruleSetStrategy;
+    private final int turnNumber;
+    private final Player currentPlayer;
+    private final RuleSetStrategy ruleSetStrategy;
 
 
     public Turn(int turnNumber, Player currentPlayer) {
