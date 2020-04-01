@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.godCardEffects;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.action.BuildAction;
+import it.polimi.ingsw.model.action.MoveAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,7 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(Action action) {
+    public boolean isMoveActionValid(MoveAction action) {
         if (getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
                 this.movesAvailable>0){
             movesAvailable--;
@@ -73,7 +75,7 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public boolean isBuildActionValid(Action action) {
+    public boolean isBuildActionValid(BuildAction action) {
         if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
                 action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1) &&
                 this.buildsAvailable>0 && movedWorker == action.getTargetWorker()){
@@ -85,15 +87,14 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public boolean checkWinCondition(Action action) {
+    public boolean checkWinCondition(MoveAction action) {
         //removed action.getTargetCell().hasDome()
-        return action.getType() == ActionType.MOVE &&
-                action.getTargetCell().getBlock().getHeight() == 3 &&
+        return action.getTargetCell().getBlock().getHeight() == 3 &&
                 action.getStartingCell().heightDifference(action.getTargetCell()) == 1;
     }
 
     @Override
-    public boolean checkLoseCondition(Action action) {
+    public boolean checkLoseCondition(MoveAction action) {
         return getBuildableCells(action.getTargetWorker()) == null;
     }
 

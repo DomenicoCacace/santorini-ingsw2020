@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.effectsTest;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.action.Action;
+import it.polimi.ingsw.model.action.BuildAction;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
 import it.polimi.ingsw.model.godCardEffects.buildingEffects.BuildDome;
-import it.polimi.ingsw.model.godCardEffects.movementEffects.Push;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BuildDomeTest {
     private Game game;
     private Worker currentWorker;
-    private Action buildAction;
+    private BuildAction buildAction;
     private Cell targetCell;
     private Block block;
 
@@ -48,16 +50,16 @@ class BuildDomeTest {
         game.generateNextTurn();
 
         targetCell = game.getGameBoard().getCell(2, 3);
-        Action moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        Action moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
     }
 
     @Test
     void canBuildDomeAnywhereTest() {
         targetCell = game.getGameBoard().getCell(3, 3);//LEVEL2
         block = Block.DOME;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
@@ -68,8 +70,8 @@ class BuildDomeTest {
      void cannotBuildOnMyCellTest() {
         targetCell = game.getGameBoard().getCell(2, 3);//LEVEL2
         block = Block.DOME;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
@@ -80,8 +82,8 @@ class BuildDomeTest {
     void cannotBuildDomeOverDomeTest(){
         targetCell = game.getGameBoard().getCell(3, 4);//DOME
         block = Block.DOME;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);

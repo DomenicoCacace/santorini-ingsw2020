@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model.godCardEffects.movementEffects;
 
-import it.polimi.ingsw.model.Action;
+import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
 
 import java.util.ArrayList;
@@ -11,13 +12,13 @@ public class Swap extends MovementStrategy {
 
 
     @Override
-    public boolean isMoveActionValid(Action action) {
+    public boolean isMoveActionValid(MoveAction action) {
         if(getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
                 movesAvailable>0){
             if (action.getTargetCell().getOccupiedBy()!= null) {
                 Cell myPreviousCell = action.getStartingCell();
-                Action opponentOnMyPreviousCellAction = new Action(action.getTargetCell().getOccupiedBy(), myPreviousCell);
-                opponentOnMyPreviousCellAction.applier();
+                Action opponentOnMyPreviousCellAction = new MoveAction(action.getTargetCell().getOccupiedBy(), myPreviousCell);
+                opponentOnMyPreviousCellAction.apply();
                 // perhaps we need a temp cell (2 workers cannot stay at the same time on the same cell)
             }
             movesAvailable--;

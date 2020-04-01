@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.godCardEffects;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.action.BuildAction;
+import it.polimi.ingsw.model.action.MoveAction;
 
 import java.util.List;
 
@@ -18,19 +20,21 @@ public interface RuleSetStrategy {
 
     Worker getMovedWorker();
 
-    boolean isMoveActionValid(Action action);
+    boolean isMoveActionValid(MoveAction action);
 
-    boolean isBuildActionValid(Action action);
+    boolean isBuildActionValid(BuildAction action);
 
-    boolean checkWinCondition(Action action);
+    boolean checkWinCondition(MoveAction action);
 
-    boolean checkLoseCondition(Action action);
+    boolean checkLoseCondition(MoveAction action);
+
+    boolean checkLoseCondition();
 
     List<Cell> getWalkableCells(Worker worker);
 
     List<Cell> getBuildableCells(Worker worker);
 
-    boolean checkLoseCondition();
+
 
     void setGame(Game game);
 }

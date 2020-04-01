@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
+import it.polimi.ingsw.model.action.BuildAction;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardEffects.RuleSetContext;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public class Game {
     private Turn currentTurn;
     private Turn nextTurn;
     private Player winner;
-    private RuleSetContext currentRuleSet;
+    private final RuleSetContext currentRuleSet;
 
     public Game(GameBoard gameBoard, List<Player> players) {
         this.gameBoard = gameBoard;
@@ -55,37 +56,25 @@ public class Game {
         return winner;
     }
 
-    public void apply(Action action) {
-        action.applier();
-    }
+    public void validateMoveAction(MoveAction moveAction) {
+        if (currentRuleSet.validateMoveAction(moveAction)) {
 
-    public void validateAction(Action action) {
-
-        switch (action.getType()) {
-
-            case MOVE:
-                if (currentRuleSet.validateMoveAction(action)) {
-
-                    if (currentRuleSet.checkWinCondition(action)) {
-                        this.winner = currentTurn.getCurrentPlayer();
-                        //TODO: manage win stuff
-                    } else if (currentRuleSet.checkLoseCondition(action)) {
-                        //TODO: manage lose stuff
-                    }
-                    apply(action);
-                }
-                break;
-
-            case BUILD:
-                if (currentRuleSet.validateBuildAction(action))
-                    apply(action);
-                    //TODO: might need to check win/lose condition for certain gods
-                break;
-
-            default:
-                break;
+            if (currentRuleSet.checkWinCondition(moveAction)) {
+                this.winner = currentTurn.getCurrentPlayer();
+                //TODO: manage win stuff
+            } else if (currentRuleSet.checkLoseCondition(moveAction)) {
+                //TODO: manage lose stuff
+            }
+            moveAction.apply();
         }
+
     }
+
+    public void validateBuildAction(BuildAction buildAction) {
+        if (currentRuleSet.validateBuildAction(buildAction))
+            buildAction.apply();
+    }
+
 
     public Player nextPlayer() {
         return players.get(((players.indexOf(currentTurn.getCurrentPlayer()) + 1) % players.size()));

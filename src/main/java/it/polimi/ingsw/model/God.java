@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
 
 public class God {
     private RuleSetStrategy strategy;
-    private String name;
+    private final String name;
 
     public God(String name) {
         this.name = name;

@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model.effectsTest;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
-import it.polimi.ingsw.model.godCardEffects.movementEffects.Push;
 import it.polimi.ingsw.model.godCardEffects.winConditionEffects.Down2Levels;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class Down2LevelsTest {
     private Game game;
     private Worker currentWorker;
-    private List<Player> players;
-    private Action moveAction;
+    private MoveAction moveAction;
 
     @BeforeEach
     void SetUp () {
@@ -28,7 +26,7 @@ class Down2LevelsTest {
         gods.get(1).setStrategy(new RuleSetBase());
 
 
-        players = new ArrayList<>();
+        List<Player> players = new ArrayList<>();
         players.add(new Player("player1", gods.get(0), Color.BLUE));
         players.add(new Player("player2", gods.get(1), Color.WHITE));
 
@@ -53,8 +51,8 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
 
 
-        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
+        moveAction.getValidation(game);
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
@@ -62,8 +60,8 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1);
 
-        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
+        moveAction.getValidation(game);
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
@@ -71,8 +69,8 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
 
-        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
+        moveAction.getValidation(game);
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
@@ -80,8 +78,8 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 
-        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
+        moveAction.getValidation(game);
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
@@ -89,8 +87,8 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 
-        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
+        moveAction.getValidation(game);
         assertNull(game.getWinner());
     }
 }

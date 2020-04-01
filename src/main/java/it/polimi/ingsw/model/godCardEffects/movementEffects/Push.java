@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model.godCardEffects.movementEffects;
 
-import it.polimi.ingsw.model.Action;
+import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
 
 import java.util.ArrayList;
@@ -17,14 +18,14 @@ public class Push extends MovementStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(Action action) {
+    public boolean isMoveActionValid(MoveAction action) {
 
            if(getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
                 movesAvailable>0){
                 if (action.getTargetCell().getOccupiedBy()!= null) {
                 Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
-                Action pushAction = new Action(action.getTargetCell().getOccupiedBy(), pushCell); //Create a new Action internally, this action should push the opponent
-                pushAction.applier();
+                Action pushAction = new MoveAction(action.getTargetCell().getOccupiedBy(), pushCell); //Create a new Action internally, this action should push the opponent
+                pushAction.apply();
                 }
                 movesAvailable--;
                 if(action.getTargetWorker().getPosition().heightDifference(action.getTargetCell()) == 1)

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.utilities.Memento;
+import it.polimi.ingsw.model.action.Action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public class Player {
     private final String name;
     private final God god;
     private final Color color;
-    private List<Worker> workers;
+    private final List<Worker> workers;
     private Worker selectedWorker;
     private Cell selectedCell;
     private Block selectedBlock;
@@ -49,7 +49,7 @@ public class Player {
     }
 
     public void useAction() {
-        game.validateAction(action);
+        action.getValidation(game);
     }
 
     public God getGod() {

@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model.effectsTest;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.action.Action;
+import it.polimi.ingsw.model.action.BuildAction;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,24 +55,43 @@ class RuleSetBaseTest {
 
     }
 
-
     @Test
     void getWalkableCellsTest() {
         //TODO: write test assertions
-        System.out.println(game.getWalkableCells(currentWorker).toString());
+        List<Cell> walkableCells;
+        walkableCells = game.getWalkableCells(currentWorker);
+        assertEquals(walkableCells.size(), 5);
+        assertEquals(walkableCells.get(0),game.getGameBoard().getCell(1,1) );
+        assertEquals(walkableCells.get(1),game.getGameBoard().getCell(1,2) );
+        assertEquals(walkableCells.get(2),game.getGameBoard().getCell(1,3) );
+        assertEquals(walkableCells.get(3),game.getGameBoard().getCell(2,1) );
+        assertEquals(walkableCells.get(4),game.getGameBoard().getCell(2,3) );
+        System.out.println(walkableCells.toString());
     }
+
+
 
     @Test
     void getBuildableCellsTest() {
         //TODO: write test assertions
+        List<Cell> buildableCells;
+        buildableCells = game.getBuildableCells(currentWorker);
+        assertEquals(buildableCells.size(), 6);
+        assertEquals(buildableCells.get(0),game.getGameBoard().getCell(1,1) );
+        assertEquals(buildableCells.get(1),game.getGameBoard().getCell(1,2) );
+        assertEquals(buildableCells.get(2),game.getGameBoard().getCell(1,3) );
+        assertEquals(buildableCells.get(3),game.getGameBoard().getCell(2,1) );
+        assertEquals(buildableCells.get(4),game.getGameBoard().getCell(2,3) );
+        assertEquals(buildableCells.get(5),game.getGameBoard().getCell(3,3) );
         System.out.println(game.getBuildableCells(currentWorker).toString());
     }
+
 
     @Test
     void correctMovementTest(){
         targetCell = game.getGameBoard().getCell(2, 3);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -81,8 +103,8 @@ class RuleSetBaseTest {
     void correctMoveUpTest(){
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.LEVEL1);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -94,8 +116,8 @@ class RuleSetBaseTest {
     void correctMoveDownTest(){
         currentWorker.getPosition().setBlock(Block.LEVEL2);
         targetCell = game.getGameBoard().getCell(2, 3);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -106,8 +128,8 @@ class RuleSetBaseTest {
     @Test
     void cannotMoveTooFarTest(){
         targetCell = game.getGameBoard().getCell(2, 4);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -120,8 +142,8 @@ class RuleSetBaseTest {
     void cannotMoveTooHighTest(){
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.LEVEL2);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -133,12 +155,12 @@ class RuleSetBaseTest {
     @Test
     void cannotMoveTwiceTest() {
         targetCell = game.getGameBoard().getCell(2, 3);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         Cell secondCell = game.getGameBoard().getCell(1,2);
-        moveAction= new Action(currentWorker, secondCell);
-        game.validateAction(moveAction);
+        moveAction= new MoveAction(currentWorker, secondCell);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -150,8 +172,8 @@ class RuleSetBaseTest {
     void cantMoveOnDome() {
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.DOME);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -164,8 +186,8 @@ class RuleSetBaseTest {
     void cannotBuildWithoutMovingTest() {
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(targetCell.getBlock(), Block.LEVEL2);
@@ -175,13 +197,13 @@ class RuleSetBaseTest {
     @Test
     void correctBuildActionTest() {
         targetCell = game.getGameBoard().getCell(2, 3);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
@@ -191,13 +213,13 @@ class RuleSetBaseTest {
     @Test
     void cannotBuildASmallerBlockTest(){
         targetCell = game.getGameBoard().getCell(2, 3);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL1;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
@@ -207,14 +229,14 @@ class RuleSetBaseTest {
     @Test
     void cannotBuildWithOtherWorkerTest() {
         targetCell = game.getGameBoard().getCell(2, 3);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         currentWorker = players.get(0).getWorkers().get(1);
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertNotEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
@@ -224,13 +246,13 @@ class RuleSetBaseTest {
     @Test
     void cannotBuildOnDomeTest(){
         targetCell = game.getGameBoard().getCell(2, 3);
-        moveAction = new Action(currentWorker, targetCell);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
 
         targetCell = game.getGameBoard().getCell(3, 4);
         block = Block.LEVEL3;
-        buildAction = new Action(currentWorker, targetCell, block);
-        game.validateAction(buildAction);
+        buildAction = new BuildAction(currentWorker, targetCell, block);
+        buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
