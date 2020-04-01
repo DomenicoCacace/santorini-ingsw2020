@@ -36,11 +36,11 @@ class ActionTest {
                 assertEquals(board.getCell(2, 3), cell);
                 assertEquals(cell.getOccupiedBy(), worker);
                 assertEquals(worker.getPosition(), cell);
-
                 continue;
             }
             assertNull(cell.getOccupiedBy());
         }
+        //TODO: add check on number of moves available
     }
 
     @Test
@@ -57,10 +57,7 @@ class ActionTest {
             }
             assertEquals(cell.getBlock(), Block.LEVEL0);
         }
-
-
-
-
+        //TODO: add check on number of moves available
     }
 
 }

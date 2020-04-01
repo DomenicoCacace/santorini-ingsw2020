@@ -14,19 +14,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PushEffectTest {
 
-    private List<Player> players;
     private Game game;
-    private List<God> gods;
-    private Action minotaurPush;
+    private List<Player> players;
+    private Action moveAction;
 
     @BeforeEach
     void SetUp () {
-        gods = new ArrayList<>();
+        List<God> gods = new ArrayList<>();
         gods.add(new God("minotaur"));
         gods.get(0).setStrategy(new Push());
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
-
 
         players = new ArrayList<>();
         players.add(new Player("player1", gods.get(0), Color.BLUE));
@@ -55,8 +53,8 @@ public class PushEffectTest {
         Cell targetCell = game.getGameBoard().getCell(3, 1);
         Cell pushedCell = game.getGameBoard().getCell(3,0);
 
-        minotaurPush = new Action(currentWorker, targetCell);
-        game.validateAction(minotaurPush);
+        moveAction = new Action(currentWorker, targetCell);
+        game.validateAction(moveAction);
 
         for(Cell cell : game.getGameBoard().getAllCells()) {
             if (cell.equals(pushedCell)) {
@@ -79,32 +77,32 @@ public class PushEffectTest {
 
     @Test
     void getWalkableCellsTest(){
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
+
         System.out.println(game.getWalkableCells(currentWorker));
     }
 
     @Test
     void getBuildableCellsTest(){
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
+
         System.out.println(game.getBuildableCells(currentWorker));
     }
 
     @Test
     void cannotPushOutsideTest(){
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
-        Worker currentWorker = currentPlayer.getWorkers().get(0);
+        Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
+
         Cell startingCell = game.getGameBoard().getCell(1, 2);
         Cell targetCell = game.getGameBoard().getCell(0, 2);
-        minotaurPush = new Action(currentWorker, targetCell);
-        game.validateAction(minotaurPush);
+        moveAction = new Action(currentWorker, targetCell);
+        game.validateAction(moveAction);
 
         for(Cell cell : game.getGameBoard().getAllCells()) {
             if (cell.equals(startingCell)) {
