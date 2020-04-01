@@ -71,6 +71,7 @@ public class Cell {
         }
     }
 
+    @Deprecated
     public int calculateDistance(Cell cell) {
         return max(abs(this.coordX - cell.coordX), abs(this.coordY - cell.coordY));
     }

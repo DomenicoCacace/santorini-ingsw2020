@@ -57,7 +57,6 @@ class RuleSetBaseTest {
 
     @Test
     void getWalkableCellsTest() {
-        //TODO: write test assertions
         List<Cell> walkableCells;
         walkableCells = game.getWalkableCells(currentWorker);
         assertEquals(walkableCells.size(), 5);
@@ -66,14 +65,12 @@ class RuleSetBaseTest {
         assertEquals(walkableCells.get(2),game.getGameBoard().getCell(1,3) );
         assertEquals(walkableCells.get(3),game.getGameBoard().getCell(2,1) );
         assertEquals(walkableCells.get(4),game.getGameBoard().getCell(2,3) );
-        System.out.println(walkableCells.toString());
     }
 
 
 
     @Test
     void getBuildableCellsTest() {
-        //TODO: write test assertions
         List<Cell> buildableCells;
         buildableCells = game.getBuildableCells(currentWorker);
         assertEquals(buildableCells.size(), 6);
@@ -83,7 +80,6 @@ class RuleSetBaseTest {
         assertEquals(buildableCells.get(3),game.getGameBoard().getCell(2,1) );
         assertEquals(buildableCells.get(4),game.getGameBoard().getCell(2,3) );
         assertEquals(buildableCells.get(5),game.getGameBoard().getCell(3,3) );
-        System.out.println(game.getBuildableCells(currentWorker).toString());
     }
 
 

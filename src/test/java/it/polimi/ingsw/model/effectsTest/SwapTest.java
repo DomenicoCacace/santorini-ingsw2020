@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.effectsTest;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
 import it.polimi.ingsw.model.godCardEffects.movementEffects.Swap;
@@ -58,8 +59,8 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new Action(myWorker, myCell2);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -78,8 +79,8 @@ class SwapTest {
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-        moveAction = new Action(myWorker, myCell2);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -99,8 +100,8 @@ class SwapTest {
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-        moveAction = new Action(myWorker, myCell2);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -120,8 +121,8 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new Action(myWorker, myCell2);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -141,8 +142,8 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new Action(myWorker, myCell2);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -166,11 +167,11 @@ class SwapTest {
         Worker opponentWorker1 = players.get(1).getWorkers().get(0);
         Worker opponentWorker2 = players.get(1).getWorkers().get(1);
 
-        moveAction = new Action(myWorker, myCell2);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
 
-        moveAction = new Action(myWorker, secondCellOpponent);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, secondCellOpponent);
+        moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -193,8 +194,8 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker myWorker2 = players.get(0).getWorkers().get(1);
 
-        moveAction = new Action(myWorker, myCell2);
-        game.validateAction(moveAction);
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
