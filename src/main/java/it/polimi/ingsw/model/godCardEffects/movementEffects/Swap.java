@@ -34,7 +34,8 @@ public class Swap extends MovementStrategy {
         List<Cell> cells = new ArrayList<>();
         for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
             if (worker.getPosition().heightDifference(cell) <= 1 && !cell.hasDome())
-                cells.add(cell);
+                if(cell.getOccupiedBy() == null || cell.getOccupiedBy().getOwner() != worker.getOwner())
+                    cells.add(cell);
         }
         return cells;
     }

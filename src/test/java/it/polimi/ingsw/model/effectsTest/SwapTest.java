@@ -16,7 +16,7 @@ class SwapTest {
     private List<Player> players;
     private Game game;
     private Action moveAction;
-    private Cell myCell, opponentCell;
+    private Cell myCell, myCell2;
     Player currentPlayer;
 
     @BeforeEach
@@ -49,105 +49,156 @@ class SwapTest {
     @Test
     void correctSwapSameLevelTest(){
         myCell = game.getGameBoard().getCell(3, 2);
-        opponentCell = game.getGameBoard().getCell(4, 3);
+        myCell2 = game.getGameBoard().getCell(4, 3);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(opponentCell);
+        players.get(1).addWorker(myCell2);
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new Action(myWorker, opponentCell);
+        moveAction = new Action(myWorker, myCell2);
         game.validateAction(moveAction);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), opponentCell);
+        assertEquals(myWorker.getPosition(), myCell2);
         assertEquals(opponentWorker.getPosition(), myCell);
     }
 
     @Test
     void correctSwapHigherOneLevelTest(){
         myCell = game.getGameBoard().getCell(3, 2);
-        opponentCell = game.getGameBoard().getCell(4, 2);
+        myCell2 = game.getGameBoard().getCell(4, 2);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(opponentCell);
+        players.get(1).addWorker(myCell2);
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-        moveAction = new Action(myWorker, opponentCell);
+        moveAction = new Action(myWorker, myCell2);
         game.validateAction(moveAction);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), opponentCell);
+        assertEquals(myWorker.getPosition(), myCell2);
         assertEquals(opponentWorker.getPosition(), myCell);
     }
 
     @Test
     void correctSwapLowerAnyLevelTest(){
         myCell = game.getGameBoard().getCell(3, 3);
-        opponentCell = game.getGameBoard().getCell(3, 2);
+        myCell2 = game.getGameBoard().getCell(3, 2);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(opponentCell);
+        players.get(1).addWorker(myCell2);
 
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-        moveAction = new Action(myWorker, opponentCell);
+        moveAction = new Action(myWorker, myCell2);
         game.validateAction(moveAction);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), opponentCell);
+        assertEquals(myWorker.getPosition(), myCell2);
         assertEquals(opponentWorker.getPosition(), myCell);
     }
 
     @Test
     void cannotSwapTooHighTest(){
         myCell = game.getGameBoard().getCell(3, 2);
-        opponentCell = game.getGameBoard().getCell(3, 3);
+        myCell2 = game.getGameBoard().getCell(3, 3);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(opponentCell);
+        players.get(1).addWorker(myCell2);
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new Action(myWorker, opponentCell);
+        moveAction = new Action(myWorker, myCell2);
         game.validateAction(moveAction);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
-        assertEquals(opponentWorker.getPosition(), opponentCell);
+        assertEquals(opponentWorker.getPosition(), myCell2);
     }
 
     @Test
     void cannotSwapTooFarTest(){
         myCell = game.getGameBoard().getCell(3, 2);
-        opponentCell = game.getGameBoard().getCell(1, 2);
+        myCell2 = game.getGameBoard().getCell(1, 2);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(opponentCell);
+        players.get(1).addWorker(myCell2);
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new Action(myWorker, opponentCell);
+        moveAction = new Action(myWorker, myCell2);
         game.validateAction(moveAction);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
-        assertEquals(opponentWorker.getPosition(), opponentCell);
+        assertEquals(opponentWorker.getPosition(), myCell2);
     }
 
+    @Test
+    void cannotSwapTwiceTest(){
+        Cell secondCellOpponent;
+        myCell = game.getGameBoard().getCell(3, 2);
+        myCell2 = game.getGameBoard().getCell(2, 2);
+        secondCellOpponent = game.getGameBoard().getCell(1, 2);
+
+        players.get(0).addWorker(myCell);
+        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(secondCellOpponent);
+
+        Worker myWorker = currentPlayer.getWorkers().get(0);
+        Worker opponentWorker1 = players.get(1).getWorkers().get(0);
+        Worker opponentWorker2 = players.get(1).getWorkers().get(1);
+
+        moveAction = new Action(myWorker, myCell2);
+        game.validateAction(moveAction);
+
+        moveAction = new Action(myWorker, secondCellOpponent);
+        game.validateAction(moveAction);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(myWorker.getPosition(), myCell2);
+        assertEquals(opponentWorker1.getPosition(), myCell);
+        assertEquals(opponentWorker2.getPosition(), secondCellOpponent);
+
+
+    }
+
+    @Test
+    void cannotSwapWithMyWorkerTest(){
+        myCell = game.getGameBoard().getCell(3, 2);
+        myCell2 = game.getGameBoard().getCell(4, 3);
+
+        players.get(0).addWorker(myCell);
+        players.get(0).addWorker(myCell2);
+
+        Worker myWorker = currentPlayer.getWorkers().get(0);
+        Worker myWorker2 = players.get(0).getWorkers().get(1);
+
+        moveAction = new Action(myWorker, myCell2);
+        game.validateAction(moveAction);
+
+        assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(myWorker.getPosition(), myCell);
+        assertEquals(myWorker2.getPosition(), myCell2);
+    }
 }
