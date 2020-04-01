@@ -14,15 +14,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class Down2LevelsTest {
-
-    private List<Player> players;
     private Game game;
-    private List<God> gods;
-    private Action panAction;
+    private Worker currentWorker;
+    private List<Player> players;
+    private Action moveAction;
 
     @BeforeEach
     void SetUp () {
-        gods = new ArrayList<>();
+        List<God> gods = new ArrayList<>();
         gods.add(new God("Pan"));
         gods.get(0).setStrategy(new Down2Levels());
         gods.add(new God("base"));
@@ -41,6 +40,9 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
 
+        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        currentWorker = players.get(0).getWorkers().get(0);
+
         game.generateNextTurn();
     }
 
@@ -49,50 +51,46 @@ class Down2LevelsTest {
     void fromLevel2toLevel0Test() {
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-        panAction = new Action(currentPlayer.getWorkers().get(0), game.getGameBoard().getCell(3,1));
-        game.validateAction(panAction);
-        assertEquals(game.getWinner(), currentPlayer);
+
+
+        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
+        game.validateAction(moveAction);
+        assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
     void fromLevel3toLevel1Test() {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1);
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-        panAction = new Action(currentPlayer.getWorkers().get(0), game.getGameBoard().getCell(3,1));
-        game.validateAction(panAction);
-        assertEquals(game.getWinner(), currentPlayer);
+
+        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
+        game.validateAction(moveAction);
+        assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
     void fromLevel3toLevel0Test() {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-        panAction = new Action(currentPlayer.getWorkers().get(0), game.getGameBoard().getCell(3,1));
-        game.validateAction(panAction);
-        assertEquals(game.getWinner(), currentPlayer);
+
+        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
+        game.validateAction(moveAction);
+        assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
     void normalWinTest() {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-        panAction = new Action(currentPlayer.getWorkers().get(0), game.getGameBoard().getCell(3,1));
-        game.validateAction(panAction);
-        assertEquals(game.getWinner(), currentPlayer);
+
+        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
+        game.validateAction(moveAction);
+        assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
     void notWinTest() {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-        panAction = new Action(currentPlayer.getWorkers().get(0), game.getGameBoard().getCell(3,1));
-        game.validateAction(panAction);
+
+        moveAction = new Action(currentWorker, game.getGameBoard().getCell(3,1));
+        game.validateAction(moveAction);
         assertNull(game.getWinner());
     }
 }

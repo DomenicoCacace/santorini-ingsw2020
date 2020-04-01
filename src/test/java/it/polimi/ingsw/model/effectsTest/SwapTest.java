@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.effectsTest;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
+import it.polimi.ingsw.model.godCardEffects.movementEffects.Swap;
 import it.polimi.ingsw.model.godCardEffects.winConditionEffects.Down2Levels;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,14 +16,15 @@ class SwapTest {
 
     private List<Player> players;
     private Game game;
-    private List<God> gods;
-    private Action swapAction;
+    private Action moveAction;
+    private Cell myCell, opponentCell;
+    Player currentPlayer;
 
     @BeforeEach
     void SetUp () {
-        gods = new ArrayList<>();
+        List<God> gods = new ArrayList<>();
         gods.add(new God("Apollo"));
-        gods.get(0).setStrategy(new Down2Levels());
+        gods.get(0).setStrategy(new Swap());
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
 
@@ -41,23 +43,23 @@ class SwapTest {
         game.getGameBoard().getCell(4,3).setBlock(Block.LEVEL3);
 
         game.generateNextTurn();
+
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
     }
 
     @Test
     void correctSwapSameLevelTest(){
-        Cell myCell = game.getGameBoard().getCell(3, 2);
-        Cell opponentCell = game.getGameBoard().getCell(4, 3);
+        myCell = game.getGameBoard().getCell(3, 2);
+        opponentCell = game.getGameBoard().getCell(4, 3);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(opponentCell);
 
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        swapAction = new Action(myWorker, opponentCell);
-        game.validateAction(swapAction);
+        moveAction = new Action(myWorker, opponentCell);
+        game.validateAction(moveAction);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -68,19 +70,16 @@ class SwapTest {
 
     @Test
     void correctSwapHigherOneLevelTest(){
-        Cell myCell = game.getGameBoard().getCell(3, 2);
-        Cell opponentCell = game.getGameBoard().getCell(4, 2);
+        myCell = game.getGameBoard().getCell(3, 2);
+        opponentCell = game.getGameBoard().getCell(4, 2);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(opponentCell);
 
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-
-        swapAction = new Action(myWorker, opponentCell);
-        game.validateAction(swapAction);
+        moveAction = new Action(myWorker, opponentCell);
+        game.validateAction(moveAction);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -91,19 +90,17 @@ class SwapTest {
 
     @Test
     void correctSwapLowerAnyLevelTest(){
-        Cell myCell = game.getGameBoard().getCell(3, 3);
-        Cell opponentCell = game.getGameBoard().getCell(3, 2);
+        myCell = game.getGameBoard().getCell(3, 3);
+        opponentCell = game.getGameBoard().getCell(3, 2);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(opponentCell);
 
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-
-        swapAction = new Action(myWorker, opponentCell);
-        game.validateAction(swapAction);
+        moveAction = new Action(myWorker, opponentCell);
+        game.validateAction(moveAction);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
@@ -114,19 +111,17 @@ class SwapTest {
 
     @Test
     void cannotSwapTooHighTest(){
-        Cell myCell = game.getGameBoard().getCell(3, 2);
-        Cell opponentCell = game.getGameBoard().getCell(3, 3);
+        myCell = game.getGameBoard().getCell(3, 2);
+        opponentCell = game.getGameBoard().getCell(3, 3);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(opponentCell);
 
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        swapAction = new Action(myWorker, opponentCell);
-        game.validateAction(swapAction);
+        moveAction = new Action(myWorker, opponentCell);
+        game.validateAction(moveAction);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -137,19 +132,17 @@ class SwapTest {
 
     @Test
     void cannotSwapTooFarTest(){
-        Cell myCell = game.getGameBoard().getCell(3, 2);
-        Cell opponentCell = game.getGameBoard().getCell(1, 2);
+        myCell = game.getGameBoard().getCell(3, 2);
+        opponentCell = game.getGameBoard().getCell(1, 2);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(opponentCell);
 
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
-
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        swapAction = new Action(myWorker, opponentCell);
-        game.validateAction(swapAction);
+        moveAction = new Action(myWorker, opponentCell);
+        game.validateAction(moveAction);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
