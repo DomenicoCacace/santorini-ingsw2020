@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.godCardEffects.RuleSetContext;
+import it.polimi.ingsw.model.rules.RuleSetContext;
 
 import java.util.List;
 

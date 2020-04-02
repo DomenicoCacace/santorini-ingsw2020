@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.godCardEffects.RuleSetBase;
-import it.polimi.ingsw.model.godCardEffects.movementEffects.Push;
+import it.polimi.ingsw.model.rules.RuleSetBase;
+import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

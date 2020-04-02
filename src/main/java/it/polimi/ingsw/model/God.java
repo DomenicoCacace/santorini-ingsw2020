@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
+import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 public class God {
     private RuleSetStrategy strategy;

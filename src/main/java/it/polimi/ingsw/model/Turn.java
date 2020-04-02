@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.godCardEffects.RuleSetStrategy;
-import it.polimi.ingsw.model.utilities.Memento;
+import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 public class Turn {
     private final int turnNumber;
