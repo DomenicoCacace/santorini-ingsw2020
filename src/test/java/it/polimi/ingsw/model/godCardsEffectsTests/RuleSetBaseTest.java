@@ -71,14 +71,18 @@ class RuleSetBaseTest {
 
     @Test
     void getBuildableCellsTest() {
+        targetCell = game.getGameBoard().getCell(2, 3);
+        moveAction = new MoveAction(currentWorker, targetCell);
+        moveAction.getValidation(game);
+
         List<Cell> buildableCells;
         buildableCells = game.getBuildableCells(currentWorker);
         assertEquals(buildableCells.size(), 6);
-        assertEquals(buildableCells.get(0),game.getGameBoard().getCell(1,1) );
-        assertEquals(buildableCells.get(1),game.getGameBoard().getCell(1,2) );
-        assertEquals(buildableCells.get(2),game.getGameBoard().getCell(1,3) );
-        assertEquals(buildableCells.get(3),game.getGameBoard().getCell(2,1) );
-        assertEquals(buildableCells.get(4),game.getGameBoard().getCell(2,3) );
+        assertEquals(buildableCells.get(0),game.getGameBoard().getCell(1,2) );
+        assertEquals(buildableCells.get(1),game.getGameBoard().getCell(1,3) );
+        assertEquals(buildableCells.get(2),game.getGameBoard().getCell(1,4) );
+        assertEquals(buildableCells.get(3),game.getGameBoard().getCell(2,2) );
+        assertEquals(buildableCells.get(4),game.getGameBoard().getCell(2,4) );
         assertEquals(buildableCells.get(5),game.getGameBoard().getCell(3,3) );
     }
 

@@ -40,7 +40,6 @@ class ActionTest {
             }
             assertNull(cell.getOccupiedBy());
         }
-        //TODO: add check on number of moves available
     }
 
     @Test
@@ -57,7 +56,6 @@ class ActionTest {
             }
             assertEquals(cell.getBlock(), Block.LEVEL0);
         }
-        //TODO: add check on number of moves available
     }
 
 }

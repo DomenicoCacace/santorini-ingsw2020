@@ -18,7 +18,7 @@ class BuildAgainSameCellTest {
     private Game game;
     private Worker currentWorker;
     private BuildAction buildAction;
-    private Cell targetCell;
+    private Cell firstCell, secondCell;
     private Block firstBlock, secondBlock;
 
     @BeforeEach
@@ -50,139 +50,139 @@ class BuildAgainSameCellTest {
 
         game.generateNextTurn();
 
-        targetCell = game.getGameBoard().getCell(3, 2);
-        Action moveAction = new MoveAction(currentWorker, targetCell);
+        firstCell = game.getGameBoard().getCell(3, 2);
+        Action moveAction = new MoveAction(currentWorker, firstCell);
         moveAction.getValidation(game);
     }
 
     @Test
     void correctBuildAgainSameCellTest(){
-        targetCell = game.getGameBoard().getCell(4, 2);
+        firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
-        buildAction = new BuildAction(currentWorker, targetCell, firstBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), firstBlock);
+        assertEquals(firstCell.getBlock(), firstBlock);
 
         secondBlock = Block.LEVEL3;
-        buildAction = new BuildAction(currentWorker, targetCell, secondBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, secondBlock);
         buildAction.getValidation(game);
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), secondBlock);
+        assertEquals(firstCell.getBlock(), secondBlock);
 
     }
 
     @Test
     void cannotBuildMoreThanTwiceTest(){
-        targetCell = game.getGameBoard().getCell(2, 3);
+        firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
-        buildAction = new BuildAction(currentWorker, targetCell, firstBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), firstBlock);
+        assertEquals(firstCell.getBlock(), firstBlock);
 
         secondBlock = Block.LEVEL2;
-        buildAction = new BuildAction(currentWorker, targetCell, secondBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, secondBlock);
         buildAction.getValidation(game);
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), secondBlock);
+        assertEquals(firstCell.getBlock(), secondBlock);
 
-        buildAction = new BuildAction(currentWorker, targetCell, Block.LEVEL3);
+        buildAction = new BuildAction(currentWorker, firstCell, Block.LEVEL3);
         buildAction.getValidation(game);
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), secondBlock);
+        assertEquals(firstCell.getBlock(), secondBlock);
     }
 
     @Test
     void cannotBuildAgainAfterBuildingLevel3Test(){
-        targetCell = game.getGameBoard().getCell(3, 3);
+        firstCell = game.getGameBoard().getCell(3, 3);
         firstBlock = Block.LEVEL3;
-        buildAction = new BuildAction(currentWorker, targetCell, firstBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), firstBlock);
+        assertEquals(firstCell.getBlock(), firstBlock);
 
         secondBlock = Block.DOME;
-        buildAction = new BuildAction(currentWorker, targetCell, secondBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, secondBlock);
         buildAction.getValidation(game);
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         // assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), firstBlock);
+        assertEquals(firstCell.getBlock(), firstBlock);
     }
 
     @Test
     void cannotBuildAgainAfterBuildingDomeTest(){
-        targetCell = game.getGameBoard().getCell(4, 1);
+        firstCell = game.getGameBoard().getCell(4, 1);
         firstBlock = Block.DOME;
-        buildAction = new BuildAction(currentWorker, targetCell, firstBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), firstBlock);
+        assertEquals(firstCell.getBlock(), firstBlock);
 
         secondBlock = Block.DOME;
-        buildAction = new BuildAction(currentWorker, targetCell, secondBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, secondBlock);
         buildAction.getValidation(game);
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         // assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), firstBlock);
+        assertEquals(firstCell.getBlock(), firstBlock);
     }
 
     @Test
     void cannotBuildOnADifferentCellTest(){
-        targetCell = game.getGameBoard().getCell(4, 2);
+        firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
-        buildAction = new BuildAction(currentWorker, targetCell, firstBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), firstBlock);
+        assertEquals(firstCell.getBlock(), firstBlock);
 
-        targetCell = game.getGameBoard().getCell(3, 3);
+        firstCell = game.getGameBoard().getCell(3, 3);
         secondBlock = Block.LEVEL3;
-        buildAction = new BuildAction(currentWorker, targetCell, secondBlock);
+        buildAction = new BuildAction(currentWorker, firstCell, secondBlock);
         buildAction.getValidation(game);
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), Block.LEVEL2);
+        assertEquals(firstCell.getBlock(), Block.LEVEL2);
     }
 }

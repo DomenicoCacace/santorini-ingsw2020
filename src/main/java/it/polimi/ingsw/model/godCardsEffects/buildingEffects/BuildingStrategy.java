@@ -9,7 +9,6 @@ import java.util.List;
 
 public class BuildingStrategy extends RuleSetBase {
 
-
     @Override
     public boolean isBuildActionValid(BuildAction action) {
         return super.isBuildActionValid(action);

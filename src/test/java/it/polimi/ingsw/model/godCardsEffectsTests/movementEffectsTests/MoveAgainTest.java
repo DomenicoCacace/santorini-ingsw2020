@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.godCardsEffectsTests.movementEffectsTests;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
+import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetBase;
 import it.polimi.ingsw.model.godCardsEffects.movementEffects.MoveAgain;
@@ -142,6 +143,32 @@ class MoveAgainTest {
         assertEquals(worker2.getPosition(), game.getGameBoard().getCell(4,1));
     */
 
+    }
+
+    @Test
+    void cannotMoveAfterBuildTest(){
+        targetCell = game.getGameBoard().getCell(1, 2);
+        moveAction = new MoveAction(worker1, targetCell);
+        moveAction.getValidation(game);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(worker1.getPosition(), targetCell);
+
+        targetCell = game.getGameBoard().getCell(1, 3);
+        Action buildAction = new BuildAction(worker1, targetCell, Block.LEVEL1);
+        buildAction.getValidation(game);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(targetCell.getBlock(), Block.LEVEL1);
+
+        targetCell = game.getGameBoard().getCell(0, 2);
+        moveAction = new MoveAction(worker1, targetCell);
+        moveAction.getValidation(game);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(worker1.getPosition(), game.getGameBoard().getCell(1, 2));
     }
 
 }

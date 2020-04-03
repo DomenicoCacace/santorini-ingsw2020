@@ -29,9 +29,9 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
-                action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1) &&
-                this.buildsAvailable>0 && movedWorker == action.getTargetWorker()){
+        if (this.buildsAvailable>0 && getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell())
+               && action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1)
+               && movedWorker == action.getTargetWorker()){
             buildsAvailable--;
             chosenCell = action.getTargetCell();
             if(action.getTargetBlock().getHeight() == 3 || action.getTargetBlock().getHeight() == 4)
@@ -45,11 +45,14 @@ public class BuildAgainSameCell extends BuildingStrategy {
     public List<Cell> getBuildableCells(Worker worker) {
         if(chosenCell == null)
             return super.getBuildableCells(worker);
-        List<Cell> secondBuild = new ArrayList<>();
-        for(Cell cell : super.getBuildableCells(worker))
-            if(cell == chosenCell)
-                secondBuild.add(cell);
-        return secondBuild;
+
+        if(this.buildsAvailable>0) {
+            List<Cell> secondBuild = new ArrayList<>();
+            secondBuild.add(chosenCell);
+            return secondBuild;
+        }
+
+        return null;
     }
 
 }

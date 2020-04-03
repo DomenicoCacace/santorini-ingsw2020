@@ -13,13 +13,11 @@ public class Swap extends MovementStrategy {
 
     @Override
     public boolean isMoveActionValid(MoveAction action) {
-        if(getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
-                movesAvailable>0){
+        if(movesAvailable>0 && getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell())){
             if (action.getTargetCell().getOccupiedBy()!= null) {
                 Cell myPreviousCell = action.getStartingCell();
                 Action opponentOnMyPreviousCellAction = new MoveAction(action.getTargetCell().getOccupiedBy(), myPreviousCell);
                 opponentOnMyPreviousCellAction.apply();
-                // perhaps we need a temp cell (2 workers cannot stay at the same time on the same cell)
             }
             movesAvailable--;
             if(action.getTargetCell().heightDifference(action.getTargetWorker().getPosition()) == 1)

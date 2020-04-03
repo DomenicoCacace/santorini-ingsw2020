@@ -35,15 +35,19 @@ public class MoveAgain extends MovementStrategy {
 
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
-        int x, y;
-        if(startingCell == null) {
-            x = worker.getPosition().getCoordX();
-            y = worker.getPosition().getCoordY();
-            startingCell = game.getGameBoard().getCell(x,y);
-            return super.getWalkableCells(worker);
+        if(this.movesAvailable>0) {
+            int x, y;
+            if (startingCell == null) {
+                x = worker.getPosition().getCoordX();
+                y = worker.getPosition().getCoordY();
+                startingCell = game.getGameBoard().getCell(x, y);
+                return super.getWalkableCells(worker);
+            }
+            List<Cell> adjacentCells = super.getWalkableCells(worker);
+            adjacentCells.remove(startingCell);
+            return adjacentCells;
         }
-        List<Cell> adjacentCells = super.getWalkableCells(worker);
-        adjacentCells.remove(startingCell);
-        return adjacentCells;
+
+        return null;
     }
 }
