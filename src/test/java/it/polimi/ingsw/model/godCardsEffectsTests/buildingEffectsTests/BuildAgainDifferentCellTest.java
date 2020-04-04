@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BuildAgainDifferentCellTest {
     private Game game;
-    private Worker currentWorker;
+    private Worker currentWorker, worker2;
     private BuildAction buildAction;
     private Cell targetCell, firstCell, secondCell;
     private Block firstBlock, secondBlock;
@@ -47,6 +47,7 @@ class BuildAgainDifferentCellTest {
         players.get(0).addWorker(game.getGameBoard().getCell(2, 2));
         players.get(0).addWorker(game.getGameBoard().getCell(4, 3));
         currentWorker = players.get(0).getWorkers().get(0);
+        worker2 = players.get(0).getWorkers().get(1);
 
         game.generateNextTurn();
 
@@ -103,5 +104,23 @@ class BuildAgainDifferentCellTest {
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(firstCell.getBlock(), firstBlock);
+    }
+
+    @Test
+    void cannotBuildWith2DifferentWorkersTest(){
+        firstCell = game.getGameBoard().getCell(4, 2);
+        firstBlock = Block.LEVEL2;
+        buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
+        buildAction.getValidation(game);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
+        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
+        assertEquals(firstCell.getBlock(), firstBlock);
+        secondBlock = Block.LEVEL3;
+        buildAction = new BuildAction(worker2, game.getGameBoard().getCell(3,3), secondBlock);
+        buildAction.getValidation(game);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
+        assertEquals(game.getGameBoard().getCell(3,3).getBlock(), Block.LEVEL2);
     }
 }
