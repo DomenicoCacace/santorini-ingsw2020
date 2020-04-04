@@ -14,16 +14,24 @@ public class RuleSetBase implements RuleSetStrategy {
     protected boolean hasMovedUp;
     protected int buildsAvailable;
     protected Worker movedWorker;
+    protected int movesUpAvailable;
 
     public RuleSetBase() {
         this.movesAvailable = 1;
         this.buildsAvailable = 1;
         this.hasMovedUp=false;
+        this.movesUpAvailable = 1;
+        this.movedWorker=null;
     }
 
     @Override
     public int getMovesAvailable() {
         return movesAvailable;
+    }
+
+    @Override
+    public int getMovesUpAvailable() {
+        return movesUpAvailable;
     }
 
     @Override
@@ -47,11 +55,17 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public void doEffect(Turn turn) {
+    public void setMovesUpAvailable(int num) {
+        this.movesUpAvailable = num;
+    }
+
+    @Override
+    public void doEffect() {
         movesAvailable = 1;
         buildsAvailable = 1;
         hasMovedUp= false;
         this.movedWorker= null;
+        movesUpAvailable = 1;
     }
 
     @Override
@@ -61,8 +75,12 @@ public class RuleSetBase implements RuleSetStrategy {
 
     @Override
     public boolean isMoveActionValid(MoveAction action) {
-        if (this.movesAvailable>0 && getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell())) {
+        if (getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell())) {
             movesAvailable--;
+
+            if(movesUpAvailable>0)
+                movesUpAvailable--;
+
             if(action.getTargetWorker().getPosition().heightDifference(action.getTargetCell()) == 1)
                 hasMovedUp=true;
             movedWorker = action.getTargetWorker();
@@ -73,11 +91,12 @@ public class RuleSetBase implements RuleSetStrategy {
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (this.buildsAvailable>0 && getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
+        if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
                 action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1)
                 && movedWorker == action.getTargetWorker()){
             buildsAvailable--;
             movesAvailable = 0;
+            movesUpAvailable = 0;
             return true;
         }
         return false;
@@ -111,9 +130,11 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-            if (worker.getPosition().heightDifference(cell) <= 1 && cell.getOccupiedBy() == null && !cell.hasDome())
-                cells.add(cell);
+        if(movesAvailable>0) {
+            for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+                if ((!cell.hasDome() && cell.getOccupiedBy()==null) && ((worker.getPosition().heightDifference(cell) <=0) || (worker.getPosition().heightDifference(cell) ==1 && movesUpAvailable > 0)))
+                    cells.add(cell);
+            }
         }
         return cells;
     }
@@ -121,10 +142,12 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        if (worker == movedWorker) {
-            for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                if (cell.getOccupiedBy() == null && !cell.hasDome())
-                    cells.add(cell);
+        if(buildsAvailable>0) {
+            if (worker == movedWorker) {
+                for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+                    if (cell.getOccupiedBy() == null && !cell.hasDome())
+                        cells.add(cell);
+                }
             }
         }
         return cells;

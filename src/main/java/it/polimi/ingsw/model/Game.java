@@ -82,12 +82,8 @@ public class Game {
 
     public void generateNextTurn() {
         nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
-
-        for (Player player : players) {
-            currentRuleSet.setStrategy(player.getGod().getStrategy());
-            currentRuleSet.doEffect(nextTurn);
-        }
-
+        currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
+        currentRuleSet.doEffect();
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
         currentTurn = nextTurn;
     }

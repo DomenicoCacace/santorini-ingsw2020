@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
-import it.polimi.ingsw.model.Turn;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
@@ -16,15 +15,17 @@ public class BuildAgainSameCell extends BuildingStrategy {
         movesAvailable = 1;
         buildsAvailable = 2;
         hasMovedUp= false;
-        this.movedWorker= null;
+        movedWorker= null;
+        movesUpAvailable = 1;
     }
 
     @Override
-    public void doEffect(Turn turn) {
+    public void doEffect() {
         movesAvailable = 1;
         buildsAvailable = 2;
         hasMovedUp= false;
-        this.movedWorker= null;
+        movedWorker= null;
+        movesUpAvailable = 1;
     }
 
     @Override
@@ -43,16 +44,13 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
-        if(chosenCell == null)
-            return super.getBuildableCells(worker);
-
-        if(this.buildsAvailable>0) {
-            List<Cell> secondBuild = new ArrayList<>();
-            secondBuild.add(chosenCell);
-            return secondBuild;
+        List<Cell> secondBuild = new ArrayList<>();
+        if(this.buildsAvailable >0) {
+            if (chosenCell == null)
+               secondBuild = super.getBuildableCells(worker);
+            else
+                secondBuild.add(chosenCell);
         }
-
-        return null;
+        return secondBuild;
     }
-
 }

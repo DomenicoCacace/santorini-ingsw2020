@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
 import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.Turn;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -12,8 +11,8 @@ import java.util.List;
 public class AffectMyTurnStrategy extends RuleSetBase {
 
     @Override
-    public void doEffect(Turn turn) {
-        super.doEffect(turn);
+    public void doEffect() {
+        super.doEffect();
     }
 
     @Override

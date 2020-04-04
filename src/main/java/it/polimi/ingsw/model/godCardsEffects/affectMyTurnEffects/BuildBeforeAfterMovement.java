@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
-import it.polimi.ingsw.model.Turn;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
@@ -23,7 +22,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public void doEffect(Turn turn) {
+    public void doEffect() {
         this.hasBuilt = false;
         movesAvailable = 1;
         buildsAvailable = 2;
@@ -71,19 +70,21 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
 
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
-        if(movesAvailable == 0 && !hasBuilt){
-            return super.getBuildableCells(worker);
-        }
-
-        if(movesAvailable == 0 && hasBuilt) //this is useful for the view: highlighting the correct cells
-            if(worker == builder)
-                return super.getBuildableCells(worker);
-
         List<Cell> cells = new ArrayList<>();
-        if(movesAvailable == 1 && !hasBuilt) {
-            for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                if (cell.getOccupiedBy() == null && !cell.hasDome())
-                    cells.add(cell);
+        if (buildsAvailable>0) {
+            if (movesAvailable == 0 && !hasBuilt) {
+                cells= super.getBuildableCells(worker);
+            }
+
+            else if (movesAvailable == 0 && worker==builder) {//this is useful for the view: highlighting the correct cells
+                cells = super.getBuildableCells(worker);
+            }
+
+            else if (movesAvailable == 1 && !hasBuilt) {
+                for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+                    if (cell.getOccupiedBy() == null && !cell.hasDome())
+                        cells.add(cell);
+                }
             }
         }
         return cells;

@@ -33,7 +33,7 @@ public class RuleSetContext implements Memento<RuleSetContext> {
         this.strategy = strategy;
     }
 
-    public void doEffect(Turn turn) { this.strategy.doEffect(turn);
+    public void doEffect() { this.strategy.doEffect();
 
     }
 

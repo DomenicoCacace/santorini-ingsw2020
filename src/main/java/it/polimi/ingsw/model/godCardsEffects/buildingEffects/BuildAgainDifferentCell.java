@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
-import it.polimi.ingsw.model.Turn;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
@@ -16,20 +15,22 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
         movesAvailable = 1;
         buildsAvailable = 2;
         hasMovedUp= false;
-        this.movedWorker= null;
+        movedWorker= null;
+        movesUpAvailable = 1;
     }
 
     @Override
-    public void doEffect(Turn turn) {
+    public void doEffect() {
         movesAvailable = 1;
         buildsAvailable = 2;
         hasMovedUp= false;
-        this.movedWorker= null;
+        movedWorker= null;
+        movesUpAvailable = 1;
     }
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (this.buildsAvailable>0 && getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell())
+        if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell())
                 && action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1)
                 && movedWorker == action.getTargetWorker()) {
             buildsAvailable--;
@@ -41,17 +42,16 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
 
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
-        if(chosenCell == null)
-            return super.getBuildableCells(worker);
-
-        if(this.buildsAvailable>0) {
-            List<Cell> secondBuild = new ArrayList<>();
-            for (Cell cell : super.getBuildableCells(worker))
-                if (cell != chosenCell)
-                    secondBuild.add(cell);
-            return secondBuild;
+        List<Cell> secondBuild = new ArrayList<>();
+        if(this.buildsAvailable> 0) {
+            if (chosenCell == null)
+                secondBuild = super.getBuildableCells(worker);
+            else {
+                for (Cell cell : super.getBuildableCells(worker))
+                    if (cell != chosenCell)
+                        secondBuild.add(cell);
+            }
         }
-
-        return null;
-        }
+        return secondBuild;
+    }
 }

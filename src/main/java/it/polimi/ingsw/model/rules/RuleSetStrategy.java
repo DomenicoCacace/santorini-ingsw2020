@@ -7,18 +7,22 @@ import it.polimi.ingsw.model.action.MoveAction;
 import java.util.List;
 
 public interface RuleSetStrategy {
-    void doEffect(Turn turn);
+    void doEffect();
+
+    void setMovesUpAvailable(int num); //Testing purpose only
+
+    int getMovesUpAvailable(); //Testing purpose only
 
     @Deprecated
     int propagateEffect();
 
-    int getMovesAvailable();
+    int getMovesAvailable(); //Testing purpose only
 
-    boolean hasMovedUp();
+    boolean hasMovedUp(); //Testing purpose only
 
-    int getBuildsAvailable();
+    int getBuildsAvailable(); //Testing purpose only
 
-    Worker getMovedWorker();
+    Worker getMovedWorker();//Testing purpose only
 
     boolean isMoveActionValid(MoveAction action);
 

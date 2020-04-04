@@ -20,6 +20,9 @@ public class Swap extends MovementStrategy {
                 opponentOnMyPreviousCellAction.apply();
             }
             movesAvailable--;
+            if(movesUpAvailable>0)
+                movesUpAvailable--;
+
             if(action.getTargetCell().heightDifference(action.getTargetWorker().getPosition()) == 1)
                 hasMovedUp=true;
             movedWorker = action.getTargetWorker();
@@ -31,10 +34,12 @@ public class Swap extends MovementStrategy {
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-            if (worker.getPosition().heightDifference(cell) <= 1 && !cell.hasDome())
-                if(cell.getOccupiedBy() == null || cell.getOccupiedBy().getOwner() != worker.getOwner())
-                    cells.add(cell);
+        if(movesAvailable > 0) {
+            for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+                if (!cell.hasDome() && ((worker.getPosition().heightDifference(cell) <=0) || (worker.getPosition().heightDifference(cell) ==1 && movesUpAvailable > 0)))
+                    if (cell.getOccupiedBy() == null || cell.getOccupiedBy().getOwner() != worker.getOwner())
+                        cells.add(cell);
+            }
         }
         return cells;
     }

@@ -137,7 +137,7 @@ class MoveAgainTest {
         moveAction = new MoveAction(worker2, targetCell);
         moveAction.getValidation(game);
 
-    /*  // we need the lobby to test this (game must finish after first move)
+    /*TODO: we need the lobby to test this (game must finish after first move)
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(worker2.getPosition(), game.getGameBoard().getCell(4,1));
@@ -169,6 +169,33 @@ class MoveAgainTest {
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertEquals(worker1.getPosition(), game.getGameBoard().getCell(1, 2));
+    }
+
+    @Test
+    void CannotMoveWithDifferentWorkers() {
+        targetCell = game.getGameBoard().getCell(1, 2);
+        moveAction = new MoveAction(worker1, targetCell);
+        moveAction.getValidation(game);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(worker1.getPosition(), targetCell);
+
+        targetCell = game.getGameBoard().getCell(4, 2);
+        moveAction = new MoveAction(worker2, targetCell);
+        moveAction.getValidation(game);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertNotEquals(worker2.getPosition(), targetCell);
+        assertEquals(worker2.getPosition(), game.getGameBoard().getCell(3,2));
+
+        targetCell = game.getGameBoard().getCell(0, 2);
+        moveAction = new MoveAction(worker1, targetCell);
+        moveAction.getValidation(game);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(worker1.getPosition(), game.getGameBoard().getCell(0, 2));
+
     }
 
 }
