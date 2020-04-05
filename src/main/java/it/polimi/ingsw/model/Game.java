@@ -10,7 +10,6 @@ public class Game {
     private final GameBoard gameBoard;
     private final List<Player> players;
     private Turn currentTurn;
-    private Turn nextTurn;
     private Player winner;
     private final RuleSetContext currentRuleSet;
 
@@ -81,7 +80,7 @@ public class Game {
     }
 
     public void generateNextTurn() {
-        nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
+        Turn nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
         currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
         currentRuleSet.doEffect();
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());

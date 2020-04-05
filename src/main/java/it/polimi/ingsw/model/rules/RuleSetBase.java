@@ -11,16 +11,16 @@ public class RuleSetBase implements RuleSetStrategy {
 
     protected Game game;
     protected int movesAvailable;
-    protected boolean hasMovedUp;
-    protected int buildsAvailable;
-    protected Worker movedWorker;
     protected int movesUpAvailable;
+    protected int buildsAvailable;
+    protected boolean hasMovedUp;
+    protected Worker movedWorker;
 
     public RuleSetBase() {
         this.movesAvailable = 1;
+        this.movesUpAvailable = 1;
         this.buildsAvailable = 1;
         this.hasMovedUp=false;
-        this.movesUpAvailable = 1;
         this.movedWorker=null;
     }
 
@@ -62,20 +62,20 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public void doEffect() {
         movesAvailable = 1;
+        movesUpAvailable = 1;
         buildsAvailable = 1;
         hasMovedUp= false;
-        this.movedWorker= null;
-        movesUpAvailable = 1;
+        movedWorker= null;
     }
 
     @Override
-    public int propagateEffect() {
-        return 0;
-    }
+    public boolean isInsideWalkableCells(MoveAction action){
+        return getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell());
 
+    }
     @Override
     public boolean isMoveActionValid(MoveAction action) {
-        if (getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell())) {
+        if (isInsideWalkableCells(action)) {
             movesAvailable--;
 
             if(movesUpAvailable>0)
@@ -91,16 +91,28 @@ public class RuleSetBase implements RuleSetStrategy {
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell()) &&
-                action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1)
-                && movedWorker == action.getTargetWorker()){
+        if (canBuild(action)){
             buildsAvailable--;
             movesAvailable = 0;
             movesUpAvailable = 0;
             return true;
         }
         return false;
+    }
 
+    @Override
+    public boolean isInsideBuildableCells(BuildAction action){
+        return getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell());
+    }
+    @Override
+    public boolean canBuild(BuildAction action){
+        return isInsideBuildableCells(action) && isCorrectBlock(action) &&
+                movedWorker == action.getTargetWorker();
+    }
+
+    @Override
+    public boolean isCorrectBlock(BuildAction action) {
+        return action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1);
     }
 
     @Override
@@ -131,12 +143,22 @@ public class RuleSetBase implements RuleSetStrategy {
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
         if(movesAvailable>0) {
-            for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                if ((!cell.hasDome() && cell.getOccupiedBy()==null) && ((worker.getPosition().heightDifference(cell) <=0) || (worker.getPosition().heightDifference(cell) ==1 && movesUpAvailable > 0)))
-                    cells.add(cell);
-            }
+            addWalkableCells(worker, cells);
         }
         return cells;
+    }
+
+    @Override
+    public void addWalkableCells(Worker worker, List<Cell> cells) {
+        for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+            if ((!cell.hasDome() && cell.getOccupiedBy()==null) && isCorrectDistance(worker, cell))
+                cells.add(cell);
+        }
+    }
+
+    @Override
+    public boolean isCorrectDistance(Worker worker, Cell cell) {
+        return (worker.getPosition().heightDifference(cell) <=0) || (worker.getPosition().heightDifference(cell) ==1 && movesUpAvailable > 0);
     }
 
     @Override
@@ -144,12 +166,17 @@ public class RuleSetBase implements RuleSetStrategy {
         List<Cell> cells = new ArrayList<>();
         if(buildsAvailable>0) {
             if (worker == movedWorker) {
-                for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                    if (cell.getOccupiedBy() == null && !cell.hasDome())
-                        cells.add(cell);
-                }
+                addBuildableCells(worker, cells);
             }
         }
         return cells;
+    }
+
+    @Override
+    public void addBuildableCells(Worker worker, List<Cell> cells) {
+        for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
+            if (cell.getOccupiedBy() == null && !cell.hasDome())
+                cells.add(cell);
+        }
     }
 }

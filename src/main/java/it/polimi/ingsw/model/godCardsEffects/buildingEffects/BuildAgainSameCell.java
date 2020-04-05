@@ -11,28 +11,27 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     private Cell chosenCell;
 
+    public void initialize() {
+        this.movesAvailable = 1;
+        this.movesUpAvailable = 1;
+        this.buildsAvailable = 2;
+        this.hasMovedUp= false;
+        this.movedWorker= null;
+    }
+
     public BuildAgainSameCell() {
-        movesAvailable = 1;
-        buildsAvailable = 2;
-        hasMovedUp= false;
-        movedWorker= null;
-        movesUpAvailable = 1;
+        initialize();
     }
 
     @Override
     public void doEffect() {
-        movesAvailable = 1;
-        buildsAvailable = 2;
-        hasMovedUp= false;
-        movedWorker= null;
-        movesUpAvailable = 1;
+        initialize();
     }
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (this.buildsAvailable>0 && getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell())
-               && action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1)
-               && movedWorker == action.getTargetWorker()){
+        if (this.buildsAvailable>0 && isInsideBuildableCells(action) &&
+                isCorrectBlock(action) && movedWorker == action.getTargetWorker()){
             buildsAvailable--;
             chosenCell = action.getTargetCell();
             if(action.getTargetBlock().getHeight() == 3 || action.getTargetBlock().getHeight() == 4)

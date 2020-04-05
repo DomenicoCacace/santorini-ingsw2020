@@ -28,13 +28,17 @@ public class GameBoard implements Memento<GameBoard> {
     }
 
     public Cell getCell(int x, int y) {
-        if (0 <= x && x < DIMENSION && 0 <= y && y < DIMENSION)
+        if (isInsideGameBoard(x,y))
                 return board[x][y];
         return null; //TODO: out of bound
     }
 
+    public boolean isInsideGameBoard(int x, int y){
+        return 0 <= x && x < DIMENSION && 0 <= y && y < DIMENSION;
+    }
+
     public ArrayList<Cell> getAllCells() {
-        ArrayList<Cell> cells = new ArrayList<Cell>();
+        ArrayList<Cell> cells = new ArrayList<>();
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
                 cells.add(getCell(i, j));
@@ -60,13 +64,12 @@ public class GameBoard implements Memento<GameBoard> {
         else
             y = dest.getCoordY() + 1;
 
-        if (0 <= x && x < DIMENSION &&
-                0 <= y && y < DIMENSION)
+        if (isInsideGameBoard(x,y))
             return this.getCell(x, y);
         return null;
     }
     public ArrayList<Cell> getAdjacentCells(Cell cell){
-        ArrayList<Cell> cells = new ArrayList<Cell>();
+        ArrayList<Cell> cells = new ArrayList<>();
         for(int x=cell.getCoordX() -1; x<=cell.getCoordX()+1; x++ ){
             for(int y=cell.getCoordY() -1; y<=cell.getCoordY()+1; y++ ){
                 if (0 <= x && x < DIMENSION &&

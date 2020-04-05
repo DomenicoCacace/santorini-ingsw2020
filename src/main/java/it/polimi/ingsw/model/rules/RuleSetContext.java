@@ -33,13 +33,7 @@ public class RuleSetContext implements Memento<RuleSetContext> {
         this.strategy = strategy;
     }
 
-    public void doEffect() { this.strategy.doEffect();
-
-    }
-
-    public int propagateEffect() {
-        return 0;
-    }
+    public void doEffect() { this.strategy.doEffect(); }
 
     public boolean checkWinCondition(MoveAction action) {
         return strategy.checkWinCondition(action);

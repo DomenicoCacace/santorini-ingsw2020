@@ -13,9 +13,6 @@ public interface RuleSetStrategy {
 
     int getMovesUpAvailable(); //Testing purpose only
 
-    @Deprecated
-    int propagateEffect();
-
     int getMovesAvailable(); //Testing purpose only
 
     boolean hasMovedUp(); //Testing purpose only
@@ -24,9 +21,23 @@ public interface RuleSetStrategy {
 
     Worker getMovedWorker();//Testing purpose only
 
+    boolean isInsideWalkableCells(MoveAction action);
+
+    boolean isCorrectDistance(Worker worker, Cell cell);
+
     boolean isMoveActionValid(MoveAction action);
 
+    void addWalkableCells(Worker worker, List<Cell> cells);
+
+    boolean canBuild(BuildAction action);
+
+    boolean isCorrectBlock(BuildAction action);
+
+    boolean isInsideBuildableCells(BuildAction action);
+
     boolean isBuildActionValid(BuildAction action);
+
+    void addBuildableCells(Worker worker, List<Cell> cells);
 
     boolean checkWinCondition(MoveAction action);
 

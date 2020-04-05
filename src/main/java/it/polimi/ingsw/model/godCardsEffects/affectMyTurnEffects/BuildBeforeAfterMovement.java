@@ -13,21 +13,21 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     private boolean hasBuilt;
     private Worker builder;
 
-    public BuildBeforeAfterMovement() {
+    public void initialize() {
+        this.movesAvailable = 1;
+        this.buildsAvailable = 2;
+        this.hasMovedUp= false;
         this.hasBuilt = false;
-        movesAvailable = 1;
-        buildsAvailable = 2;
-        hasMovedUp= false;
         this.movedWorker= null;
+    }
+
+    public BuildBeforeAfterMovement() {
+        initialize();
     }
 
     @Override
     public void doEffect() {
-        this.hasBuilt = false;
-        movesAvailable = 1;
-        buildsAvailable = 2;
-        hasMovedUp= false;
-        this.movedWorker= null;
+        initialize();
     }
 
     @Override
@@ -41,8 +41,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (this.buildsAvailable>0 && getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell())
-                && action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1)) {
+        if (this.buildsAvailable>0 && isInsideBuildableCells(action) && isCorrectBlock(action)) {
             if (movedWorker == null) {
                 hasBuilt = true;
                 builder = action.getTargetWorker();
@@ -81,10 +80,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
             }
 
             else if (movesAvailable == 1 && !hasBuilt) {
-                for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                    if (cell.getOccupiedBy() == null && !cell.hasDome())
-                        cells.add(cell);
-                }
+                super.addBuildableCells(worker, cells);
             }
         }
         return cells;

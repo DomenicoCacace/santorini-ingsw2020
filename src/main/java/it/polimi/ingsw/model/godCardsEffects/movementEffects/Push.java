@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
-import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
@@ -17,15 +16,18 @@ public class Push extends MovementStrategy {
                 !game.getGameBoard().getCellBehind(myCell, targetCell).hasDome();
     }
 
+    public void opponentAction(MoveAction action){
+        if (action.getTargetCell().getOccupiedBy()!= null) {
+            Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
+            moveOpponentWorker(action, pushCell);
+        }
+    }
+
     @Override
     public boolean isMoveActionValid(MoveAction action) {
 
            if(super.isMoveActionValid(action)){
-                if (action.getTargetCell().getOccupiedBy()!= null) {
-                    Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
-                    Action pushAction = new MoveAction(action.getTargetCell().getOccupiedBy(), pushCell); //Create a new Action internally, this action should push the opponent
-                    pushAction.apply();
-                }
+                opponentAction(action);
                 return true;
            }
            return false;
@@ -37,7 +39,7 @@ public class Push extends MovementStrategy {
         if (movesAvailable > 0) {
             for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
 
-                if ( !cell.hasDome() && ((worker.getPosition().heightDifference(cell) <=0) || (worker.getPosition().heightDifference(cell) ==1 && movesUpAvailable > 0))) {
+                if (canGo(worker, cell)) {
                     if ((cell.getOccupiedBy() == null) || (
                             cell.getOccupiedBy() != null &&
                                     canPush(worker.getPosition(), cell) &&

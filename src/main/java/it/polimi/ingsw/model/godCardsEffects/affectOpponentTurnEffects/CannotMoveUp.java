@@ -14,9 +14,4 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
         }
         super.doEffect();
     }
-
-    @Override
-    public int propagateEffect() {
-        return super.propagateEffect();
-    }
 }

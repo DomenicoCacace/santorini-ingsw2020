@@ -11,28 +11,26 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
 
     private Cell chosenCell;
 
+    public void initialize() {
+        this.movesAvailable = 1;
+        this.movesUpAvailable = 1;
+        this.buildsAvailable = 2;
+        this.hasMovedUp= false;
+        this.movedWorker= null;
+    }
+
     public BuildAgainDifferentCell() {
-        movesAvailable = 1;
-        buildsAvailable = 2;
-        hasMovedUp= false;
-        movedWorker= null;
-        movesUpAvailable = 1;
+        initialize();
     }
 
     @Override
     public void doEffect() {
-        movesAvailable = 1;
-        buildsAvailable = 2;
-        hasMovedUp= false;
-        movedWorker= null;
-        movesUpAvailable = 1;
+        initialize();
     }
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell())
-                && action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1)
-                && movedWorker == action.getTargetWorker()) {
+        if (canBuild(action)) {
             buildsAvailable--;
             chosenCell = action.getTargetCell();
             return true;

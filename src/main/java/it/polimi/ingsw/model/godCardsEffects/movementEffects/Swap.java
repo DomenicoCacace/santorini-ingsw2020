@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
-import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
@@ -10,15 +9,17 @@ import java.util.List;
 
 public class Swap extends MovementStrategy {
 
+    public void opponentAction(MoveAction action){
+        if (action.getTargetCell().getOccupiedBy()!= null) {
+            Cell myPreviousCell = action.getStartingCell();
+            moveOpponentWorker(action, myPreviousCell);
+        }
+    }
 
     @Override
     public boolean isMoveActionValid(MoveAction action) {
-        if(movesAvailable>0 && getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell())){
-            if (action.getTargetCell().getOccupiedBy()!= null) {
-                Cell myPreviousCell = action.getStartingCell();
-                Action opponentOnMyPreviousCellAction = new MoveAction(action.getTargetCell().getOccupiedBy(), myPreviousCell);
-                opponentOnMyPreviousCellAction.apply();
-            }
+        if(movesAvailable>0 && isInsideWalkableCells(action)){
+            opponentAction(action);
             movesAvailable--;
             if(movesUpAvailable>0)
                 movesUpAvailable--;
@@ -36,7 +37,7 @@ public class Swap extends MovementStrategy {
         List<Cell> cells = new ArrayList<>();
         if(movesAvailable > 0) {
             for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                if (!cell.hasDome() && ((worker.getPosition().heightDifference(cell) <=0) || (worker.getPosition().heightDifference(cell) ==1 && movesUpAvailable > 0)))
+                if (canGo(worker, cell))
                     if (cell.getOccupiedBy() == null || cell.getOccupiedBy().getOwner() != worker.getOwner())
                         cells.add(cell);
             }

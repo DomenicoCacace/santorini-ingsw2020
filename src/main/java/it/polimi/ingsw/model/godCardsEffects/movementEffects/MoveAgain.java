@@ -4,28 +4,27 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MoveAgain extends MovementStrategy {
 
     private Cell startingCell;
 
+    public void initialize() {
+        this.movesAvailable = 2;
+        this.movesUpAvailable = 2;
+        this.buildsAvailable = 1;
+        this.hasMovedUp = false;
+        this.movedWorker = null;
+    }
+
     public MoveAgain() {
-        movesAvailable = 2;
-        buildsAvailable = 1;
-        hasMovedUp= false;
-        this.movedWorker= null;
-        movesUpAvailable = 2;
+        initialize();
     }
 
     @Override
     public void doEffect() {
-        movesAvailable = 2;
-        buildsAvailable = 1;
-        hasMovedUp= false;
-        this.movedWorker= null;
-        movesUpAvailable = 2;
+        initialize();
     }
 
     @Override
