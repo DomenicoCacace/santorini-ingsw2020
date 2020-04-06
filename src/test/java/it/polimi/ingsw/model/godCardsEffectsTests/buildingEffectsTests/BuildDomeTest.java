@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildDome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ class BuildDomeTest {
     private Block block;
 
     @BeforeEach
-    void SetUp() {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Atlas"));
         gods.get(0).setStrategy(new BuildDome());
@@ -55,7 +56,7 @@ class BuildDomeTest {
     }
 
     @Test
-    void canBuildDomeAnywhereTest() {
+    void canBuildDomeAnywhereTest() throws IOException {
         targetCell = game.getGameBoard().getCell(3, 3);//LEVEL2
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);
@@ -67,7 +68,7 @@ class BuildDomeTest {
     }
 
     @Test
-    void cannotBuildDomeOverDomeTest(){
+    void cannotBuildDomeOverDomeTest() throws IOException {
         targetCell = game.getGameBoard().getCell(3, 4);//DOME
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);

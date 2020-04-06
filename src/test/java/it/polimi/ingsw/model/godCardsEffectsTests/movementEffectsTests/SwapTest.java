@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ class SwapTest {
     Player currentPlayer;
 
     @BeforeEach
-    void SetUp () {
+    void SetUp () throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Apollo"));
         gods.get(0).setStrategy(new Swap());
@@ -43,18 +44,19 @@ class SwapTest {
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
         game.getGameBoard().getCell(4,1).setBlock(Block.LEVEL3);
 
-        game.generateNextTurn();
 
-        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
     }
 
     @Test
-    void correctSwapSameLevelTest(){
+    void correctSwapSameLevelTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 3);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(myCell2);
+        game.generateNextTurn();
+
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
@@ -70,13 +72,16 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapHigherOneLevelTest(){
+    void correctSwapHigherOneLevelTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 2);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(myCell2);
 
+        game.generateNextTurn();
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
         moveAction = new MoveAction(myWorker, myCell2);
@@ -90,13 +95,15 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapLowerAnyLevelTest(){
+    void correctSwapLowerAnyLevelTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 3);
         myCell2 = game.getGameBoard().getCell(3, 2);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(myCell2);
 
+        game.generateNextTurn();
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
@@ -111,13 +118,16 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooHighTest(){
+    void cannotSwapTooHighTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(3, 3);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(myCell2);
 
+        game.generateNextTurn();
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
@@ -132,13 +142,16 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooFarTest(){
+    void cannotSwapTooFarTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(1, 2);
 
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(myCell2);
 
+        game.generateNextTurn();
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
@@ -153,7 +166,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTwiceTest(){
+    void cannotSwapTwiceTest() throws IOException {
         Cell secondCellOpponent;
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(2, 2);
@@ -162,6 +175,9 @@ class SwapTest {
         players.get(0).addWorker(myCell);
         players.get(1).addWorker(myCell2);
         players.get(1).addWorker(secondCellOpponent);
+
+        game.generateNextTurn();
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker1 = players.get(1).getWorkers().get(0);
@@ -184,12 +200,15 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapWithMyWorkerTest(){
+    void cannotSwapWithMyWorkerTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 3);
 
         players.get(0).addWorker(myCell);
         players.get(0).addWorker(myCell2);
+
+        game.generateNextTurn();
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker myWorker2 = players.get(0).getWorkers().get(1);

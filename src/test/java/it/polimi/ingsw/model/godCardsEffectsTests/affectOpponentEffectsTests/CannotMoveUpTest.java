@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.rules.RuleSetBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ class CannotMoveUpTest {
     private Block targetBlock;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         gods = new ArrayList<>();
         gods.add(new God("minotaur"));
         gods.get(0).setStrategy(new Push());
@@ -63,7 +64,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCannotMoveUpTest() {
+    void opponentsCannotMoveUpTest() throws IOException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
@@ -162,7 +163,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCanMoveUpTest() {
+    void opponentsCanMoveUpTest() throws IOException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);

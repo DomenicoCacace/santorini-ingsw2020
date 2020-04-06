@@ -1,26 +1,24 @@
 package it.polimi.ingsw.model;
 
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.*;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.max;
+import java.io.Serializable;
 
-public class Cell {
+import static java.lang.Math.*;
 
-    /**
-     * This class defines the basic unit of the game board.
-     * It contains information about the coordinates{@link #coordX #coordY} of the cell on the game board,
-     * the worker standing on the cell{@link #occupiedBy} (null if no worker is standing on the cell),
-     * the building elements {@link #block} built on the cell, including a boolean flag {@link #hasDome}
-     * which indicates the presence of a dome on the building, since in some occasions a dome may be built
-     * on non-level 3 building
-     */
-    private final int coordX, coordY;
+
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property= "@id", scope = Cell.class)
+@JsonPropertyOrder({ "idCell", "coordX", "coordY", "hasDome", "block" })
+public class Cell implements Serializable {
+    private final int coordX;
+    private final int  coordY;
     private boolean hasDome;
-    private Worker occupiedBy;
     private Block block;
+    @JsonBackReference(" cell - worker")
+    private Worker occupiedBy;
 
-    public Cell(int coordX, int coordY, boolean hasDome, Worker occupiedBy, Block block) {
+    @JsonCreator
+    public Cell(@JsonProperty("coordX")int coordX, @JsonProperty("coordY") int coordY, @JsonProperty("hasDome") boolean hasDome, @JsonProperty("occupiedBy") Worker occupiedBy, @JsonProperty("block") Block block) {
         this.coordX = coordX;
         this.coordY = coordY;
         this.hasDome = hasDome;
@@ -44,6 +42,7 @@ public class Cell {
         return coordY;
     }
 
+    @JsonGetter(value = "hasDome")
     public boolean hasDome() {
         return hasDome;
     }
@@ -103,7 +102,7 @@ public class Cell {
 
     }
 
-    @Override
+   /* @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
@@ -117,4 +116,8 @@ public class Cell {
     public int hashCode() {
         return Objects.hash(coordX, coordY);
     }
+
+    */
+
+
 }

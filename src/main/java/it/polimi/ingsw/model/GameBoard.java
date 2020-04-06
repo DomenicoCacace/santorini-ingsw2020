@@ -1,24 +1,40 @@
 package it.polimi.ingsw.model;
 
+import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.model.utilities.Memento;
 
 import java.util.ArrayList;
+
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id", scope = GameBoard.class)
 
 public class GameBoard implements Memento<GameBoard> {
     private static final int DIMENSION = 5;
     private Cell[][] board;
 
+    @JsonCreator
+    public GameBoard(@JsonProperty("allCells") ArrayList<Cell> allCells){
+        this.board = new Cell[DIMENSION][DIMENSION];
+        int tmpX, tmpY;
+        for (int i = 0; i < DIMENSION*DIMENSION; i++) {
+            tmpX = allCells.get(i).getCoordX();
+            tmpY = allCells.get(i).getCoordY();
+            this.board[tmpX][tmpY] = new Cell(tmpX, tmpY, allCells.get(i).hasDome(), allCells.get(i).getOccupiedBy(), allCells.get(i).getBlock());
+        }
+    }
     public GameBoard() {
+        int n = 0;
         this.board = new Cell[DIMENSION][DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
                 board[i][j] = new Cell(i, j);
+                n++;
             }
         }
     }
 
     public GameBoard(GameBoard gameBoard) {
         this.board = new Cell[DIMENSION][DIMENSION];
+
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
                 Cell tmpCell = gameBoard.getCell(i, j);

@@ -1,12 +1,15 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.winConditionEffectsTests;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.action.Action;
+import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetBase;
 import it.polimi.ingsw.model.godCardsEffects.winConditionEffects.Down2Levels;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +21,7 @@ class Down2LevelsTest {
     private MoveAction moveAction;
 
     @BeforeEach
-    void SetUp () {
+    void SetUp () throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Pan"));
         gods.get(0).setStrategy(new Down2Levels());
@@ -46,7 +49,7 @@ class Down2LevelsTest {
 
 
     @Test
-    void fromLevel2toLevel0Test() {
+    void fromLevel2toLevel0Test() throws IOException {
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
 
@@ -56,7 +59,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
-    void fromLevel3toLevel1Test() {
+    void fromLevel3toLevel1Test() throws IOException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1);
 
@@ -65,7 +68,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
-    void fromLevel3toLevel0Test() {
+    void fromLevel3toLevel0Test() throws IOException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
 
@@ -74,7 +77,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
     @Test
-    void normalWinTest() {
+    void normalWinTest() throws IOException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 
@@ -82,8 +85,24 @@ class Down2LevelsTest {
         moveAction.getValidation(game);
         assertEquals(game.getWinner(), currentWorker.getOwner());
     }
+
     @Test
-    void notWinTest() {
+    void cannotBuildAfterWinningTest() throws IOException {
+
+        game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
+        game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
+        moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
+        moveAction.getValidation(game);
+        Action buildAction = new BuildAction(currentWorker, game.getGameBoard().getCell(3,2), Block.LEVEL3);
+        buildAction.getValidation(game);
+
+//TODO:        assertEquals(Block.LEVEL2, game.getGameBoard().getCell(3,2).getBlock());
+
+
+    }
+
+    @Test
+    void notWinTest() throws IOException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 

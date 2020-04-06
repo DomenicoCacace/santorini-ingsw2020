@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildAgainSameCell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ class BuildAgainSameCellTest {
     private Block firstBlock, secondBlock;
 
     @BeforeEach
-    void SetUp() {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Hephaestus"));
         gods.get(0).setStrategy(new BuildAgainSameCell());
@@ -57,7 +58,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void correctBuildAgainSameCellTest(){
+    void correctBuildAgainSameCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -82,7 +83,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildMoreThanTwiceTest(){
+    void cannotBuildMoreThanTwiceTest() throws IOException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -115,7 +116,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildAgainAfterBuildingLevel3Test(){
+    void cannotBuildAgainAfterBuildingLevel3Test() throws IOException {
         firstCell = game.getGameBoard().getCell(3, 3);
         firstBlock = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -139,7 +140,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildAgainAfterBuildingDomeTest(){
+    void cannotBuildAgainAfterBuildingDomeTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 1);
         firstBlock = Block.DOME;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -163,7 +164,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildOnADifferentCellTest(){
+    void cannotBuildOnADifferentCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -188,7 +189,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest(){
+    void cannotBuildWith2DifferentWorkersTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.godCardsEffects.movementEffects.MoveAgain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ class MoveAgainTest {
     private Cell targetCell;
 
     @BeforeEach
-    void SetUp() {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Artemis"));
         gods.get(0).setStrategy(new MoveAgain());
@@ -58,7 +59,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveSameLevelTest() {
+    void correctDoubleMoveSameLevelTest() throws IOException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -79,7 +80,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveUpTest() {
+    void correctDoubleMoveUpTest() throws IOException {
         targetCell = game.getGameBoard().getCell(4, 2);
         moveAction = new MoveAction(worker2, targetCell);
         moveAction.getValidation(game);
@@ -100,7 +101,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotGoBackStartingCellTest(){
+    void cannotGoBackStartingCellTest() throws IOException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -121,7 +122,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotMoveAfterWinningTest(){
+    void cannotMoveAfterWinningTest() throws IOException {
         worker2.getPosition().setBlock(Block.LEVEL2);
         targetCell = game.getGameBoard().getCell(4, 1);
         moveAction = new MoveAction(worker2, targetCell);
@@ -146,7 +147,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotMoveAfterBuildTest(){
+    void cannotMoveAfterBuildTest() throws IOException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -172,7 +173,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void CannotMoveWithDifferentWorkers() {
+    void CannotMoveWithDifferentWorkers() throws IOException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);

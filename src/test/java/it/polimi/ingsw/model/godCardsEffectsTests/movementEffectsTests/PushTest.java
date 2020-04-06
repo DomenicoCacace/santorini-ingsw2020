@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import it.polimi.ingsw.model.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class PushTest {
     private MoveAction moveAction;
 
     @BeforeEach
-    void SetUp () {
+    void SetUp () throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("minotaur"));
         gods.get(0).setStrategy(new Push());
@@ -39,16 +40,15 @@ public class PushTest {
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1); //One adjacent cell has a level 2 block on it: a worker can build but cannot move from level0
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
-
-        game.generateNextTurn();
     }
 
 
     @Test
-    void correctPushTest () {
-        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+    void correctPushTest () throws IOException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
+        game.generateNextTurn();
+        Player currentPlayer = game.getCurrentTurn().getCurrentPlayer();
         Worker currentWorker = currentPlayer.getWorkers().get(0);
 
         Cell targetCell = game.getGameBoard().getCell(3, 1);
@@ -64,6 +64,7 @@ public class PushTest {
                 assertEquals(pushedCell.getOccupiedBy(), players.get(1).getWorkers().get(0));
                 continue;
             }
+
             if (cell.equals(targetCell)) {
                 assertEquals(targetCell.getOccupiedBy().getOwner(), currentPlayer);
                 assertEquals(targetCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
@@ -77,27 +78,30 @@ public class PushTest {
     }
 
     @Test
-    void getWalkableCellsTest(){
+    void getWalkableCellsTest() throws IOException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
+        game.generateNextTurn();
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
 
         System.out.println(game.getWalkableCells(currentWorker));
     }
 
     @Test
-    void getBuildableCellsTest(){
+    void getBuildableCellsTest() throws IOException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
+        game.generateNextTurn();
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
 
         System.out.println(game.getBuildableCells(currentWorker));
     }
 
     @Test
-    void cannotPushOutsideTest(){
+    void cannotPushOutsideTest() throws IOException {
         players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
+        game.generateNextTurn();
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
 
         Cell startingCell = game.getGameBoard().getCell(1, 2);
