@@ -1,11 +1,20 @@
 package it.polimi.ingsw.model.rules;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
+import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
 
 import java.util.List;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="stratId", scope = RuleSetStrategy.class)
 public interface RuleSetStrategy {
     void doEffect();
 
@@ -21,23 +30,9 @@ public interface RuleSetStrategy {
 
     Worker getMovedWorker();//Testing purpose only
 
-    boolean isInsideWalkableCells(MoveAction action);
-
-    boolean isCorrectDistance(Worker worker, Cell cell);
-
     boolean isMoveActionValid(MoveAction action);
 
-    void addWalkableCells(Worker worker, List<Cell> cells);
-
-    boolean canBuild(BuildAction action);
-
-    boolean isCorrectBlock(BuildAction action);
-
-    boolean isInsideBuildableCells(BuildAction action);
-
     boolean isBuildActionValid(BuildAction action);
-
-    void addBuildableCells(Worker worker, List<Cell> cells);
 
     boolean checkWinCondition(MoveAction action);
 

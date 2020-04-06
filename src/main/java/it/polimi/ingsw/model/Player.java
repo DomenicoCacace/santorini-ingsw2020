@@ -1,24 +1,31 @@
 package it.polimi.ingsw.model;
 
+import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.model.action.Action;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="idPlayer", scope = Player.class)
+@JsonPropertyOrder({"idPlayer","name", "color", "workers"}) //Pulire
 public class Player {
     private final String name;
-    private final God god;
     private final Color color;
     private final List<Worker> workers;
+    private final God god;
     private Worker selectedWorker;
     private Cell selectedCell;
     private Block selectedBlock;
     private Action action;
     private boolean disconnected;
-    private boolean winner;
+    @JsonIgnore
     private Game game;
 
-    public Player(String name, God god, Color color) {
+
+
+    public Player(@JsonProperty("name")String name,@JsonProperty("god") God god,@JsonProperty("color") Color color) {
         this.name = name;
         this.god = god;
         this.color = color;
@@ -48,7 +55,7 @@ public class Player {
         this.action = action;
     }
 
-    public void useAction() {
+    public void useAction() throws IOException {
         action.getValidation(game);
     }
 
@@ -60,6 +67,9 @@ public class Player {
         return color;
     }
 
+    public String getName() {
+        return name;
+    }
 
     public void setSelectedWorker(Worker selectedWorker) {
         this.selectedWorker = selectedWorker;
@@ -82,12 +92,16 @@ public class Player {
         this.disconnected = disconnected;
     }
 
-    public boolean isWinner() {
-        return winner;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return name.equals(player.name);
     }
 
-    public void setWinner(Boolean winner) {
-        this.winner = winner;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
-
 }

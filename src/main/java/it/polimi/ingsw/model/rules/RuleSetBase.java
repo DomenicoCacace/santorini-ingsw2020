@@ -1,12 +1,35 @@
 package it.polimi.ingsw.model.rules;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects.BuildBeforeAfterMovement;
+import it.polimi.ingsw.model.godCardsEffects.affectOpponentTurnEffects.CannotMoveUp;
+import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildAgainDifferentCell;
+import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildAgainSameCell;
+import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildDome;
+import it.polimi.ingsw.model.godCardsEffects.movementEffects.MoveAgain;
+import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
+import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
 
 import java.util.ArrayList;
 import java.util.List;
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = RuleSetBase.class, name = "Basic rules"),
+        @JsonSubTypes.Type(value = Push.class, name = "Push opponent"),
+        @JsonSubTypes.Type(value = Swap.class, name = "Swap with opponent"),
+        @JsonSubTypes.Type(value = MoveAgain.class, name = "Move again"),
+        @JsonSubTypes.Type(value = BuildAgainDifferentCell.class, name = "Build again but in different cells"),
+        @JsonSubTypes.Type(value = BuildAgainSameCell.class, name = "Build again in the same cell"),
+        @JsonSubTypes.Type(value = BuildDome.class, name = "Build dome"),
+        @JsonSubTypes.Type(value = CannotMoveUp.class, name = "Stop the opponents from moving up"),
+        @JsonSubTypes.Type(value = BuildBeforeAfterMovement.class, name = "Build before and after movement"),
 
+})
 public class RuleSetBase implements RuleSetStrategy {
 
     protected Game game;
@@ -68,8 +91,8 @@ public class RuleSetBase implements RuleSetStrategy {
         movedWorker= null;
     }
 
-    @Override
-    public boolean isInsideWalkableCells(MoveAction action){
+
+    protected boolean isInsideWalkableCells(MoveAction action){
         return getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell());
 
     }
@@ -100,18 +123,18 @@ public class RuleSetBase implements RuleSetStrategy {
         return false;
     }
 
-    @Override
-    public boolean isInsideBuildableCells(BuildAction action){
+
+    protected boolean isInsideBuildableCells(BuildAction action){
         return getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell());
     }
-    @Override
-    public boolean canBuild(BuildAction action){
+
+    protected boolean canBuild(BuildAction action){
         return isInsideBuildableCells(action) && isCorrectBlock(action) &&
                 movedWorker == action.getTargetWorker();
     }
 
-    @Override
-    public boolean isCorrectBlock(BuildAction action) {
+
+    protected boolean isCorrectBlock(BuildAction action) {
         return action.getTargetCell().getBlock().getHeight() == (action.getTargetBlock().getHeight() - 1);
     }
 
@@ -135,7 +158,6 @@ public class RuleSetBase implements RuleSetStrategy {
         int legalCells = 0;
         for (Worker worker : game.getCurrentTurn().getCurrentPlayer().getWorkers())
             legalCells += getWalkableCells(worker).size();
-
         return legalCells == 0;
     }
 
@@ -148,16 +170,16 @@ public class RuleSetBase implements RuleSetStrategy {
         return cells;
     }
 
-    @Override
-    public void addWalkableCells(Worker worker, List<Cell> cells) {
+
+    protected void addWalkableCells(Worker worker, List<Cell> cells) {
         for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
             if ((!cell.hasDome() && cell.getOccupiedBy()==null) && isCorrectDistance(worker, cell))
                 cells.add(cell);
         }
     }
 
-    @Override
-    public boolean isCorrectDistance(Worker worker, Cell cell) {
+
+    protected boolean isCorrectDistance(Worker worker, Cell cell) {
         return (worker.getPosition().heightDifference(cell) <=0) || (worker.getPosition().heightDifference(cell) ==1 && movesUpAvailable > 0);
     }
 
@@ -172,8 +194,8 @@ public class RuleSetBase implements RuleSetStrategy {
         return cells;
     }
 
-    @Override
-    public void addBuildableCells(Worker worker, List<Cell> cells) {
+
+    protected void addBuildableCells(Worker worker, List<Cell> cells) {
         for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
             if (cell.getOccupiedBy() == null && !cell.hasDome())
                 cells.add(cell);

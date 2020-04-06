@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
 
+import java.io.IOException;
+
 public class BuildAction extends Action {
 
     protected final Block targetBlock;
@@ -22,7 +24,7 @@ public class BuildAction extends Action {
         targetCell.setBlock(targetBlock);
     }
 
-    public void getValidation(Game game) {
+    public void getValidation(Game game) throws IOException {
         game.validateBuildAction(this);
     }
 }

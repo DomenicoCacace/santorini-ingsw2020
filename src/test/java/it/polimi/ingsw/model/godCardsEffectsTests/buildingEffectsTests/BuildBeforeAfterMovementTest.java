@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.rules.RuleSetBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ class BuildBeforeAfterMovementTest {
     private Cell toMoveCell;
 
     @BeforeEach
-    void SetUp() {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Prometeus"));
         gods.get(0).setStrategy(new BuildBeforeAfterMovement());
@@ -50,7 +51,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveSameCellTest(){
+    void correctBuildBeforeAfterMoveSameCellTest() throws IOException {
         Cell buildingCell = game.getGameBoard().getCell(3,2);
         Action firstBuildAction = new BuildAction(currentWorker, buildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -80,7 +81,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveDifferentCellsTest(){
+    void correctBuildBeforeAfterMoveDifferentCellsTest() throws IOException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -111,7 +112,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctMoveUpAndBuildTest(){
+    void correctMoveUpAndBuildTest() throws IOException {
         toMoveCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
         moveAction.getValidation(game);
@@ -133,7 +134,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildThenMoveUpTest(){
+    void cannotBuildThenMoveUpTest() throws IOException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -155,7 +156,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildTwiceInARowTest(){
+    void cannotBuildTwiceInARowTest() throws IOException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);

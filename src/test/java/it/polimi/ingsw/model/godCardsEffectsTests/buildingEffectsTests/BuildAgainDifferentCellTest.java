@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildAgainDifferent
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ class BuildAgainDifferentCellTest {
     private Block firstBlock, secondBlock;
 
     @BeforeEach
-    void SetUp() {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Demeter"));
         gods.get(0).setStrategy(new BuildAgainDifferentCell());
@@ -57,7 +58,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void correctBuildAgainDifferentCellTest(){
+    void correctBuildAgainDifferentCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -83,7 +84,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildOnTheSameCellTest(){
+    void cannotBuildOnTheSameCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -107,7 +108,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest(){
+    void cannotBuildWith2DifferentWorkersTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

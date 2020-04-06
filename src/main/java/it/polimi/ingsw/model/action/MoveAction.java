@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
 
+import java.io.IOException;
+
 public class MoveAction extends Action {
 
     public MoveAction(Worker targetWorker, Cell targetCell) {
@@ -16,7 +18,7 @@ public class MoveAction extends Action {
         targetCell.setOccupiedBy(targetWorker);
     }
 
-    public void getValidation(Game game) {
+    public void getValidation(Game game) throws IOException {
         game.validateMoveAction(this);
     }
 }

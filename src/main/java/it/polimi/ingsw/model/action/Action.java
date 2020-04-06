@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
 
+import java.io.IOException;
+
 public abstract class Action {
 
     protected final Cell targetCell;
@@ -24,7 +26,7 @@ public abstract class Action {
 
     }
 
-    public abstract void getValidation(Game game);
+    public abstract void getValidation(Game game) throws IOException;
 
     public Cell getTargetCell() {
         return targetCell;
