@@ -3,8 +3,7 @@ package it.polimi.ingsw.model;
 import com.fasterxml.jackson.annotation.*;
 
 import java.io.Serializable;
-
-import static java.lang.Math.*;
+import java.util.Objects;
 
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property= "@id", scope = Cell.class)
@@ -70,11 +69,6 @@ public class Cell implements Serializable {
         }
     }
 
-    @Deprecated
-    public int calculateDistance(Cell cell) {
-        return max(abs(this.coordX - cell.coordX), abs(this.coordY - cell.coordY));
-    }
-
     public int heightDifference(Cell cell) {
         return cell.block.getHeight() - this.block.getHeight();
 
@@ -102,7 +96,7 @@ public class Cell implements Serializable {
 
     }
 
-   /* @Override
+    @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
@@ -116,8 +110,6 @@ public class Cell implements Serializable {
     public int hashCode() {
         return Objects.hash(coordX, coordY);
     }
-
-    */
 
 
 }
