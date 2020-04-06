@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property= "@id", scope = Cell.class)
 @JsonPropertyOrder({ "idCell", "coordX", "coordY", "hasDome", "block" })
 public class Cell implements Serializable {
@@ -96,7 +95,7 @@ public class Cell implements Serializable {
 
     }
 
-   /* @Override
+    @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
