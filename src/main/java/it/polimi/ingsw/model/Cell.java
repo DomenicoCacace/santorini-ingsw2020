@@ -96,7 +96,7 @@ public class Cell implements Serializable {
 
     }
 
-    @Override
+   /* @Override
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
