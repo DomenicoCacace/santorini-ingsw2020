@@ -38,7 +38,7 @@ public class Swap extends MovementStrategy {
         if(movesAvailable > 0) {
             for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
                 if (canGo(worker, cell))
-                    if (cell.getOccupiedBy() == null || cell.getOccupiedBy().getOwner() != worker.getOwner())
+                    if (cell.getOccupiedBy() == null || isNotSameOwner(cell))
                         cells.add(cell);
             }
         }

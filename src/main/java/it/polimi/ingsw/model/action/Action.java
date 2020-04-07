@@ -23,7 +23,6 @@ public abstract class Action {
 
     public Cell getStartingCell() {
         return this.targetWorker.getPosition();
-
     }
 
     public abstract void getValidation(Game game) throws IOException;

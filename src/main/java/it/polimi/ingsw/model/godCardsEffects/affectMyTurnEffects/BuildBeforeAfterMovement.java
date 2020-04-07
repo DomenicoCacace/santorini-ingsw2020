@@ -10,14 +10,14 @@ import java.util.List;
 
 public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
 
-    private boolean hasBuilt;
+    private boolean hasBuiltBefore;
     private Worker builder;
 
     public void initialize() {
         this.movesAvailable = 1;
         this.buildsAvailable = 2;
         this.hasMovedUp= false;
-        this.hasBuilt = false;
+        this.hasBuiltBefore = false;
         this.movedWorker= null;
     }
 
@@ -32,7 +32,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
 
     @Override
     public boolean isMoveActionValid(MoveAction action){
-        if(!hasBuilt && super.isMoveActionValid(action)){
+        if(!hasBuiltBefore && super.isMoveActionValid(action)){
             buildsAvailable--;
             return true;
         }
@@ -43,7 +43,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     public boolean isBuildActionValid(BuildAction action) {
         if (this.buildsAvailable>0 && isInsideBuildableCells(action) && isCorrectBlock(action)) {
             if (movedWorker == null) {
-                hasBuilt = true;
+                hasBuiltBefore = true;
                 builder = action.getTargetWorker();
                 buildsAvailable--;
             } else if (movedWorker == action.getTargetWorker())
@@ -56,7 +56,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> canGoCells = new ArrayList<>();
-        if(hasBuilt){
+        if(hasBuiltBefore){
             if(worker == builder) {
                 for (Cell cell : super.getWalkableCells(worker))
                     if (worker.getPosition().heightDifference(cell) <= 0)
@@ -71,7 +71,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
         if (buildsAvailable>0) {
-            if (movesAvailable == 0 && !hasBuilt) {
+            if (movesAvailable == 0 && !hasBuiltBefore) {
                 cells= super.getBuildableCells(worker);
             }
 
@@ -79,7 +79,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
                 cells = super.getBuildableCells(worker);
             }
 
-            else if (movesAvailable == 1 && !hasBuilt) {
+            else if (movesAvailable == 1 && !hasBuiltBefore) {
                 super.addBuildableCells(worker, cells);
             }
         }

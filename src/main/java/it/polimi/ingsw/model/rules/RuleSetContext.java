@@ -16,10 +16,7 @@ public class RuleSetContext implements Memento<RuleSetContext> {
         strategy.setGame(game);
     }
 
-    public boolean validateMoveAction(MoveAction action) {
-        return strategy.isMoveActionValid(action);
-        //it returned false
-    }
+    public boolean validateMoveAction(MoveAction action) { return strategy.isMoveActionValid(action); }
 
     public boolean validateBuildAction(BuildAction action) {
         return strategy.isBuildActionValid(action);
@@ -27,10 +24,18 @@ public class RuleSetContext implements Memento<RuleSetContext> {
 
     public RuleSetStrategy getStrategy() {
         return strategy;
-    }
+    } // TODO: just for testing
 
     public void setStrategy(RuleSetStrategy strategy) {
         this.strategy = strategy;
+    }
+
+    public boolean canEndTurn(){
+        return strategy.canEndTurn();
+    }
+
+    public boolean canEndTurnAutomatically(){
+        return strategy.canEndTurnAutomatically();
     }
 
     public void doEffect() { this.strategy.doEffect(); }

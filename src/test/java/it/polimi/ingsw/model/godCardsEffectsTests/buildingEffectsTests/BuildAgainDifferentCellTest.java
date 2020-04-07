@@ -21,6 +21,8 @@ class BuildAgainDifferentCellTest {
     private BuildAction buildAction;
     private Cell targetCell, firstCell, secondCell;
     private Block firstBlock, secondBlock;
+    private List<Player> players = new ArrayList<>();
+
 
     @BeforeEach
     void SetUp() throws IOException {
@@ -30,7 +32,6 @@ class BuildAgainDifferentCellTest {
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
 
-        List<Player> players = new ArrayList<>();
         players.add(new Player("player1", gods.get(0), Color.BLUE));
         players.add(new Player("player2", gods.get(1), Color.WHITE));
 
@@ -44,11 +45,12 @@ class BuildAgainDifferentCellTest {
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
         game.getGameBoard().getCell(4,1).setBlock(Block.LEVEL3);
 
-
         players.get(0).addWorker(game.getGameBoard().getCell(2, 2));
         players.get(0).addWorker(game.getGameBoard().getCell(4, 3));
         currentWorker = players.get(0).getWorkers().get(0);
         worker2 = players.get(0).getWorkers().get(1);
+
+        players.get(1).addWorker(game.getGameBoard().getCell(0, 0));
 
         game.generateNextTurn();
 
@@ -78,7 +80,7 @@ class BuildAgainDifferentCellTest {
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         // assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
+        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
         assertEquals(secondCell.getBlock(), secondBlock);
 
     }

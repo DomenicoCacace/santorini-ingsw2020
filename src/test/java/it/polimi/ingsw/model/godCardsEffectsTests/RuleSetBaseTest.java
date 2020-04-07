@@ -50,6 +50,8 @@ class RuleSetBaseTest {
         players.get(0).addWorker(game.getGameBoard().getCell(2, 2));
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
 
+        players.get(1).addWorker(game.getGameBoard().getCell(4, 4));
+
         game.generateNextTurn();
 
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
@@ -184,18 +186,19 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildTwiceTest() throws IOException {
+    void passTurnAutomaticallyAfterBuildingTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
 
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
         buildAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
+        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
         assertEquals(targetCell.getBlock(), block);
 
         block = Block.DOME;
@@ -225,14 +228,16 @@ class RuleSetBaseTest {
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
+
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
         buildAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
         assertEquals(targetCell.getBlock(), block);
+        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
     }
 
     @Test

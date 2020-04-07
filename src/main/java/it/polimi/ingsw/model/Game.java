@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -9,7 +8,6 @@ import it.polimi.ingsw.model.rules.RuleSetContext;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,7 +18,7 @@ public class Game {
     private Turn nextTurn;
     private Player winner;
     private RuleSetContext currentRuleSet;
-    private  File file = new File("..\\SavedGame.json");
+    private  File file = new File("../SavedGame.json");
 
 
     private Game(@JsonProperty("gameBoard")GameBoard gameBoard, @JsonProperty("players") List<Player> players, @JsonProperty("currentTurn") Turn currentTurn, @JsonProperty("nextTurn") Turn nextTurn, @JsonProperty("winner") Player winner, @JsonProperty("currentRuleset") RuleSetContext currentRuleSet) {
@@ -95,8 +93,18 @@ public class Game {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
             this.saveState();
-
+            endTurnAutomatically();
         }
+    }
+
+    public void endTurn() throws IOException {
+        if(currentRuleSet.canEndTurn())
+            generateNextTurn();
+    }
+
+    public void endTurnAutomatically() throws IOException{
+        if(currentRuleSet.canEndTurnAutomatically())
+            generateNextTurn();
     }
 
     public Player nextPlayer() {
@@ -131,9 +139,13 @@ public class Game {
         generateNextTurn();
     }
 
-    public void saveState() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValue(file, this);
+    public void saveState(){
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValue(file, this);
+        } catch (IOException e){
+            System.out.println(e);
+        }
     }
 
     public Game restoreState() throws IOException {

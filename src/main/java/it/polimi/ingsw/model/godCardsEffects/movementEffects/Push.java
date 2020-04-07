@@ -16,7 +16,7 @@ public class Push extends MovementStrategy {
                 !game.getGameBoard().getCellBehind(myCell, targetCell).hasDome();
     }
 
-    public void opponentAction(MoveAction action){
+    void opponentAction(MoveAction action){
         if (action.getTargetCell().getOccupiedBy()!= null) {
             Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
             moveOpponentWorker(action, pushCell);
@@ -43,7 +43,7 @@ public class Push extends MovementStrategy {
                     if ((cell.getOccupiedBy() == null) || (
                             cell.getOccupiedBy() != null &&
                                     canPush(worker.getPosition(), cell) &&
-                                    cell.getOccupiedBy().getOwner() != worker.getOwner())) {
+                                    isNotSameOwner(cell))) {
 
                         cells.add(cell);
                     }
@@ -53,4 +53,5 @@ public class Push extends MovementStrategy {
         }
         return cells;
     }
+
 }

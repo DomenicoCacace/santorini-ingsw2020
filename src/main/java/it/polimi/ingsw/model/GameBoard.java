@@ -22,12 +22,10 @@ public class GameBoard implements Memento<GameBoard> {
         }
     }
     public GameBoard() {
-        int n = 0;
         this.board = new Cell[DIMENSION][DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
                 board[i][j] = new Cell(i, j);
-                n++;
             }
         }
     }

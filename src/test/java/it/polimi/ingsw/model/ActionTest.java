@@ -23,7 +23,8 @@ class ActionTest {
         block = Block.LEVEL1;
         startingCell = board.getCell(3, 2);
         endingCell = board.getCell(2,3);
-        worker = new Worker(startingCell , player);
+        player.addWorker(startingCell);
+        worker = player.getWorkers().get(0);
     }
 
     @Test

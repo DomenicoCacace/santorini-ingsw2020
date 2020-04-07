@@ -60,13 +60,13 @@ public class PushTest {
         for(Cell cell : game.getGameBoard().getAllCells()) {
             if (cell.equals(pushedCell)) {
                 assertNotNull(pushedCell.getOccupiedBy());
-                assertEquals(pushedCell.getOccupiedBy().getOwner(), players.get(1));
+                assertTrue(players.get(1).getWorkers().contains(pushedCell.getOccupiedBy()));
                 assertEquals(pushedCell.getOccupiedBy(), players.get(1).getWorkers().get(0));
                 continue;
             }
 
             if (cell.equals(targetCell)) {
-                assertEquals(targetCell.getOccupiedBy().getOwner(), currentPlayer);
+                assertTrue(currentPlayer.getWorkers().contains(targetCell.getOccupiedBy()));
                 assertEquals(targetCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
                 continue;
             }
@@ -112,13 +112,13 @@ public class PushTest {
         for(Cell cell : game.getGameBoard().getAllCells()) {
             if (cell.equals(startingCell)) {
                 assertNotNull(currentWorker.getPosition().getOccupiedBy());
-                assertEquals(startingCell.getOccupiedBy().getOwner(), players.get(0));
+                assertTrue(players.get(0).getWorkers().contains(startingCell.getOccupiedBy()));
                 assertEquals(startingCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
                 continue;
             }
             if (cell.equals(targetCell)) {
                 assertNotNull(players.get(1).getWorkers().get(0).getPosition().getOccupiedBy());
-                assertEquals(targetCell.getOccupiedBy().getOwner(), players.get(1));
+                assertTrue(players.get(1).getWorkers().contains(targetCell.getOccupiedBy()));
                 assertEquals(targetCell.getOccupiedBy(), players.get(1).getWorkers().get(0));
                 continue;
             }

@@ -21,6 +21,8 @@ class BuildDomeTest {
     private BuildAction buildAction;
     private Cell targetCell;
     private Block block;
+    private List<Player> players = new ArrayList<>();
+
 
     @BeforeEach
     void SetUp() throws IOException {
@@ -30,7 +32,6 @@ class BuildDomeTest {
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
 
-        List<Player> players = new ArrayList<>();
         players.add(new Player("player1", gods.get(0), Color.BLUE));
         players.add(new Player("player2", gods.get(1), Color.WHITE));
 
@@ -48,6 +49,8 @@ class BuildDomeTest {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         currentWorker = players.get(0).getWorkers().get(0);
 
+        players.get(1).addWorker(game.getGameBoard().getCell(0, 0));
+
         game.generateNextTurn();
 
         targetCell = game.getGameBoard().getCell(2, 3);
@@ -57,13 +60,14 @@ class BuildDomeTest {
 
     @Test
     void canBuildDomeAnywhereTest() throws IOException {
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+
         targetCell = game.getGameBoard().getCell(3, 3);//LEVEL2
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);
         buildAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
+        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
         assertEquals(targetCell.getBlock(), block);
     }
 

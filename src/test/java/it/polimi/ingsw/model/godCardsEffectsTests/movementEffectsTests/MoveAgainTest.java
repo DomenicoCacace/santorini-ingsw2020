@@ -16,12 +16,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MoveAgainTest {
-
-    private List<Player> players;
     private Game game;
     private Action moveAction;
     private Worker worker1, worker2;
     private Cell targetCell;
+    private List<Player> players = new ArrayList<>();
+
 
     @BeforeEach
     void SetUp() throws IOException {
@@ -31,8 +31,6 @@ class MoveAgainTest {
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
 
-
-        players = new ArrayList<>();
         players.add(new Player("player1", gods.get(0), Color.BLUE));
         players.add(new Player("player2", gods.get(1), Color.WHITE));
 
@@ -50,6 +48,8 @@ class MoveAgainTest {
 
         players.get(0).addWorker(game.getGameBoard().getCell(2, 2));
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+
+        players.get(1).addWorker(game.getGameBoard().getCell(0, 0));
 
         game.generateNextTurn();
 
@@ -132,7 +132,7 @@ class MoveAgainTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(worker2.getPosition(), targetCell);
-        assertEquals(game.getWinner(), worker2.getOwner());
+        assertEquals(game.getWinner(), players.get(0));
 
         targetCell = game.getGameBoard().getCell(4, 2);
         moveAction = new MoveAction(worker2, targetCell);
@@ -147,7 +147,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotMoveAfterBuildTest() throws IOException {
+    void endTurnAutomaticallyAfterBuildTest() throws IOException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -161,15 +161,9 @@ class MoveAgainTest {
         Action buildAction = new BuildAction(worker1, targetCell, Block.LEVEL1);
         buildAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
         assertEquals(targetCell.getBlock(), Block.LEVEL1);
 
-        targetCell = game.getGameBoard().getCell(0, 2);
-        moveAction = new MoveAction(worker1, targetCell);
-        moveAction.getValidation(game);
-
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(worker1.getPosition(), game.getGameBoard().getCell(1, 2));
     }
 
     @Test

@@ -48,4 +48,9 @@ public class MoveAgain extends MovementStrategy {
             adjacentCells.remove(startingCell);
         return adjacentCells;
     }
+
+    @Override
+    public boolean canEndTurn(){
+        return (movesAvailable <= 1 && buildsAvailable == 0);
+    }
 }

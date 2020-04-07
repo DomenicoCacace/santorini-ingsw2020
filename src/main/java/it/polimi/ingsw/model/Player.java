@@ -43,7 +43,7 @@ public class Player {
 
     public void addWorker(Cell cell) {
         if (cell.getOccupiedBy() == null) {
-            Worker worker = new Worker(cell, this);
+            Worker worker = new Worker(cell);
             workers.add(worker);
             cell.setOccupiedBy(worker);
         } else {

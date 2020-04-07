@@ -52,4 +52,9 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
         }
         return secondBuild;
     }
+
+    @Override
+    public boolean canEndTurn(){
+        return (movesAvailable == 0 && buildsAvailable <= 1);
+    }
 }

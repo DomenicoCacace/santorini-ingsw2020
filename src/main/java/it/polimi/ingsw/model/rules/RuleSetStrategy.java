@@ -1,24 +1,22 @@
 package it.polimi.ingsw.model.rules;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
 
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="stratId", scope = RuleSetStrategy.class)
-public interface RuleSetStrategy {
-    void doEffect();
 
-    void setMovesUpAvailable(int num); //Testing purpose only
+public interface RuleSetStrategy {
+
+    void doEffect();
 
     int getMovesUpAvailable(); //Testing purpose only
 
@@ -28,7 +26,9 @@ public interface RuleSetStrategy {
 
     int getBuildsAvailable(); //Testing purpose only
 
-    Worker getMovedWorker();//Testing purpose only
+    Worker getMovedWorker(); //Testing purpose only
+
+    void setMovesUpAvailable(int num);
 
     boolean isMoveActionValid(MoveAction action);
 
@@ -45,4 +45,9 @@ public interface RuleSetStrategy {
     List<Cell> getBuildableCells(Worker worker);
 
     void setGame(Game game);
+
+    boolean canEndTurn();
+
+    boolean canEndTurnAutomatically();
+
 }

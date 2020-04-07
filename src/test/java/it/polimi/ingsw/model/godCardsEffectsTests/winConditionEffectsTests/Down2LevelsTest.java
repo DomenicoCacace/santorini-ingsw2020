@@ -19,6 +19,7 @@ class Down2LevelsTest {
     private Game game;
     private Worker currentWorker;
     private MoveAction moveAction;
+    private List<Player> players = new ArrayList<>();
 
     @BeforeEach
     void SetUp () throws IOException {
@@ -28,8 +29,6 @@ class Down2LevelsTest {
         gods.add(new God("base"));
         gods.get(1).setStrategy(new RuleSetBase());
 
-
-        List<Player> players = new ArrayList<>();
         players.add(new Player("player1", gods.get(0), Color.BLUE));
         players.add(new Player("player2", gods.get(1), Color.WHITE));
 
@@ -53,10 +52,9 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
 
-
         moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
         moveAction.getValidation(game);
-        assertEquals(game.getWinner(), currentWorker.getOwner());
+        assertEquals(game.getWinner(), players.get(0));
     }
     @Test
     void fromLevel3toLevel1Test() throws IOException {
@@ -65,7 +63,7 @@ class Down2LevelsTest {
 
         moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
         moveAction.getValidation(game);
-        assertEquals(game.getWinner(), currentWorker.getOwner());
+        assertEquals(game.getWinner(), players.get(0));
     }
     @Test
     void fromLevel3toLevel0Test() throws IOException {
@@ -74,7 +72,7 @@ class Down2LevelsTest {
 
         moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
         moveAction.getValidation(game);
-        assertEquals(game.getWinner(), currentWorker.getOwner());
+        assertEquals(game.getWinner(), players.get(0));
     }
     @Test
     void normalWinTest() throws IOException {
@@ -83,7 +81,7 @@ class Down2LevelsTest {
 
         moveAction = new MoveAction(currentWorker, game.getGameBoard().getCell(3,1));
         moveAction.getValidation(game);
-        assertEquals(game.getWinner(), currentWorker.getOwner());
+        assertEquals(game.getWinner(), players.get(0));
     }
 
     @Test
