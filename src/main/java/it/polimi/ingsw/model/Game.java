@@ -144,7 +144,7 @@ public class Game {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValue(file, this);
         } catch (IOException e){
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.buildingEffectsTests;
+package it.polimi.ingsw.model.godCardsEffectsTests.affectMyTurnEffectsTests;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;

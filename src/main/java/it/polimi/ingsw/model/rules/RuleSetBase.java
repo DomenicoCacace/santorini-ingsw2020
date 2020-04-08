@@ -209,6 +209,7 @@ public class RuleSetBase implements RuleSetStrategy {
         return canEndTurnAutomatically();
     }
 
+    @Override
     public boolean canEndTurnAutomatically(){
         return (movesAvailable == 0 && buildsAvailable == 0);
     }
