@@ -25,7 +25,7 @@ class BuildDomeTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, LostException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Atlas"));
         gods.get(0).setStrategy(new BuildDome());
@@ -59,7 +59,7 @@ class BuildDomeTest {
     }
 
     @Test
-    void canBuildDomeAnywhereTest() throws IOException {
+    void canBuildDomeAnywhereTest() throws IOException, LostException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
 
         targetCell = game.getGameBoard().getCell(3, 3);//LEVEL2
@@ -72,7 +72,7 @@ class BuildDomeTest {
     }
 
     @Test
-    void cannotBuildDomeOverDomeTest() throws IOException {
+    void cannotBuildDomeOverDomeTest() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(3, 4);//DOME
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);

@@ -25,7 +25,7 @@ class BuildAgainDifferentCellTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, LostException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Demeter"));
         gods.get(0).setStrategy(new BuildAgainDifferentCell());
@@ -60,7 +60,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void correctBuildAgainDifferentCellTest() throws IOException {
+    void correctBuildAgainDifferentCellTest() throws IOException, LostException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -86,7 +86,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildOnTheSameCellTest() throws IOException {
+    void cannotBuildOnTheSameCellTest() throws IOException, LostException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -110,7 +110,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest() throws IOException {
+    void cannotBuildWith2DifferentWorkersTest() throws IOException, LostException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.rules.RuleSetContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,27 +62,36 @@ public class Game {
         return currentRuleSet;
     }
 
-    public List<Cell> getWalkableCells(Worker worker) {
-        return currentRuleSet.getWalkableCells(worker);
+    public List<Cell> getWalkableCells(Worker worker) throws LostException, IOException {
+        List<Cell> walkable = new ArrayList<>();
+        try {
+            walkable = currentRuleSet.getWalkableCells(worker);
+        } catch (LostException le) {
+            removePlayer(currentTurn.getCurrentPlayer());
+        }
+        return walkable;
     }
 
-    public List<Cell> getBuildableCells(Worker worker) {
-        return currentRuleSet.getBuildableCells(worker);
+    public List<Cell> getBuildableCells(Worker worker) throws IOException, LostException {
+        List<Cell> buildable = new ArrayList<>();
+        try {
+            buildable = currentRuleSet.getBuildableCells(worker);
+        } catch (LostException le) {
+            removePlayer(currentTurn.getCurrentPlayer());
+        }
+        return buildable;
     }
 
     public Player getWinner() {
         return winner;
     }
 
-    public void validateMoveAction(MoveAction moveAction) throws IOException {
+    public void validateMoveAction(MoveAction moveAction) throws IOException, LostException {
         if (currentRuleSet.validateMoveAction(moveAction)) {
 
             if (currentRuleSet.checkWinCondition(moveAction)) {
                 this.winner = currentTurn.getCurrentPlayer();
-                //TODO: manage win stuff
-
-            } else if (currentRuleSet.checkLoseCondition(moveAction)) {
-                removePlayer(currentTurn.getCurrentPlayer());
+                // TODO: manage win stuff
             }
             moveAction.apply();
             this.saveState();
@@ -89,7 +99,7 @@ public class Game {
 
     }
 
-    public void validateBuildAction(BuildAction buildAction) throws IOException {
+    public void validateBuildAction(BuildAction buildAction) throws IOException, LostException {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
             this.saveState();
@@ -97,12 +107,12 @@ public class Game {
         }
     }
 
-    public void endTurn() throws IOException {
+    public void endTurn() throws IOException, LostException {
         if(currentRuleSet.canEndTurn())
             generateNextTurn();
     }
 
-    public void endTurnAutomatically() throws IOException{
+    public void endTurnAutomatically() throws IOException, LostException {
         if(currentRuleSet.canEndTurnAutomatically())
             generateNextTurn();
     }
@@ -114,7 +124,7 @@ public class Game {
         return players.get(((players.indexOf(currentTurn.getCurrentPlayer()) + 1) % players.size()));
     }
 
-    public void generateNextTurn() throws IOException {
+    public void generateNextTurn() throws IOException, LostException {
         nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
         currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
         currentRuleSet.doEffect();
@@ -126,7 +136,7 @@ public class Game {
         this.saveState();
     }
 
-    private void removePlayer(Player player) throws IOException {
+    private void removePlayer(Player player) throws IOException, LostException {
         for(Worker worker: player.getWorkers()){
             worker.getPosition().setOccupiedBy(null);
             worker.setPosition(null);

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
 
@@ -24,7 +25,7 @@ public class Push extends MovementStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(MoveAction action) {
+    public boolean isMoveActionValid(MoveAction action) throws LostException {
 
            if(super.isMoveActionValid(action)){
                 opponentAction(action);

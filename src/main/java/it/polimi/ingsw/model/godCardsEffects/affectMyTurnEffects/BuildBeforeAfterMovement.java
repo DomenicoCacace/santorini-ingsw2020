@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
+import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
@@ -31,7 +32,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(MoveAction action){
+    public boolean isMoveActionValid(MoveAction action) throws LostException {
         if(!hasBuiltBefore && super.isMoveActionValid(action)){
             buildsAvailable--;
             return true;
@@ -40,7 +41,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public boolean isBuildActionValid(BuildAction action) {
+    public boolean isBuildActionValid(BuildAction action) throws LostException {
         if (this.buildsAvailable>0 && isInsideBuildableCells(action) && isCorrectBlock(action)) {
             if (movedWorker == null) {
                 hasBuiltBefore = true;
@@ -54,13 +55,16 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public List<Cell> getWalkableCells(Worker worker) {
+    public List<Cell> getWalkableCells(Worker worker) throws LostException {
         List<Cell> canGoCells = new ArrayList<>();
         if(hasBuiltBefore){
             if(worker == builder) {
-                for (Cell cell : super.getWalkableCells(worker))
+                for (Cell cell : super.getWalkableCells(worker)) {
                     if (worker.getPosition().heightDifference(cell) <= 0)
                         canGoCells.add(cell);
+                }
+                if(canGoCells.size() == 0)
+                    throw new LostException();
             }
             return canGoCells;
         }
@@ -68,14 +72,14 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public List<Cell> getBuildableCells(Worker worker) {
+    public List<Cell> getBuildableCells(Worker worker) throws LostException {
         List<Cell> cells = new ArrayList<>();
         if (buildsAvailable>0) {
             if (movesAvailable == 0 && !hasBuiltBefore) {
                 cells= super.getBuildableCells(worker);
             }
 
-            else if (movesAvailable == 0 && worker==builder) {//this is useful for the view: highlighting the correct cells
+            else if (movesAvailable == 0 && worker==builder) { //this is useful for the view: highlighting the correct cells
                 cells = super.getBuildableCells(worker);
             }
 

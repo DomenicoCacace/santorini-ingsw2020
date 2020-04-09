@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
+import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
@@ -29,7 +30,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     }
 
     @Override
-    public boolean isBuildActionValid(BuildAction action) {
+    public boolean isBuildActionValid(BuildAction action) throws LostException {
         if (canBuild(action)) {
             buildsAvailable--;
             chosenCell = action.getTargetCell();
@@ -39,7 +40,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     }
 
     @Override
-    public List<Cell> getBuildableCells(Worker worker) {
+    public List<Cell> getBuildableCells(Worker worker) throws LostException {
         List<Cell> secondBuild = new ArrayList<>();
         if(this.buildsAvailable> 0) {
             if (chosenCell == null)

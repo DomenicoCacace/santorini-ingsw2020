@@ -16,9 +16,9 @@ public class RuleSetContext implements Memento<RuleSetContext> {
         strategy.setGame(game);
     }
 
-    public boolean validateMoveAction(MoveAction action) { return strategy.isMoveActionValid(action); }
+    public boolean validateMoveAction(MoveAction action) throws LostException { return strategy.isMoveActionValid(action); }
 
-    public boolean validateBuildAction(BuildAction action) {
+    public boolean validateBuildAction(BuildAction action) throws LostException {
         return strategy.isBuildActionValid(action);
     }
 
@@ -44,19 +44,19 @@ public class RuleSetContext implements Memento<RuleSetContext> {
         return strategy.checkWinCondition(action);
     }
 
-    public boolean checkLoseCondition(MoveAction action) {
+    public boolean checkLoseCondition(MoveAction action) throws LostException {
         return strategy.checkLoseCondition(action);
     }
 
-    public boolean checkLoseCondition() {
+    public boolean checkLoseCondition() throws LostException {
         return strategy.checkLoseCondition();
     }
 
-    public List<Cell> getWalkableCells(Worker worker) {
+    public List<Cell> getWalkableCells(Worker worker) throws LostException {
         return strategy.getWalkableCells(worker);
     }
 
-    public List<Cell> getBuildableCells(Worker worker) {
+    public List<Cell> getBuildableCells(Worker worker) throws LostException {
         return strategy.getBuildableCells(worker);
     }
 

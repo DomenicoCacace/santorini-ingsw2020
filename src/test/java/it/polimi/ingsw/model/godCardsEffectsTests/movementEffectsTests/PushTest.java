@@ -44,7 +44,7 @@ public class PushTest {
 
 
     @Test
-    void correctPushTest () throws IOException {
+    void correctPushTest () throws IOException, LostException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         game.generateNextTurn();
@@ -78,7 +78,7 @@ public class PushTest {
     }
 
     @Test
-    void getWalkableCellsTest() throws IOException {
+    void getWalkableCellsTest() throws IOException, LostException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         game.generateNextTurn();
@@ -88,7 +88,7 @@ public class PushTest {
     }
 
     @Test
-    void getBuildableCellsTest() throws IOException {
+    void getBuildableCellsTest() throws IOException, LostException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         game.generateNextTurn();
@@ -98,7 +98,7 @@ public class PushTest {
     }
 
     @Test
-    void cannotPushOutsideTest() throws IOException {
+    void cannotPushOutsideTest() throws IOException, LostException {
         players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
         game.generateNextTurn();

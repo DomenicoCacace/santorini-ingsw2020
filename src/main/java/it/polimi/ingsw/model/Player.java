@@ -55,7 +55,7 @@ public class Player {
         this.action = action;
     }
 
-    public void useAction() throws IOException {
+    public void useAction() throws IOException, LostException {
         action.getValidation(game);
     }
 
@@ -71,7 +71,7 @@ public class Player {
         return name;
     }
 
-    public void setSelectedWorker(Worker selectedWorker) {
+    public void setSelectedWorker(Worker selectedWorker) throws LostException, IOException {
         this.selectedWorker = selectedWorker;
         selectedWorker.setWalkableCells(game.getWalkableCells(selectedWorker));
     }

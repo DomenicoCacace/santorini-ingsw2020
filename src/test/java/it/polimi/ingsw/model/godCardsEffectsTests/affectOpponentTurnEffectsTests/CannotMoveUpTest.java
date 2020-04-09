@@ -26,7 +26,7 @@ class CannotMoveUpTest {
     private Block targetBlock;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, LostException {
         gods = new ArrayList<>();
         gods.add(new God("minotaur"));
         gods.get(0).setStrategy(new Push());
@@ -60,7 +60,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCannotMoveUpTest() throws IOException {
+    void opponentsCannotMoveUpTest() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
@@ -154,7 +154,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCanMoveUpTest() throws IOException {
+    void opponentsCanMoveUpTest() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);

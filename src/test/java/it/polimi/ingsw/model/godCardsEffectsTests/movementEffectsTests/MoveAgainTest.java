@@ -24,7 +24,7 @@ class MoveAgainTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, LostException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Artemis"));
         gods.get(0).setStrategy(new MoveAgain());
@@ -59,7 +59,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveSameLevelTest() throws IOException {
+    void correctDoubleMoveSameLevelTest() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -80,7 +80,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveUpTest() throws IOException {
+    void correctDoubleMoveUpTest() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(4, 2);
         moveAction = new MoveAction(worker2, targetCell);
         moveAction.getValidation(game);
@@ -101,7 +101,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotGoBackStartingCellTest() throws IOException {
+    void cannotGoBackStartingCellTest() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -122,7 +122,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotMoveAfterWinningTest() throws IOException {
+    void cannotMoveAfterWinningTest() throws IOException, LostException {
         worker2.getPosition().setBlock(Block.LEVEL2);
         targetCell = game.getGameBoard().getCell(4, 1);
         moveAction = new MoveAction(worker2, targetCell);
@@ -147,7 +147,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterBuildTest() throws IOException {
+    void endTurnAutomaticallyAfterBuildTest() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -167,7 +167,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void CannotMoveWithDifferentWorkers() throws IOException {
+    void CannotMoveWithDifferentWorkers() throws IOException, LostException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);

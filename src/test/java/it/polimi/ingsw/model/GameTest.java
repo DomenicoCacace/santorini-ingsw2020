@@ -3,9 +3,8 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildDome;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
-import it.polimi.ingsw.model.rules.RuleSetBase;
 import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
+import it.polimi.ingsw.model.rules.RuleSetBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +12,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class GameTest {
     private List<Player> players;
@@ -21,7 +21,7 @@ class GameTest {
     private Game game;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, LostException {
         gods = new ArrayList<>();
         gods.add(new God("minotaur"));
         gods.get(0).setStrategy(new Push());
@@ -60,7 +60,7 @@ class GameTest {
 
 
     @Test
-    void NextTurnGenerationTest() throws IOException {
+    void NextTurnGenerationTest() throws IOException, LostException {
         Turn currentTurn;
 
         for(int index = 1; index < 6; index++) {
@@ -75,7 +75,7 @@ class GameTest {
 
 
     @Test
-    void persistenceTest() throws IOException {
+    void persistenceTest() throws IOException, LostException {
         game.generateNextTurn();
         Worker currentWorker = game.getPlayers().get(0).getWorkers().get(0);
         Cell targetCell = game.getGameBoard().getCell(2, 3);
@@ -109,7 +109,7 @@ class GameTest {
     }
 
     @Test
-    void correctLoseManagement3PlayersTest() throws IOException {
+    void correctLoseManagement3PlayersTest() throws IOException, LostException {
 
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
@@ -146,7 +146,7 @@ class GameTest {
     }
 
     @Test
-    void twoConsecutiveLossesTest() throws IOException {
+    void twoConsecutiveLossesTest() throws IOException, LostException {
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(2,3).setBlock(Block.DOME);

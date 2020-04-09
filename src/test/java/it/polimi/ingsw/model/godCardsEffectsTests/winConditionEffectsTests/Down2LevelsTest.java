@@ -22,7 +22,7 @@ class Down2LevelsTest {
     private List<Player> players = new ArrayList<>();
 
     @BeforeEach
-    void SetUp () throws IOException {
+    void SetUp () throws IOException, LostException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Pan"));
         gods.get(0).setStrategy(new Down2Levels());
@@ -48,7 +48,7 @@ class Down2LevelsTest {
 
 
     @Test
-    void fromLevel2toLevel0Test() throws IOException {
+    void fromLevel2toLevel0Test() throws IOException, LostException {
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
 
@@ -57,7 +57,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), players.get(0));
     }
     @Test
-    void fromLevel3toLevel1Test() throws IOException {
+    void fromLevel3toLevel1Test() throws IOException, LostException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1);
 
@@ -66,7 +66,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), players.get(0));
     }
     @Test
-    void fromLevel3toLevel0Test() throws IOException {
+    void fromLevel3toLevel0Test() throws IOException, LostException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
 
@@ -75,7 +75,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), players.get(0));
     }
     @Test
-    void normalWinTest() throws IOException {
+    void normalWinTest() throws IOException, LostException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 
@@ -85,7 +85,7 @@ class Down2LevelsTest {
     }
 
     @Test
-    void cannotBuildAfterWinningTest() throws IOException {
+    void cannotBuildAfterWinningTest() throws IOException, LostException {
 
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
@@ -100,7 +100,7 @@ class Down2LevelsTest {
     }
 
     @Test
-    void notWinTest() throws IOException {
+    void notWinTest() throws IOException, LostException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 

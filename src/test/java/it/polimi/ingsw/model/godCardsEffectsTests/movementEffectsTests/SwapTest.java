@@ -48,7 +48,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapSameLevelTest() throws IOException {
+    void correctSwapSameLevelTest() throws IOException, LostException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 3);
 
@@ -72,7 +72,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapHigherOneLevelTest() throws IOException {
+    void correctSwapHigherOneLevelTest() throws IOException, LostException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 2);
 
@@ -95,7 +95,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapLowerAnyLevelTest() throws IOException {
+    void correctSwapLowerAnyLevelTest() throws IOException, LostException {
         myCell = game.getGameBoard().getCell(3, 3);
         myCell2 = game.getGameBoard().getCell(3, 2);
 
@@ -118,7 +118,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooHighTest() throws IOException {
+    void cannotSwapTooHighTest() throws IOException, LostException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(3, 3);
 
@@ -142,7 +142,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooFarTest() throws IOException {
+    void cannotSwapTooFarTest() throws IOException, LostException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(1, 2);
 
@@ -166,7 +166,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTwiceTest() throws IOException {
+    void cannotSwapTwiceTest() throws IOException, LostException {
         Cell secondCellOpponent;
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(2, 2);
@@ -200,7 +200,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapWithMyWorkerTest() throws IOException {
+    void cannotSwapWithMyWorkerTest() throws IOException, LostException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 3);
 

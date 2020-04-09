@@ -23,7 +23,7 @@ class BuildBeforeAfterMovementTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, LostException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Prometeus"));
         gods.get(0).setStrategy(new BuildBeforeAfterMovement());
@@ -54,7 +54,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveSameCellTest() throws IOException {
+    void correctBuildBeforeAfterMoveSameCellTest() throws IOException, LostException {
         Cell buildingCell = game.getGameBoard().getCell(3,2);
         Action firstBuildAction = new BuildAction(currentWorker, buildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -84,7 +84,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveDifferentCellsTest() throws IOException {
+    void correctBuildBeforeAfterMoveDifferentCellsTest() throws IOException, LostException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -115,7 +115,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctMoveUpAndBuildTest() throws IOException {
+    void correctMoveUpAndBuildTest() throws IOException, LostException {
         toMoveCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
         moveAction.getValidation(game);
@@ -137,7 +137,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildThenMoveUpTest() throws IOException {
+    void cannotBuildThenMoveUpTest() throws IOException, LostException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -159,7 +159,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildTwiceInARowTest() throws IOException {
+    void cannotBuildTwiceInARowTest() throws IOException, LostException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -176,5 +176,24 @@ class BuildBeforeAfterMovementTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(secondBuildingCell.getBlock(), Block.LEVEL1);
 
+    }
+
+    @Test
+    void loseAfterBuildingTest() throws IOException, LostException {
+        game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL1);
+        game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL0);
+
+        Action buildaction = new BuildAction(players.get(0).getWorkers().get(1),
+                game.getGameBoard().getCell(4,4), Block.LEVEL1);
+        buildaction.getValidation(game);
+        assertEquals(game.getGameBoard().getCell(4,4).getBlock(), Block.LEVEL1);
+
+        game.getWalkableCells(players.get(0).getWorkers().get(0));
+        assertEquals(game.getWalkableCells(players.get(0).getWorkers().get(0)).size(), 0);
+
+        game.getWalkableCells(players.get(0).getWorkers().get(1));
+        assertEquals(players.size(), 1);
+        assertEquals(players.get(0), game.getWinner());
+        assertEquals(players.get(0).getName(), "player2");
     }
 }
