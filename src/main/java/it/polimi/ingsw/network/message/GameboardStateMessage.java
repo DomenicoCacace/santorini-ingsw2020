@@ -2,11 +2,12 @@ package it.polimi.ingsw.network.message;
 
 import it.polimi.ingsw.model.GameBoard;
 
-public class GameboardStateMessage  extends Message{
+public class GameboardStateMessage extends MessageResponse {
+
     public final GameBoard payload;
 
-    public GameboardStateMessage(GameBoard gameBoard) {
-        super("admin", Content.GAMEBOARD_STATE);
-        payload = gameBoard;
+    public GameboardStateMessage(String outcome, GameBoard payload) {
+        super(outcome, "broadcast", Content.GAMEBOARD_STATE);
+        this.payload = payload;
     }
 }
