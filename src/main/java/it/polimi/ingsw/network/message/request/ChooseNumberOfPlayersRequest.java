@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.message.request;
 
-public class ChooseNumberOfPlayers extends MessageRequest {
+public class ChooseNumberOfPlayersRequest extends MessageRequest {
 
-    public ChooseNumberOfPlayers(String username) {
+    public ChooseNumberOfPlayersRequest(String username) {
         super(username, Content.CHOOSE_PLAYER_NUMBER);
     }
 }

@@ -1,17 +1,13 @@
 package it.polimi.ingsw.network.message.response;
 
-import it.polimi.ingsw.model.GameBoard;
+import it.polimi.ingsw.model.Game;
 
-public class GameStartMessage extends MessageResponse {
 
-    public final GameBoard payload;
+public class GameStartResponse extends MessageResponse {
 
-    /**
-     * Constructor
-     * @param payload  Initial state of the gameboard
-     */
+    public final Game payload;
 
-    public GameStartMessage(String outcome, GameBoard payload) {
+    public GameStartResponse(String outcome, Game payload) {
         super(outcome, "broadcast", Content.GAME_START);
         this.payload = payload;
     }

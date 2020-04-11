@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.message;
+package it.polimi.ingsw.network.message.request;
 
 import java.io.Serializable;
 
@@ -13,7 +13,8 @@ public class MessageRequest implements Serializable {
     }
 
     public enum Content {
-        LOGIN, PLAYER_MOVE, PLAYER_BUILD, GAMEBOARD_STATE, QUEUE, GAME_START,
-        END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, ASSIGN_GOD
+        LOGIN, PLAYER_MOVE, PLAYER_BUILD,
+        END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, ASSIGN_GOD, WINNER_DECLARED,
+        PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD;
     }
 }

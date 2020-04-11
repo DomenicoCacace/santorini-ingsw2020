@@ -1,4 +1,4 @@
 package it.polimi.ingsw.network.message.response;
 
-public class PlayerRemovedResposne {
+public class PlayerRemovedResponse {
 }

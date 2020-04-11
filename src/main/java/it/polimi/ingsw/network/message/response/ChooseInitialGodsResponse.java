@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.message;
+package it.polimi.ingsw.network.message.response;
 
 import it.polimi.ingsw.model.God;
 
