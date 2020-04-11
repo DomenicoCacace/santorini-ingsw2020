@@ -2,9 +2,12 @@ package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.ObserverPattern.ObservableInterface;
+import it.polimi.ingsw.ObserverPattern.ObserverInterface;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetContext;
+import it.polimi.ingsw.network.message.response.MessageResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Game {
+public class Game implements ObservableInterface {
     private GameBoard gameBoard;
     private List<Player> players;
     private Turn currentTurn;
@@ -94,6 +97,7 @@ public class Game {
                 // TODO: manage win stuff
             }
             moveAction.apply();
+            //TODO: notifyObservers(MessageEvent.PLAYER_MOVE);
             this.saveState();
         }
 
@@ -102,6 +106,7 @@ public class Game {
     public void validateBuildAction(BuildAction buildAction) throws IOException, LostException {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
+            //TODO: notifyObservers();
             this.saveState();
             endTurnAutomatically();
         }
@@ -172,5 +177,21 @@ public class Game {
             player.setGame(restoredGame);
         }
         return restoredGame;
+    }
+
+    @Override
+    public void addObserver(ObserverInterface observer, Event event) {
+
+    }
+
+    @Override
+    public void removeObserver(ObserverInterface observer, Event event) {
+
+    }
+
+    @Override
+    public void notifyObservers(Event event) {
+
+
     }
 }

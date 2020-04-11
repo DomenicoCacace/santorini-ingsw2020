@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.network.message.MessageRequest;
+import it.polimi.ingsw.network.message.request.MessageRequest;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class ServerController {
     private Game game;
     private List<Player> players;
 
-    public MessageRequest addWorker(String username, Cell cell){
+   /* public MessageRequest addWorker(String username, Cell cell){
 
     }
 
@@ -26,8 +26,10 @@ public class ServerController {
 
     }
 
-    public MessageRequest passTurn(){
+    public MessageRequest passTurn(String username){
 
     }
+
+    */
 
 }
