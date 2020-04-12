@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.LostException;
+import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public class Push extends MovementStrategy {
 
     boolean canPush(Cell myCell, Cell targetCell) {
-       // Cell pushedCell= game.getGameBoard().getCellBehind(myCell, targetCell); debugging purpose
+        // Cell pushedCell= game.getGameBoard().getCellBehind(myCell, targetCell); debugging purpose
         return game.getGameBoard().getCellBehind(myCell, targetCell) != null &&
                 game.getGameBoard().getCellBehind(myCell, targetCell).getOccupiedBy() == null &&
                 !game.getGameBoard().getCellBehind(myCell, targetCell).hasDome();
@@ -20,18 +21,19 @@ public class Push extends MovementStrategy {
     void opponentAction(MoveAction action){
         if (action.getTargetCell().getOccupiedBy()!= null) {
             Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
-            moveOpponentWorker(action, pushCell);
+            Action opponentMoveAction = new MoveAction(action.getTargetCell().getOccupiedBy(), pushCell);
+            opponentMoveAction.apply();
         }
     }
 
     @Override
     public boolean isMoveActionValid(MoveAction action) throws LostException {
 
-           if(super.isMoveActionValid(action)){
-                opponentAction(action);
-                return true;
-           }
-           return false;
+        if(super.isMoveActionValid(action)){
+            opponentAction(action);
+            return true;
+        }
+        return false;
     }
 
     @Override

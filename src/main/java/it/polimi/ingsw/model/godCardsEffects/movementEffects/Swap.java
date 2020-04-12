@@ -2,32 +2,40 @@ package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.LostException;
-import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.action.MoveAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Swap extends MovementStrategy {
 
-    public void opponentAction(MoveAction action){
+    public void swapAction(MoveAction action){
         if (action.getTargetCell().getOccupiedBy()!= null) {
+
             Cell myPreviousCell = action.getStartingCell();
-            moveOpponentWorker(action, myPreviousCell);
+            Cell myAfterCell = action.getTargetCell();
+            Worker myWorker = action.getTargetWorker();
+            Worker opponentWorker = action.getTargetCell().getOccupiedBy();
+
+            if(myWorker.getPosition().heightDifference(myAfterCell) == 1)
+                hasMovedUp=true;
+
+            myWorker.setPosition(myAfterCell);
+            myAfterCell.setOccupiedBy(myWorker);
+            opponentWorker.setPosition(myPreviousCell);
+            myPreviousCell.setOccupiedBy(opponentWorker);
         }
     }
 
     @Override
     public boolean isMoveActionValid(MoveAction action) throws LostException {
         if(movesAvailable>0 && isInsideWalkableCells(action)){
-            opponentAction(action);
+            movedWorker = action.getTargetWorker();
+            swapAction(action);
             movesAvailable--;
             if(movesUpAvailable>0)
                 movesUpAvailable--;
-
-            if(action.getTargetCell().heightDifference(action.getTargetWorker().getPosition()) == 1)
-                hasMovedUp=true;
-            movedWorker = action.getTargetWorker();
             return true;
         }
         return false;
@@ -46,10 +54,4 @@ public class Swap extends MovementStrategy {
         return cells;
     }
 
-    @Override
-    public List<Cell> getBuildableCells(Worker worker) throws LostException {
-        if(worker == movedWorker && super.getBuildableCells(worker).size() == 0)
-            throw new LostException();
-        return super.getBuildableCells(worker);
-    }
 }

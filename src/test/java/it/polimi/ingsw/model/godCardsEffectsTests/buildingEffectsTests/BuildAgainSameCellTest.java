@@ -182,4 +182,20 @@ class BuildAgainSameCellTest {
         assertEquals(firstCell.getBlock(), firstBlock);
     }
 
+    @Test
+    void canEndTurnAfter1BuildTest() throws IOException, LostException {
+        firstCell = game.getGameBoard().getCell(2, 3);
+        firstBlock = Block.LEVEL1;
+        buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
+        buildAction.getValidation(game);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
+        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
+        assertEquals(firstCell.getBlock(), firstBlock);
+
+        game.endTurn();
+        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
+    }
 }

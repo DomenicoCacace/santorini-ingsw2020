@@ -62,12 +62,14 @@ public class PushTest {
                 assertNotNull(pushedCell.getOccupiedBy());
                 assertTrue(players.get(1).getWorkers().contains(pushedCell.getOccupiedBy()));
                 assertEquals(pushedCell.getOccupiedBy(), players.get(1).getWorkers().get(0));
+                assertEquals(pushedCell, players.get(1).getWorkers().get(0).getPosition());
                 continue;
             }
 
             if (cell.equals(targetCell)) {
                 assertTrue(currentPlayer.getWorkers().contains(targetCell.getOccupiedBy()));
                 assertEquals(targetCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
+                assertEquals(targetCell, players.get(0).getWorkers().get(0).getPosition());
                 continue;
             }
             assertNull(cell.getOccupiedBy());

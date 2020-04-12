@@ -69,6 +69,9 @@ class SwapTest {
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell2);
         assertEquals(opponentWorker.getPosition(), myCell);
+        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(myCell.getOccupiedBy(), opponentWorker);
+
     }
 
     @Test
@@ -89,9 +92,11 @@ class SwapTest {
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell2);
         assertEquals(opponentWorker.getPosition(), myCell);
+        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(myCell.getOccupiedBy(), opponentWorker);
     }
 
     @Test
@@ -115,6 +120,8 @@ class SwapTest {
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell2);
         assertEquals(opponentWorker.getPosition(), myCell);
+        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(myCell.getOccupiedBy(), opponentWorker);
     }
 
     @Test
@@ -139,6 +146,8 @@ class SwapTest {
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
         assertEquals(opponentWorker.getPosition(), myCell2);
+        assertEquals(myCell.getOccupiedBy(), myWorker);
+        assertEquals(myCell2.getOccupiedBy(), opponentWorker);
     }
 
     @Test
@@ -163,6 +172,8 @@ class SwapTest {
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
         assertEquals(opponentWorker.getPosition(), myCell2);
+        assertEquals(myCell.getOccupiedBy(), myWorker);
+        assertEquals(myCell2.getOccupiedBy(), opponentWorker);
     }
 
     @Test
@@ -195,6 +206,10 @@ class SwapTest {
         assertEquals(myWorker.getPosition(), myCell2);
         assertEquals(opponentWorker1.getPosition(), myCell);
         assertEquals(opponentWorker2.getPosition(), secondCellOpponent);
+        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(myCell.getOccupiedBy(), opponentWorker1);
+        assertEquals(opponentWorker2, secondCellOpponent.getOccupiedBy());
+
 
 
     }
@@ -221,5 +236,52 @@ class SwapTest {
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
         assertEquals(myWorker2.getPosition(), myCell2);
+        assertEquals(myCell.getOccupiedBy(), myWorker);
+        assertEquals(myCell2.getOccupiedBy(), myWorker2);
+    }
+
+    @Test
+    void loseAfterSwappingTest() throws IOException, LostException {
+        game.getGameBoard().getCell(4,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(4,3).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,3).setBlock(Block.DOME);
+
+        myCell = game.getGameBoard().getCell(3, 2);
+        myCell2 = game.getGameBoard().getCell(4, 2);
+
+        players.get(0).addWorker(myCell);
+        players.get(1).addWorker(myCell2);
+        game.generateNextTurn();
+
+        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+
+        Worker myWorker = currentPlayer.getWorkers().get(0);
+        Worker opponentWorker = players.get(1).getWorkers().get(0);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
+
+        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction.getValidation(game);
+
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(myWorker.getPosition(), myCell2);
+        assertEquals(opponentWorker.getPosition(), myCell);
+        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(myCell.getOccupiedBy(), opponentWorker);
+
+        /*
+        assertTrue(game.getCurrentRuleSet().getStrategy().checkLoseCondition((MoveAction) moveAction));
+        Action buildAction = new BuildAction(myWorker, myCell, Block.LEVEL1);
+        assertThrows(LostException.class, () -> {
+            buildAction.getValidation(game);
+        });
+        assertEquals(myCell.getBlock(), Block.LEVEL0);
+        assertEquals(game.getPlayers().size(), 1);
+        assertEquals(game.getCurrentTurn().getCurrentPlayer().getName(), "base");
+
+         */
+
     }
 }
