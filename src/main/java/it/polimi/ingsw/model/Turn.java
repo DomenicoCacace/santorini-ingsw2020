@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
+import java.util.stream.Collectors;
+
 public class Turn {
     private final int turnNumber;
     private final Player currentPlayer;
@@ -14,6 +16,12 @@ public class Turn {
     public Turn(@JsonProperty("turnNumer") int turnNumber,@JsonProperty("currentPlayer") Player currentPlayer) {
         this.turnNumber = turnNumber;
         this.currentPlayer = currentPlayer;
+        this.ruleSetStrategy = currentPlayer.getGod().getStrategy();
+    }
+
+    public Turn(Turn turn, Game game){
+        this.turnNumber = turn.turnNumber;
+        this.currentPlayer= game.getPlayers().stream().filter(player -> player.getName().equals(turn.currentPlayer.getName())).collect(Collectors.toList()).get(0);
         this.ruleSetStrategy = currentPlayer.getGod().getStrategy();
     }
 

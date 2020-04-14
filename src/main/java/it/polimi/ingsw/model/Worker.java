@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="workerId", scope = Worker.class)
 public class Worker {
     private Cell position;
@@ -24,6 +27,7 @@ public class Worker {
         //this.buildableCells = buildableCells;
         //this.walkableCells = walkableCells;
     }
+
 
     public Cell getPosition() {
         return position;

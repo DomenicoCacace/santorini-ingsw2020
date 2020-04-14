@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.model.utilities.Memento;
+import it.polimi.ingsw.network.message.request.ChooseYourGodRequest;
 
 import java.util.ArrayList;
 
@@ -32,11 +33,10 @@ public class GameBoard implements Memento<GameBoard> {
 
     public GameBoard(GameBoard gameBoard) {
         this.board = new Cell[DIMENSION][DIMENSION];
-
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
                 Cell tmpCell = gameBoard.getCell(i, j);
-                this.board[i][j] = new Cell(i, j, tmpCell.hasDome(), tmpCell.getOccupiedBy(), tmpCell.getBlock());
+                this.board[i][j] = new Cell(tmpCell);
             }
         }
     }
@@ -46,6 +46,13 @@ public class GameBoard implements Memento<GameBoard> {
                 return board[x][y];
         return null; //TODO: out of bound
     }
+
+    public Cell getCell(Cell cell){
+        int tmpX = cell.getCoordX();
+        int tmpY = cell.getCoordY();
+        return getCell(tmpX, tmpY);
+    }
+
 
     public boolean isInsideGameBoard(int x, int y){
         return 0 <= x && x < DIMENSION && 0 <= y && y < DIMENSION;

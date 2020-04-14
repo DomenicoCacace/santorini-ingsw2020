@@ -37,8 +37,6 @@ public interface RuleSetStrategy {
 
     boolean checkWinCondition(MoveAction action);
 
-    boolean checkLoseCondition(MoveAction action) throws LostException;
-
     boolean checkLoseCondition() throws LostException;
 
     List<Cell> getWalkableCells(Worker worker) throws LostException;
@@ -50,5 +48,7 @@ public interface RuleSetStrategy {
     boolean canEndTurn();
 
     boolean canEndTurnAutomatically();
+
+    RuleSetStrategy getClone(Game game);
 
 }

@@ -8,6 +8,12 @@ public class God {
     private RuleSetStrategy strategy;
     private final String name;
 
+    public God(God god, Game game){
+        this.name = god.name;
+        this.strategy = god.strategy.getClone(game);
+
+    }
+
     public God(@JsonProperty("name") String name) {
         this.name = name;
     }

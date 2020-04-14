@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.List;
 
@@ -21,6 +23,18 @@ public class MoveAgain extends MovementStrategy {
 
     public MoveAgain() {
         initialize();
+    }
+
+    public MoveAgain(MoveAgain moveAgain, Game game){
+        this.game = game;
+        this.movesAvailable = moveAgain.getMovesAvailable();
+        this.movesUpAvailable = moveAgain.getMovesUpAvailable();
+        this.buildsAvailable = moveAgain.getBuildsAvailable();
+        this.hasMovedUp = moveAgain.hasMovedUp();
+        if(moveAgain.getMovedWorker() != null)
+            this.movedWorker =game.getGameBoard().getCell(moveAgain.getMovedWorker().getPosition()).getOccupiedBy();
+        else this.movedWorker = null;
+        this.startingCell = game.getGameBoard().getCell(moveAgain.startingCell);
     }
 
     @Override
@@ -48,5 +62,10 @@ public class MoveAgain extends MovementStrategy {
         if(movedWorker != null)
             adjacentCells.remove(startingCell);
         return adjacentCells;
+    }
+
+    @Override
+    public RuleSetStrategy getClone(Game game) {
+        return new MoveAgain(this, game);
     }
 }

@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
-import it.polimi.ingsw.model.LostException;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
-import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.model.godCardsEffects.affectOpponentTurnEffects.CannotMoveUp;
+import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,19 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
 
     private boolean hasBuiltBefore;
     private Worker builder;
+
+    private BuildBeforeAfterMovement(BuildBeforeAfterMovement buildBeforeAfterMovement, Game game){
+        this.game = game;
+        this.movesAvailable = buildBeforeAfterMovement.getMovesAvailable();
+        this.movesUpAvailable = buildBeforeAfterMovement.getMovesUpAvailable();
+        this.buildsAvailable = buildBeforeAfterMovement.getBuildsAvailable();
+        this.hasMovedUp = buildBeforeAfterMovement.hasMovedUp();
+        if(buildBeforeAfterMovement.getMovedWorker() != null)
+            this.movedWorker =game.getGameBoard().getCell(buildBeforeAfterMovement.getMovedWorker().getPosition()).getOccupiedBy();
+        else this.movedWorker = null;
+        this.hasBuiltBefore = buildBeforeAfterMovement.hasBuiltBefore;
+        this.builder = game.getGameBoard().getCell(buildBeforeAfterMovement.builder.getPosition()).getOccupiedBy();
+    }
 
     public void initialize() {
         this.movesAvailable = 1;
@@ -63,7 +76,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
                     if (worker.getPosition().heightDifference(cell) <= 0)
                         canGoCells.add(cell);
                 }
-                if(canGoCells.size() == 0)
+                if(canGoCells.size()==0)
                     throw new LostException();
             }
             return canGoCells;
@@ -84,10 +97,43 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
             }
 
             else if (movesAvailable == 1 && !hasBuiltBefore) {
-                super.addBuildableCells(worker, cells);
+               cells = buildableCellsBeforeMoving(worker);
             }
         }
         return cells;
     }
+
+    private List<Cell> buildableCellsBeforeMoving(Worker worker) throws LostException {
+        int cellsOnMyLevel = 0;
+        int heightDifference;
+        Cell cellOnMyLevel = null;
+        List<Cell> buildableCells = new ArrayList<>();
+        super.addBuildableCells(worker, buildableCells); //Aggiungo a buildableCells tutte le celle su cui potrei costruire normalmente
+
+        for(Cell cell: buildableCells){
+            heightDifference = worker.getPosition().heightDifference(cell);
+            if(heightDifference<0){
+                return buildableCells; //Se trovo una Cella ad un livello inferiore di quello in cui mi trovo allora non c'è rischio di suicidarmi
+            }
+            else if (heightDifference == 0){ //Conto quante celle al mio stesso livello ci sono
+                cellsOnMyLevel++;
+                if(cellsOnMyLevel>1) //Se trovo 2 celle al mio stesso livello allora non c'è rischio di suicidarmi
+                    return buildableCells;
+                else cellOnMyLevel = cell; //Quando trovo la prima cella al mio stesso livello la salvo in una variabile
+            }
+        }
+
+        if(cellsOnMyLevel ==1){
+            buildableCells.remove(cellOnMyLevel); //Se ho trovato solo una cella al mio stesso livello e non ho trovato celle più in basso allora posso costruire ovunque tranne che nella cella al mio livello
+        }
+        else buildableCells = new ArrayList<>(); //Se arrivo in questo else è perché sono circondato da celle più in alto, quindi non posso costruire prima di muovermi
+        return buildableCells;
+    }
+
+    @Override
+    public RuleSetStrategy getClone(Game game) {
+        return new BuildBeforeAfterMovement(this, game);
+    }
+
 
 }

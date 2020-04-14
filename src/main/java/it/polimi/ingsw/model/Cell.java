@@ -15,6 +15,14 @@ public class Cell implements Serializable {
     @JsonBackReference(" cell - worker")
     private Worker occupiedBy;
 
+    public Cell(int coordX, int coordY) {
+        this.coordX = coordX;
+        this.coordY = coordY;
+        this.hasDome = false;
+        this.occupiedBy = null;
+        this.block = Block.LEVEL0;
+    }
+
     @JsonCreator
     public Cell(@JsonProperty("coordX")int coordX, @JsonProperty("coordY") int coordY, @JsonProperty("hasDome") boolean hasDome, @JsonProperty("occupiedBy") Worker occupiedBy, @JsonProperty("block") Block block) {
         this.coordX = coordX;
@@ -24,12 +32,15 @@ public class Cell implements Serializable {
         this.block = block;
     }
 
-    public Cell(int coordX, int coordY) {
-        this.coordX = coordX;
-        this.coordY = coordY;
-        this.hasDome = false;
-        this.occupiedBy = null;
-        this.block = Block.LEVEL0;
+    //Copy constructor
+    public Cell(Cell cell){
+        this.coordX = cell.coordX;
+        this.coordY = cell.coordY;
+        this.hasDome = cell.hasDome;
+        this.block = cell.block;
+        if(cell.occupiedBy!=null)
+            this.occupiedBy = cell.occupiedBy;
+        else this.occupiedBy = null;
     }
 
     public int getCoordX() {

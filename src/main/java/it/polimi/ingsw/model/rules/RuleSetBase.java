@@ -19,6 +19,8 @@ import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RuleSetBase.class, name = "Basic rules"),
@@ -47,6 +49,17 @@ public class RuleSetBase implements RuleSetStrategy {
         this.buildsAvailable = 1;
         this.hasMovedUp = false;
         this.movedWorker = null;
+    }
+
+    public RuleSetBase(RuleSetStrategy ruleSetBase, Game game) {
+        this.game = game;
+        this.movesAvailable = ruleSetBase.getMovesAvailable();
+        this.movesUpAvailable = ruleSetBase.getMovesUpAvailable();
+        this.buildsAvailable = ruleSetBase.getBuildsAvailable();
+        this.hasMovedUp = ruleSetBase.hasMovedUp();
+        if(ruleSetBase.getMovedWorker() != null)
+            this.movedWorker =game.getGameBoard().getCell(ruleSetBase.getMovedWorker().getPosition()).getOccupiedBy();
+        else this.movedWorker = null;
     }
 
     @Override
@@ -149,11 +162,6 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public boolean checkLoseCondition(MoveAction action) throws LostException {
-        return getBuildableCells(action.getTargetWorker()) == null;
-    }
-
-    @Override
     public boolean checkLoseCondition() throws LostException {
         /* calling this function at the beginning of the turn
          * to check if the player can make a move
@@ -214,4 +222,10 @@ public class RuleSetBase implements RuleSetStrategy {
     public boolean canEndTurnAutomatically(){
         return (movesAvailable == 0 && buildsAvailable == 0);
     }
+
+    public RuleSetStrategy getClone(Game game){
+        return new RuleSetBase(this, game);
+    }
+
+
 }

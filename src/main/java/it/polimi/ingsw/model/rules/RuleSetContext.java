@@ -44,10 +44,6 @@ public class RuleSetContext implements Memento<RuleSetContext> {
         return strategy.checkWinCondition(action);
     }
 
-    public boolean checkLoseCondition(MoveAction action) throws LostException {
-        return strategy.checkLoseCondition(action);
-    }
-
     public boolean checkLoseCondition() throws LostException {
         return strategy.checkLoseCondition();
     }

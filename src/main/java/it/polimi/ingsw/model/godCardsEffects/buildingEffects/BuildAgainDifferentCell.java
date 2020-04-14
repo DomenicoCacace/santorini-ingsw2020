@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,19 @@ import java.util.List;
 public class BuildAgainDifferentCell extends BuildingStrategy {
 
     private Cell chosenCell;
+
+
+    private BuildAgainDifferentCell( BuildAgainDifferentCell buildAgainDifferentCell, Game game){
+        this.game = game;
+        this.movesAvailable = buildAgainDifferentCell.getMovesAvailable();
+        this.movesUpAvailable = buildAgainDifferentCell.getMovesUpAvailable();
+        this.buildsAvailable = buildAgainDifferentCell.getBuildsAvailable();
+        this.hasMovedUp = buildAgainDifferentCell.hasMovedUp();
+        if(buildAgainDifferentCell.getMovedWorker() != null)
+            this.movedWorker =game.getGameBoard().getCell(buildAgainDifferentCell.getMovedWorker().getPosition()).getOccupiedBy();
+        else this.movedWorker = null;
+        chosenCell = game.getGameBoard().getCell(buildAgainDifferentCell.chosenCell);
+    }
 
     public void initialize() {
         this.movesAvailable = 1;
@@ -57,5 +72,10 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     @Override
     public boolean canEndTurn(){
         return (movesAvailable == 0 && buildsAvailable <= 1);
+    }
+
+    @Override
+    public RuleSetStrategy getClone(Game game) {
+        return new BuildAgainDifferentCell(this, game);
     }
 }

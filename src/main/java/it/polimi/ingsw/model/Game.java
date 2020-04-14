@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Game implements ObservableInterface {
@@ -22,8 +23,17 @@ public class Game implements ObservableInterface {
     private Turn nextTurn;
     private Player winner;
     private RuleSetContext currentRuleSet;
-    private  File file = new File("../SavedGame.json");
+    private File file = new File("../SavedGame.json");
 
+    public Game( GameBoard gameBoard,  List<Player> players) throws IOException {
+        this.gameBoard = gameBoard;
+        this.players = players;
+        for (Player player : players)
+            player.setGame(this);
+        //just for testing
+        currentRuleSet = new RuleSetContext();
+        this.saveState();
+    }
 
     private Game(@JsonProperty("gameBoard")GameBoard gameBoard, @JsonProperty("players") List<Player> players, @JsonProperty("currentTurn") Turn currentTurn, @JsonProperty("nextTurn") Turn nextTurn, @JsonProperty("winner") Player winner, @JsonProperty("currentRuleset") RuleSetContext currentRuleSet) {
         this.gameBoard = gameBoard;
@@ -34,15 +44,30 @@ public class Game implements ObservableInterface {
         this.currentRuleSet = currentRuleSet;
     }
 
-    public Game( GameBoard gameBoard,  List<Player> players) throws IOException {
-        this.gameBoard = gameBoard;
-        this.players = players;
-        for (Player player : players)
-            player.setGame(this);
-        //just for testing
-        currentRuleSet = new RuleSetContext();
-        this.saveState();
+    private Game(Game game){ //TODO: get clone and privatize constructors
+        this.gameBoard = new GameBoard(game.gameBoard);
+        this.players = new ArrayList<>();
+        for(Player player: game.players){
+            this.players.add(new Player(player, this));
+        }
 
+        this.currentTurn = new Turn(game.currentTurn, this);
+        this.nextTurn = new Turn(game.nextTurn, this);
+        if(game.winner!= null) {
+            this.winner = this.getPlayers().stream().filter(player -> player.getName().equals(game.winner.getName())).collect(Collectors.toList()).get(0);
+        }
+        else this.winner = null;
+        this.currentRuleSet = new RuleSetContext();
+        currentRuleSet.setStrategy(this.currentTurn.getRuleSetStrategy());
+        this.file = new File("../SavedGame2.json");
+    }
+
+    public void setCellsReferences(Player player){
+        for (Worker worker : player.getWorkers()) {
+            Cell tmpCell = gameBoard.getCell(worker.getPosition());
+            tmpCell.setOccupiedBy(worker);
+            worker.setPosition(tmpCell);
+        }
     }
 
     public Turn getCurrentTurn() {
@@ -100,7 +125,6 @@ public class Game implements ObservableInterface {
             //TODO: notifyObservers(MessageEvent.PLAYER_MOVE);
             this.saveState();
         }
-
     }
 
     public void validateBuildAction(BuildAction buildAction) throws IOException, LostException {
@@ -152,6 +176,10 @@ public class Game implements ObservableInterface {
             //TODO: manage win
         }
         generateNextTurn();
+    }
+
+    public Game saveStateToVariable(){
+        return new Game(this);
     }
 
     public void saveState(){

@@ -1,14 +1,29 @@
 package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Swap extends MovementStrategy {
+
+    public Swap(){super();}
+
+    private Swap( Swap swap, Game game){
+        this.game = game;
+        this.movesAvailable = swap.getMovesAvailable();
+        this.movesUpAvailable = swap.getMovesUpAvailable();
+        this.buildsAvailable = swap.getBuildsAvailable();
+        this.hasMovedUp = swap.hasMovedUp();
+        if(swap.getMovedWorker() != null)
+            this.movedWorker =game.getGameBoard().getCell(swap.getMovedWorker().getPosition()).getOccupiedBy();
+        else this.movedWorker = null;
+    }
 
     public void swapAction(MoveAction action){
         if (action.getTargetCell().getOccupiedBy()!= null) {
@@ -46,12 +61,27 @@ public class Swap extends MovementStrategy {
         List<Cell> cells = new ArrayList<>();
         if(movesAvailable > 0) {
             for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                if (canGo(worker, cell))
+                if (canGo(worker, cell) && canBuildOnAtLeastOneCell(cell))
                     if (cell.getOccupiedBy() == null || isNotSameOwner(cell))
                         cells.add(cell);
             }
         }
         return cells;
+    }
+
+    private boolean canBuildOnAtLeastOneCell(Cell targetCell){
+        for(Cell cell: game.getGameBoard().getAdjacentCells(targetCell)){
+            if(!cell.hasDome() && cell.getOccupiedBy() == null)
+                return true;
+        }
+        return false;
+    }
+
+
+
+    @Override
+    public RuleSetStrategy getClone(Game game) {
+        return new Swap(this, game);
     }
 
 }

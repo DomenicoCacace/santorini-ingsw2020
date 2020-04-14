@@ -241,7 +241,7 @@ class SwapTest {
     }
 
     @Test
-    void loseAfterSwappingTest() throws IOException, LostException {
+    void cannotKillYourselfTest() throws IOException, LostException {
         game.getGameBoard().getCell(4,1).setBlock(Block.DOME);
         game.getGameBoard().getCell(4,3).setBlock(Block.DOME);
         game.getGameBoard().getCell(3,3).setBlock(Block.DOME);
@@ -263,25 +263,12 @@ class SwapTest {
         moveAction = new MoveAction(myWorker, myCell2);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), myCell2);
-        assertEquals(opponentWorker.getPosition(), myCell);
-        assertEquals(myCell2.getOccupiedBy(), myWorker);
-        assertEquals(myCell.getOccupiedBy(), opponentWorker);
-
-        /*
-        assertTrue(game.getCurrentRuleSet().getStrategy().checkLoseCondition((MoveAction) moveAction));
-        Action buildAction = new BuildAction(myWorker, myCell, Block.LEVEL1);
-        assertThrows(LostException.class, () -> {
-            buildAction.getValidation(game);
-        });
-        assertEquals(myCell.getBlock(), Block.LEVEL0);
-        assertEquals(game.getPlayers().size(), 1);
-        assertEquals(game.getCurrentTurn().getCurrentPlayer().getName(), "base");
-
-         */
-
+        assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        assertEquals(myWorker.getPosition(), myCell);
+        assertEquals(opponentWorker.getPosition(), myCell2);
+        assertEquals(myCell.getOccupiedBy(), myWorker);
+        assertEquals(myCell2.getOccupiedBy(), opponentWorker);
     }
 }

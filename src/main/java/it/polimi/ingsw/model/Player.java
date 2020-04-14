@@ -32,6 +32,18 @@ public class Player {
         this.workers = new ArrayList<>();
     }
 
+    public Player(Player player, Game game){
+        this.game = game;
+        this.name = player.name;
+        this.color = player.color;
+        this.workers = new ArrayList<>();
+        for(Worker worker: player.workers){
+            this.workers.add(new Worker(worker.getPosition()));
+        }
+        game.setCellsReferences(this);
+        this.god = new God(player.god, game);
+    }
+
     public void setGame(Game game) {
         this.game = game;
         god.getStrategy().setGame(game);//We can either do this here or in the Server class after it called the game constructor.
