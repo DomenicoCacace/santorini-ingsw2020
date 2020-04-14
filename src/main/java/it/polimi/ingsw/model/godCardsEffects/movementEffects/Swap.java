@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
@@ -14,14 +13,14 @@ public class Swap extends MovementStrategy {
 
     public Swap(){super();}
 
-    private Swap( Swap swap, Game game){
+    private Swap(Swap swap, Game game){
         this.game = game;
         this.movesAvailable = swap.getMovesAvailable();
         this.movesUpAvailable = swap.getMovesUpAvailable();
         this.buildsAvailable = swap.getBuildsAvailable();
         this.hasMovedUp = swap.hasMovedUp();
         if(swap.getMovedWorker() != null)
-            this.movedWorker =game.getGameBoard().getCell(swap.getMovedWorker().getPosition()).getOccupiedBy();
+            this.movedWorker = game.getGameBoard().getCell(swap.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
 
@@ -44,7 +43,7 @@ public class Swap extends MovementStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(MoveAction action) throws LostException {
+    public boolean isMoveActionValid(MoveAction action) {
         if(movesAvailable>0 && isInsideWalkableCells(action)){
             movedWorker = action.getTargetWorker();
             swapAction(action);

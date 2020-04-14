@@ -1,9 +1,10 @@
 package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.godCardsEffects.affectOpponentTurnEffects.CannotMoveUp;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         this.buildsAvailable = buildBeforeAfterMovement.getBuildsAvailable();
         this.hasMovedUp = buildBeforeAfterMovement.hasMovedUp();
         if(buildBeforeAfterMovement.getMovedWorker() != null)
-            this.movedWorker =game.getGameBoard().getCell(buildBeforeAfterMovement.getMovedWorker().getPosition()).getOccupiedBy();
+            this.movedWorker = game.getGameBoard().getCell(buildBeforeAfterMovement.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
         this.hasBuiltBefore = buildBeforeAfterMovement.hasBuiltBefore;
         this.builder = game.getGameBoard().getCell(buildBeforeAfterMovement.builder.getPosition()).getOccupiedBy();
@@ -45,7 +46,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(MoveAction action) throws LostException {
+    public boolean isMoveActionValid(MoveAction action) {
         if(!hasBuiltBefore && super.isMoveActionValid(action)){
             buildsAvailable--;
             return true;
@@ -54,7 +55,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public boolean isBuildActionValid(BuildAction action) throws LostException {
+    public boolean isBuildActionValid(BuildAction action) {
         if (this.buildsAvailable>0 && isInsideBuildableCells(action) && isCorrectBlock(action)) {
             if (movedWorker == null) {
                 hasBuiltBefore = true;
@@ -68,7 +69,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public List<Cell> getWalkableCells(Worker worker) throws LostException {
+    public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> canGoCells = new ArrayList<>();
         if(hasBuiltBefore){
             if(worker == builder) {
@@ -76,8 +77,6 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
                     if (worker.getPosition().heightDifference(cell) <= 0)
                         canGoCells.add(cell);
                 }
-                if(canGoCells.size()==0)
-                    throw new LostException();
             }
             return canGoCells;
         }
@@ -85,11 +84,11 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public List<Cell> getBuildableCells(Worker worker) throws LostException {
+    public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
         if (buildsAvailable>0) {
             if (movesAvailable == 0 && !hasBuiltBefore) {
-                cells= super.getBuildableCells(worker);
+                cells = super.getBuildableCells(worker);
             }
 
             else if (movesAvailable == 0 && worker==builder) { //this is useful for the view: highlighting the correct cells
@@ -103,7 +102,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         return cells;
     }
 
-    private List<Cell> buildableCellsBeforeMoving(Worker worker) throws LostException {
+    private List<Cell> buildableCellsBeforeMoving(Worker worker) {
         int cellsOnMyLevel = 0;
         int heightDifference;
         Cell cellOnMyLevel = null;

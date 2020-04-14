@@ -67,7 +67,7 @@ public class Player {
         this.action = action;
     }
 
-    public void useAction() throws IOException, LostException {
+    public void useAction() throws IOException {
         action.getValidation(game);
     }
 
@@ -83,7 +83,7 @@ public class Player {
         return name;
     }
 
-    public void setSelectedWorker(Worker selectedWorker) throws LostException, IOException {
+    public void setSelectedWorker(Worker selectedWorker) throws IOException {
         this.selectedWorker = selectedWorker;
         selectedWorker.setWalkableCells(game.getWalkableCells(selectedWorker));
     }

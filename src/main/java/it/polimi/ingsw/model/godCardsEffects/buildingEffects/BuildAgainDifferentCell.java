@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
-import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.ArrayList;
@@ -15,14 +14,14 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     private Cell chosenCell;
 
 
-    private BuildAgainDifferentCell( BuildAgainDifferentCell buildAgainDifferentCell, Game game){
+    private BuildAgainDifferentCell(BuildAgainDifferentCell buildAgainDifferentCell, Game game){
         this.game = game;
         this.movesAvailable = buildAgainDifferentCell.getMovesAvailable();
         this.movesUpAvailable = buildAgainDifferentCell.getMovesUpAvailable();
         this.buildsAvailable = buildAgainDifferentCell.getBuildsAvailable();
         this.hasMovedUp = buildAgainDifferentCell.hasMovedUp();
         if(buildAgainDifferentCell.getMovedWorker() != null)
-            this.movedWorker =game.getGameBoard().getCell(buildAgainDifferentCell.getMovedWorker().getPosition()).getOccupiedBy();
+            this.movedWorker = game.getGameBoard().getCell(buildAgainDifferentCell.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
         chosenCell = game.getGameBoard().getCell(buildAgainDifferentCell.chosenCell);
     }
@@ -45,7 +44,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     }
 
     @Override
-    public boolean isBuildActionValid(BuildAction action) throws LostException {
+    public boolean isBuildActionValid(BuildAction action) {
         if (canBuild(action)) {
             buildsAvailable--;
             chosenCell = action.getTargetCell();
@@ -55,7 +54,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     }
 
     @Override
-    public List<Cell> getBuildableCells(Worker worker) throws LostException {
+    public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> secondBuild = new ArrayList<>();
         if(this.buildsAvailable> 0) {
             if (chosenCell == null)

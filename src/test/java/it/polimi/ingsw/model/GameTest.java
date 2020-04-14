@@ -21,7 +21,7 @@ class GameTest {
     private Game game;
 
     @BeforeEach
-    void setUp() throws IOException, LostException {
+    void setUp() throws IOException {
         gods = new ArrayList<>();
         gods.add(new God("minotaur"));
         gods.get(0).setStrategy(new Push());
@@ -60,7 +60,7 @@ class GameTest {
 
 
     @Test
-    void NextTurnGenerationTest() throws IOException, LostException {
+    void NextTurnGenerationTest() throws IOException {
         Turn currentTurn;
 
         for(int index = 1; index < 6; index++) {
@@ -75,7 +75,7 @@ class GameTest {
 
 
     @Test
-    void persistenceTest() throws IOException, LostException {
+    void persistenceTest() throws IOException {
         game.generateNextTurn();
         Worker currentWorker = game.getPlayers().get(0).getWorkers().get(0);
         Cell targetCell = game.getGameBoard().getCell(2, 3);
@@ -109,7 +109,7 @@ class GameTest {
     }
 
     @Test
-    void correctLoseManagement3PlayersTest() throws IOException, LostException {
+    void correctLoseManagement3PlayersTest() throws IOException {
 
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
@@ -146,7 +146,7 @@ class GameTest {
     }
 
     @Test
-    void twoConsecutiveLossesTest() throws IOException, LostException {
+    void twoConsecutiveLossesTest() throws IOException {
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(2,3).setBlock(Block.DOME);
@@ -171,7 +171,7 @@ class GameTest {
     }
 
     @Test
-    void saveStateToVariableTest() throws IOException, LostException {
+    void saveStateToVariableTest() throws IOException {
         Game savedGame = game.saveStateToVariable(); //Save the current state in savedGame
 
         game.saveState(); //Uguali

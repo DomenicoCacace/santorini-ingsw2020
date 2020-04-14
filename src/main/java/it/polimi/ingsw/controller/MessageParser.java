@@ -18,21 +18,22 @@ public class MessageParser {
                 lobby.addUser(message.username);
                 break;
             case PLAYER_MOVE:
-            MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).targetWorker , ((PlayerMoveRequest) message).targetCell);
-           // serverController.handleMoveAction(moveAction);
-            break;
+                MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).targetWorker , ((PlayerMoveRequest) message).targetCell);
+                // serverController.handleMoveAction(moveAction);
+                break;
             case PLAYER_BUILD:
                 BuildAction buildAction = new BuildAction(((PlayerBuildRequest) message).targetWorker , ((PlayerBuildRequest) message).targetCell, ((PlayerBuildRequest) message).targetBlock);
-             //   serverController.handleBuildAction(buildAction);
+                // serverController.handleBuildAction(buildAction);
                 break;
             case ADD_WORKER:
-               // serverController.addWorker(message.username, ((AddWorkerRequest) message).targetCell);
+                // serverController.addWorker(message.username, ((AddWorkerRequest) message).targetCell);
                 break;
             case ASSIGN_GOD:
                 lobby.assignGod(message.username, ((AssignGodRequest) message).god);
                 break;
             case END_TURN:
-                //serverController.passTurn(message.username);
+                // serverController.passTurn(message.username);
+                break;
             case CHOOSE_INITIAL_GODS:
                 lobby.chooseGods(((ChooseInitialGodsRequest) message).gods);
                 break;
@@ -41,11 +42,11 @@ public class MessageParser {
         }
 
 
-        //chiamerò metodi di lobby e controller
+        //calling methods of lobby e controller
     }
 
     public void parseMessageFromServerToClient(MessageResponse message){
-        //chiamerò i metodi sul network
+        //calling methods on the network
     }
 
     public void setLobby(Lobby lobby) {

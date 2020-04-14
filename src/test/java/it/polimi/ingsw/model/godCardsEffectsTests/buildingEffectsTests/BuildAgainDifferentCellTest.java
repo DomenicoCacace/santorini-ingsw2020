@@ -25,7 +25,7 @@ class BuildAgainDifferentCellTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException, LostException {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Demeter"));
         gods.get(0).setStrategy(new BuildAgainDifferentCell());
@@ -60,7 +60,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void correctBuildAgainDifferentCellTest() throws IOException, LostException {
+    void correctBuildAgainDifferentCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -86,7 +86,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildOnTheSameCellTest() throws IOException, LostException {
+    void cannotBuildOnTheSameCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -110,7 +110,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest() throws IOException, LostException {
+    void cannotBuildWith2DifferentWorkersTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -128,7 +128,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException, LostException {
+    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -152,7 +152,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void canEndTurnAfter1BuildTest() throws IOException, LostException {
+    void canEndTurnAfter1BuildTest() throws IOException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

@@ -21,7 +21,7 @@ public class BuildAction extends Action {
         targetCell.setBlock(targetBlock);
     }
 
-    public void getValidation(Game game) throws IOException, LostException {
+    public void getValidation(Game game) throws IOException {
         game.validateBuildAction(this);
     }
 }

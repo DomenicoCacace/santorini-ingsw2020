@@ -1,20 +1,17 @@
 package it.polimi.ingsw.network.server;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.MessageParser;
-import it.polimi.ingsw.model.God;
-import it.polimi.ingsw.network.message.request.ChooseInitialGodsRequest;
 import it.polimi.ingsw.network.message.request.ChooseNumberOfPlayersRequest;
-import it.polimi.ingsw.network.message.response.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.response.ChooseNumberOfPlayerResponse;
 import it.polimi.ingsw.network.message.response.LoginResponse;
 import it.polimi.ingsw.network.message.response.MessageResponse;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public class Server {
+public class Server extends Thread{
 
     private int MAX_PLAYER_NUMBER = 3;
     private Lobby lobby;
@@ -22,10 +19,8 @@ public class Server {
     private MessageParser messageParser;
     private boolean received = false;
 
-
-
-    //private static Logger logger = Logger.getLogger("server");
-
+    // private int socketPort = 4444; // getter and setter?
+    // private static Logger logger = Logger.getLogger("server");
 
     private Server() throws IOException {
         this.usernames = new LinkedHashMap<>();
@@ -34,27 +29,46 @@ public class Server {
     }
 
 /*
+
     public static void main(String[] args) {
         try {
             Server server = new Server();
-            server.startServer(Configuration.getInstance().getSocketPort());
+            server.startServer(socketPort);
         } catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage());
         }
     }
 
- */
-
-/*
     private void startServer(int socketPort) {
-        socketServer.startServer(socketPort);
-        socketServer.start();
+        try {
+            ServerSocket server = new ServerSocket(socketPort);
+            logger.log(Level.INFO,"Socket server is on");
+        } catch (IOException e) {
+            System.err.println("Could not listen on port " + socketPort);
+            logger.log(Level.WARNING,e.getMessage());
+        }
+        server.start();
+    }
+
+    @Override
+    public void run() {
+        while(true) {
+            Socket newClientConnection; // = null;  ???
+            try {
+                newClientConnection = server.accept();
+                Thread t = new VirtualClient(this, newClientConnection);
+                t.start();
+            } catch (IOException e) {
+                logger.log(Level.WARNING,e.getMessage());
+                newClientConnection.close();
+            }
+        }
     }
 
  */
 
 
-    public synchronized void addClient(VirtualClient virtualClient) throws IOException, InterruptedException {        // Login of the player
+    public synchronized void addClient(VirtualClient virtualClient) throws IOException, InterruptedException, InvalidUsernameException {        // Login of the player
         if (usernames.size() < MAX_PLAYER_NUMBER && lobby==null) {
             if (usernames.containsKey(virtualClient.getUsername())) {
                     virtualClient.notify(new LoginResponse("Name already taken", null));
@@ -74,12 +88,20 @@ public class Server {
             }
 
         }
+
     }
 
 
 /*
-    public void send(String username, Message message) {
-        if (usernames.contains(username)) {
+
+    public void send(String username, MessageRequest message) {
+        if (usernames.containsKey(username)) {
+            usernames.get(username).notify(message);
+        }
+    }
+
+    public void send(String username, MessageResponse message) {
+        if (usernames.containsKey(username)) {
             usernames.get(username).notify(message);
         }
     }

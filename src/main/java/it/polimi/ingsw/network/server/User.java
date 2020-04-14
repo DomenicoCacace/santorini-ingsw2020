@@ -8,9 +8,13 @@ public class User {
     private String username;
     private VirtualClient virtualClient;
 
-    public User(VirtualClient virtualClient) {
-        this.virtualClient = virtualClient;
-        this.username = virtualClient.getUsername();
+    public User(VirtualClient virtualClient) throws InvalidUsernameException {
+        if(virtualClient.getUsername().equals("broadcast"))
+            throw new InvalidUsernameException();
+        else {
+            this.virtualClient = virtualClient;
+            this.username = virtualClient.getUsername();
+        }
     }
 
     public String getUsername() {

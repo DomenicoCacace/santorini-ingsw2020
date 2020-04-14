@@ -2,9 +2,8 @@ package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
-import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.List;
@@ -25,14 +24,14 @@ public class MoveAgain extends MovementStrategy {
         initialize();
     }
 
-    public MoveAgain(MoveAgain moveAgain, Game game){
+    private MoveAgain(MoveAgain moveAgain, Game game){
         this.game = game;
         this.movesAvailable = moveAgain.getMovesAvailable();
         this.movesUpAvailable = moveAgain.getMovesUpAvailable();
         this.buildsAvailable = moveAgain.getBuildsAvailable();
         this.hasMovedUp = moveAgain.hasMovedUp();
         if(moveAgain.getMovedWorker() != null)
-            this.movedWorker =game.getGameBoard().getCell(moveAgain.getMovedWorker().getPosition()).getOccupiedBy();
+            this.movedWorker = game.getGameBoard().getCell(moveAgain.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
         this.startingCell = game.getGameBoard().getCell(moveAgain.startingCell);
     }
@@ -43,7 +42,7 @@ public class MoveAgain extends MovementStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(MoveAction action) throws LostException {
+    public boolean isMoveActionValid(MoveAction action) {
         int x, y;
         if (movedWorker == null && super.isMoveActionValid(action)) {
             x = action.getTargetWorker().getPosition().getCoordX();
@@ -57,7 +56,7 @@ public class MoveAgain extends MovementStrategy {
     }
 
     @Override
-    public List<Cell> getWalkableCells(Worker worker) throws LostException {
+    public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> adjacentCells = super.getWalkableCells(worker);
         if(movedWorker != null)
             adjacentCells.remove(startingCell);

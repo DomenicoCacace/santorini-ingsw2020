@@ -25,7 +25,7 @@ class RuleSetBaseTest {
     private Block block;
 
     @BeforeEach
-    void SetUp() throws IOException, LostException {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("base1"));
         gods.get(0).setStrategy(new RuleSetBase());
@@ -59,7 +59,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void getWalkableCellsTest() throws LostException, IOException {
+    void getWalkableCellsTest() throws IOException {
         List<Cell> walkableCells;
         walkableCells = game.getWalkableCells(currentWorker);
         assertEquals(walkableCells.size(), 5);
@@ -73,7 +73,7 @@ class RuleSetBaseTest {
 
 
     @Test
-    void getBuildableCellsTest() throws IOException, LostException {
+    void getBuildableCellsTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -91,7 +91,7 @@ class RuleSetBaseTest {
 
 
     @Test
-    void correctMovementTest() throws IOException, LostException {
+    void correctMovementTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -103,7 +103,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void correctMoveUpTest() throws IOException, LostException {
+    void correctMoveUpTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.LEVEL1);
         moveAction = new MoveAction(currentWorker, targetCell);
@@ -116,7 +116,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void correctMoveDownTest() throws IOException, LostException {
+    void correctMoveDownTest() throws IOException {
         currentWorker.getPosition().setBlock(Block.LEVEL2);
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
@@ -129,7 +129,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotMoveTooFarTest() throws IOException, LostException {
+    void cannotMoveTooFarTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 4);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -142,7 +142,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotMoveTooHighTest() throws IOException, LostException {
+    void cannotMoveTooHighTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.LEVEL2);
         moveAction = new MoveAction(currentWorker, targetCell);
@@ -156,7 +156,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cantMoveOnDome() throws IOException, LostException {
+    void cantMoveOnDome() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.DOME);
         moveAction = new MoveAction(currentWorker, targetCell);
@@ -170,7 +170,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotMoveTwiceTest() throws IOException, LostException {
+    void cannotMoveTwiceTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -186,7 +186,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void passTurnAutomaticallyAfterBuildingTest() throws IOException, LostException {
+    void passTurnAutomaticallyAfterBuildingTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -211,7 +211,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildWithoutMovingTest() throws IOException, LostException {
+    void cannotBuildWithoutMovingTest() throws IOException {
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
@@ -223,7 +223,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void correctBuildActionTest() throws IOException, LostException {
+    void correctBuildActionTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -241,7 +241,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildASmallerBlockTest() throws IOException, LostException {
+    void cannotBuildASmallerBlockTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -257,7 +257,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildWithOtherWorkerTest() throws IOException, LostException {
+    void cannotBuildWithOtherWorkerTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -274,7 +274,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildOverDomeTest() throws IOException, LostException {
+    void cannotBuildOverDomeTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -290,7 +290,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildOnMyCellTest() throws IOException, LostException {
+    void cannotBuildOnMyCellTest() throws IOException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);

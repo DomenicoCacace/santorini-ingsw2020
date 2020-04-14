@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
-import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     private Cell chosenCell;
 
-    private BuildAgainSameCell( BuildAgainSameCell buildAgainSameCell, Game game) {
+    private BuildAgainSameCell(BuildAgainSameCell buildAgainSameCell, Game game) {
         this.game = game;
         this.movesAvailable = buildAgainSameCell.getMovesAvailable();
         this.movesUpAvailable = buildAgainSameCell.getMovesUpAvailable();
@@ -46,7 +45,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
     }
 
     @Override
-    public boolean isBuildActionValid(BuildAction action) throws LostException {
+    public boolean isBuildActionValid(BuildAction action) {
         if (this.buildsAvailable>0 && isInsideBuildableCells(action) &&
                 isCorrectBlock(action) && movedWorker == action.getTargetWorker()){
             buildsAvailable--;
@@ -59,7 +58,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
     }
 
     @Override
-    public List<Cell> getBuildableCells(Worker worker) throws LostException {
+    public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> secondBuild = new ArrayList<>();
         if(this.buildsAvailable >0) {
             if (chosenCell == null)

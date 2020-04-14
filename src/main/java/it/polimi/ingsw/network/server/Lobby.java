@@ -1,35 +1,31 @@
 package it.polimi.ingsw.network.server;
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.MessageParser;
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.network.message.request.AssignGodRequest;
 import it.polimi.ingsw.network.message.request.ChooseInitialGodsRequest;
 import it.polimi.ingsw.network.message.request.ChooseYourGodRequest;
 import it.polimi.ingsw.network.message.response.ChosenGodsResponse;
 import it.polimi.ingsw.network.message.response.GameStartResponse;
-import it.polimi.ingsw.network.message.response.LoginResponse;
-import it.polimi.ingsw.network.message.response.MessageResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Lobby {
 
     private final static int MAXNUMPLAYERS = 3;
 
-    private Logger logger;
     private List<String> userNames;
     private Map<String, Player> playerMap = new LinkedHashMap<>();
     private MessageParser parser;
     private Server server;
     private ServerController controller;
+    // private Logger logger;
 
     private List<God> chosenGods = new ArrayList<>();
     private List<God> allGods;
@@ -85,4 +81,17 @@ public class Lobby {
         Game game = new Game(board, players);
         parser.parseMessageFromServerToClient(new GameStartResponse("OK", game));
     }
+
+    /*
+
+    private void updateOne(String username, MessageResponse message) {
+        server.send(username, message);
+    }
+
+    private void updateAll(MessageResponse message){
+        for(String username : userNames){
+            server.send(username, message);
+        }
+    }
+     */
 }

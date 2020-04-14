@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.action;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.Worker;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public abstract class Action {
         return this.targetWorker.getPosition();
     }
 
-    public abstract void getValidation(Game game) throws IOException, LostException;
+    public abstract void getValidation(Game game) throws IOException;
 
     public Cell getTargetCell() {
         return targetCell;

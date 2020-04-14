@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -19,7 +18,6 @@ import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
@@ -107,13 +105,13 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
 
-    protected boolean isInsideWalkableCells(MoveAction action) throws LostException {
+    protected boolean isInsideWalkableCells(MoveAction action) {
         return getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell());
 
     }
 
     @Override
-    public boolean isMoveActionValid(MoveAction action) throws LostException {
+    public boolean isMoveActionValid(MoveAction action) {
         if (isInsideWalkableCells(action)) {
             movesAvailable--;
 
@@ -129,7 +127,7 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public boolean isBuildActionValid(BuildAction action) throws LostException {
+    public boolean isBuildActionValid(BuildAction action) {
         if (canBuild(action)) {
             buildsAvailable--;
             movesAvailable = 0;
@@ -140,11 +138,11 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
 
-    protected boolean isInsideBuildableCells(BuildAction action) throws LostException {
+    protected boolean isInsideBuildableCells(BuildAction action) {
         return getBuildableCells(action.getTargetWorker()).contains(action.getTargetCell());
     }
 
-    protected boolean canBuild(BuildAction action) throws LostException {
+    protected boolean canBuild(BuildAction action) {
         return isInsideBuildableCells(action) && isCorrectBlock(action) &&
                 movedWorker == action.getTargetWorker();
     }
@@ -162,7 +160,7 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public boolean checkLoseCondition() throws LostException {
+    public boolean checkLoseCondition() {
         /* calling this function at the beginning of the turn
          * to check if the player can make a move
          */
@@ -173,7 +171,7 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public List<Cell> getWalkableCells(Worker worker) throws LostException {
+    public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
         if (movesAvailable > 0) {
             addWalkableCells(worker, cells);
@@ -195,7 +193,7 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public List<Cell> getBuildableCells(Worker worker) throws LostException {
+    public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
         if (buildsAvailable > 0) {
             if (worker == movedWorker) {

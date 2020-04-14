@@ -48,7 +48,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapSameLevelTest() throws IOException, LostException {
+    void correctSwapSameLevelTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 3);
 
@@ -75,7 +75,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapHigherOneLevelTest() throws IOException, LostException {
+    void correctSwapHigherOneLevelTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 2);
 
@@ -100,7 +100,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapLowerAnyLevelTest() throws IOException, LostException {
+    void correctSwapLowerAnyLevelTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 3);
         myCell2 = game.getGameBoard().getCell(3, 2);
 
@@ -125,7 +125,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooHighTest() throws IOException, LostException {
+    void cannotSwapTooHighTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(3, 3);
 
@@ -151,7 +151,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooFarTest() throws IOException, LostException {
+    void cannotSwapTooFarTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(1, 2);
 
@@ -177,7 +177,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTwiceTest() throws IOException, LostException {
+    void cannotSwapTwiceTest() throws IOException {
         Cell secondCellOpponent;
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(2, 2);
@@ -215,7 +215,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapWithMyWorkerTest() throws IOException, LostException {
+    void cannotSwapWithMyWorkerTest() throws IOException {
         myCell = game.getGameBoard().getCell(3, 2);
         myCell2 = game.getGameBoard().getCell(4, 3);
 
@@ -241,7 +241,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotKillYourselfTest() throws IOException, LostException {
+    void cannotKillYourselfTest() throws IOException {
         game.getGameBoard().getCell(4,1).setBlock(Block.DOME);
         game.getGameBoard().getCell(4,3).setBlock(Block.DOME);
         game.getGameBoard().getCell(3,3).setBlock(Block.DOME);

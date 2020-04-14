@@ -25,7 +25,7 @@ class BuildAgainSameCellTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException, LostException {
+    void SetUp() throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Hephaestus"));
         gods.get(0).setStrategy(new BuildAgainSameCell());
@@ -61,7 +61,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void correctBuildAgainSameCellTest() throws IOException, LostException {
+    void correctBuildAgainSameCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -86,7 +86,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException, LostException {
+    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -110,7 +110,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterBuildingLevel3Test() throws IOException, LostException {
+    void endTurnAutomaticallyAfterBuildingLevel3Test() throws IOException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
 
@@ -125,7 +125,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterBuildingDomeTest() throws IOException, LostException {
+    void endTurnAutomaticallyAfterBuildingDomeTest() throws IOException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
 
@@ -140,7 +140,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildOnADifferentCellTest() throws IOException, LostException {
+    void cannotBuildOnADifferentCellTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -165,7 +165,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest() throws IOException, LostException {
+    void cannotBuildWith2DifferentWorkersTest() throws IOException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -183,7 +183,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void canEndTurnAfter1BuildTest() throws IOException, LostException {
+    void canEndTurnAfter1BuildTest() throws IOException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

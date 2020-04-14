@@ -7,7 +7,6 @@ import it.polimi.ingsw.ObserverPattern.ObserverInterface;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetContext;
-import it.polimi.ingsw.network.message.response.MessageResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,31 +89,19 @@ public class Game implements ObservableInterface {
         return currentRuleSet;
     }
 
-    public List<Cell> getWalkableCells(Worker worker) throws LostException, IOException {
-        List<Cell> walkable = new ArrayList<>();
-        try {
-            walkable = currentRuleSet.getWalkableCells(worker);
-        } catch (LostException le) {
-            removePlayer(currentTurn.getCurrentPlayer());
-        }
-        return walkable;
+    public List<Cell> getWalkableCells(Worker worker) {
+        return currentRuleSet.getWalkableCells(worker);
     }
 
-    public List<Cell> getBuildableCells(Worker worker) throws IOException, LostException {
-        List<Cell> buildable = new ArrayList<>();
-        try {
-            buildable = currentRuleSet.getBuildableCells(worker);
-        } catch (LostException le) {
-            removePlayer(currentTurn.getCurrentPlayer());
-        }
-        return buildable;
+    public List<Cell> getBuildableCells(Worker worker) {
+        return currentRuleSet.getBuildableCells(worker);
     }
 
     public Player getWinner() {
         return winner;
     }
 
-    public void validateMoveAction(MoveAction moveAction) throws IOException, LostException {
+    public void validateMoveAction(MoveAction moveAction) {
         if (currentRuleSet.validateMoveAction(moveAction)) {
 
             if (currentRuleSet.checkWinCondition(moveAction)) {
@@ -127,7 +114,7 @@ public class Game implements ObservableInterface {
         }
     }
 
-    public void validateBuildAction(BuildAction buildAction) throws IOException, LostException {
+    public void validateBuildAction(BuildAction buildAction) throws IOException {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
             //TODO: notifyObservers();
@@ -136,12 +123,12 @@ public class Game implements ObservableInterface {
         }
     }
 
-    public void endTurn() throws IOException, LostException {
+    public void endTurn() throws IOException {
         if(currentRuleSet.canEndTurn())
             generateNextTurn();
     }
 
-    public void endTurnAutomatically() throws IOException, LostException {
+    public void endTurnAutomatically() throws IOException {
         if(currentRuleSet.canEndTurnAutomatically())
             generateNextTurn();
     }
@@ -153,7 +140,7 @@ public class Game implements ObservableInterface {
         return players.get(((players.indexOf(currentTurn.getCurrentPlayer()) + 1) % players.size()));
     }
 
-    public void generateNextTurn() throws IOException, LostException {
+    public void generateNextTurn() throws IOException {
         nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
         currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
         currentRuleSet.doEffect();
@@ -165,7 +152,7 @@ public class Game implements ObservableInterface {
         this.saveState();
     }
 
-    private void removePlayer(Player player) throws IOException, LostException {
+    private void removePlayer(Player player) throws IOException {
         for(Worker worker: player.getWorkers()){
             worker.getPosition().setOccupiedBy(null);
             worker.setPosition(null);

@@ -2,10 +2,9 @@ package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
+import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 import java.util.ArrayList;
@@ -15,14 +14,14 @@ public class Push extends MovementStrategy {
 
     public Push(){super();}
 
-    private Push( Push push, Game game){
+    private Push(Push push, Game game){
         this.game = game;
         this.movesAvailable = push.getMovesAvailable();
         this.movesUpAvailable = push.getMovesUpAvailable();
         this.buildsAvailable = push.getBuildsAvailable();
         this.hasMovedUp = push.hasMovedUp();
         if(push.getMovedWorker() != null)
-            this.movedWorker =game.getGameBoard().getCell(push.getMovedWorker().getPosition()).getOccupiedBy();
+            this.movedWorker = game.getGameBoard().getCell(push.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
 
@@ -42,7 +41,7 @@ public class Push extends MovementStrategy {
     }
 
     @Override
-    public boolean isMoveActionValid(MoveAction action) throws LostException {
+    public boolean isMoveActionValid(MoveAction action) {
 
         if(super.isMoveActionValid(action)){
             opponentAction(action);

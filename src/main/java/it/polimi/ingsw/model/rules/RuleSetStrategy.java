@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.LostException;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -31,17 +30,17 @@ public interface RuleSetStrategy {
 
     void setMovesUpAvailable(int num);
 
-    boolean isMoveActionValid(MoveAction action) throws LostException;
+    boolean isMoveActionValid(MoveAction action);
 
-    boolean isBuildActionValid(BuildAction action) throws LostException;
+    boolean isBuildActionValid(BuildAction action);
 
     boolean checkWinCondition(MoveAction action);
 
-    boolean checkLoseCondition() throws LostException;
+    boolean checkLoseCondition();
 
-    List<Cell> getWalkableCells(Worker worker) throws LostException;
+    List<Cell> getBuildableCells(Worker worker);
 
-    List<Cell> getBuildableCells(Worker worker) throws LostException;
+    List<Cell> getWalkableCells(Worker worker);
 
     void setGame(Game game);
 
