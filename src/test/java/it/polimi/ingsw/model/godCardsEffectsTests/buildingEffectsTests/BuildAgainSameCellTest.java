@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.buildingEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
+import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -25,11 +28,11 @@ class BuildAgainSameCellTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, AddingFailedException, IllegalActionException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Hephaestus"));
+        gods.add(new God("Hephaestus",2));
         gods.get(0).setStrategy(new BuildAgainSameCell());
-        gods.add(new God("base"));
+        gods.add(new God("base",2));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
@@ -61,7 +64,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void correctBuildAgainSameCellTest() throws IOException {
+    void correctBuildAgainSameCellTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -86,7 +89,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException {
+    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -110,7 +113,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterBuildingLevel3Test() throws IOException {
+    void endTurnAutomaticallyAfterBuildingLevel3Test() throws IOException, IllegalActionException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
 
@@ -125,7 +128,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterBuildingDomeTest() throws IOException {
+    void endTurnAutomaticallyAfterBuildingDomeTest() throws IOException, IllegalActionException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
 
@@ -140,7 +143,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildOnADifferentCellTest() throws IOException {
+    void cannotBuildOnADifferentCellTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -155,7 +158,11 @@ class BuildAgainSameCellTest {
         firstCell = game.getGameBoard().getCell(3, 3);
         secondBlock = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, firstCell, secondBlock);
-        buildAction.getValidation(game);
+        try{
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -165,7 +172,7 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest() throws IOException {
+    void cannotBuildWith2DifferentWorkersTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -177,13 +184,17 @@ class BuildAgainSameCellTest {
         assertEquals(firstCell.getBlock(), firstBlock);
         secondBlock = Block.LEVEL3;
         buildAction = new BuildAction(worker2, firstCell, secondBlock);
-        buildAction.getValidation(game);
+        try{
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(firstCell.getBlock(), firstBlock);
     }
 
     @Test
-    void canEndTurnAfter1BuildTest() throws IOException {
+    void canEndTurnAfter1BuildTest() throws IOException, IllegalActionException, IllegalEndingTurnException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

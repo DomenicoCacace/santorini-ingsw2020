@@ -4,13 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.ObserverPattern.ObservableInterface;
 import it.polimi.ingsw.ObserverPattern.ObserverInterface;
+import it.polimi.ingsw.exceptions.IllegalActionException;
+import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetContext;
+import it.polimi.ingsw.network.message.response.MessageResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +27,7 @@ public class Game implements ObservableInterface {
     private Turn nextTurn;
     private Player winner;
     private RuleSetContext currentRuleSet;
+    private EnumMap<Event, ArrayList<ObserverInterface>> observers;
     private File file = new File("../SavedGame.json");
 
     public Game( GameBoard gameBoard,  List<Player> players) throws IOException {
@@ -101,36 +107,46 @@ public class Game implements ObservableInterface {
         return winner;
     }
 
-    public void validateMoveAction(MoveAction moveAction) {
+    public void validateMoveAction(MoveAction moveAction) throws IllegalActionException {
         if (currentRuleSet.validateMoveAction(moveAction)) {
 
             if (currentRuleSet.checkWinCondition(moveAction)) {
                 this.winner = currentTurn.getCurrentPlayer();
                 // TODO: manage win stuff
+                MessageResponse messageResponse = new WinnerDeclaredResponse("OK", this.winner.getName());
+                notifyObservers(Event.WINNER_DECLARED, messageResponse);
             }
             moveAction.apply();
-            //TODO: notifyObservers(MessageEvent.PLAYER_MOVE);
+            MessageResponse messageResponse = new PlayerMoveResponse("OK", currentTurn.getCurrentPlayer().getName(), cloneGameBoard());
+            notifyObservers(Event.PLAYER_MOVE, messageResponse);
             this.saveState();
-        }
+        } else
+            throw new IllegalActionException();
     }
 
-    public void validateBuildAction(BuildAction buildAction) throws IOException {
+    public void validateBuildAction(BuildAction buildAction) throws IOException, IllegalActionException {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
-            //TODO: notifyObservers();
+            MessageResponse messageResponse = new PlayerBuildResponse("OK", currentTurn.getCurrentPlayer().getName(), cloneGameBoard());
+            notifyObservers(Event.PLAYER_BUILD, messageResponse);
             this.saveState();
             endTurnAutomatically();
-        }
+        }else
+            throw new IllegalActionException();
     }
 
-    public void endTurn() throws IOException {
-        if(currentRuleSet.canEndTurn())
+    public void endTurn() throws IllegalEndingTurnException, IOException {
+        if(currentRuleSet.canEndTurn()){
             generateNextTurn();
+        }
+        else
+            throw new IllegalEndingTurnException();
     }
 
     public void endTurnAutomatically() throws IOException {
-        if(currentRuleSet.canEndTurnAutomatically())
+        if(currentRuleSet.canEndTurnAutomatically()) {
             generateNextTurn();
+        }
     }
 
     public Player nextPlayer() {
@@ -146,6 +162,8 @@ public class Game implements ObservableInterface {
         currentRuleSet.doEffect();
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
         currentTurn = nextTurn;
+        MessageResponse messageResponse = new EndTurnResponse("OK", "broadcast");
+        notifyObservers(Event.END_TURN, messageResponse);
         if(currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
         }
@@ -158,11 +176,19 @@ public class Game implements ObservableInterface {
             worker.setPosition(null);
         }
         players.remove(player);
+        MessageResponse messageResponse = new PlayerRemovedResponse("OK", new Game(this));
+        notifyObservers(Event.PLAYER_REMOVED, messageResponse);
         if(players.size()==1){
             this.winner = players.get(0);
             //TODO: manage win
+            messageResponse = new WinnerDeclaredResponse("OK", this.winner.getName());
+            notifyObservers(Event.WINNER_DECLARED, messageResponse);
         }
         generateNextTurn();
+    }
+
+    public GameBoard cloneGameBoard(){
+        return new GameBoard(this.gameBoard);
     }
 
     public Game saveStateToVariable(){
@@ -182,12 +208,12 @@ public class Game implements ObservableInterface {
         int x, y;
         ObjectMapper objectMapper = new ObjectMapper();
         Game restoredGame = objectMapper.readerFor(Game.class).readValue(file);
-        for(Player player: restoredGame.players){
-            for(Worker worker: player.getWorkers()){
-                x=worker.getPosition().getCoordX();
-                y=worker.getPosition().getCoordY();
-                worker.setPosition(restoredGame.gameBoard.getCell(x,y));
-                restoredGame.getGameBoard().getCell(x,y).setOccupiedBy(worker);
+        for (Player player : restoredGame.players) {
+            for (Worker worker : player.getWorkers()) {
+                x = worker.getPosition().getCoordX();
+                y = worker.getPosition().getCoordY();
+                worker.setPosition(restoredGame.gameBoard.getCell(x, y));
+                restoredGame.getGameBoard().getCell(x, y).setOccupiedBy(worker);
             }
             player.setGame(restoredGame);
         }
@@ -196,17 +222,24 @@ public class Game implements ObservableInterface {
 
     @Override
     public void addObserver(ObserverInterface observer, Event event) {
-
+        ArrayList<ObserverInterface> observerList = observers.computeIfAbsent(event, k -> new ArrayList<>());
+        if(!observerList.contains(observer)){
+            observers.get(event).add(observer);
+        }
     }
 
     @Override
     public void removeObserver(ObserverInterface observer, Event event) {
-
+        try {
+            observers.get(event).remove(observer);
+        } catch (Exception e){
+            // do nothing
+        }
     }
 
     @Override
-    public void notifyObservers(Event event) {
-
-
+    public void notifyObservers(Event event, MessageResponse messageResponse) {
+        for(ObserverInterface observerInterface : observers.get(event))
+            observerInterface.update(messageResponse);
     }
 }

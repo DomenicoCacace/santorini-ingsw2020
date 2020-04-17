@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.rules;
 
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.utilities.Memento;

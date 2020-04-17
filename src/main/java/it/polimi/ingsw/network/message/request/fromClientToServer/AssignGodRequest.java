@@ -1,6 +1,7 @@
-package it.polimi.ingsw.network.message.request;
+package it.polimi.ingsw.network.message.request.fromClientToServer;
 
 import it.polimi.ingsw.model.God;
+import it.polimi.ingsw.network.message.request.MessageRequest;
 
 public class AssignGodRequest extends MessageRequest {
 

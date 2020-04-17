@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.winConditionEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -22,11 +24,11 @@ class Down2LevelsTest {
     private List<Player> players = new ArrayList<>();
 
     @BeforeEach
-    void SetUp () throws IOException {
+    void SetUp () throws IOException, AddingFailedException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Pan"));
+        gods.add(new God("Pan",2));
         gods.get(0).setStrategy(new Down2Levels());
-        gods.add(new God("base"));
+        gods.add(new God("base", 2));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
@@ -48,7 +50,7 @@ class Down2LevelsTest {
 
 
     @Test
-    void fromLevel2toLevel0Test() throws IOException {
+    void fromLevel2toLevel0Test() throws IOException, IllegalActionException {
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
 
@@ -57,7 +59,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), players.get(0));
     }
     @Test
-    void fromLevel3toLevel1Test() throws IOException {
+    void fromLevel3toLevel1Test() throws IOException, IllegalActionException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL1);
 
@@ -66,7 +68,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), players.get(0));
     }
     @Test
-    void fromLevel3toLevel0Test() throws IOException {
+    void fromLevel3toLevel0Test() throws IOException, IllegalActionException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
 
@@ -75,7 +77,7 @@ class Down2LevelsTest {
         assertEquals(game.getWinner(), players.get(0));
     }
     @Test
-    void normalWinTest() throws IOException {
+    void normalWinTest() throws IOException, IllegalActionException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 
@@ -85,7 +87,7 @@ class Down2LevelsTest {
     }
 
     @Test
-    void cannotBuildAfterWinningTest() throws IOException {
+    void cannotBuildAfterWinningTest() throws IOException, IllegalActionException {
 
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL0);
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
@@ -100,7 +102,7 @@ class Down2LevelsTest {
     }
 
     @Test
-    void notWinTest() throws IOException {
+    void notWinTest() throws IOException, IllegalActionException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(3,1).setBlock(Block.LEVEL3);
 

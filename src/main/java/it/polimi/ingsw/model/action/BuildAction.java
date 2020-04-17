@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.action;
 
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class BuildAction extends Action {
         targetCell.setBlock(targetBlock);
     }
 
-    public void getValidation(Game game) throws IOException {
+    public void getValidation(Game game) throws IOException, IllegalActionException {
         game.validateBuildAction(this);
     }
 }

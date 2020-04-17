@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.action;
 
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
@@ -18,7 +19,7 @@ public class MoveAction extends Action {
         targetCell.setOccupiedBy(targetWorker);
     }
 
-    public void getValidation(Game game) throws IOException {
+    public void getValidation(Game game) throws IOException, IllegalActionException {
         game.validateMoveAction(this);
     }
 }

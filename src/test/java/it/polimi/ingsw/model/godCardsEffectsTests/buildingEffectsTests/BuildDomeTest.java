@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.buildingEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -25,11 +27,11 @@ class BuildDomeTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, AddingFailedException, IllegalActionException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Atlas"));
+        gods.add(new God("Atlas",2));
         gods.get(0).setStrategy(new BuildDome());
-        gods.add(new God("base"));
+        gods.add(new God("base",2));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
@@ -59,7 +61,7 @@ class BuildDomeTest {
     }
 
     @Test
-    void canBuildDomeAnywhereTest() throws IOException {
+    void canBuildDomeAnywhereTest() throws IOException, IllegalActionException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
 
         targetCell = game.getGameBoard().getCell(3, 3);//LEVEL2
@@ -72,11 +74,15 @@ class BuildDomeTest {
     }
 
     @Test
-    void cannotBuildDomeOverDomeTest() throws IOException {
+    void cannotBuildDomeOverDomeTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(3, 4);//DOME
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);
-        buildAction.getValidation(game);
+        try {
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);

@@ -1,13 +1,14 @@
 package it.polimi.ingsw.network.server;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.MessageParser;
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.message.request.ChooseInitialGodsRequest;
-import it.polimi.ingsw.network.message.request.ChooseYourGodRequest;
-import it.polimi.ingsw.network.message.response.ChosenGodsResponse;
-import it.polimi.ingsw.network.message.response.GameStartResponse;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseInitialGodsRequest;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
+import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,28 +18,21 @@ import java.util.List;
 import java.util.Map;
 
 public class Lobby {
-
-    private final static int MAXNUMPLAYERS = 3;
-
-    private List<String> userNames;
-    private Map<String, Player> playerMap = new LinkedHashMap<>();
-    private MessageParser parser;
-    private Server server;
+    private final List<String> userNames;
+    private final Map<String, Player> playerMap = new LinkedHashMap<>();
+    private final MessageParser parser;
     private ServerController controller;
-    // private Logger logger;
 
     private List<God> chosenGods = new ArrayList<>();
-    private List<God> allGods;
+    private final List<God> allGods;
 
-    public Lobby(MessageParser parser, Server server, List<String> userNames) throws IOException {
+    public Lobby(MessageParser parser, List<String> userNames) throws IOException {
         this.parser = parser;
-        this.server = server;
         this.userNames = userNames;
         parser.setLobby(this);
         ObjectMapper objectMapper = new ObjectMapper();
-        allGods = objectMapper.readerFor(God.class).readValue(new File("../allGods.json"));
+        allGods = objectMapper.readerFor(new TypeReference<List<God>>() { }).readValue(new File("GodsConfigFile.json"));
         askGods(allGods);
-
     }
 
     public void addUser(String username) {
@@ -52,11 +46,11 @@ public class Lobby {
     }
 
     public void askToChooseGod(String username) throws IOException, InterruptedException {
-        server.getVirtualClient(username).notify(new ChooseYourGodRequest(username, chosenGods));
+        parser.parseMessageFromServerToClient(new ChooseYourGodRequest(username, chosenGods));
     }
 
     public void askGods(List<God> gods) throws IOException {
-        server.getVirtualClient(userNames.get(0)).notify(new ChooseInitialGodsRequest(userNames.get(0), allGods));
+        parser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(userNames.get(0), allGods));
     }
 
     public void chooseGods(List<God> gods) throws IOException, InterruptedException {
@@ -79,6 +73,8 @@ public class Lobby {
         List<Player> players = new ArrayList<>(playerMap.values());
         GameBoard board = new GameBoard();
         Game game = new Game(board, players);
+        ServerController controller = new ServerController(game, playerMap);
+        parser.setServerController(controller);
         parser.parseMessageFromServerToClient(new GameStartResponse("OK", game));
     }
 
@@ -88,10 +84,6 @@ public class Lobby {
         server.send(username, message);
     }
 
-    private void updateAll(MessageResponse message){
-        for(String username : userNames){
-            server.send(username, message);
-        }
-    }
+
      */
 }

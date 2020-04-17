@@ -1,6 +1,7 @@
-package it.polimi.ingsw.network.message.response;
+package it.polimi.ingsw.network.message.response.fromServerToClient;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.network.message.response.MessageResponse;
 
 
 public class GameStartResponse extends MessageResponse {

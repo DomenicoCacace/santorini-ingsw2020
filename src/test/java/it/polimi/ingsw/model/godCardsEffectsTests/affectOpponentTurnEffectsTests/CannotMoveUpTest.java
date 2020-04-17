@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.affectOpponentTurnEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -26,13 +28,13 @@ class CannotMoveUpTest {
     private Block targetBlock;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, AddingFailedException {
         gods = new ArrayList<>();
-        gods.add(new God("minotaur"));
+        gods.add(new God("minotaur",2));
         gods.get(0).setStrategy(new Push());
-        gods.add(new God("Athena"));
+        gods.add(new God("Athena",2));
         gods.get(1).setStrategy(new CannotMoveUp());
-        gods.add(new God("Atlas"));
+        gods.add(new God("Atlas",2));
         gods.get(2).setStrategy(new BuildDome());
 
         players = new ArrayList<>();
@@ -60,7 +62,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCannotMoveUpTest() throws IOException {
+    void opponentsCannotMoveUpTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
@@ -122,7 +124,11 @@ class CannotMoveUpTest {
         targetCell = game.getGameBoard().getCell(1, 2);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
-        moveAction.getValidation(game);
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -154,7 +160,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCanMoveUpTest() throws IOException {
+    void opponentsCanMoveUpTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);

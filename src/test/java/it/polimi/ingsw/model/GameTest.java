@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -21,13 +23,13 @@ class GameTest {
     private Game game;
 
     @BeforeEach
-    void setUp() throws IOException {
+    void setUp() throws IOException, AddingFailedException {
         gods = new ArrayList<>();
-        gods.add(new God("minotaur"));
+        gods.add(new God("minotaur", 2));
         gods.get(0).setStrategy(new Push());
-        gods.add(new God("base"));
+        gods.add(new God("base", 2));
         gods.get(1).setStrategy(new RuleSetBase());
-        gods.add(new God("Atlas"));
+        gods.add(new God("Atlas", 2));
         gods.get(2).setStrategy(new BuildDome());
 
         players = new ArrayList<>();
@@ -75,7 +77,7 @@ class GameTest {
 
 
     @Test
-    void persistenceTest() throws IOException {
+    void persistenceTest() throws IOException, IllegalActionException {
         game.generateNextTurn();
         Worker currentWorker = game.getPlayers().get(0).getWorkers().get(0);
         Cell targetCell = game.getGameBoard().getCell(2, 3);
@@ -88,7 +90,11 @@ class GameTest {
         assertEquals(game.getGameBoard().getCell(2,3), currentWorker.getPosition());
         targetCell = game.getGameBoard().getCell(1, 3);
         moveAction= new MoveAction(currentWorker,targetCell);
-        moveAction.getValidation(game);
+        try{
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
         assertEquals(game.getGameBoard().getCell(2,3), currentWorker.getPosition());
 
         game  = game.restoreState();
@@ -104,8 +110,11 @@ class GameTest {
         currentWorker=game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         targetCell=game.getGameBoard().getCell(2,3);
         moveAction = new MoveAction(currentWorker, targetCell);
-        moveAction.getValidation(game);
-        System.out.println("YOLO");
+        try{
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
     }
 
     @Test
@@ -171,7 +180,7 @@ class GameTest {
     }
 
     @Test
-    void saveStateToVariableTest() throws IOException {
+    void saveStateToVariableTest() throws IOException, IllegalActionException {
         Game savedGame = game.saveStateToVariable(); //Save the current state in savedGame
 
         game.saveState(); //Uguali
@@ -192,7 +201,11 @@ class GameTest {
 
         targetCell = game.getGameBoard().getCell(1,1 );
         moveAction = new MoveAction(currentWorker, targetCell);
-        moveAction.getValidation(game);
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertNotEquals(currentWorker.getPosition(), targetCell);

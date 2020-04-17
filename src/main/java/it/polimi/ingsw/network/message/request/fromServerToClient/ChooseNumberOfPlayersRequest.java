@@ -1,4 +1,6 @@
-package it.polimi.ingsw.network.message.request;
+package it.polimi.ingsw.network.message.request.fromServerToClient;
+
+import it.polimi.ingsw.network.message.request.MessageRequest;
 
 public class ChooseNumberOfPlayersRequest extends MessageRequest {
 

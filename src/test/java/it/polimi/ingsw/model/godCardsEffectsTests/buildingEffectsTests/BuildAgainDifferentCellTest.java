@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.buildingEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
+import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -25,11 +28,11 @@ class BuildAgainDifferentCellTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, AddingFailedException, IllegalActionException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Demeter"));
+        gods.add(new God("Demeter",2));
         gods.get(0).setStrategy(new BuildAgainDifferentCell());
-        gods.add(new God("base"));
+        gods.add(new God("base",2));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
@@ -60,7 +63,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void correctBuildAgainDifferentCellTest() throws IOException {
+    void correctBuildAgainDifferentCellTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -86,7 +89,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildOnTheSameCellTest() throws IOException {
+    void cannotBuildOnTheSameCellTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -100,7 +103,11 @@ class BuildAgainDifferentCellTest {
 
         secondBlock = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, firstCell, secondBlock);
-        buildAction.getValidation(game);
+        try{
+            buildAction.getValidation(game);
+        } catch(IllegalActionException e){
+            e.getMessage();
+        }
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -110,7 +117,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest() throws IOException {
+    void cannotBuildWith2DifferentWorkersTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -122,13 +129,17 @@ class BuildAgainDifferentCellTest {
         assertEquals(firstCell.getBlock(), firstBlock);
         secondBlock = Block.LEVEL3;
         buildAction = new BuildAction(worker2, game.getGameBoard().getCell(3,3), secondBlock);
-        buildAction.getValidation(game);
+        try{
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(game.getGameBoard().getCell(3,3).getBlock(), Block.LEVEL2);
     }
 
     @Test
-    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException {
+    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -152,7 +163,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void canEndTurnAfter1BuildTest() throws IOException {
+    void canEndTurnAfter1BuildTest() throws IOException, IllegalActionException, IllegalEndingTurnException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

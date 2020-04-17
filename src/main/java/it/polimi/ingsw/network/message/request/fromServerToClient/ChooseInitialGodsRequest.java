@@ -1,6 +1,7 @@
-package it.polimi.ingsw.network.message.request;
+package it.polimi.ingsw.network.message.request.fromServerToClient;
 
 import it.polimi.ingsw.model.God;
+import it.polimi.ingsw.network.message.request.MessageRequest;
 
 import java.util.List;
 

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -25,11 +27,11 @@ class RuleSetBaseTest {
     private Block block;
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, AddingFailedException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("base1"));
+        gods.add(new God("base1",2));
         gods.get(0).setStrategy(new RuleSetBase());
-        gods.add(new God("base"));
+        gods.add(new God("base",2));
         gods.get(1).setStrategy(new RuleSetBase());
 
 
@@ -73,7 +75,7 @@ class RuleSetBaseTest {
 
 
     @Test
-    void getBuildableCellsTest() throws IOException {
+    void getBuildableCellsTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -91,7 +93,7 @@ class RuleSetBaseTest {
 
 
     @Test
-    void correctMovementTest() throws IOException {
+    void correctMovementTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -103,7 +105,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void correctMoveUpTest() throws IOException {
+    void correctMoveUpTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.LEVEL1);
         moveAction = new MoveAction(currentWorker, targetCell);
@@ -116,7 +118,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void correctMoveDownTest() throws IOException {
+    void correctMoveDownTest() throws IOException, IllegalActionException {
         currentWorker.getPosition().setBlock(Block.LEVEL2);
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
@@ -129,10 +131,14 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotMoveTooFarTest() throws IOException {
+    void cannotMoveTooFarTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 4);
         moveAction = new MoveAction(currentWorker, targetCell);
-        moveAction.getValidation(game);
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -142,11 +148,15 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotMoveTooHighTest() throws IOException {
+    void cannotMoveTooHighTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.LEVEL2);
         moveAction = new MoveAction(currentWorker, targetCell);
-        moveAction.getValidation(game);
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
@@ -156,12 +166,15 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cantMoveOnDome() throws IOException {
+    void cantMoveOnDome() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         targetCell.setBlock(Block.DOME);
         moveAction = new MoveAction(currentWorker, targetCell);
-        moveAction.getValidation(game);
-
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertNotEquals(currentWorker.getPosition(), targetCell);
@@ -170,15 +183,18 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotMoveTwiceTest() throws IOException {
+    void cannotMoveTwiceTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
         Cell secondCell = game.getGameBoard().getCell(1,2);
         moveAction= new MoveAction(currentWorker, secondCell);
-        moveAction.getValidation(game);
-
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertEquals(currentWorker.getPosition(), targetCell);
@@ -186,7 +202,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void passTurnAutomaticallyAfterBuildingTest() throws IOException {
+    void passTurnAutomaticallyAfterBuildingTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -203,7 +219,11 @@ class RuleSetBaseTest {
 
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);
-        buildAction.getValidation(game);
+        try{
+            buildAction.getValidation(game);
+        } catch(IllegalActionException e){
+            e.getMessage();
+        }
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         // assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
@@ -211,19 +231,22 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildWithoutMovingTest() throws IOException {
+    void cannotBuildWithoutMovingTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
-        buildAction.getValidation(game);
-
+        try {
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(targetCell.getBlock(), Block.LEVEL2);
         assertFalse(targetCell.hasDome());
     }
 
     @Test
-    void correctBuildActionTest() throws IOException {
+    void correctBuildActionTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -241,7 +264,7 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void cannotBuildASmallerBlockTest() throws IOException {
+    void cannotBuildASmallerBlockTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -249,15 +272,18 @@ class RuleSetBaseTest {
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, targetCell, block);
-        buildAction.getValidation(game);
-
+        try {
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(targetCell.getBlock(), Block.LEVEL2);
     }
 
     @Test
-    void cannotBuildWithOtherWorkerTest() throws IOException {
+    void cannotBuildWithOtherWorkerTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -266,15 +292,18 @@ class RuleSetBaseTest {
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
-        buildAction.getValidation(game);
-
+        try {
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
         assertNotEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(targetCell.getBlock(), Block.LEVEL2);
     }
 
     @Test
-    void cannotBuildOverDomeTest() throws IOException {
+    void cannotBuildOverDomeTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
@@ -282,23 +311,29 @@ class RuleSetBaseTest {
         targetCell = game.getGameBoard().getCell(3, 4);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
-        buildAction.getValidation(game);
-
+        try {
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(targetCell.getBlock(), Block.DOME);
     }
 
     @Test
-    void cannotBuildOnMyCellTest() throws IOException {
+    void cannotBuildOnMyCellTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
         block = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, targetCell, block);
-        buildAction.getValidation(game);
-
+        try {
+            buildAction.getValidation(game);
+        } catch (IllegalActionException e) {
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(targetCell.getBlock(), Block.LEVEL0);

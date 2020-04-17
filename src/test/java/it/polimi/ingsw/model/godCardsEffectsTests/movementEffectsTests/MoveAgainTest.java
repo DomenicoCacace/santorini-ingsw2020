@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.movementEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -24,11 +26,11 @@ class MoveAgainTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, AddingFailedException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Artemis"));
+        gods.add(new God("Artemis",2));
         gods.get(0).setStrategy(new MoveAgain());
-        gods.add(new God("base"));
+        gods.add(new God("base",2));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
@@ -59,7 +61,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveSameLevelTest() throws IOException {
+    void correctDoubleMoveSameLevelTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -80,7 +82,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveUpTest() throws IOException {
+    void correctDoubleMoveUpTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(4, 2);
         moveAction = new MoveAction(worker2, targetCell);
         moveAction.getValidation(game);
@@ -101,7 +103,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotGoBackStartingCellTest() throws IOException {
+    void cannotGoBackStartingCellTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -113,8 +115,11 @@ class MoveAgainTest {
 
         targetCell = game.getGameBoard().getCell(2, 2);
         moveAction = new MoveAction(worker1, targetCell);
-        moveAction.getValidation(game);
-
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -122,7 +127,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotMoveAfterWinningTest() throws IOException {
+    void cannotMoveAfterWinningTest() throws IOException, IllegalActionException {
         worker2.getPosition().setBlock(Block.LEVEL2);
         targetCell = game.getGameBoard().getCell(4, 1);
         moveAction = new MoveAction(worker2, targetCell);
@@ -147,7 +152,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterBuildTest() throws IOException {
+    void endTurnAutomaticallyAfterBuildTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -167,7 +172,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void CannotMoveWithDifferentWorkers() throws IOException {
+    void CannotMoveWithDifferentWorkers() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -178,8 +183,11 @@ class MoveAgainTest {
 
         targetCell = game.getGameBoard().getCell(4, 2);
         moveAction = new MoveAction(worker2, targetCell);
-        moveAction.getValidation(game);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertNotEquals(worker2.getPosition(), targetCell);

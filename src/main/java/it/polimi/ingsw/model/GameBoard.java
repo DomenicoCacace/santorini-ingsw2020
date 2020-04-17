@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.model.utilities.Memento;
-import it.polimi.ingsw.network.message.request.ChooseYourGodRequest;
 
 import java.util.ArrayList;
 

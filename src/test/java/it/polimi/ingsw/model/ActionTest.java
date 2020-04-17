@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -17,8 +18,8 @@ class ActionTest {
 
 
     @BeforeEach
-    void setUp() {
-        player = new Player("name", new God("artemis"), Color.BLUE);
+    void setUp() throws AddingFailedException {
+        player = new Player("name", new God("artemis", 2), Color.BLUE);
         board = new GameBoard();
         block = Block.LEVEL1;
         startingCell = board.getCell(3, 2);

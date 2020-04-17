@@ -1,7 +1,8 @@
-package it.polimi.ingsw.network.message.response;
+package it.polimi.ingsw.network.message.response.fromServerToClient;
 
-import it.polimi.ingsw.model.GameBoard;
 import it.polimi.ingsw.model.God;
+import it.polimi.ingsw.network.message.response.MessageResponse;
+
 import java.util.List;
 
 public class ChosenGodsResponse extends MessageResponse {

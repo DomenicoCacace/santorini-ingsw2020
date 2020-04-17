@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffectsTests.affectMyTurnEffectsTests;
 
+import it.polimi.ingsw.exceptions.AddingFailedException;
+import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
@@ -23,11 +25,11 @@ class BuildBeforeAfterMovementTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException {
+    void SetUp() throws IOException, AddingFailedException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Prometeus"));
+        gods.add(new God("Prometeus", 2));
         gods.get(0).setStrategy(new BuildBeforeAfterMovement());
-        gods.add(new God("base"));
+        gods.add(new God("base",2));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
@@ -54,7 +56,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveSameCellTest() throws IOException {
+    void correctBuildBeforeAfterMoveSameCellTest() throws IOException, IllegalActionException {
         Cell buildingCell = game.getGameBoard().getCell(3,2);
         Action firstBuildAction = new BuildAction(currentWorker, buildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -84,7 +86,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveDifferentCellsTest() throws IOException {
+    void correctBuildBeforeAfterMoveDifferentCellsTest() throws IOException, IllegalActionException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -115,7 +117,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctMoveUpAndBuildTest() throws IOException {
+    void correctMoveUpAndBuildTest() throws IOException, IllegalActionException {
         toMoveCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
         moveAction.getValidation(game);
@@ -137,7 +139,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildThenMoveUpTest() throws IOException {
+    void cannotBuildThenMoveUpTest() throws IOException, IllegalActionException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -149,7 +151,11 @@ class BuildBeforeAfterMovementTest {
 
         toMoveCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
-        moveAction.getValidation(game);
+        try {
+            moveAction.getValidation(game);
+        } catch (IllegalActionException e){
+            e.getMessage();
+        }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -159,7 +165,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildTwiceInARowTest() throws IOException {
+    void cannotBuildTwiceInARowTest() throws IOException, IllegalActionException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -171,7 +177,11 @@ class BuildBeforeAfterMovementTest {
 
         Cell secondBuildingCell = game.getGameBoard().getCell(2,1);
         Action secondBuildAction = new BuildAction(currentWorker, secondBuildingCell, Block.LEVEL2);
-        secondBuildAction.getValidation(game);
+        try{
+            secondBuildAction.getValidation(game);
+        } catch(IllegalActionException e){
+            e.getMessage();
+        }
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(secondBuildingCell.getBlock(), Block.LEVEL1);
@@ -185,8 +195,11 @@ class BuildBeforeAfterMovementTest {
 
         Action buildaction = new BuildAction(players.get(0).getWorkers().get(1),
                 game.getGameBoard().getCell(4,4), Block.LEVEL1);
-        buildaction.getValidation(game);
-
+        try {
+            buildaction.getValidation(game);
+        } catch (IllegalActionException e){
+            assertNotNull(e);
+        }
         assertEquals(game.getGameBoard().getCell(4,4).getBlock(), Block.LEVEL0);
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);

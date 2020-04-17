@@ -39,8 +39,8 @@ public class Cell implements Serializable {
         this.hasDome = cell.hasDome;
         this.block = cell.block;
         if(cell.occupiedBy!=null)
-            this.occupiedBy = cell.occupiedBy;
-        else this.occupiedBy = null;
+            this.occupiedBy=new Worker(this, cell.occupiedBy.getColor());
+        else this.occupiedBy= null;
     }
 
     public int getCoordX() {

@@ -1,4 +1,6 @@
-package it.polimi.ingsw.network.message.response;
+package it.polimi.ingsw.network.message.response.fromClientToServer;
+
+import it.polimi.ingsw.network.message.response.MessageResponse;
 
 public class ChooseNumberOfPlayerResponse extends MessageResponse {
 
