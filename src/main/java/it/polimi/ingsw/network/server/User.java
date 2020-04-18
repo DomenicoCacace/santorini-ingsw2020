@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.message.response.MessageResponse;
+import it.polimi.ingsw.network.message.Message;
 
 import java.io.IOException;
 
@@ -25,8 +25,8 @@ public class User {
         return virtualClient;
     }
 
-    public void notify(MessageResponse messageResponse) throws IOException {
-        virtualClient.notify(messageResponse);
+    public void notify(Message message){
+        virtualClient.notify(message);
     }
 
 }

@@ -1,11 +1,10 @@
 package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.controller.MessageParser;
-import it.polimi.ingsw.network.message.request.MessageRequest;
+import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseNumberOfPlayersRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.LoginResponse;
-import it.polimi.ingsw.network.message.response.MessageResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.polimi.ingsw.network.message.response.MessageResponse.Content.CHOOSE_INITIAL_GODS;
+
 
 public class Server extends Thread {
 
@@ -79,9 +78,9 @@ public class Server extends Thread {
             } else {
                 User user = new User(virtualClient);
                 usernames.put(user.getUsername(), user);
-                user.notify(new LoginResponse("OK", virtualClient.getUsername()));
+                user.notify(new LoginResponse("OK", user.getUsername()));
                 if (usernames.size() == 1) {
-                    virtualClient.notify(new ChooseNumberOfPlayersRequest(virtualClient.getUsername()));
+                    user.notify(new ChooseNumberOfPlayersRequest(user.getUsername()));
                     while (!received) {
                         wait();
                     }
@@ -96,62 +95,38 @@ public class Server extends Thread {
     }
 
 
-/*
-
-    public void send(String username, MessageRequest message) {
+    public void send(String username, Message message){
         if (usernames.containsKey(username)) {
             usernames.get(username).notify(message);
-        }
+        } else if(username.equals("broadcast"))
+            sendToEveryone(message);
+
     }
 
- */
 
-    public void send(String username, MessageResponse message) throws IOException {
-        if (usernames.containsKey(username)) {
-            usernames.get(username).getVirtualClient().notify(message);
-        }
-    }
 
-    public void send(String username, MessageRequest message) throws IOException {
-        if (usernames.containsKey(username)) {
-            usernames.get(username).getVirtualClient().notify(message);
-        }
-    }
-
-    public void sendToEveryone(MessageResponse message) throws IOException {
+    public void sendToEveryone(Message message){
         for(String username : usernames.keySet()){
             send(username, message);
         }
-    }
-
-    public void sendToEveryone(MessageRequest message) throws IOException {
-        for(String username : usernames.keySet()){
-            send(username, message);
-        }
-    }
-
-    public VirtualClient getVirtualClient(String name) {
-        return usernames.get(name).getVirtualClient();
     }
 
     public boolean containClient(String username){
         return this.usernames.containsKey(username);
     }
+
     public void onDisconnect(String username){
         //TODO: End match or Save match and restart once the client reconnected (persistence even when the client crashes)
         this.usernames.remove(username);
     }
 
-    public void handleMessage(MessageResponse message) throws IOException, InterruptedException {
-        if (message.content == MessageResponse.Content.CHOOSE_PLAYER_NUMBER) {
+    public synchronized void handleMessage(Message message) throws IOException, InterruptedException {
+        if (message.content == Message.Content.CHOOSE_PLAYER_NUMBER) {
             if (((ChooseNumberOfPlayerResponse) message).numberOfPlayers == 2 || ((ChooseNumberOfPlayerResponse) message).numberOfPlayers == 3) {
                 MAX_PLAYER_NUMBER = ((ChooseNumberOfPlayerResponse) message).numberOfPlayers;
                 received = true;
             }
-        } else if (message.content == CHOOSE_INITIAL_GODS) {
-            lobby.chooseGods(((ChooseInitialGodsResponse) message).payload);
-        }
-        else messageParser.parseMessageFromServerToClient(message);
+        } else messageParser.parseMessageFromClientToServer(message);
     }
 
 }

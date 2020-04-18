@@ -45,18 +45,18 @@ public class Lobby {
         notify(); //TODO: Test wait and notify
     }
 
-    public void askToChooseGod(String username) throws IOException, InterruptedException {
+    public void askToChooseGod(String username) {
         parser.parseMessageFromServerToClient(new ChooseYourGodRequest(username, chosenGods));
     }
 
-    public void askGods(List<God> gods) throws IOException {
+    public void askGods(List<God> gods) {
         parser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(userNames.get(0), allGods));
     }
 
-    public void chooseGods(List<God> gods) throws IOException, InterruptedException {
+    public void chooseGods(List<God> gods) throws InterruptedException {
         if ((int) gods.stream().distinct().count() == userNames.size() && gods.size() == userNames.size()) {
             chosenGods = gods;
-            parser.parseMessageFromServerToClient(new ChosenGodsResponse("OK", chosenGods));
+            parser.parseMessageFromServerToClient(new ChosenGodsResponse("OK","broadcast", chosenGods));
             for (int i = 1; i <= userNames.size(); i++) {
                 askToChooseGod(userNames.get(i % userNames.size()));
                 while (!playerMap.containsKey(userNames.get(i % userNames.size()))) //TODO: lazy evaluator
@@ -64,12 +64,12 @@ public class Lobby {
             }
             createGame();
         } else {
-            parser.parseMessageFromServerToClient(new ChosenGodsResponse("Illegal gods choice", null));
+            parser.parseMessageFromServerToClient(new ChosenGodsResponse("Illegal gods choice", userNames.get(0), null));
             askGods(allGods);
         }
     }
 
-    public void createGame() throws IOException {
+    public void createGame()  {
         List<Player> players = new ArrayList<>(playerMap.values());
         GameBoard board = new GameBoard();
         Game game = new Game(board, players);

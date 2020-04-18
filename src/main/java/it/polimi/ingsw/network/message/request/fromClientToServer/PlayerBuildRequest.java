@@ -3,9 +3,9 @@ package it.polimi.ingsw.network.message.request.fromClientToServer;
 import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
-import it.polimi.ingsw.network.message.request.MessageRequest;
+import it.polimi.ingsw.network.message.Message;
 
-public class PlayerBuildRequest extends MessageRequest {
+public class PlayerBuildRequest extends Message {
 
     public final Cell targetCell;
     public final Worker targetWorker;

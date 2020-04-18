@@ -1,10 +1,12 @@
 package it.polimi.ingsw.network.message.response.fromServerToClient;
 
-import it.polimi.ingsw.network.message.response.MessageResponse;
+import it.polimi.ingsw.network.message.Message;
 
-public class LoginResponse extends MessageResponse {
+public class LoginResponse extends Message {
+    public final String outcome;
 
     public LoginResponse(String outcome, String username) {
-        super(outcome, username, Content.LOGIN);
+        super(username, Content.LOGIN);
+        this.outcome = outcome;
     }
 }

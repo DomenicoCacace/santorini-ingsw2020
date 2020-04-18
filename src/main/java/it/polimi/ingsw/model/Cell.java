@@ -107,19 +107,18 @@ public class Cell implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (!(obj instanceof Cell))
-            return false;
-        Cell cell = (Cell) obj;
-        return (cell.coordX == coordX) && (cell.coordY == coordY);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cell)) return false;
+        Cell cell = (Cell) o;
+        return  coordX == cell.coordX &&
+                coordY == cell.coordY &&
+                hasDome == cell.hasDome &&
+                block == cell.block;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coordX, coordY);
+        return Objects.hash(coordX, coordY, hasDome, block);
     }
-
-
 }

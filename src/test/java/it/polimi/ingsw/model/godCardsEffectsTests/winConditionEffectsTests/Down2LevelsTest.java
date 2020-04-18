@@ -43,6 +43,7 @@ class Down2LevelsTest {
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
 
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        players.get(1).addWorker(game.getGameBoard().getCell(0,0));
         currentWorker = players.get(0).getWorkers().get(0);
 
         game.generateNextTurn();

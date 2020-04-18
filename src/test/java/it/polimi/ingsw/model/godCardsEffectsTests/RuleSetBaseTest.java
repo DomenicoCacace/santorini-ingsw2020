@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffectsTests;
 
+import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.*;
@@ -12,7 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,6 +28,7 @@ class RuleSetBaseTest {
     private Worker currentWorker;
     private Cell targetCell;
     private Block block;
+    private ServerController controller;
 
     @BeforeEach
     void SetUp() throws IOException, AddingFailedException {

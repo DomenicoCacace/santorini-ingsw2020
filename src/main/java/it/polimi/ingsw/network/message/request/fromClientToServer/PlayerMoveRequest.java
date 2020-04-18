@@ -2,9 +2,9 @@ package it.polimi.ingsw.network.message.request.fromClientToServer;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
-import it.polimi.ingsw.network.message.request.MessageRequest;
+import it.polimi.ingsw.network.message.Message;
 
-public class PlayerMoveRequest extends MessageRequest {
+public class PlayerMoveRequest extends Message {
 
     public final Cell targetCell;
     public final Worker targetWorker;

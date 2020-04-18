@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.action.Action;
@@ -13,7 +14,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,6 +24,9 @@ class GameTest {
     private List<Player> players;
     private List<God> gods;
     private Game game;
+    private ServerController controller;
+    private Map playermap = new LinkedHashMap<>();
+
 
     @BeforeEach
     void setUp() throws IOException, AddingFailedException {
@@ -142,7 +148,6 @@ class GameTest {
         game.getGameBoard().getCell(1,1).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(1,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(0,2).setBlock(Block.DOME);
-
         game.generateNextTurn();
 
         assertEquals(game.getPlayers().size(), 1);
@@ -215,6 +220,7 @@ class GameTest {
 
         game.saveState(); //Uguali
         savedGame.saveState();
+        controller = new ServerController(game,playermap);
 
         //The Player is able to do a different move
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
@@ -232,6 +238,7 @@ class GameTest {
 
         game.saveState();// Uguali
         savedGame.saveState();
+        controller = new ServerController(game,playermap);
 
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         targetCell = game.getGameBoard().getCell(1,3);
@@ -245,6 +252,7 @@ class GameTest {
 
         //Restore game
         game = savedGame;
+        controller = new ServerController(game,playermap);
         //Different buildAction
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         targetCell = game.getGameBoard().getCell(1,4);

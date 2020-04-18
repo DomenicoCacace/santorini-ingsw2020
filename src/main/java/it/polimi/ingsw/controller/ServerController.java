@@ -1,19 +1,19 @@
 package it.polimi.ingsw.controller;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.polimi.ingsw.ObserverPattern.ObserverInterface;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.network.message.response.MessageResponse;
+import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
 import java.io.IOException;
 import java.util.Map;
 
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class ServerController implements ObserverInterface {
 
     private Game game;
@@ -23,18 +23,21 @@ public class ServerController implements ObserverInterface {
     public ServerController(Game game, Map<String, Player> players) {
         this.game = game;
         this.playerMap = players;
+        //TODO: Register observers
+
     }
 
-    public void addWorker(String username, Cell cell){
+    public void addWorker(String username, Cell cell) {
        try{
            playerMap.get(username).addWorker(cell);
            //parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", username, game.cloneGameBoard()));
        } catch (AddingFailedException e){
+           System.out.println("Adding failed");
            parser.parseMessageFromServerToClient(new AddWorkerResponse("Adding failed", username, game.cloneGameBoard()));
        }
     }
 
-    public void selectWorker(String username, Worker worker) throws IOException {
+    public void selectWorker(String username, Worker worker) {
         try{
             playerMap.get(username).setSelectedWorker(worker);
             //parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username));
@@ -43,7 +46,7 @@ public class ServerController implements ObserverInterface {
         }
     }
 
-    public void obtainWalkableCells(String username){
+    public void obtainWalkableCells(String username) {
         try {
             playerMap.get(username).obtainWalkableCells();
             //parser.parseMessageFromServerToClient(new WalkableCellsResponse("OK",username, walkableCells));
@@ -52,7 +55,7 @@ public class ServerController implements ObserverInterface {
         }
     }
 
-    public void obtainBuildableCells(String username){
+    public void obtainBuildableCells(String username) {
         try {
             playerMap.get(username).obtainBuildableCells();
             //parser.parseMessageFromServerToClient(new BuildableCellsResponse("OK",username, buildableCells));
@@ -61,7 +64,7 @@ public class ServerController implements ObserverInterface {
         }
     }
 
-    public void handleMoveAction(String username, MoveAction moveAction){
+    public void handleMoveAction(String username, MoveAction moveAction) {
         try{
             playerMap.get(username).setAction(moveAction);
             playerMap.get(username).useAction();
@@ -72,7 +75,7 @@ public class ServerController implements ObserverInterface {
 
     }
 
-    public void handleBuildAction(String username, BuildAction buildAction){
+    public void handleBuildAction(String username, BuildAction buildAction) {
         try{
             playerMap.get(username).setAction(buildAction);
             playerMap.get(username).useAction();
@@ -82,18 +85,18 @@ public class ServerController implements ObserverInterface {
         }
     }
 
-    public void passTurn(String username){
+    public void passTurn(String username) {
         try{
             game.endTurn();
             // parser.parseMessageFromServerToClient(new EndTurnResponse("OK", username));
         } catch (IllegalEndingTurnException | IOException e) {
-            parser.parseMessageFromServerToClient(new EndTurnResponse("You cannot end turn now", username));
+            parser.parseMessageFromServerToClient(new EndTurnResponse("You cannot end turn now", username, null));
         }
     }
 
 
     @Override
-    public void update(MessageResponse updateMessage) {
+    public void update(Message updateMessage) {
         parser.parseMessageFromServerToClient(updateMessage);
     }
 }

@@ -3,8 +3,6 @@ package it.polimi.ingsw.network.message;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.polimi.ingsw.network.message.request.MessageRequest;
-import it.polimi.ingsw.network.message.response.MessageResponse;
 
 import java.io.IOException;
 
@@ -16,20 +14,20 @@ public class JacksonMessageBuilder {
         objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
-
-    public MessageRequest fromStringToRequest(String jsonString) throws IOException {
-        return objectMapper.readValue(jsonString, MessageRequest.class);
+    public String fromMessageToString(Message message){
+        try {
+            return objectMapper.writeValueAsString(message);
+        } catch (JsonProcessingException e){
+            System.out.println("Cannot serialize message");
+            return ""; //TODO: this shouldn't happen
+        }
     }
-
-    public String fromRequestToString(MessageRequest message) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(message);
-    }
-
-    public MessageResponse fromStringToResponse(String jsonString) throws IOException {
-        return objectMapper.readValue(jsonString, MessageResponse.class);
-    }
-
-    public String fromResponseToString(MessageResponse message) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(message);
+    public Message fromStringToMessage(String jsonString) {
+        try {
+            return objectMapper.readValue(jsonString, Message.class);
+        } catch (IOException e){
+            System.out.println("Cannot deserialize string");
+            return null; //TODO this shouldn't happen (but it will)
+        }
     }
 }

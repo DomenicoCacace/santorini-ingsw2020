@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.model.utilities.Memento;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id", scope = GameBoard.class)
 
@@ -110,5 +111,18 @@ public class GameBoard implements Memento<GameBoard> {
     @Override
     public void restoreState(GameBoard savedState) {
         this.board = savedState.board;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GameBoard)) return false;
+        GameBoard board1 = (GameBoard) o;
+        return Arrays.equals(board, board1.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(board);
     }
 }

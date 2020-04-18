@@ -3,9 +3,10 @@ package it.polimi.ingsw.model;
 import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.ObserverPattern.ObservableInterface;
 import it.polimi.ingsw.ObserverPattern.ObserverInterface;
+import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.action.Action;
-import it.polimi.ingsw.network.message.response.MessageResponse;
+import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.response.fromServerToClient.AddWorkerResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.BuildableCellsResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.WalkableCellsResponse;
@@ -37,6 +38,8 @@ public class Player implements ObservableInterface {
         this.god = god;
         this.color = color;
         this.workers = new ArrayList<>();
+        observers = new EnumMap<>(Event.class);
+
     }
 
     public Player(Player player, Game game){
@@ -65,8 +68,8 @@ public class Player implements ObservableInterface {
             Worker worker = new Worker(cell, color);
             workers.add(worker);
             cell.setOccupiedBy(worker);
-            MessageResponse messageResponse = new AddWorkerResponse("OK", name, game.cloneGameBoard());
-            notifyObservers(Event.ADD_WORKER, messageResponse);
+            Message message = new AddWorkerResponse("OK", name, game.cloneGameBoard());
+            notifyObservers(Event.ADD_WORKER, message);
         } else {
             throw new AddingFailedException();
         }
@@ -105,8 +108,8 @@ public class Player implements ObservableInterface {
             for (Cell cell : game.getWalkableCells(selectedWorker)) {
                 walkableCells.add(new Cell(cell));
             }
-            MessageResponse messageResponse = new WalkableCellsResponse("OK", name, walkableCells);
-            notifyObservers(Event.WALKABLE_CELLS, messageResponse);
+            Message message = new WalkableCellsResponse("OK", name, walkableCells);
+            notifyObservers(Event.WALKABLE_CELLS, message);
         }
         else
             throw new WrongSelectionException();
@@ -118,8 +121,8 @@ public class Player implements ObservableInterface {
             for (Cell cell : game.getBuildableCells(selectedWorker)) {
                 buildableCells.add(new Cell(cell));
             }
-            MessageResponse messageResponse = new BuildableCellsResponse("OK", name, buildableCells);
-            notifyObservers(Event.BUILDABLE_CELLS, messageResponse);
+            Message message = new BuildableCellsResponse("OK", name, buildableCells);
+            notifyObservers(Event.BUILDABLE_CELLS, message);
         }
         else
             throw new WrongSelectionException();
@@ -155,8 +158,10 @@ public class Player implements ObservableInterface {
     }
 
     @Override
-    public void notifyObservers(Event event, MessageResponse messageResponse) {
-        for(ObserverInterface observerInterface : observers.get(event))
-            observerInterface.update(messageResponse);
+    public void notifyObservers(Event event, Message message) {
+        if(observers.containsKey(event)) {
+            for (ObserverInterface observerInterface : observers.get(event))
+                observerInterface.update(message);
+        }
     }
 }

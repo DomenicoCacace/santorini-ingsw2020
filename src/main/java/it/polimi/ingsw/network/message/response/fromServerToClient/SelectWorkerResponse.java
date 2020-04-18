@@ -1,12 +1,12 @@
 package it.polimi.ingsw.network.message.response.fromServerToClient;
 
-import it.polimi.ingsw.model.GameBoard;
-import it.polimi.ingsw.network.message.response.MessageResponse;
+import it.polimi.ingsw.network.message.Message;
 
-public class SelectWorkerResponse extends MessageResponse {
-
+public class SelectWorkerResponse extends Message {
+    private final String outcome;
 
     public SelectWorkerResponse(String outcome, String username) {
-        super(outcome, username, Content.SELECT_WORKER);
+        super( username, Content.SELECT_WORKER);
+        this.outcome = outcome;
     }
 }

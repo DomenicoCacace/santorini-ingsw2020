@@ -1,11 +1,11 @@
 package it.polimi.ingsw.network.message.request.fromServerToClient;
 
 import it.polimi.ingsw.model.God;
-import it.polimi.ingsw.network.message.request.MessageRequest;
+import it.polimi.ingsw.network.message.Message;
 
 import java.util.List;
 
-public class ChooseInitialGodsRequest extends MessageRequest {
+public class ChooseInitialGodsRequest extends Message {
 
     public final List<God> gods;
 

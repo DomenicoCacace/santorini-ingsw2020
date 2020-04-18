@@ -1,8 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
-import it.polimi.ingsw.network.message.request.MessageRequest;
-import it.polimi.ingsw.network.message.response.MessageResponse;
+import it.polimi.ingsw.network.message.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,11 +40,11 @@ public class VirtualClient extends Thread{
             boolean loop = true;
             while(loop) {
                 //When a message is received, forward to Server
-                MessageRequest message = jsonParser.fromStringToRequest(inputSocket.readLine());
+                Message message = jsonParser.fromStringToMessage(inputSocket.readLine());
                 if (message == null) {
                     loop = false;
                 } else {
-                    if(message.content == MessageRequest.Content.LOGIN) {
+                    if(message.content == Message.Content.LOGIN) {
                         try {
                             this.username = message.username;
                             server.addClient(this);
@@ -54,16 +53,16 @@ public class VirtualClient extends Thread{
                             this.clientConnection.close();
                         }
                     }
-                    //else if(server.containClient(username)) {
-                     //   server.handleMessage(message); // TODO: check if message is request or response
-                    // }
+                    else if(server.containClient(username)) {
+                        server.handleMessage(message);
+                    }
                     else{
                         clientConnection.close();
                         server.onDisconnect(username);
                     }
                 }
             }
-        } catch (IOException /* | InterruptedException*/ e) {
+        } catch (IOException | InterruptedException e) {
             server.onDisconnect(username);
             e.printStackTrace();
         }
@@ -72,26 +71,19 @@ public class VirtualClient extends Thread{
     public String getUsername() {
         return username;
     }
-    public void notify(MessageResponse messageResponse) throws IOException {
-        String stringMessage = jsonParser.fromResponseToString(messageResponse);
+
+    public void notify(Message message){
+        String stringMessage = jsonParser.fromMessageToString(message);
         try {
             outputSocket.write(stringMessage + "\n");
             outputSocket.flush();
         } catch (IOException e) {
-            clientConnection.close();
+            try {
+                clientConnection.close();
+            } catch (IOException e2) {
+                //Do nothing
+            }
             server.onDisconnect(username);
-            throw new IOException();
-        }
-    }
-    public void notify(MessageRequest messageRequest) throws IOException {
-        String stringMessage = jsonParser.fromRequestToString(messageRequest);
-        try {
-            outputSocket.write(stringMessage + "\n");
-            outputSocket.flush();
-        } catch (IOException e) {
-            clientConnection.close();
-            server.onDisconnect(username);
-            throw new IOException();
         }
     }
 }
