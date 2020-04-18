@@ -64,7 +64,7 @@ public class MoveAgain extends MovementStrategy {
     }
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new MoveAgain(this, game);
     }
 }

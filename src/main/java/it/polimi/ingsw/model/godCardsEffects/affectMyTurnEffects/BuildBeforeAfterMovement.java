@@ -130,7 +130,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new BuildBeforeAfterMovement(this, game);
     }
 

@@ -221,7 +221,7 @@ public class RuleSetBase implements RuleSetStrategy {
         return (movesAvailable == 0 && buildsAvailable == 0);
     }
 
-    public RuleSetStrategy getClone(Game game){
+    public RuleSetStrategy cloneStrategy(Game game){
         return new RuleSetBase(this, game);
     }
 

@@ -27,7 +27,7 @@ public class Down2Levels extends WinConditionStrategy {
     }
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new Down2Levels(this, game);
     }
 

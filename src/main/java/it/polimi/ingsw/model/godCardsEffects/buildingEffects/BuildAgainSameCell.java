@@ -75,7 +75,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
     }
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new BuildAgainSameCell(this, game);
     }
 

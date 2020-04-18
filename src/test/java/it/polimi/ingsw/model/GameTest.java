@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
@@ -186,10 +187,15 @@ class GameTest {
 
     @Test
     void saveStateToVariableTest() throws IOException, IllegalActionException {
+        ObjectMapper objectMapper = new ObjectMapper();
         Game savedGame = game.saveStateToVariable(); //Save the current state in savedGame
 
         game.saveState(); //Uguali
+        String gameToSTring = objectMapper.writeValueAsString(game);
         savedGame.saveState();
+        String savedGameToString = objectMapper.writeValueAsString(savedGame);
+
+        assertEquals(savedGameToString, gameToSTring);
 
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         Cell targetCell = game.getGameBoard().getCell(2, 1);
@@ -219,8 +225,11 @@ class GameTest {
         game = savedGame; //Restore to previous state
 
         game.saveState(); //Uguali
+        gameToSTring = objectMapper.writeValueAsString(game);
         savedGame.saveState();
-        controller = new ServerController(game,playermap);
+        savedGameToString = objectMapper.writeValueAsString(savedGame);
+        assertEquals(savedGameToString, gameToSTring);
+
 
         //The Player is able to do a different move
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
@@ -237,8 +246,11 @@ class GameTest {
         savedGame = game.saveStateToVariable();
 
         game.saveState();// Uguali
+        gameToSTring = objectMapper.writeValueAsString(game);
         savedGame.saveState();
-        controller = new ServerController(game,playermap);
+        savedGameToString = objectMapper.writeValueAsString(savedGame);
+        assertEquals(savedGameToString, gameToSTring);
+
 
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         targetCell = game.getGameBoard().getCell(1,3);
@@ -247,12 +259,15 @@ class GameTest {
         assertEquals(Block.LEVEL1 , targetCell.getBlock());
         assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
 
-        game.saveState();//Diversi
+        game.saveState();// Diversi
+        gameToSTring = objectMapper.writeValueAsString(game);
         savedGame.saveState();
+        savedGameToString = objectMapper.writeValueAsString(savedGame);
+        assertNotEquals(savedGameToString, gameToSTring);
 
         //Restore game
         game = savedGame;
-        controller = new ServerController(game,playermap);
+
         //Different buildAction
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         targetCell = game.getGameBoard().getCell(1,4);

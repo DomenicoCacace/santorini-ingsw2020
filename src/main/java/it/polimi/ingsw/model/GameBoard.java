@@ -1,14 +1,13 @@
 package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
-import it.polimi.ingsw.model.utilities.Memento;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id", scope = GameBoard.class)
 
-public class GameBoard implements Memento<GameBoard> {
+public class GameBoard  {
     private static final int DIMENSION = 5;
     private Cell[][] board;
 
@@ -31,12 +30,11 @@ public class GameBoard implements Memento<GameBoard> {
         }
     }
 
-    public GameBoard(GameBoard gameBoard) {
+    private GameBoard(GameBoard gameBoard) {
         this.board = new Cell[DIMENSION][DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
-                Cell tmpCell = gameBoard.getCell(i, j);
-                this.board[i][j] = new Cell(tmpCell);
+                this.board[i][j] = gameBoard.board[i][j].cloneCell();
             }
         }
     }
@@ -103,15 +101,11 @@ public class GameBoard implements Memento<GameBoard> {
         return cells;
     }
 
-    @Override
-    public GameBoard saveState() {
+    public GameBoard cloneGameBoard(){
         return new GameBoard(this);
     }
 
-    @Override
-    public void restoreState(GameBoard savedState) {
-        this.board = savedState.board;
-    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -24,7 +24,15 @@ public class ServerController implements ObserverInterface {
         this.game = game;
         this.playerMap = players;
         //TODO: Register observers
-
+        for(Event event: Event.values()){
+            if(event != Event.ADD_WORKER &&
+                event!= Event.BUILDABLE_CELLS &&
+                event!= Event.WALKABLE_CELLS)
+                game.addObserver(this, event);
+            else{
+                playerMap.forEach((s, player) -> player.addObserver(this, event));
+            }
+        }
     }
 
     public void addWorker(String username, Cell cell) {

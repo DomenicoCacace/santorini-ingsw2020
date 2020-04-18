@@ -30,7 +30,7 @@ public class BuildDome extends BuildingStrategy {
     }
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new BuildDome(this, game);
     }
 

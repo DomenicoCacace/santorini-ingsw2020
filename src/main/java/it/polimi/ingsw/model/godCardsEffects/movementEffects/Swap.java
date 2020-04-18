@@ -79,7 +79,7 @@ public class Swap extends MovementStrategy {
 
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new Swap(this, game);
     }
 

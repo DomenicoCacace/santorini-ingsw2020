@@ -19,10 +19,14 @@ public class Turn {
         this.ruleSetStrategy = currentPlayer.getGod().getStrategy();
     }
 
-    public Turn(Turn turn, Game game){
+    private Turn(Turn turn, Game game){
         this.turnNumber = turn.turnNumber;
         this.currentPlayer= game.getPlayers().stream().filter(player -> player.getName().equals(turn.currentPlayer.getName())).collect(Collectors.toList()).get(0);
         this.ruleSetStrategy = currentPlayer.getGod().getStrategy();
+    }
+
+    public Turn cloneTurn(Game game){
+        return new Turn(this, game);
     }
 
 @JsonGetter

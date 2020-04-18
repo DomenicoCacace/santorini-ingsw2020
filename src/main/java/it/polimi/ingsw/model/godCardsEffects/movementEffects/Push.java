@@ -72,7 +72,7 @@ public class Push extends MovementStrategy {
     }
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new Push(this, game);
     }
 }

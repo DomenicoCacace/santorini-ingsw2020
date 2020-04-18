@@ -10,15 +10,19 @@ public class God {
     private final int workersNumber;
 
 
-    public God(God god, Game game){
+    private God(God god, Game game){
         this.name = god.name;
-        this.strategy = god.strategy.getClone(game);
+        this.strategy = god.strategy.cloneStrategy(game);
         this.workersNumber = god.workersNumber;
     }
 
     public God(@JsonProperty("name") String name, @JsonProperty("workersNumber") int workersNumber) {
         this.name = name;
         this.workersNumber = workersNumber;
+    }
+
+    public God cloneGod(Game game){
+        return new God(this, game);
     }
 
     public String getName() {

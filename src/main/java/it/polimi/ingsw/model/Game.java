@@ -53,14 +53,14 @@ public class Game implements ObservableInterface {
     }
 
     private Game(Game game){ //TODO: get clone and privatize constructors
-        this.gameBoard = new GameBoard(game.gameBoard);
+        this.gameBoard = game.gameBoard.cloneGameBoard();
         this.players = new ArrayList<>();
         for(Player player: game.players){
-            this.players.add(new Player(player, this));
+            this.players.add(player.clonePlayer(this));
         }
 
-        this.currentTurn = new Turn(game.currentTurn, this);
-        this.nextTurn = new Turn(game.nextTurn, this);
+        this.currentTurn = game.currentTurn.cloneTurn(this);
+        this.nextTurn = game.nextTurn.cloneTurn(this);
         if(game.winner!= null) {
             this.winner = this.getPlayers().stream().filter(player -> player.getName().equals(game.winner.getName())).collect(Collectors.toList()).get(0);
         }
@@ -195,7 +195,7 @@ public class Game implements ObservableInterface {
     }
 
     public GameBoard cloneGameBoard(){
-        return new GameBoard(this.gameBoard);
+        return this.gameBoard.cloneGameBoard();
     }
 
     public Game saveStateToVariable(){

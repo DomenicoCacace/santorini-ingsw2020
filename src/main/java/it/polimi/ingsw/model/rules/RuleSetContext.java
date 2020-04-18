@@ -5,11 +5,10 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.utilities.Memento;
 
 import java.util.List;
 
-public class RuleSetContext implements Memento<RuleSetContext> {
+public class RuleSetContext  {
 
     private RuleSetStrategy strategy;
 
@@ -58,17 +57,4 @@ public class RuleSetContext implements Memento<RuleSetContext> {
         return strategy.getBuildableCells(worker);
     }
 
-    @Override
-    public RuleSetContext saveState() {
-
-        RuleSetContext savedContext = new RuleSetContext();
-        savedContext.setStrategy(this.strategy);
-
-        return savedContext;
-    }
-
-    @Override
-    public void restoreState(RuleSetContext savedState) {
-        this.strategy = savedState.getStrategy();
-    }
 }

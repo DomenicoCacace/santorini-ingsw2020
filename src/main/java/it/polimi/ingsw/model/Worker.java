@@ -31,6 +31,10 @@ public class Worker {
         this.position = position;
     }
 
+    public Worker cloneWorker(){
+        return new Worker(this.position, this.color);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

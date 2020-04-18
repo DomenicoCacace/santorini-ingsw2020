@@ -31,7 +31,7 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
     }
 
     @Override
-    public RuleSetStrategy getClone(Game game) {
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new CannotMoveUp(this, game);
     }
 

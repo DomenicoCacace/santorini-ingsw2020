@@ -42,16 +42,16 @@ public class Player implements ObservableInterface {
 
     }
 
-    public Player(Player player, Game game){
+    private Player(Player player, Game game){
         this.game = game;
         this.name = player.name;
         this.color = player.color;
         this.workers = new ArrayList<>();
         for(Worker worker: player.workers){
-            this.workers.add(new Worker(worker.getPosition(), color));
+            this.workers.add(worker.cloneWorker());
         }
         game.setCellsReferences(this);
-        this.god = new God(player.god, game);
+        this.god = player.god.cloneGod(game);
     }
 
     public void setGame(Game game) {
@@ -106,7 +106,7 @@ public class Player implements ObservableInterface {
         if(selectedWorker != null){
             List<Cell> walkableCells = new ArrayList<>();
             for (Cell cell : game.getWalkableCells(selectedWorker)) {
-                walkableCells.add(new Cell(cell));
+                walkableCells.add(cell.cloneCell());
             }
             Message message = new WalkableCellsResponse("OK", name, walkableCells);
             notifyObservers(Event.WALKABLE_CELLS, message);
@@ -119,13 +119,17 @@ public class Player implements ObservableInterface {
         if(selectedWorker != null){
             List<Cell> buildableCells = new ArrayList<>();
             for (Cell cell : game.getBuildableCells(selectedWorker)) {
-                buildableCells.add(new Cell(cell));
+                buildableCells.add(cell.cloneCell());
             }
             Message message = new BuildableCellsResponse("OK", name, buildableCells);
             notifyObservers(Event.BUILDABLE_CELLS, message);
         }
         else
             throw new WrongSelectionException();
+    }
+
+    public Player clonePlayer(Game game){
+        return new Player(this, game);
     }
 
     @Override

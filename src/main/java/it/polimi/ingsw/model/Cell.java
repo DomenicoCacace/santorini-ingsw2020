@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
+import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -33,13 +34,13 @@ public class Cell implements Serializable {
     }
 
     //Copy constructor
-    public Cell(Cell cell){
+    private Cell(Cell cell){
         this.coordX = cell.coordX;
         this.coordY = cell.coordY;
         this.hasDome = cell.hasDome;
         this.block = cell.block;
         if(cell.occupiedBy!=null)
-            this.occupiedBy=new Worker(this, cell.occupiedBy.getColor());
+            this.occupiedBy=cell.occupiedBy;
         else this.occupiedBy= null;
     }
 
@@ -82,6 +83,10 @@ public class Cell implements Serializable {
     public int heightDifference(Cell cell) {
         return cell.block.getHeight() - this.block.getHeight();
 
+    }
+
+    public Cell cloneCell(){
+        return new Cell(this);
     }
 
 

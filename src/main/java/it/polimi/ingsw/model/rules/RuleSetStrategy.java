@@ -48,6 +48,6 @@ public interface RuleSetStrategy {
 
     boolean canEndTurnAutomatically();
 
-    RuleSetStrategy getClone(Game game);
+    RuleSetStrategy cloneStrategy(Game game);
 
 }
