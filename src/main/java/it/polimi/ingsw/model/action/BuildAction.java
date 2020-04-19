@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model.action;
 
 import it.polimi.ingsw.exceptions.IllegalActionException;
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Block;
+import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.Worker;
 
 import java.io.IOException;
 

@@ -13,7 +13,7 @@ public class PlayerMoveResponse extends Message {
     public PlayerMoveResponse(String outcome, String username, List<Cell> payload) {
         super(username, Content.PLAYER_MOVE);
         this.outcome = outcome;
-        if(outcome.equals("OK"))
+        if (outcome.equals("OK"))
             this.payload = payload;
         else
             this.payload = null;

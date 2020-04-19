@@ -26,9 +26,9 @@ class Down2LevelsTest {
     @BeforeEach
     void SetUp () throws IOException, AddingFailedException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Pan",2));
+        gods.add(new God("Pan",2,""));
         gods.get(0).setStrategy(new Down2Levels());
-        gods.add(new God("base", 2));
+        gods.add(new God("base", 2,""));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));

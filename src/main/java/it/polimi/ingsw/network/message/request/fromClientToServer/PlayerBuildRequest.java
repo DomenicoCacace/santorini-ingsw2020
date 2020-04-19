@@ -12,7 +12,6 @@ public class PlayerBuildRequest extends Message {
     public final Block targetBlock;
 
 
-
     public PlayerBuildRequest(String username, Cell targetCell, Block targetBlock, Worker targetWorker) {
         super(username, Content.PLAYER_BUILD);
         this.targetCell = targetCell;

@@ -28,9 +28,9 @@ class MoveAgainTest {
     @BeforeEach
     void SetUp() throws IOException, AddingFailedException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Artemis",2));
+        gods.add(new God("Artemis",2,""));
         gods.get(0).setStrategy(new MoveAgain());
-        gods.add(new God("base",2));
+        gods.add(new God("base",2,""));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));

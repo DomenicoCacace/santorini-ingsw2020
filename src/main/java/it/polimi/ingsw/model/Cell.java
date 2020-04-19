@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property= "@id", scope = Cell.class)
-@JsonPropertyOrder({ "idCell", "coordX", "coordY", "hasDome", "block" })
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = Cell.class)
+@JsonPropertyOrder({"idCell", "coordX", "coordY", "hasDome", "block"})
 public class Cell implements Serializable {
     private final int coordX;
-    private final int  coordY;
+    private final int coordY;
     private boolean hasDome;
     private Block block;
     @JsonBackReference(" cell - worker")
@@ -24,7 +24,7 @@ public class Cell implements Serializable {
     }
 
     @JsonCreator
-    public Cell(@JsonProperty("coordX")int coordX, @JsonProperty("coordY") int coordY, @JsonProperty("hasDome") boolean hasDome, @JsonProperty("occupiedBy") Worker occupiedBy, @JsonProperty("block") Block block) {
+    public Cell(@JsonProperty("coordX") int coordX, @JsonProperty("coordY") int coordY, @JsonProperty("hasDome") boolean hasDome, @JsonProperty("occupiedBy") Worker occupiedBy, @JsonProperty("block") Block block) {
         this.coordX = coordX;
         this.coordY = coordY;
         this.hasDome = hasDome;
@@ -33,12 +33,12 @@ public class Cell implements Serializable {
     }
 
     //Copy constructor
-    private Cell(Cell cell){
+    private Cell(Cell cell) {
         this.coordX = cell.coordX;
         this.coordY = cell.coordY;
         this.hasDome = cell.hasDome;
         this.block = cell.block;
-        if(cell.occupiedBy != null)
+        if (cell.occupiedBy != null)
             this.occupiedBy = cell.occupiedBy;
         else this.occupiedBy = null;
     }
@@ -84,14 +84,14 @@ public class Cell implements Serializable {
 
     }
 
-    public Cell cloneCell(){
+    public Cell cloneCell() {
         return new Cell(this);
     }
 
 
     @Override
     public String toString() {
-        if(occupiedBy!=null) {
+        if (occupiedBy != null) {
             return "Cell{" +
                     "coordX=" + coordX +
                     ", coordY=" + coordY +
@@ -115,7 +115,7 @@ public class Cell implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Cell)) return false;
         Cell cell = (Cell) o;
-        return  coordX == cell.coordX &&
+        return coordX == cell.coordX &&
                 coordY == cell.coordY &&
                 hasDome == cell.hasDome &&
                 block == cell.block;

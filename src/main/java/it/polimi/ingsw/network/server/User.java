@@ -3,12 +3,12 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.network.message.Message;
 
 public class User {
-    private String username;
-    private VirtualClient virtualClient;
+    private final String username;
+    private final VirtualClient virtualClient;
 
     public User(VirtualClient virtualClient) {
-            this.virtualClient = virtualClient;
-            this.username = virtualClient.getUsername();
+        this.virtualClient = virtualClient;
+        this.username = virtualClient.getUsername();
     }
 
     public String getUsername() {
@@ -19,7 +19,7 @@ public class User {
         return virtualClient;
     }
 
-    public void notify(Message message){
+    public void notify(Message message) {
         virtualClient.notify(message);
     }
 

@@ -13,7 +13,7 @@ public class PlayerBuildResponse extends Message {
     public PlayerBuildResponse(String outcome, String username, List<Cell> payload) {
         super(username, Content.PLAYER_BUILD);
         this.outcome = outcome;
-        if(outcome.equals("OK"))
+        if (outcome.equals("OK"))
             this.payload = payload;
         else
             this.payload = null;

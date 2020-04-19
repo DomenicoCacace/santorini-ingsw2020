@@ -8,6 +8,6 @@ public class SelectWorkerRequest extends Message {
 
     public SelectWorkerRequest(String username, Worker targetWorker) {
         super(username, Content.SELECT_WORKER);
-        this.targetWorker=targetWorker;
+        this.targetWorker = targetWorker;
     }
 }

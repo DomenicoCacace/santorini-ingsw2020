@@ -27,9 +27,9 @@ class SwapTest {
     @BeforeEach
     void SetUp () throws IOException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Apollo",2));
+        gods.add(new God("Apollo",2, ""));
         gods.get(0).setStrategy(new Swap());
-        gods.add(new God("base",2));
+        gods.add(new God("base",2, ""));
         gods.get(1).setStrategy(new RuleSetBase());
 
 

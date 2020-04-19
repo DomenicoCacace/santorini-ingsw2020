@@ -1,11 +1,14 @@
 package it.polimi.ingsw.network.Client;
 
 
-import it.polimi.ingsw.network.message.*;
+import it.polimi.ingsw.network.message.JacksonMessageBuilder;
+import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 public class NetworkHandler implements Runnable {
@@ -52,19 +55,18 @@ public class NetworkHandler implements Runnable {
         System.out.println("You have been disconnected");
     }
 
-    public void login(String username) throws IOException{
+    public void login(String username) throws IOException {
         sendMessage(new LoginRequest(username));
     }
 
 
-    public void closeConnection()  {
+    public void closeConnection() {
         openConnection = false;
         try {
             outputSocket.close();
             inputSocket.close();
             socketClient.close();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             //Todo that means that the connection was already closed
         }

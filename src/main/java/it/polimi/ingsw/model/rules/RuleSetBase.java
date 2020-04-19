@@ -55,8 +55,8 @@ public class RuleSetBase implements RuleSetStrategy {
         this.movesUpAvailable = ruleSetBase.getMovesUpAvailable();
         this.buildsAvailable = ruleSetBase.getBuildsAvailable();
         this.hasMovedUp = ruleSetBase.hasMovedUp();
-        if(ruleSetBase.getMovedWorker() != null)
-            this.movedWorker =game.getGameBoard().getCell(ruleSetBase.getMovedWorker().getPosition()).getOccupiedBy();
+        if (ruleSetBase.getMovedWorker() != null)
+            this.movedWorker = game.getGameBoard().getCell(ruleSetBase.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
 
@@ -212,16 +212,16 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public boolean canEndTurn(){
+    public boolean canEndTurn() {
         return canEndTurnAutomatically();
     }
 
     @Override
-    public boolean canEndTurnAutomatically(){
+    public boolean canEndTurnAutomatically() {
         return (movesAvailable == 0 && buildsAvailable == 0);
     }
 
-    public RuleSetStrategy cloneStrategy(Game game){
+    public RuleSetStrategy cloneStrategy(Game game) {
         return new RuleSetBase(this, game);
     }
 

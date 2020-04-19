@@ -24,13 +24,13 @@ public class MoveAgain extends MovementStrategy {
         initialize();
     }
 
-    private MoveAgain(MoveAgain moveAgain, Game game){
+    private MoveAgain(MoveAgain moveAgain, Game game) {
         this.game = game;
         this.movesAvailable = moveAgain.getMovesAvailable();
         this.movesUpAvailable = moveAgain.getMovesUpAvailable();
         this.buildsAvailable = moveAgain.getBuildsAvailable();
         this.hasMovedUp = moveAgain.hasMovedUp();
-        if(moveAgain.getMovedWorker() != null)
+        if (moveAgain.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(moveAgain.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
         this.startingCell = game.getGameBoard().getCell(moveAgain.startingCell);
@@ -49,8 +49,7 @@ public class MoveAgain extends MovementStrategy {
             y = action.getTargetWorker().getPosition().getCoordY();
             startingCell = game.getGameBoard().getCell(x, y);
             return true;
-        }
-        else if (movedWorker == action.getTargetWorker())
+        } else if (movedWorker == action.getTargetWorker())
             return super.isMoveActionValid(action);
         return false;
     }
@@ -58,7 +57,7 @@ public class MoveAgain extends MovementStrategy {
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> adjacentCells = super.getWalkableCells(worker);
-        if(movedWorker != null)
+        if (movedWorker != null)
             adjacentCells.remove(startingCell);
         return adjacentCells;
     }

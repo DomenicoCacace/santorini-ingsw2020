@@ -12,7 +12,7 @@ import it.polimi.ingsw.model.action.MoveAction;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="stratId", scope = RuleSetStrategy.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "stratId", scope = RuleSetStrategy.class)
 
 public interface RuleSetStrategy {
 

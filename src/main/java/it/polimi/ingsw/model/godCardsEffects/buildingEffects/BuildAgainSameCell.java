@@ -31,8 +31,8 @@ public class BuildAgainSameCell extends BuildingStrategy {
         this.movesAvailable = 1;
         this.movesUpAvailable = 1;
         this.buildsAvailable = 2;
-        this.hasMovedUp= false;
-        this.movedWorker= null;
+        this.hasMovedUp = false;
+        this.movedWorker = null;
     }
 
     public BuildAgainSameCell() {
@@ -46,11 +46,11 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     @Override
     public boolean isBuildActionValid(BuildAction action) {
-        if (this.buildsAvailable>0 && isInsideBuildableCells(action) &&
-                isCorrectBlock(action) && movedWorker == action.getTargetWorker()){
+        if (this.buildsAvailable > 0 && isInsideBuildableCells(action) &&
+                isCorrectBlock(action) && movedWorker == action.getTargetWorker()) {
             buildsAvailable--;
             chosenCell = action.getTargetCell();
-            if(action.getTargetBlock().getHeight() == 3 || action.getTargetBlock().getHeight() == 4)
+            if (action.getTargetBlock().getHeight() == 3 || action.getTargetBlock().getHeight() == 4)
                 buildsAvailable = 0;
             return true;
         }
@@ -60,9 +60,9 @@ public class BuildAgainSameCell extends BuildingStrategy {
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> secondBuild = new ArrayList<>();
-        if(this.buildsAvailable >0) {
+        if (this.buildsAvailable > 0) {
             if (chosenCell == null)
-               secondBuild = super.getBuildableCells(worker);
+                secondBuild = super.getBuildableCells(worker);
             else
                 secondBuild.add(chosenCell);
         }
@@ -70,7 +70,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
     }
 
     @Override
-    public boolean canEndTurn(){
+    public boolean canEndTurn() {
         return (movesAvailable == 0 && buildsAvailable <= 1);
     }
 

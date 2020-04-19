@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="GodId", scope = it.polimi.ingsw.model.dataClass.GodData.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "GodId", scope = it.polimi.ingsw.model.dataClass.GodData.class)
 public class GodData {
 
     private final String name;
     private final int workersNumber;
-    private String descriptionStrategy;
+    private final String descriptionStrategy;
 
     public GodData(@JsonProperty("name") String name, @JsonProperty("workersNumber") int workersNumber, @JsonProperty("descriptionStrategy") String descriptionStrategy) {
         this.name = name;
@@ -17,7 +17,7 @@ public class GodData {
         this.descriptionStrategy = descriptionStrategy;
     }
 
-    
+
     public String getName() {
         return name;
     }

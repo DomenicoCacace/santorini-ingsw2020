@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.Objects;
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="workerId", scope = Worker.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "workerId", scope = Worker.class)
 public class Worker {
     private Cell position;
     private final Color color;
@@ -31,7 +31,7 @@ public class Worker {
         this.position = position;
     }
 
-    public Worker cloneWorker(){
+    public Worker cloneWorker() {
         return new Worker(this.position, this.color);
     }
 

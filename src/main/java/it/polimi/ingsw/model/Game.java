@@ -8,10 +8,12 @@ import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.model.dataClass.GameData;
+import it.polimi.ingsw.model.dataClass.PlayerData;
+import it.polimi.ingsw.model.dataClass.TurnData;
 import it.polimi.ingsw.model.rules.RuleSetContext;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,16 +23,16 @@ import java.util.stream.Collectors;
 
 
 public class Game implements ObservableInterface {
-    private GameBoard gameBoard;
-    private List<Player> players;
+    private final GameBoard gameBoard;
+    private final List<Player> players;
     private Turn currentTurn;
     private Turn nextTurn;
     private Player winner;
-    private RuleSetContext currentRuleSet;
-    private EnumMap<Event, ArrayList<ObserverInterface>> observers;
+    private final RuleSetContext currentRuleSet;
+    private final EnumMap<Event, ArrayList<ObserverInterface>> observers;
     private File file = new File("../SavedGame.json");
 
-    public Game( GameBoard gameBoard,  List<Player> players) {
+    public Game(GameBoard gameBoard, List<Player> players) {
         this.gameBoard = gameBoard;
         this.players = players;
         for (Player player : players)
@@ -41,7 +43,10 @@ public class Game implements ObservableInterface {
         observers = new EnumMap<>(Event.class);
     }
 
-    private Game(@JsonProperty("gameBoard")GameBoard gameBoard, @JsonProperty("players") List<Player> players, @JsonProperty("currentTurn") Turn currentTurn, @JsonProperty("nextTurn") Turn nextTurn, @JsonProperty("winner") Player winner, @JsonProperty("currentRuleset") RuleSetContext currentRuleSet) {
+    /*
+        This is needed by jackson in order to correctly deserialize the .json where an old state of Game is stored, we need this to implement Persistence
+     */
+    private Game(@JsonProperty("gameBoard") GameBoard gameBoard, @JsonProperty("players") List<Player> players, @JsonProperty("currentTurn") Turn currentTurn, @JsonProperty("nextTurn") Turn nextTurn, @JsonProperty("winner") Player winner, @JsonProperty("currentRuleset") RuleSetContext currentRuleSet) {
         this.gameBoard = gameBoard;
         this.players = players;
         this.currentTurn = currentTurn;
@@ -52,19 +57,22 @@ public class Game implements ObservableInterface {
 
     }
 
-    private Game(Game game){ //TODO: get clone and privatize constructors
+
+    /*
+        this construct an exact copy of a game, used to implement undo: TODO: where should the savedGame variable be stored?
+     */
+    private Game(Game game) {
         this.gameBoard = game.gameBoard.cloneGameBoard();
         this.players = new ArrayList<>();
-        for(Player player: game.players){
+        for (Player player : game.players) {
             this.players.add(player.clonePlayer(this));
         }
 
         this.currentTurn = game.currentTurn.cloneTurn(this);
         this.nextTurn = game.nextTurn.cloneTurn(this);
-        if(game.winner!= null) {
+        if (game.winner != null) {
             this.winner = this.getPlayers().stream().filter(player -> player.getName().equals(game.winner.getName())).collect(Collectors.toList()).get(0);
-        }
-        else this.winner = null;
+        } else this.winner = null;
         this.currentRuleSet = new RuleSetContext();
         currentRuleSet.setStrategy(this.currentTurn.getRuleSetStrategy());
         this.file = new File("../SavedGame2.json");
@@ -72,7 +80,10 @@ public class Game implements ObservableInterface {
 
     }
 
-    public void setCellsReferences(Player player){
+    /*
+        Player use this method to keep the correct references between objects: Cell and Player will have the reference to the same Worker obj instead of construct 2 different workers with equal values
+     */
+    public void setCellsReferences(Player player) {
         for (Worker worker : player.getWorkers()) {
             Cell tmpCell = gameBoard.getCell(worker.getPosition());
             tmpCell.setOccupiedBy(worker);
@@ -122,7 +133,7 @@ public class Game implements ObservableInterface {
                 notifyObservers(Event.WINNER_DECLARED, message);
             }
             moveAction.apply();
-            Message message = new PlayerMoveResponse("OK", currentTurn.getCurrentPlayer().getName(), cloneGameBoard());
+            Message message = new PlayerMoveResponse("OK", "broadcast", gameBoard.cloneAllCells());
             notifyObservers(Event.PLAYER_MOVE, message);
             this.saveState();
         } else
@@ -132,30 +143,29 @@ public class Game implements ObservableInterface {
     public void validateBuildAction(BuildAction buildAction) throws IOException, IllegalActionException {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
-            Message message = new PlayerBuildResponse("OK", currentTurn.getCurrentPlayer().getName(), cloneGameBoard());
+            Message message = new PlayerBuildResponse("OK", "broadcast", gameBoard.cloneAllCells());
             notifyObservers(Event.PLAYER_BUILD, message);
             this.saveState();
             endTurnAutomatically();
-        }else
+        } else
             throw new IllegalActionException();
     }
 
     public void endTurn() throws IllegalEndingTurnException, IOException {
-        if(currentRuleSet.canEndTurn()){
+        if (currentRuleSet.canEndTurn()) {
             generateNextTurn();
-        }
-        else
+        } else
             throw new IllegalEndingTurnException();
     }
 
     public void endTurnAutomatically() throws IOException {
-        if(currentRuleSet.canEndTurnAutomatically()) {
+        if (currentRuleSet.canEndTurnAutomatically()) {
             generateNextTurn();
         }
     }
 
     public Player nextPlayer() {
-        if(!players.contains(getCurrentTurn().getCurrentPlayer())){
+        if (!players.contains(getCurrentTurn().getCurrentPlayer())) {
             return players.get(((currentTurn.getTurnNumber() + 1) % players.size()));
         }
         return players.get(((players.indexOf(currentTurn.getCurrentPlayer()) + 1) % players.size()));
@@ -169,44 +179,66 @@ public class Game implements ObservableInterface {
         currentTurn = nextTurn;
         Message message = new EndTurnResponse("OK", "broadcast", currentTurn.getCurrentPlayer().getName());
         notifyObservers(Event.END_TURN, message);
-        if(currentRuleSet.checkLoseCondition()) {
-            message = new PlayerRemovedResponse("OK", new Game(this));
-            notifyObservers(Event.PLAYER_REMOVED, message);
+        if (currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
         }
         this.saveState();
     }
 
     private void removePlayer(Player player) throws IOException {
-        for(Worker worker: player.getWorkers()){
+        for (Worker worker : player.getWorkers()) {
             worker.getPosition().setOccupiedBy(null);
             worker.setPosition(null);
         }
+        Message message = new YouLostResponse(player.getName());
+        notifyObservers(Event.PLAYER_LOST, message);
         players.remove(player);
+        message = new PlayerRemovedResponse("OK", buildBoardData());
+        notifyObservers(Event.PLAYER_REMOVED, message);
 
-        if(players.size()==1){
+
+        if (players.size() == 1) {
             this.winner = players.get(0);
             //TODO: manage win
-            Message message = new WinnerDeclaredResponse("OK", this.winner.getName());
+            message = new WinnerDeclaredResponse("OK", this.winner.getName());
             notifyObservers(Event.WINNER_DECLARED, message);
         }
         generateNextTurn();
 
     }
 
-    public GameBoard cloneGameBoard(){
-        return this.gameBoard.cloneGameBoard();
+    /*
+        this method return a gameData object built from the Game obj, this is needed to forward only the information strictly needed for the view to work as intended.
+        the same applies for all the other buildDataClass methods.
+        GameBoard doesn't need a dataClass, we only need the Cell matrix.
+        Worker and Cell are dataclasses already
+     */
+    public GameData buildGameData() {
+        List<Cell> gameboardData = gameBoard.cloneAllCells();
+        List<PlayerData> playersData = new ArrayList<>();
+        this.players.forEach(player -> playersData.add(player.buildDataClass()));
+        TurnData currentTurnData = currentTurn.buildDataClass();
+        return new GameData(gameboardData, playersData, currentTurnData);
     }
 
-    public Game saveStateToVariable(){
+    public List<Cell> buildBoardData() {
+        return gameBoard.cloneAllCells();
+    }
+
+    /*public GameBoard cloneGameBoard(){
+        return this.gameBoard.cloneGameBoard();
+    }
+     */
+
+    public Game saveStateToVariable() {
         return new Game(this);
     }
 
-    public void saveState(){
+    public void saveState() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValue(file, this);
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -230,7 +262,7 @@ public class Game implements ObservableInterface {
     @Override
     public void addObserver(ObserverInterface observer, Event event) {
         ArrayList<ObserverInterface> observerList = observers.computeIfAbsent(event, k -> new ArrayList<>());
-        if(!observerList.contains(observer)){
+        if (!observerList.contains(observer)) {
             observers.get(event).add(observer);
         }
     }
@@ -239,14 +271,14 @@ public class Game implements ObservableInterface {
     public void removeObserver(ObserverInterface observer, Event event) {
         try {
             observers.get(event).remove(observer);
-        } catch (Exception e){
+        } catch (Exception e) {
             // do nothing
         }
     }
 
     @Override
-    public void notifyObservers(Event event, Message message) throws IOException {
-        if(observers.containsKey(event)) {
+    public void notifyObservers(Event event, Message message) {
+        if (observers.containsKey(event)) {
             for (ObserverInterface observerInterface : observers.get(event))
                 observerInterface.update(message);
         }

@@ -9,6 +9,6 @@ public class AddWorkerRequest extends Message {
 
     public AddWorkerRequest(String username, Cell targetCell) {
         super(username, Content.ADD_WORKER);
-        this.targetCell=targetCell;
+        this.targetCell = targetCell;
     }
 }

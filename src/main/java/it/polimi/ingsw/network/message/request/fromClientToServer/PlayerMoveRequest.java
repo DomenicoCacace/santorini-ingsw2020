@@ -9,14 +9,9 @@ public class PlayerMoveRequest extends Message {
     public final Cell targetCell;
     public final Worker targetWorker;
 
-
     public PlayerMoveRequest(String username, Cell targetCell, Worker targetWorker) {
         super(username, Content.PLAYER_MOVE);
-        this.targetCell= targetCell;
+        this.targetCell = targetCell;
         this.targetWorker = targetWorker;
-    }
-
-    public Cell getTargetCell() {
-        return targetCell;
     }
 }

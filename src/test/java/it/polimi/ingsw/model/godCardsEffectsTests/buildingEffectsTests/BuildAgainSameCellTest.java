@@ -30,9 +30,9 @@ class BuildAgainSameCellTest {
     @BeforeEach
     void SetUp() throws IOException, AddingFailedException, IllegalActionException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("Hephaestus",2));
+        gods.add(new God("Hephaestus",2, ""));
         gods.get(0).setStrategy(new BuildAgainSameCell());
-        gods.add(new God("base",2));
+        gods.add(new God("base",2, ""));
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));

@@ -14,13 +14,13 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     private Cell chosenCell;
 
 
-    private BuildAgainDifferentCell(BuildAgainDifferentCell buildAgainDifferentCell, Game game){
+    private BuildAgainDifferentCell(BuildAgainDifferentCell buildAgainDifferentCell, Game game) {
         this.game = game;
         this.movesAvailable = buildAgainDifferentCell.getMovesAvailable();
         this.movesUpAvailable = buildAgainDifferentCell.getMovesUpAvailable();
         this.buildsAvailable = buildAgainDifferentCell.getBuildsAvailable();
         this.hasMovedUp = buildAgainDifferentCell.hasMovedUp();
-        if(buildAgainDifferentCell.getMovedWorker() != null)
+        if (buildAgainDifferentCell.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(buildAgainDifferentCell.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
         chosenCell = game.getGameBoard().getCell(buildAgainDifferentCell.chosenCell);
@@ -30,8 +30,8 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
         this.movesAvailable = 1;
         this.movesUpAvailable = 1;
         this.buildsAvailable = 2;
-        this.hasMovedUp= false;
-        this.movedWorker= null;
+        this.hasMovedUp = false;
+        this.movedWorker = null;
     }
 
     public BuildAgainDifferentCell() {
@@ -56,7 +56,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> secondBuild = new ArrayList<>();
-        if(this.buildsAvailable> 0) {
+        if (this.buildsAvailable > 0) {
             if (chosenCell == null)
                 secondBuild = super.getBuildableCells(worker);
             else {
@@ -69,7 +69,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     }
 
     @Override
-    public boolean canEndTurn(){
+    public boolean canEndTurn() {
         return (movesAvailable == 0 && buildsAvailable <= 1);
     }
 

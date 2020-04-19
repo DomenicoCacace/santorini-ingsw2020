@@ -11,29 +11,31 @@ import java.util.List;
 
 public class Swap extends MovementStrategy {
 
-    public Swap(){super();}
+    public Swap() {
+        super();
+    }
 
-    private Swap(Swap swap, Game game){
+    private Swap(Swap swap, Game game) {
         this.game = game;
         this.movesAvailable = swap.getMovesAvailable();
         this.movesUpAvailable = swap.getMovesUpAvailable();
         this.buildsAvailable = swap.getBuildsAvailable();
         this.hasMovedUp = swap.hasMovedUp();
-        if(swap.getMovedWorker() != null)
+        if (swap.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(swap.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
 
-    public void swapAction(MoveAction action){
-        if (action.getTargetCell().getOccupiedBy()!= null) {
+    public void swapAction(MoveAction action) {
+        if (action.getTargetCell().getOccupiedBy() != null) {
 
             Cell myPreviousCell = action.getStartingCell();
             Cell myAfterCell = action.getTargetCell();
             Worker myWorker = action.getTargetWorker();
             Worker opponentWorker = action.getTargetCell().getOccupiedBy();
 
-            if(myWorker.getPosition().heightDifference(myAfterCell) == 1)
-                hasMovedUp=true;
+            if (myWorker.getPosition().heightDifference(myAfterCell) == 1)
+                hasMovedUp = true;
 
             myWorker.setPosition(myAfterCell);
             myAfterCell.setOccupiedBy(myWorker);
@@ -44,11 +46,11 @@ public class Swap extends MovementStrategy {
 
     @Override
     public boolean isMoveActionValid(MoveAction action) {
-        if(movesAvailable>0 && isInsideWalkableCells(action)){
+        if (movesAvailable > 0 && isInsideWalkableCells(action)) {
             movedWorker = action.getTargetWorker();
             swapAction(action);
             movesAvailable--;
-            if(movesUpAvailable>0)
+            if (movesUpAvailable > 0)
                 movesUpAvailable--;
             return true;
         }
@@ -58,7 +60,7 @@ public class Swap extends MovementStrategy {
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        if(movesAvailable > 0) {
+        if (movesAvailable > 0) {
             for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
                 if (canGo(worker, cell) && canBuildOnAtLeastOneCell(cell))
                     if (cell.getOccupiedBy() == null || isNotSameOwner(cell))
@@ -68,14 +70,13 @@ public class Swap extends MovementStrategy {
         return cells;
     }
 
-    private boolean canBuildOnAtLeastOneCell(Cell targetCell){
-        for(Cell cell: game.getGameBoard().getAdjacentCells(targetCell)){
-            if(!cell.hasDome() && cell.getOccupiedBy() == null)
+    private boolean canBuildOnAtLeastOneCell(Cell targetCell) {
+        for (Cell cell : game.getGameBoard().getAdjacentCells(targetCell)) {
+            if (!cell.hasDome() && cell.getOccupiedBy() == null)
                 return true;
         }
         return false;
     }
-
 
 
     @Override

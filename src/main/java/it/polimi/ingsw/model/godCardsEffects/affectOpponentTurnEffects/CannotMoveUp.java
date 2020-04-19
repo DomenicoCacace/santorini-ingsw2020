@@ -6,15 +6,17 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 public class CannotMoveUp extends AffectOpponentTurnStrategy {
 
-    public CannotMoveUp(){super();}
+    public CannotMoveUp() {
+        super();
+    }
 
-    private CannotMoveUp(CannotMoveUp cannotMoveUp, Game game){
+    private CannotMoveUp(CannotMoveUp cannotMoveUp, Game game) {
         this.game = game;
         this.movesAvailable = cannotMoveUp.getMovesAvailable();
         this.movesUpAvailable = cannotMoveUp.getMovesUpAvailable();
         this.buildsAvailable = cannotMoveUp.getBuildsAvailable();
         this.hasMovedUp = cannotMoveUp.hasMovedUp();
-        if(cannotMoveUp.getMovedWorker() != null)
+        if (cannotMoveUp.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(cannotMoveUp.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
@@ -23,7 +25,7 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
     public void doEffect() {
         if (hasMovedUp) {
             for (Player players : game.getPlayers()) {
-                if(game.getCurrentTurn().getCurrentPlayer() != players)
+                if (game.getCurrentTurn().getCurrentPlayer() != players)
                     players.getGod().getStrategy().setMovesUpAvailable(0);
             }
         }

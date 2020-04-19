@@ -12,15 +12,17 @@ import java.util.List;
 
 public class Push extends MovementStrategy {
 
-    public Push(){super();}
+    public Push() {
+        super();
+    }
 
-    private Push(Push push, Game game){
+    private Push(Push push, Game game) {
         this.game = game;
         this.movesAvailable = push.getMovesAvailable();
         this.movesUpAvailable = push.getMovesUpAvailable();
         this.buildsAvailable = push.getBuildsAvailable();
         this.hasMovedUp = push.hasMovedUp();
-        if(push.getMovedWorker() != null)
+        if (push.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(push.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
@@ -32,8 +34,8 @@ public class Push extends MovementStrategy {
                 !game.getGameBoard().getCellBehind(myCell, targetCell).hasDome();
     }
 
-    void opponentAction(MoveAction action){
-        if (action.getTargetCell().getOccupiedBy()!= null) {
+    void opponentAction(MoveAction action) {
+        if (action.getTargetCell().getOccupiedBy() != null) {
             Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
             Action opponentMoveAction = new MoveAction(action.getTargetCell().getOccupiedBy(), pushCell);
             opponentMoveAction.apply();
@@ -43,7 +45,7 @@ public class Push extends MovementStrategy {
     @Override
     public boolean isMoveActionValid(MoveAction action) {
 
-        if(super.isMoveActionValid(action)){
+        if (super.isMoveActionValid(action)) {
             opponentAction(action);
             return true;
         }

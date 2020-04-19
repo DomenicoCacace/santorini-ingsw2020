@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.action.MoveAction;
 
 import java.util.List;
 
-public class RuleSetContext  {
+public class RuleSetContext {
 
     private RuleSetStrategy strategy;
 
@@ -17,7 +17,9 @@ public class RuleSetContext  {
         strategy.setGame(game);
     }
 
-    public boolean validateMoveAction(MoveAction action) { return strategy.isMoveActionValid(action); }
+    public boolean validateMoveAction(MoveAction action) {
+        return strategy.isMoveActionValid(action);
+    }
 
     public boolean validateBuildAction(BuildAction action) {
         return strategy.isBuildActionValid(action);
@@ -31,15 +33,17 @@ public class RuleSetContext  {
         this.strategy = strategy;
     }
 
-    public boolean canEndTurn(){
+    public boolean canEndTurn() {
         return strategy.canEndTurn();
     }
 
-    public boolean canEndTurnAutomatically(){
+    public boolean canEndTurnAutomatically() {
         return strategy.canEndTurnAutomatically();
     }
 
-    public void doEffect() { this.strategy.doEffect(); }
+    public void doEffect() {
+        this.strategy.doEffect();
+    }
 
     public boolean checkWinCondition(MoveAction action) {
         return strategy.checkWinCondition(action);

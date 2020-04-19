@@ -10,7 +10,7 @@ public class PlayerRemovedResponse extends Message {
     public final List<Cell> payload;
     public final String outcome;
 
-    public PlayerRemovedResponse(String outcome, List<Cell> payload){
+    public PlayerRemovedResponse(String outcome, List<Cell> payload) {
         super("broadcast", Content.PLAYER_REMOVED);
         this.outcome = outcome;
         this.payload = payload;

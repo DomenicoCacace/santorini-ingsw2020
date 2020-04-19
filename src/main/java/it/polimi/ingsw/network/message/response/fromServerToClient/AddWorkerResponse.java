@@ -10,11 +10,10 @@ public class AddWorkerResponse extends Message {
     public final List<Cell> payload;
     public final String outcome;
 
-
-    public AddWorkerResponse (String outcome, String username, List<Cell> payload) {
+    public AddWorkerResponse(String outcome, String username, List<Cell> payload) {
         super(username, Content.ADD_WORKER);
-        this.outcome=outcome;
-        if(outcome.equals("OK")){
+        this.outcome = outcome;
+        if (outcome.equals("OK")) {
             this.payload = payload;
         } else {
             this.payload = null;

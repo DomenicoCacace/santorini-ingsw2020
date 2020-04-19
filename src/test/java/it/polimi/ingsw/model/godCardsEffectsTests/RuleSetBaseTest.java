@@ -33,9 +33,9 @@ class RuleSetBaseTest {
     @BeforeEach
     void SetUp() throws IOException, AddingFailedException {
         List<God> gods = new ArrayList<>();
-        gods.add(new God("base1",2));
+        gods.add(new God("base1",2,""));
         gods.get(0).setStrategy(new RuleSetBase());
-        gods.add(new God("base",2));
+        gods.add(new God("base",2,""));
         gods.get(1).setStrategy(new RuleSetBase());
 
 

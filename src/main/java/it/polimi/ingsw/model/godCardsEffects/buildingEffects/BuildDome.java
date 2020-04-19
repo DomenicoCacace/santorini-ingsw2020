@@ -6,15 +6,17 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 public class BuildDome extends BuildingStrategy {
 
-    public BuildDome(){super();}
+    public BuildDome() {
+        super();
+    }
 
-    private BuildDome(BuildDome buildDome, Game game){
+    private BuildDome(BuildDome buildDome, Game game) {
         this.game = game;
         this.movesAvailable = buildDome.getMovesAvailable();
         this.movesUpAvailable = buildDome.getMovesUpAvailable();
         this.buildsAvailable = buildDome.getBuildsAvailable();
         this.hasMovedUp = buildDome.hasMovedUp();
-        if(buildDome.getMovedWorker() != null)
+        if (buildDome.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(buildDome.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
@@ -22,7 +24,7 @@ public class BuildDome extends BuildingStrategy {
     @Override
     public boolean isBuildActionValid(BuildAction action) {
         if (isInsideBuildableCells(action) && (isCorrectBlock(action) ||
-                action.getTargetBlock().getHeight()==4 && movedWorker == action.getTargetWorker())){
+                action.getTargetBlock().getHeight() == 4 && movedWorker == action.getTargetWorker())) {
             buildsAvailable--;
             return true;
         }

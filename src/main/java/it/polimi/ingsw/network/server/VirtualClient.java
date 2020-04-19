@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.server;
+
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,7 +10,8 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-public class VirtualClient extends Thread{
+
+public class VirtualClient extends Thread {
     private final Server server;
     private final Socket clientConnection;
     private String username;
@@ -24,25 +27,26 @@ public class VirtualClient extends Thread{
         try {
             inputSocket = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
         } catch (IOException e) {
-            logger.log(Level.WARNING,e.getMessage());
+            logger.log(Level.WARNING, e.getMessage());
         }
-        try{
+        try {
             outputSocket = new OutputStreamWriter(clientConnection.getOutputStream());
         } catch (IOException e) {
-            logger.log(Level.WARNING,e.getMessage());
+            logger.log(Level.WARNING, e.getMessage());
         }
     }
+
     @Override
     public void run() {
         try {
             boolean loop = true;
-            while(loop) {
+            while (loop) {
                 //When a message is received, forward to Server
                 Message message = jsonParser.fromStringToMessage(inputSocket.readLine());
                 if (message == null) {
                     loop = false;
                 } else {
-                    if(message.content == Message.Content.LOGIN) {
+                    if (message.content == Message.Content.LOGIN) {
                         try {
                             this.username = message.username;
                             server.addClient(this);
@@ -50,15 +54,13 @@ public class VirtualClient extends Thread{
                             logger.log(Level.WARNING, e.getMessage());
                             this.clientConnection.close();
                         }
-                    }
-                    else if(server.containClient(username)) {
+                    } else if (server.containClient(username)) {
                         server.handleMessage(message);
-                    }
-                    else{
+                    } else {
                         try {
                             clientConnection.close();
                             server.onDisconnect(username);
-                        } catch (IOException e){
+                        } catch (IOException e) {
                             //Do nothing, connection already closed
                         }
                     }
@@ -69,10 +71,12 @@ public class VirtualClient extends Thread{
             e.printStackTrace();
         }
     }
+
     public String getUsername() {
         return username;
     }
-    public void notify(Message message){
+
+    public void notify(Message message) {
         String stringMessage = jsonParser.fromMessageToString(message);
         try {
             outputSocket.write(stringMessage + "\n");

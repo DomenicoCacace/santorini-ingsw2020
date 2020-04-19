@@ -6,7 +6,9 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 public class Down2Levels extends WinConditionStrategy {
 
-    public Down2Levels(){super();}
+    public Down2Levels() {
+        super();
+    }
 
     private Down2Levels(Down2Levels down2levels, Game game) {
         this.game = game;
@@ -14,7 +16,7 @@ public class Down2Levels extends WinConditionStrategy {
         this.movesUpAvailable = down2levels.getMovesUpAvailable();
         this.buildsAvailable = down2levels.getBuildsAvailable();
         this.hasMovedUp = down2levels.hasMovedUp();
-        if(down2levels.getMovedWorker() != null)
+        if (down2levels.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(down2levels.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
     }
@@ -23,7 +25,7 @@ public class Down2Levels extends WinConditionStrategy {
     public boolean checkWinCondition(MoveAction action) {
 
         return (super.checkWinCondition(action)) || (
-                        action.getStartingCell().heightDifference(action.getTargetCell()) <= -2);
+                action.getStartingCell().heightDifference(action.getTargetCell()) <= -2);
     }
 
     @Override

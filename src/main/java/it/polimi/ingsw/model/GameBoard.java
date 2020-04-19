@@ -1,26 +1,30 @@
 package it.polimi.ingsw.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id", scope = GameBoard.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = GameBoard.class)
 
-public class GameBoard  {
+public class GameBoard {
     private static final int DIMENSION = 5;
-    private Cell[][] board;
+    private final Cell[][] board;
 
     @JsonCreator
-    public GameBoard(@JsonProperty("allCells") ArrayList<Cell> allCells){
+    public GameBoard(@JsonProperty("allCells") ArrayList<Cell> allCells) {
         this.board = new Cell[DIMENSION][DIMENSION];
         int tmpX, tmpY;
-        for (int i = 0; i < DIMENSION*DIMENSION; i++) {
+        for (int i = 0; i < DIMENSION * DIMENSION; i++) {
             tmpX = allCells.get(i).getCoordX();
             tmpY = allCells.get(i).getCoordY();
             this.board[tmpX][tmpY] = new Cell(tmpX, tmpY, allCells.get(i).hasDome(), allCells.get(i).getOccupiedBy(), allCells.get(i).getBlock());
         }
     }
+
     public GameBoard() {
         this.board = new Cell[DIMENSION][DIMENSION];
         for (int i = 0; i < DIMENSION; i++) {
@@ -40,19 +44,19 @@ public class GameBoard  {
     }
 
     public Cell getCell(int x, int y) {
-        if (isInsideGameBoard(x,y))
-                return board[x][y];
+        if (isInsideGameBoard(x, y))
+            return board[x][y];
         return null; //TODO: out of bound
     }
 
-    public Cell getCell(Cell cell){
+    public Cell getCell(Cell cell) {
         int tmpX = cell.getCoordX();
         int tmpY = cell.getCoordY();
         return getCell(tmpX, tmpY);
     }
 
 
-    public boolean isInsideGameBoard(int x, int y){
+    public boolean isInsideGameBoard(int x, int y) {
         return 0 <= x && x < DIMENSION && 0 <= y && y < DIMENSION;
     }
 
@@ -93,28 +97,28 @@ public class GameBoard  {
         else
             y = dest.getCoordY() + 1;
 
-        if (isInsideGameBoard(x,y))
+        if (isInsideGameBoard(x, y))
             return this.getCell(x, y);
         return null;
     }
-    public ArrayList<Cell> getAdjacentCells(Cell cell){
+
+    public ArrayList<Cell> getAdjacentCells(Cell cell) {
         ArrayList<Cell> cells = new ArrayList<>();
-        for(int x=cell.getCoordX() -1; x<=cell.getCoordX()+1; x++ ){
-            for(int y=cell.getCoordY() -1; y<=cell.getCoordY()+1; y++ ){
+        for (int x = cell.getCoordX() - 1; x <= cell.getCoordX() + 1; x++) {
+            for (int y = cell.getCoordY() - 1; y <= cell.getCoordY() + 1; y++) {
                 if (0 <= x && x < DIMENSION &&
                         0 <= y && y < DIMENSION &&
-                        (!getCell(x,y).equals(cell)))
+                        (!getCell(x, y).equals(cell)))
 
-                    cells.add(getCell(x,y));
+                    cells.add(getCell(x, y));
             }
         }
         return cells;
     }
 
-    public GameBoard cloneGameBoard(){
+    public GameBoard cloneGameBoard() {
         return new GameBoard(this);
     }
-
 
 
     @Override

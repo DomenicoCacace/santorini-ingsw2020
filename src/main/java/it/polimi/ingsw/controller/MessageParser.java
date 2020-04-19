@@ -49,11 +49,11 @@ public class MessageParser {
                 serverController.obtainBuildableCells(message.username);
                 break;
             case PLAYER_MOVE:
-                MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).targetWorker , ((PlayerMoveRequest) message).targetCell);
+                MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).targetWorker, ((PlayerMoveRequest) message).targetCell);
                 serverController.handleMoveAction(message.username, moveAction);
                 break;
             case PLAYER_BUILD:
-                BuildAction buildAction = new BuildAction(((PlayerBuildRequest) message).targetWorker , ((PlayerBuildRequest) message).targetCell, ((PlayerBuildRequest) message).targetBlock);
+                BuildAction buildAction = new BuildAction(((PlayerBuildRequest) message).targetWorker, ((PlayerBuildRequest) message).targetCell, ((PlayerBuildRequest) message).targetBlock);
                 serverController.handleBuildAction(message.username, buildAction);
                 break;
             case ADD_WORKER:
@@ -72,7 +72,7 @@ public class MessageParser {
     //Controller will call methods of model -> the model will return responses to the Controller -> Controller will pass the message to the Parser with parseMessageFromServerToClient
     //Parser will pass messages to the Server -> Server will pass messages to the virtualClient -> Client
 
-    public void parseMessageFromServerToClient(Message message){
+    public void parseMessageFromServerToClient(Message message) {
         //Passerà messaggi al server il quale farà virtualClient.notify(message)
         server.send(message.username, message);
     }
