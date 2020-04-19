@@ -7,10 +7,10 @@ import java.util.List;
 
 public class ChooseInitialGodsResponse extends Message {
 
-    public final List<God> payload;
+    public final List<GodData> payload;
     public final String outcome;
 
-    public ChooseInitialGodsResponse(String outcome, String username, List<God> payload) {
+    public ChooseInitialGodsResponse(String outcome, String username, List<GodData> payload) {
         super(username, Content.CHOOSE_INITIAL_GODS);
         this.outcome = outcome;
         if(outcome.equals("OK")){

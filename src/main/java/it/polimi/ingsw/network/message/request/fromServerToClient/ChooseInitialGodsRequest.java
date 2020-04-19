@@ -7,9 +7,9 @@ import java.util.List;
 
 public class ChooseInitialGodsRequest extends Message {
 
-    public final List<God> gods;
+    public final List<GodData> gods;
 
-    public ChooseInitialGodsRequest(String username, List<God> gods){
+    public ChooseInitialGodsRequest(String username, List<GodData> gods){
         super(username, Content.CHOOSE_INITIAL_GODS);
         this.gods = gods;
     }

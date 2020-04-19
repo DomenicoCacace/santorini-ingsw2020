@@ -6,10 +6,10 @@ import it.polimi.ingsw.network.message.Message;
 
 
 public class GameStartResponse extends Message {
-    public final Game payload;
+    public final GameData payload;
     public final String outcome;
 
-    public GameStartResponse(String outcome, Game payload) {
+    public GameStartResponse(String outcome, GameData payload) {
         super("broadcast", Content.GAME_START);
         this.outcome = outcome;
         if(outcome.equals("OK"))

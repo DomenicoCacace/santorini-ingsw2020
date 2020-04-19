@@ -20,6 +20,14 @@ public class MessageParser {
         this.server = server;
     }
 
+    public void setLobby(Lobby lobby) {
+        this.lobby = lobby;
+    }
+
+    public void setServerController(ServerController serverController) {
+        this.serverController = serverController;
+    }
+
     public void parseMessageFromClientToServer(Message message) throws IOException, InterruptedException {
         switch (message.content) {
             case LOGIN:
@@ -58,9 +66,6 @@ public class MessageParser {
             default:
                 throw new IllegalStateException("Unexpected value: " + message.content);
         }
-
-
-        //calling methods of lobby e controller
     }
 
     //Client -> sends message request -> virtualClient -> server -> parseMessageFromClientToServer(MessageRequest) -> message parser will call methods of ServerController and Lobby
@@ -72,11 +77,4 @@ public class MessageParser {
         server.send(message.username, message);
     }
 
-    public void setLobby(Lobby lobby) {
-        this.lobby = lobby;
-    }
-
-    public void setServerController(ServerController serverController) {
-        this.serverController = serverController;
-    }
 }

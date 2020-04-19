@@ -5,10 +5,10 @@ import it.polimi.ingsw.network.message.Message;
 import java.util.List;
 
 public class ChosenGodsResponse extends Message {
-    public final List<God> payload;
+    public final List<GodData> payload;
     public final String outcome;
 
-    public ChosenGodsResponse(String outcome, String username, List<God> payload) {
+    public ChosenGodsResponse(String outcome, String username, List<GodData> payload) {
         super(username, Content.CHOSEN_GODS);
         this.outcome = outcome;
         if(outcome.equals("OK"))

@@ -1,8 +1,6 @@
 package it.polimi.ingsw.network.server;
-
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 public class VirtualClient extends Thread{
     private final Server server;
     private final Socket clientConnection;
@@ -18,13 +15,14 @@ public class VirtualClient extends Thread{
     private static final Logger logger = Logger.getLogger("virtualClient");
     private BufferedReader inputSocket;
     private OutputStreamWriter outputSocket;
-    private JacksonMessageBuilder jsonParser;
+    private final JacksonMessageBuilder jsonParser;
+
     public VirtualClient(Server server, Socket clientConnection) {
         this.server = server;
         this.clientConnection = clientConnection;
+        jsonParser = new JacksonMessageBuilder();
         try {
             inputSocket = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
-            // otherwise: BufferedReader in = new BufferedReader(new ObjectInputStream(socket.getInputStream()));
         } catch (IOException e) {
             logger.log(Level.WARNING,e.getMessage());
         }
@@ -57,8 +55,12 @@ public class VirtualClient extends Thread{
                         server.handleMessage(message);
                     }
                     else{
-                        clientConnection.close();
-                        server.onDisconnect(username);
+                        try {
+                            clientConnection.close();
+                            server.onDisconnect(username);
+                        } catch (IOException e){
+                            //Do nothing, connection already closed
+                        }
                     }
                 }
             }
@@ -67,11 +69,9 @@ public class VirtualClient extends Thread{
             e.printStackTrace();
         }
     }
-
     public String getUsername() {
         return username;
     }
-
     public void notify(Message message){
         String stringMessage = jsonParser.fromMessageToString(message);
         try {
@@ -87,4 +87,3 @@ public class VirtualClient extends Thread{
         }
     }
 }
-

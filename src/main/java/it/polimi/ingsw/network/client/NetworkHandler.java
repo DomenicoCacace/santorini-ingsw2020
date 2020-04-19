@@ -16,17 +16,10 @@ public class NetworkHandler implements Runnable {
     private JacksonMessageBuilder jacksonParser;
     private Client client;
 
-
-    public BufferedReader getInputSocket() {
-        return inputSocket;
-    }
-    public OutputStreamWriter getOutputSocket() {
-        return outputSocket;
-    }
-
     public NetworkHandler(Client client) {
         try {
             this.client = client;
+            this.jacksonParser = new JacksonMessageBuilder();
             this.socketClient = new Socket(client.getIpAddress(), 4321);
             this.inputSocket = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
             this.outputSocket = new OutputStreamWriter(socketClient.getOutputStream());

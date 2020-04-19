@@ -13,7 +13,7 @@ public class Turn {
     private final RuleSetStrategy ruleSetStrategy;
 
     @JsonCreator
-    public Turn(@JsonProperty("turnNumer") int turnNumber,@JsonProperty("currentPlayer") Player currentPlayer) {
+    public Turn(@JsonProperty("turnNumber") int turnNumber,@JsonProperty("currentPlayer") Player currentPlayer) {
         this.turnNumber = turnNumber;
         this.currentPlayer = currentPlayer;
         this.ruleSetStrategy = currentPlayer.getGod().getStrategy();
@@ -21,7 +21,7 @@ public class Turn {
 
     private Turn(Turn turn, Game game){
         this.turnNumber = turn.turnNumber;
-        this.currentPlayer= game.getPlayers().stream().filter(player -> player.getName().equals(turn.currentPlayer.getName())).collect(Collectors.toList()).get(0);
+        this.currentPlayer = game.getPlayers().stream().filter(player -> player.getName().equals(turn.currentPlayer.getName())).collect(Collectors.toList()).get(0);
         this.ruleSetStrategy = currentPlayer.getGod().getStrategy();
     }
 

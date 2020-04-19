@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
-import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -39,9 +38,9 @@ public class Cell implements Serializable {
         this.coordY = cell.coordY;
         this.hasDome = cell.hasDome;
         this.block = cell.block;
-        if(cell.occupiedBy!=null)
-            this.occupiedBy=cell.occupiedBy;
-        else this.occupiedBy= null;
+        if(cell.occupiedBy != null)
+            this.occupiedBy = cell.occupiedBy;
+        else this.occupiedBy = null;
     }
 
     public int getCoordX() {

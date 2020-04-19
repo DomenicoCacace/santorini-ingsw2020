@@ -66,6 +66,16 @@ public class GameBoard  {
         return cells;
     }
 
+    public ArrayList<Cell> cloneAllCells() {
+        ArrayList<Cell> cells = new ArrayList<>();
+        for (int i = 0; i < DIMENSION; i++) {
+            for (int j = 0; j < DIMENSION; j++) {
+                cells.add(board[i][j].cloneCell());
+            }
+        }
+        return cells;
+    }
+
     public Cell getCellBehind(Cell src, Cell dest) {
         int x, y;
 

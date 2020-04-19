@@ -2,19 +2,13 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.message.Message;
 
-import java.io.IOException;
-
 public class User {
     private String username;
     private VirtualClient virtualClient;
 
-    public User(VirtualClient virtualClient) throws InvalidUsernameException {
-        if(virtualClient.getUsername().equals("broadcast"))
-            throw new InvalidUsernameException();
-        else {
+    public User(VirtualClient virtualClient) {
             this.virtualClient = virtualClient;
             this.username = virtualClient.getUsername();
-        }
     }
 
     public String getUsername() {
