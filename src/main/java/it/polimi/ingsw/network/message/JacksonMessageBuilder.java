@@ -2,16 +2,22 @@ package it.polimi.ingsw.network.message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 
 import java.io.IOException;
 
 //Used to parse from message to string and vice versa
 public class JacksonMessageBuilder {
     private final ObjectMapper objectMapper;
+    private final ObjectReader objectReader;
 
     public JacksonMessageBuilder() {
         objectMapper = new ObjectMapper();
+        objectReader = objectMapper.readerFor(Message.class);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
@@ -24,12 +30,7 @@ public class JacksonMessageBuilder {
         }
     }
 
-    public Message fromStringToMessage(String jsonString) {
-        try {
-            return objectMapper.readValue(jsonString, Message.class);
-        } catch (IOException e) {
-            System.out.println("Cannot deserialize string");
-            return null; //TODO this shouldn't happen (but it will)
-        }
+    public Message fromStringToMessage(String jsonString) throws IOException {
+        return objectReader.readValue(jsonString);
     }
 }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +24,6 @@ public class VirtualClient extends Thread {
     public VirtualClient(Server server, Socket clientConnection) {
         this.server = server;
         this.clientConnection = clientConnection;
-        jsonParser = new JacksonMessageBuilder();
         try {
             inputSocket = new BufferedReader(new InputStreamReader(clientConnection.getInputStream()));
         } catch (IOException e) {
@@ -34,6 +34,7 @@ public class VirtualClient extends Thread {
         } catch (IOException e) {
             logger.log(Level.WARNING, e.getMessage());
         }
+        jsonParser = new JacksonMessageBuilder();
     }
 
     @Override
@@ -42,7 +43,9 @@ public class VirtualClient extends Thread {
             boolean loop = true;
             while (loop) {
                 //When a message is received, forward to Server
-                Message message = jsonParser.fromStringToMessage(inputSocket.readLine());
+                String input = inputSocket.readLine();
+                System.out.println("message received" + input);
+                Message message = jsonParser.fromStringToMessage(input);
                 if (message == null) {
                     loop = false;
                 } else {
@@ -81,6 +84,7 @@ public class VirtualClient extends Thread {
         try {
             outputSocket.write(stringMessage + "\n");
             outputSocket.flush();
+            System.out.println(stringMessage + "Message sent from server to: " + username);
         } catch (IOException e) {
             try {
                 clientConnection.close();

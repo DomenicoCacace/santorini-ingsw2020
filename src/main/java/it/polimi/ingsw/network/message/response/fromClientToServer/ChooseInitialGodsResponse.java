@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.message.response.fromClientToServer;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
 
@@ -8,15 +10,11 @@ import java.util.List;
 public class ChooseInitialGodsResponse extends Message {
 
     public final List<GodData> payload;
-    public final String outcome;
 
-    public ChooseInitialGodsResponse(String outcome, String username, List<GodData> payload) {
+
+    @JsonCreator
+    public ChooseInitialGodsResponse(@JsonProperty("username") String username,@JsonProperty("payload") List<GodData> payload) {
         super(username, Content.CHOOSE_INITIAL_GODS);
-        this.outcome = outcome;
-        if (outcome.equals("OK")) {
-            this.payload = payload;
-        } else {
-            this.payload = null;
-        }
+        this.payload = payload;
     }
 }

@@ -41,6 +41,7 @@ public class Game implements ObservableInterface {
         currentRuleSet = new RuleSetContext();
         this.saveState();
         observers = new EnumMap<>(Event.class);
+        currentTurn = new Turn(0, players.get(players.size() - 1));
     }
 
     /*

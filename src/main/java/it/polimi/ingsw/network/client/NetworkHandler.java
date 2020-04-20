@@ -18,16 +18,19 @@ public class NetworkHandler implements Runnable {
     private boolean openConnection;
     private JacksonMessageBuilder jacksonParser;
     private Client client;
+    private MessageParser parser;
 
     public NetworkHandler(Client client) {
         try {
             this.client = client;
             this.jacksonParser = new JacksonMessageBuilder();
             this.socketClient = new Socket(client.getIpAddress(), 4321);
+            System.out.println(socketClient.toString() + " client");
             this.inputSocket = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
             this.outputSocket = new OutputStreamWriter(socketClient.getOutputStream());
             this.outputSocket.flush();
             this.openConnection = true;
+            this.parser = new MessageParser(client);
         } catch (IOException e) {
             this.openConnection = false;
         }
@@ -40,23 +43,36 @@ public class NetworkHandler implements Runnable {
 
             try {
                 ioData = inputSocket.readLine();
+                System.out.println(ioData);
             } catch (IOException e) {
+                System.out.println("IOEXception");
                 break;
             }
 
             if (ioData == null) {
                 openConnection = false;
+                System.out.println("null");
                 closeConnection();
                 break;
             }
-            Message message = jacksonParser.fromStringToMessage(ioData);
-            client.notify(message);
+            Message message = null;
+            try {
+                message = jacksonParser.fromStringToMessage(ioData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                parser.parseMessageFromServerToClient(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println("You have been disconnected");
     }
 
-    public void login(String username) throws IOException {
+    public void login(String username) {
         sendMessage(new LoginRequest(username));
+        System.out.println("Login sent");
     }
 
 
@@ -72,11 +88,12 @@ public class NetworkHandler implements Runnable {
         }
     }
 
-    public void sendMessage(Message message) throws IOException {
+    public synchronized void sendMessage(Message message) {
         String json = jacksonParser.fromMessageToString(message);
         try {
             outputSocket.write(json + "\n");
             outputSocket.flush();
+            System.out.println(json + "message sent from " + client.getUsername() +" to Server");
         } catch (Exception e) {
             closeConnection();
         }

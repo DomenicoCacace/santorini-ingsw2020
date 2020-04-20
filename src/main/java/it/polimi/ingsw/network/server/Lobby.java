@@ -14,6 +14,7 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResp
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Lobby {
     private final List<String> userNames;
@@ -40,9 +41,14 @@ public class Lobby {
     }
 
     public void assignGod(String username, GodData god) {
+        GodData finalGod = god;
+        god = godsMap.keySet().stream().filter(godToRemove -> godToRemove.getName().equals(finalGod.getName())).collect(Collectors.toList()).get(0);
         playerMap.put(username, new Player(username, godsMap.get(god), Color.BLUE)); //TODO: color random generator
-        chosenGods.remove(god);
-        notify(); //TODO: Test wait and notify
+        chosenGods = chosenGods.stream().filter(chosenGod -> !finalGod.getName().equals(chosenGod.getName())).collect(Collectors.toList());
+        System.out.println("gods to choose  " + chosenGods);
+        if(playerMap.values().size() == userNames.size())
+            createGame();
+        else askToChooseGod(userNames.get(0));
     }
 
     public void askToChooseGod(String username) {
@@ -54,15 +60,17 @@ public class Lobby {
     }
 
     public void chooseGods(List<GodData> gods) throws InterruptedException {
-        if ((int) gods.stream().distinct().count() == userNames.size() && gods.size() == userNames.size()) {
+        if ((int) gods.stream().distinct().count() == userNames.size() && gods.size() == userNames.size()) { //TODO: distinct doesn't work
             chosenGods = gods;
             parser.parseMessageFromServerToClient(new ChosenGodsResponse("OK", "broadcast", chosenGods));
-            for (int i = 1; i <= userNames.size(); i++) {
+            askToChooseGod(userNames.get(1));
+          /*  for (int i = 1; i <= userNames.size(); i++) {
                 askToChooseGod(userNames.get(i % userNames.size()));
                 while (!playerMap.containsKey(userNames.get(i % userNames.size()))) //TODO: lazy evaluator
                     wait();
             }
             createGame();
+           */
         } else {
             parser.parseMessageFromServerToClient(new ChosenGodsResponse("Illegal gods choice", userNames.get(0), null));
             askGods(gods);

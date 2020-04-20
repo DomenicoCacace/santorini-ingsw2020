@@ -1,6 +1,8 @@
 package it.polimi.ingsw.network.message;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
@@ -42,7 +44,9 @@ public class Message {
     public final String username;
     public final Content content;
 
-    public Message(String username, Content content) {
+
+    @JsonCreator
+    public Message(@JsonProperty("username") String username,@JsonProperty("content") Content content) {
         this.username = username;
         this.content = content;
     }

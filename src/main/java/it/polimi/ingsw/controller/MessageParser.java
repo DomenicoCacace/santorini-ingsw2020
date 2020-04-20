@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.network.server.Server;
 
@@ -37,7 +38,7 @@ public class MessageParser {
                 lobby.chooseGods(((ChooseInitialGodsResponse) message).payload);
                 break;
             case CHOOSE_GOD:
-                lobby.assignGod(message.username, ((AssignGodRequest) message).god);
+                lobby.assignGod(message.username, ((ChooseYourGodResponse) message).god);
                 break;
             case SELECT_WORKER:
                 serverController.selectWorker(message.username, ((SelectWorkerRequest) message).targetWorker);
