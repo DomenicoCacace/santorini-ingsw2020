@@ -55,7 +55,6 @@ public class Game implements ObservableInterface {
         this.winner = winner;
         this.currentRuleSet = currentRuleSet;
         observers = new EnumMap<>(Event.class);
-
     }
 
 

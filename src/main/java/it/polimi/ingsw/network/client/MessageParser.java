@@ -82,6 +82,7 @@ public class MessageParser {
                 }
                 break;
             case CHOOSE_INITIAL_GODS:
+                client.setCurrentPlayer(true);
                 System.out.println(" choose gods");
                 List<GodData> gods = new ArrayList<>();
                 input = new Scanner(System.in);

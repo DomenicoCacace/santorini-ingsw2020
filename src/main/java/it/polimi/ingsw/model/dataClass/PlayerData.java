@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.dataClass;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.model.Worker;
 
@@ -11,7 +13,10 @@ public class PlayerData {
     private final List<Worker> workers;
     private final GodData god;
 
-    public PlayerData(String name, Color color, List<Worker> workers, GodData god) {
+    @JsonCreator
+    public PlayerData(@JsonProperty("name") String name,@JsonProperty("color") Color color,
+                      @JsonProperty("workers") List<Worker> workers,@JsonProperty("god") GodData god)
+    {
         this.name = name;
         this.color = color;
         this.workers = workers;

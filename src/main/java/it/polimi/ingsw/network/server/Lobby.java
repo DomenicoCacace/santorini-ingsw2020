@@ -64,16 +64,9 @@ public class Lobby {
             chosenGods = gods;
             parser.parseMessageFromServerToClient(new ChosenGodsResponse("OK", "broadcast", chosenGods));
             askToChooseGod(userNames.get(1));
-          /*  for (int i = 1; i <= userNames.size(); i++) {
-                askToChooseGod(userNames.get(i % userNames.size()));
-                while (!playerMap.containsKey(userNames.get(i % userNames.size()))) //TODO: lazy evaluator
-                    wait();
-            }
-            createGame();
-           */
         } else {
             parser.parseMessageFromServerToClient(new ChosenGodsResponse("Illegal gods choice", userNames.get(0), null));
-            askGods(gods);
+            askGods(new ArrayList<>(godsMap.keySet()));
         }
     }
 
