@@ -16,19 +16,16 @@ import java.util.Map;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class ServerController implements ObserverInterface {
 
-    private final Game game;
-    private final Map<String, Player> playerMap;
+    private final GameInterface game;
+    private final Map<String, PlayerInterface> playerMap;
     private MessageParser parser;
 
-    public ServerController(Game game, Map<String, Player> players) {
+    public ServerController(GameInterface game, Map<String, PlayerInterface> players) {
         this.game = game;
         this.playerMap = players;
-        //TODO: Register observers
         for (Event event : Event.values()) {
-            if (event != Event.ADD_WORKER &&
-                    event != Event.BUILDABLE_CELLS &&
-                    event != Event.WALKABLE_CELLS)
-                game.addObserver(this, event);
+            if (event != Event.ADD_WORKER && event != Event.BUILDABLE_CELLS && event != Event.WALKABLE_CELLS)
+                    game.addObserver(this, event);
             else {
                 playerMap.forEach((s, player) -> player.addObserver(this, event));
             }
@@ -74,8 +71,7 @@ public class ServerController implements ObserverInterface {
 
     public void handleMoveAction(String username, MoveAction moveAction) {
         try {
-            playerMap.get(username).setAction(moveAction);
-            playerMap.get(username).useAction();
+            playerMap.get(username).useAction(moveAction);
             //parser.parseMessageFromServerToClient(new PlayerMoveResponse("OK", username, game.cloneGameBoard()));
         } catch (IllegalActionException | IOException e) {
             parser.parseMessageFromServerToClient(new PlayerMoveResponse("Illegal move", username, game.buildBoardData()));
@@ -85,8 +81,7 @@ public class ServerController implements ObserverInterface {
 
     public void handleBuildAction(String username, BuildAction buildAction) {
         try {
-            playerMap.get(username).setAction(buildAction);
-            playerMap.get(username).useAction();
+            playerMap.get(username).useAction(buildAction);
             //parser.parseMessageFromServerToClient(new PlayerBuildResponse("OK", username, game.cloneGameBoard()));
         } catch (IllegalActionException | IOException e) {
             parser.parseMessageFromServerToClient(new PlayerBuildResponse("Illegal build", username, game.buildBoardData()));
@@ -95,7 +90,7 @@ public class ServerController implements ObserverInterface {
 
     public void passTurn(String username) {
         try {
-            game.endTurn();
+            playerMap.get(username).askPassTurn();
             // parser.parseMessageFromServerToClient(new EndTurnResponse("OK", username));
         } catch (IllegalEndingTurnException | IOException e) {
             parser.parseMessageFromServerToClient(new EndTurnResponse("You cannot end turn now", username, null));

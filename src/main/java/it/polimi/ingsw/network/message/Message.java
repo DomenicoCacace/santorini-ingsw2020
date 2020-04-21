@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
@@ -22,6 +24,8 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
         @JsonSubTypes.Type(value = ChooseInitialGodsResponse.class, name = "ChooseInitialGodsResponse"),
         @JsonSubTypes.Type(value = ChooseNumberOfPlayerResponse.class, name = "ChooseNumberOfPlayers"),
         @JsonSubTypes.Type(value = ChosenGodsResponse.class, name = "ChooseYourGodResponse"),
+        @JsonSubTypes.Type(value = ChooseStartingPlayerRequest.class, name = "ChooseStartingPlayer"),
+        @JsonSubTypes.Type(value = ChooseStartingPlayerResponse.class, name = "ChooseStartingPlayer"),
         @JsonSubTypes.Type(value = GameStartResponse.class, name = "GameStarted"),
         @JsonSubTypes.Type(value = PlayerRemovedResponse.class, name = "PlayerRemoved"),
         @JsonSubTypes.Type(value = WinnerDeclaredResponse.class, name = "WinnerDeclared"),
@@ -53,7 +57,7 @@ public class Message {
 
     public enum Content {
         LOGIN, PLAYER_MOVE, PLAYER_BUILD,
-        END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, ASSIGN_GOD, WINNER_DECLARED,
+        END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, STARTING_PLAYER, WINNER_DECLARED,
         PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER,
         WALKABLE_CELLS, BUILDABLE_CELLS, CHOSEN_GODS, GAME_START, PLAYER_LOST
     }

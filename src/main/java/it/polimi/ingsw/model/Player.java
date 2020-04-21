@@ -1,12 +1,8 @@
 package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
-import it.polimi.ingsw.ObserverPattern.ObservableInterface;
 import it.polimi.ingsw.ObserverPattern.ObserverInterface;
-import it.polimi.ingsw.exceptions.AddingFailedException;
-import it.polimi.ingsw.exceptions.IllegalActionException;
-import it.polimi.ingsw.exceptions.NotYourWorkerException;
-import it.polimi.ingsw.exceptions.WrongSelectionException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.message.Message;
@@ -22,13 +18,12 @@ import java.util.Objects;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "idPlayer", scope = Player.class)
 @JsonPropertyOrder({"idPlayer", "name", "color", "workers"}) //Pulire
-public class Player implements ObservableInterface {
+public class Player implements PlayerInterface {
     private final String name;
     private final Color color;
     private final List<Worker> workers;
     private Worker selectedWorker;
     private final God god;
-    private Action action;
     private EnumMap<Event, ArrayList<ObserverInterface>> observers;
     @JsonIgnore
     private Game game;
@@ -64,6 +59,7 @@ public class Player implements ObservableInterface {
         return workers;
     }
 
+    @Override
     public void addWorker(Cell cell) throws AddingFailedException {
         if (cell.getOccupiedBy() == null && workers.size() < god.getWorkersNumber()) {
             Worker worker = new Worker(cell, color);
@@ -76,12 +72,14 @@ public class Player implements ObservableInterface {
         }
     }
 
-    public void setAction(Action action) {
-        this.action = action;
+    @Override
+    public void useAction(Action action) throws IOException, IllegalActionException {
+        action.getValidation(game);
     }
 
-    public void useAction() throws IOException, IllegalActionException {
-        action.getValidation(game);
+    @Override
+    public void askPassTurn() throws IOException, IllegalEndingTurnException {
+        game.endTurn();
     }
 
     public God getGod() {
@@ -96,6 +94,7 @@ public class Player implements ObservableInterface {
         return name;
     }
 
+    @Override
     public void setSelectedWorker(Worker selectedWorker) throws NotYourWorkerException {
         if (workers.contains(selectedWorker))
             this.selectedWorker = selectedWorker;
@@ -103,6 +102,7 @@ public class Player implements ObservableInterface {
             throw new NotYourWorkerException();
     }
 
+    @Override
     public void obtainWalkableCells() throws WrongSelectionException {
         if (selectedWorker != null) {
             List<Cell> walkableCells = new ArrayList<>();
@@ -115,6 +115,7 @@ public class Player implements ObservableInterface {
             throw new WrongSelectionException();
     }
 
+    @Override
     public void obtainBuildableCells() throws WrongSelectionException {
         if (selectedWorker != null) {
             List<Cell> buildableCells = new ArrayList<>();

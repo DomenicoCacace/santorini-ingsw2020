@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.polimi.ingsw.ObserverPattern.ObservableInterface;
 import it.polimi.ingsw.ObserverPattern.ObserverInterface;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
@@ -14,6 +13,7 @@ import it.polimi.ingsw.model.dataClass.TurnData;
 import it.polimi.ingsw.model.rules.RuleSetContext;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class Game implements ObservableInterface {
+public class Game implements GameInterface {
     private final GameBoard gameBoard;
     private final List<Player> players;
     private Turn currentTurn;
@@ -213,6 +213,8 @@ public class Game implements ObservableInterface {
         GameBoard doesn't need a dataClass, we only need the Cell matrix.
         Worker and Cell are dataclasses already
      */
+
+    @Override
     public GameData buildGameData() {
         List<Cell> gameboardData = gameBoard.cloneAllCells();
         List<PlayerData> playersData = new ArrayList<>();
@@ -221,6 +223,7 @@ public class Game implements ObservableInterface {
         return new GameData(gameboardData, playersData, currentTurnData);
     }
 
+    @Override
     public List<Cell> buildBoardData() {
         return gameBoard.cloneAllCells();
     }

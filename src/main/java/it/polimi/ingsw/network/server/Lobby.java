@@ -7,6 +7,7 @@ import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseInitialGodsRequest;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResponse;
@@ -46,9 +47,15 @@ public class Lobby {
         playerMap.put(username, new Player(username, godsMap.get(god), Color.BLUE)); //TODO: color random generator
         chosenGods = chosenGods.stream().filter(chosenGod -> !finalGod.getName().equals(chosenGod.getName())).collect(Collectors.toList());
         System.out.println("gods to choose  " + chosenGods);
-        if(playerMap.values().size() == userNames.size())
-            createGame();
+        if(playerMap.values().size() == userNames.size()) {
+            parser.parseMessageFromServerToClient(new ChooseStartingPlayerRequest(userNames.get(0), userNames));
+        }
         else askToChooseGod(userNames.get(0));
+    }
+
+    public void selectStartingPlayer(String startingPlayer) {
+        /* TODO: riordinare la mappa dei players */
+        createGame();
     }
 
     public void askToChooseGod(String username) {
@@ -60,7 +67,7 @@ public class Lobby {
     }
 
     public void chooseGods(List<GodData> gods) throws InterruptedException {
-        if ((int) gods.stream().distinct().count() == userNames.size() && gods.size() == userNames.size()) { //TODO: distinct doesn't work
+        if ((int) gods.stream().distinct().count() == userNames.size() && gods.size() == userNames.size()) {
             chosenGods = gods;
             parser.parseMessageFromServerToClient(new ChosenGodsResponse("OK", "broadcast", chosenGods));
             askToChooseGod(userNames.get(1));
@@ -71,10 +78,12 @@ public class Lobby {
     }
 
     public void createGame() {
+        Map<String, PlayerInterface> playerInterfaces = new LinkedHashMap<>();
+        playerMap.keySet().forEach(s -> playerInterfaces.put(s, playerMap.get(s)));
         List<Player> players = new ArrayList<>(playerMap.values());
         GameBoard board = new GameBoard();
-        Game game = new Game(board, players);
-        ServerController controller = new ServerController(game, playerMap);
+        GameInterface game = new Game(board, players);
+        ServerController controller = new ServerController(game, playerInterfaces);
         parser.setServerController(controller);
         parser.parseMessageFromServerToClient(new GameStartResponse("OK", game.buildGameData()));
     }
