@@ -3,6 +3,9 @@ package it.polimi.ingsw.model;
 import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.ObserverPattern.ObserverInterface;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.listeners.AddWorkerListener;
+import it.polimi.ingsw.listeners.BuildableCellsListener;
+import it.polimi.ingsw.listeners.WalkableCellsListener;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.message.Message;
@@ -24,7 +27,11 @@ public class Player implements PlayerInterface {
     private final List<Worker> workers;
     private Worker selectedWorker;
     private final God god;
-    private EnumMap<Event, ArrayList<ObserverInterface>> observers;
+
+    BuildableCellsListener buildableCellsListener;
+    WalkableCellsListener walkableCellsListener;
+    AddWorkerListener addWorkerListener;
+
     @JsonIgnore
     private Game game;
 
@@ -34,7 +41,6 @@ public class Player implements PlayerInterface {
         this.god = god;
         this.color = color;
         this.workers = new ArrayList<>();
-        observers = new EnumMap<>(Event.class);
 
     }
 
@@ -65,20 +71,19 @@ public class Player implements PlayerInterface {
             Worker worker = new Worker(cell, color);
             workers.add(worker);
             cell.setOccupiedBy(worker);
-            Message message = new AddWorkerResponse("OK", "broadcast", game.buildBoardData());
-            notifyObservers(Event.ADD_WORKER, message);
+            addWorkerListener.onWorkerAdd(cell);
         } else {
             throw new AddingFailedException();
         }
     }
 
     @Override
-    public void useAction(Action action) throws IOException, IllegalActionException {
+    public void useAction(Action action) throws IllegalActionException {
         action.getValidation(game);
     }
 
     @Override
-    public void askPassTurn() throws IOException, IllegalEndingTurnException {
+    public void askPassTurn() throws IllegalEndingTurnException {
         game.endTurn();
     }
 
@@ -109,8 +114,7 @@ public class Player implements PlayerInterface {
             for (Cell cell : game.getWalkableCells(selectedWorker)) {
                 walkableCells.add(cell.cloneCell());
             }
-            Message message = new WalkableCellsResponse("OK", name, walkableCells);
-            notifyObservers(Event.WALKABLE_CELLS, message);
+            walkableCellsListener.onWalkableCells(name, walkableCells);
         } else
             throw new WrongSelectionException();
     }
@@ -122,8 +126,7 @@ public class Player implements PlayerInterface {
             for (Cell cell : game.getBuildableCells(selectedWorker)) {
                 buildableCells.add(cell.cloneCell());
             }
-            Message message = new BuildableCellsResponse("OK", name, buildableCells);
-            notifyObservers(Event.BUILDABLE_CELLS, message);
+            buildableCellsListener.onBuildableCell(name, buildableCells);
         } else
             throw new WrongSelectionException();
     }
@@ -151,28 +154,4 @@ public class Player implements PlayerInterface {
         return Objects.hash(name);
     }
 
-    @Override
-    public void addObserver(ObserverInterface observer, Event event) {
-        ArrayList<ObserverInterface> observerList = observers.computeIfAbsent(event, k -> new ArrayList<>());
-        if (!observerList.contains(observer)) {
-            observers.get(event).add(observer);
-        }
-    }
-
-    @Override
-    public void removeObserver(ObserverInterface observer, Event event) {
-        try {
-            observers.get(event).remove(observer);
-        } catch (Exception e) {
-            // do nothing
-        }
-    }
-
-    @Override
-    public void notifyObservers(Event event, Message message) {
-        if (observers.containsKey(event)) {
-            for (ObserverInterface observerInterface : observers.get(event))
-                observerInterface.update(message);
-        }
-    }
 }

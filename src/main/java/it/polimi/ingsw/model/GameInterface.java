@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.dataClass.GameData;
 
 import java.util.List;
 
-public interface GameInterface extends ObservableInterface {
+public interface GameInterface {
 
     List<Cell> buildBoardData();
 

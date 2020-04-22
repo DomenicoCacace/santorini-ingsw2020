@@ -9,11 +9,11 @@ import java.util.List;
 
 public class AddWorkerResponse extends Message {
 
-    private final List<Cell> payload;
+    private final Cell payload;
     private final String outcome;
 
     @JsonCreator
-    public AddWorkerResponse(@JsonProperty("outcome") String outcome,@JsonProperty("username") String username,@JsonProperty("payload") List<Cell> payload) {
+    public AddWorkerResponse(@JsonProperty("outcome") String outcome,@JsonProperty("username") String username,@JsonProperty("payload") Cell payload) {
         super(username, Content.ADD_WORKER);
         this.outcome = outcome;
         if (outcome.equals("OK")) {
@@ -23,7 +23,7 @@ public class AddWorkerResponse extends Message {
         }
     }
 
-    public List<Cell> getPayload() {
+    public Cell getPayload() {
         return payload;
     }
 

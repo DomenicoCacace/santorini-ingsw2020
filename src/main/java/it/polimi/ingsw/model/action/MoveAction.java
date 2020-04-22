@@ -21,7 +21,7 @@ public class MoveAction extends Action {
         targetCell.setOccupiedBy(targetWorker);
     }
 
-    public void getValidation(Game game) throws IOException, IllegalActionException {
+    public void getValidation(Game game) throws IllegalActionException {
         game.validateMoveAction(this);
     }
 }

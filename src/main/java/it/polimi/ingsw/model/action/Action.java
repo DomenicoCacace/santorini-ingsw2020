@@ -26,7 +26,7 @@ public abstract class Action {
         return this.targetWorker.getPosition();
     }
 
-    public abstract void getValidation(Game game) throws IOException, IllegalActionException;
+    public abstract void getValidation(Game game) throws IllegalActionException;
 
     public Cell getTargetCell() {
         return targetCell;
