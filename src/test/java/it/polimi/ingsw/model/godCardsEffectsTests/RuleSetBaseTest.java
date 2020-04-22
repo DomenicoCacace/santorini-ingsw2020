@@ -60,6 +60,8 @@ class RuleSetBaseTest {
 
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
 
+
+
     }
 
     @Test

@@ -30,9 +30,7 @@ public class Game implements GameInterface {
     private MoveActionListener moveActionListener;
     private EndTurnListener endTurnListener;
     private BuildActionListener buildActionListener;
-    private AddWorkerListener addWorkerListener;
-    private BuildableCellsListener buildableCellsListener;
-    private WalkableCellsListener walkableCellsListener;
+
     private EndGameListener endGameListener;
     private PlayerLostListener playerLostListener;
 
@@ -132,10 +130,15 @@ public class Game implements GameInterface {
             if (currentRuleSet.checkWinCondition(moveAction)) {
                 this.winner = currentTurn.getCurrentPlayer();
                 // TODO: manage win stuff
-                endGameListener.onEndGame(winner.getName());
+                if(endGameListener!=null) {
+                    endGameListener.onEndGame(winner.getName());
+                }
             }
             moveAction.apply();
-            moveActionListener.onMoveAction(buildBoardData());
+
+            if(moveActionListener!=null)
+                moveActionListener.onMoveAction(buildBoardData());
+
             this.saveState();
         } else
             throw new IllegalActionException();
@@ -144,7 +147,8 @@ public class Game implements GameInterface {
     public void validateBuildAction(BuildAction buildAction) throws IllegalActionException {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
-            buildActionListener.onBuildAction(buildBoardData());
+            if(buildActionListener!=null)
+                buildActionListener.onBuildAction(buildBoardData());
             this.saveState();
             endTurnAutomatically();
         } else
@@ -178,7 +182,8 @@ public class Game implements GameInterface {
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
         currentTurn = nextTurn;
 
-        endTurnListener.onTurnEnd(currentTurn.getCurrentPlayer().getName());
+        if(endTurnListener!=null)
+            endTurnListener.onTurnEnd(currentTurn.getCurrentPlayer().getName());
         if (currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
         }
@@ -191,12 +196,15 @@ public class Game implements GameInterface {
             worker.setPosition(null);
         }
         players.remove(player);
-        playerLostListener.onPlayerLoss(buildBoardData());
+
+        if(playerLostListener!=null)
+            playerLostListener.onPlayerLoss(buildBoardData());
 
 
         if (players.size() == 1) {
             this.winner = players.get(0);
-            endGameListener.onEndGame(this.winner.getName());
+            if(endGameListener!=null)
+                endGameListener.onEndGame(this.winner.getName());
         }
         generateNextTurn();
 
@@ -251,6 +259,26 @@ public class Game implements GameInterface {
             player.setGame(restoredGame);
         }
         return restoredGame;
+    }
+
+    public void setMoveActionListener(MoveActionListener moveActionListener) {
+        this.moveActionListener = moveActionListener;
+    }
+
+    public void setEndTurnListener(EndTurnListener endTurnListener) {
+        this.endTurnListener = endTurnListener;
+    }
+
+    public void setBuildActionListener(BuildActionListener buildActionListener) {
+        this.buildActionListener = buildActionListener;
+    }
+
+    public void setEndGameListener(EndGameListener endGameListener) {
+        this.endGameListener = endGameListener;
+    }
+
+    public void setPlayerLostListener(PlayerLostListener playerLostListener) {
+        this.playerLostListener = playerLostListener;
     }
 
 }

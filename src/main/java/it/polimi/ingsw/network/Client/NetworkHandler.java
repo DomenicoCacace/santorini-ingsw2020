@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.Client;
 
 
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;

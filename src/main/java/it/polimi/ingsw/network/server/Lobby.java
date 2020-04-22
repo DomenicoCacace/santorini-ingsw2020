@@ -50,12 +50,12 @@ public class Lobby {
         if(playerMap.values().size() == userNames.size()) {
             parser.parseMessageFromServerToClient(new ChooseStartingPlayerRequest(userNames.get(0), userNames));
         }
-        else askToChooseGod(userNames.get(0));
+        else askToChooseGod(userNames.get((userNames.indexOf(username) + 1) % userNames.size()));
     }
 
     public void selectStartingPlayer(String startingPlayer) {
-        List<String> keys = new ArrayList(playerMap.keySet());
-        int position = new ArrayList<>(playerMap.keySet()).indexOf(startingPlayer);
+        List<String> keys = new LinkedList<>(playerMap.keySet());
+        int position = new ArrayList<>(playerMap.keySet()).indexOf(startingPlayer) + 1;
         Collections.rotate(keys, (position-keys.size())%keys.size());
         Map<String, Player> tmpMap = new LinkedHashMap<>();
         for(String name : keys){

@@ -31,6 +31,16 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
                 playerMap.forEach((s, player) -> player.addObserver(this, event));
             }
         }*/
+        game.setBuildActionListener(this);
+        game.setEndGameListener(this);
+        game.setEndTurnListener(this);
+        game.setMoveActionListener(this);
+        game.setPlayerLostListener(this);
+        playerMap.values().forEach(playerInterface
+                -> {playerInterface.setAddWorkerListener(this);
+                    playerInterface.setBuildableCellsListener(this);
+                    playerInterface.setWalkableCellsListener(this);});
+
     }
 
     public void addWorker(String username, Cell cell) {

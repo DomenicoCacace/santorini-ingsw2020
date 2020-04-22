@@ -1,8 +1,10 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.Client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
@@ -22,6 +24,7 @@ public class MessageParser {
     //To debug
     private Scanner input;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private int chosenSize;
 
     public MessageParser(Client client) {
         this.client = client;
@@ -82,10 +85,10 @@ public class MessageParser {
                 System.out.println(" choose gods");
                 List<GodData> gods = new ArrayList<>();
                 input = new Scanner(System.in);
-                String god = input.nextLine();
-                gods.add(objectMapper.readerFor(GodData.class).readValue(god));
-                god = input.nextLine();
-                gods.add(objectMapper.readerFor(GodData.class).readValue(god));
+                for(int i = 0; i < chosenSize; i++) {
+                    String god = input.nextLine();
+                    gods.add(objectMapper.readerFor(GodData.class).readValue(god));
+                }
                 Message message1 = new ChooseInitialGodsResponse(client.getUsername(), gods);
                 client.sendMessage(message1);
                 client.setCurrentPlayer(false);
@@ -103,8 +106,8 @@ public class MessageParser {
             case CHOOSE_PLAYER_NUMBER:
                 client.setCurrentPlayer(true);
                 System.out.println("Choose players's number");
-                int playerN = input.nextInt();
-                message = new ChooseNumberOfPlayerResponse(client.getUsername(), playerN);
+                chosenSize = input.nextInt();
+                message = new ChooseNumberOfPlayerResponse(client.getUsername(), chosenSize);
                 client.sendMessage(message);
                 //view.displayChooseNumberOfPlayer
                 break;
@@ -118,6 +121,15 @@ public class MessageParser {
                 client.sendMessage(message);
                 client.setCurrentPlayer(false);
                 //view.displayWaitingLobby
+                break;
+            case STARTING_PLAYER:
+                client.setCurrentPlayer(true);
+                System.out.println("choose the starting plater: " + ((ChooseStartingPlayerRequest) message).getPayload());
+                input = new Scanner(System.in);
+                inputString = input.nextLine();
+                message = new ChooseStartingPlayerResponse(client.getUsername(), inputString);
+                client.sendMessage(message);
+                client.setCurrentPlayer(false);
                 break;
             case SELECT_WORKER:
                 if(((SelectWorkerResponse) message).getOutcome().equals("OK")){

@@ -21,9 +21,9 @@ public class Player implements PlayerInterface {
     private Worker selectedWorker;
     private final God god;
 
-    BuildableCellsListener buildableCellsListener;
-    WalkableCellsListener walkableCellsListener;
-    AddWorkerListener addWorkerListener;
+    private AddWorkerListener addWorkerListener;
+    private BuildableCellsListener buildableCellsListener;
+    private WalkableCellsListener walkableCellsListener;
 
     @JsonIgnore
     private Game game;
@@ -64,7 +64,8 @@ public class Player implements PlayerInterface {
             Worker worker = new Worker(cell, color);
             workers.add(worker);
             cell.setOccupiedBy(worker);
-            addWorkerListener.onWorkerAdd(game.buildBoardData());
+            if(addWorkerListener!=null)
+                addWorkerListener.onWorkerAdd(game.buildBoardData());
         } else {
             throw new AddingFailedException();
         }
@@ -107,7 +108,8 @@ public class Player implements PlayerInterface {
             for (Cell cell : game.getWalkableCells(selectedWorker)) {
                 walkableCells.add(cell.cloneCell());
             }
-            walkableCellsListener.onWalkableCells(name, walkableCells);
+            if(walkableCellsListener!=null)
+                walkableCellsListener.onWalkableCells(name, walkableCells);
         } else
             throw new WrongSelectionException();
     }
@@ -119,7 +121,8 @@ public class Player implements PlayerInterface {
             for (Cell cell : game.getBuildableCells(selectedWorker)) {
                 buildableCells.add(cell.cloneCell());
             }
-            buildableCellsListener.onBuildableCell(name, buildableCells);
+            if (buildableCellsListener!=null)
+                buildableCellsListener.onBuildableCell(name, buildableCells);
         } else
             throw new WrongSelectionException();
     }
@@ -132,6 +135,18 @@ public class Player implements PlayerInterface {
         List<Worker> workersData = new ArrayList<>();
         this.workers.forEach(worker -> workersData.add(worker.cloneWorker()));
         return new PlayerData(this.name, this.color, workersData, god.buildDataClass());
+    }
+
+    public void setAddWorkerListener(AddWorkerListener addWorkerListener) {
+        this.addWorkerListener = addWorkerListener;
+    }
+
+    public void setBuildableCellsListener(BuildableCellsListener buildableCellsListener) {
+        this.buildableCellsListener = buildableCellsListener;
+    }
+
+    public void setWalkableCellsListener(WalkableCellsListener walkableCellsListener) {
+        this.walkableCellsListener = walkableCellsListener;
     }
 
     @Override
