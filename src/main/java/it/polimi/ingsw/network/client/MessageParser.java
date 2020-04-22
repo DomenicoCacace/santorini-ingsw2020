@@ -21,7 +21,7 @@ public class MessageParser {
 
     //To debug
     private Scanner input;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public MessageParser(Client client) {
         this.client = client;
@@ -61,13 +61,9 @@ public class MessageParser {
                 break;
             case END_TURN:
                 if (((EndTurnResponse) message).getOutcome().equals("OK")) {
-                    if(((EndTurnResponse) message).getOutcome().equals(client.getUsername())){
-                        client.setCurrentPlayer(true);
-                        //view.displayPlayableInterface
-                    } else {
-                        client.setCurrentPlayer(false);
-                        //view.displayNonPlayableInterface(payload);
-                    }
+                    //view.displayPlayableInterface
+                    //view.displayNonPlayableInterface(payload);
+                    client.setCurrentPlayer(((EndTurnResponse) message).getOutcome().equals(client.getUsername()));
                 } else{
                     //view.displayIllegalTurnEndingError(outcome)
                     //view.displayBoard(oldBoard)

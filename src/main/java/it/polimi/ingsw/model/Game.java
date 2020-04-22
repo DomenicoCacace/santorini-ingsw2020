@@ -10,7 +10,6 @@ import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.dataClass.GameData;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.model.dataClass.TurnData;
-import it.polimi.ingsw.model.listeners.*;
 import it.polimi.ingsw.model.rules.RuleSetContext;
 
 import java.io.File;

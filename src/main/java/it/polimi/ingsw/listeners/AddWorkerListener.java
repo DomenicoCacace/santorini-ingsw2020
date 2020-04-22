@@ -5,5 +5,5 @@ import it.polimi.ingsw.model.Cell;
 import java.util.List;
 
 public interface AddWorkerListener {
-    void onWorkerAdd(Cell workerCell);
+    void onWorkerAdd(List<Cell> workerCell);
 }

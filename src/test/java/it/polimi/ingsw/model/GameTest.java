@@ -25,12 +25,11 @@ class GameTest {
     private List<Player> players;
     private List<God> gods;
     private Game game;
-    private ServerController controller;
-    private Map playermap = new LinkedHashMap<>();
+    private final Map playermap = new LinkedHashMap<>();
 
 
     @BeforeEach
-    void setUp() throws IOException, AddingFailedException {
+    void setUp() throws AddingFailedException {
         gods = new ArrayList<>();
         gods.add(new God("minotaur", 2, ""));
         gods.get(0).setStrategy(new Push());
@@ -69,7 +68,7 @@ class GameTest {
 
 
     @Test
-    void NextTurnGenerationTest() throws IOException {
+    void NextTurnGenerationTest() {
         Turn currentTurn;
 
         for(int index = 1; index < 6; index++) {
@@ -109,7 +108,6 @@ class GameTest {
         currentWorker = game.getPlayers().get(0).getWorkers().get(0);
         targetCell = game.getGameBoard().getCell(3, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
-        moveAction = new MoveAction(currentWorker, targetCell);
         assertEquals(game.getGameBoard().getCell(2,3), currentWorker.getPosition());
 
         game.generateNextTurn();
@@ -125,7 +123,7 @@ class GameTest {
     }
 
     @Test
-    void correctLoseManagement3PlayersTest() throws IOException {
+    void correctLoseManagement3PlayersTest() {
 
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
@@ -161,7 +159,7 @@ class GameTest {
     }
 
     @Test
-    void twoConsecutiveLossesTest() throws IOException {
+    void twoConsecutiveLossesTest() {
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(2,3).setBlock(Block.DOME);

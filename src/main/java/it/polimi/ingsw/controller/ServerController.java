@@ -104,8 +104,8 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     }
 
     @Override
-    public void onWorkerAdd(Cell workerCell) {
-        parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", "broadcast", workerCell));
+    public void onWorkerAdd(List<Cell> cells) {
+        parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", "broadcast", cells));
     }
 
     @Override

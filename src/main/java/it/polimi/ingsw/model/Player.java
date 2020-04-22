@@ -1,21 +1,14 @@
 package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
-import it.polimi.ingsw.ObserverPattern.ObserverInterface;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.listeners.AddWorkerListener;
 import it.polimi.ingsw.listeners.BuildableCellsListener;
 import it.polimi.ingsw.listeners.WalkableCellsListener;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.dataClass.PlayerData;
-import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.response.fromServerToClient.AddWorkerResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.BuildableCellsResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.WalkableCellsResponse;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,7 +64,7 @@ public class Player implements PlayerInterface {
             Worker worker = new Worker(cell, color);
             workers.add(worker);
             cell.setOccupiedBy(worker);
-            addWorkerListener.onWorkerAdd(cell);
+            addWorkerListener.onWorkerAdd(game.buildBoardData());
         } else {
             throw new AddingFailedException();
         }
