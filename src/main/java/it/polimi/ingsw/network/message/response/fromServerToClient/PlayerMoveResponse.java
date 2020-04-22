@@ -7,8 +7,8 @@ import java.util.List;
 
 public class PlayerMoveResponse extends Message {
 
-    public final List<Cell> payload;
-    public final String outcome;
+    private final List<Cell> payload;
+    private final String outcome;
 
     public PlayerMoveResponse(String outcome, String username, List<Cell> payload) {
         super(username, Content.PLAYER_MOVE);
@@ -17,6 +17,14 @@ public class PlayerMoveResponse extends Message {
             this.payload = payload;
         else
             this.payload = null;
+    }
+
+    public List<Cell> getPayload() {
+        return payload;
+    }
+
+    public String getOutcome() {
+        return outcome;
     }
 }
 

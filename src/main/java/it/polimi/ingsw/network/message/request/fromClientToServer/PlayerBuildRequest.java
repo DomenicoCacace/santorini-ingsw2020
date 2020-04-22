@@ -7,9 +7,9 @@ import it.polimi.ingsw.network.message.Message;
 
 public class PlayerBuildRequest extends Message {
 
-    public final Cell targetCell;
-    public final Worker targetWorker;
-    public final Block targetBlock;
+    private final Cell targetCell;
+    private final Worker targetWorker;
+    private final Block targetBlock;
 
 
     public PlayerBuildRequest(String username, Cell targetCell, Block targetBlock, Worker targetWorker) {
@@ -17,6 +17,17 @@ public class PlayerBuildRequest extends Message {
         this.targetCell = targetCell;
         this.targetBlock = targetBlock;
         this.targetWorker = targetWorker;
+    }
 
+    public Cell getTargetCell() {
+        return targetCell;
+    }
+
+    public Worker getTargetWorker() {
+        return targetWorker;
+    }
+
+    public Block getTargetBlock() {
+        return targetBlock;
     }
 }

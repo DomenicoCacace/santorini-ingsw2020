@@ -7,8 +7,8 @@ import java.util.List;
 
 public class BuildableCellsResponse extends Message {
 
-    public List<Cell> payload;
-    public final String outcome;
+    private final List<Cell> payload;
+    private final String outcome;
 
     public BuildableCellsResponse(String outcome, String username, List<Cell> payload) {
         super(username, Content.BUILDABLE_CELLS);
@@ -17,5 +17,13 @@ public class BuildableCellsResponse extends Message {
             this.payload = payload;
         else
             this.payload = null;
+    }
+
+    public List<Cell> getPayload() {
+        return payload;
+    }
+
+    public String getOutcome() {
+        return outcome;
     }
 }

@@ -31,45 +31,45 @@ public class MessageParser {
     }
 
     public void parseMessageFromClientToServer(Message message) throws IOException, InterruptedException {
-        switch (message.content) {
+        switch (message.getContent()) {
             case LOGIN:
-                lobby.addUser(message.username);
+                lobby.addUser(message.getUsername());
                 break;
             case CHOOSE_INITIAL_GODS:
-                lobby.chooseGods(((ChooseInitialGodsResponse) message).payload);
+                lobby.chooseGods(((ChooseInitialGodsResponse) message).getPayload());
                 break;
             case CHOOSE_GOD:
-                lobby.assignGod(message.username, ((ChooseYourGodResponse) message).god);
+                lobby.assignGod(message.getUsername(), ((ChooseYourGodResponse) message).getGod());
                 break;
             case STARTING_PLAYER:
-                lobby.selectStartingPlayer(((ChooseStartingPlayerResponse) message).payload);
+                lobby.selectStartingPlayer(((ChooseStartingPlayerResponse) message).getPayload());
                 break;
             case SELECT_WORKER:
-                serverController.selectWorker(message.username, ((SelectWorkerRequest) message).targetWorker);
+                serverController.selectWorker(message.getUsername(), ((SelectWorkerRequest) message).getTargetWorker());
                 break;
             case WALKABLE_CELLS:
-                serverController.obtainWalkableCells(message.username);
+                serverController.obtainWalkableCells(message.getUsername());
                 break;
             case BUILDABLE_CELLS:
-                serverController.obtainBuildableCells(message.username);
+                serverController.obtainBuildableCells(message.getUsername());
                 break;
             case PLAYER_MOVE:
-                MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).targetWorker, ((PlayerMoveRequest) message).targetCell);
-                serverController.handleMoveAction(message.username, moveAction);
+                MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).getTargetWorker(), ((PlayerMoveRequest) message).getTargetCell());
+                serverController.handleMoveAction(message.getUsername(), moveAction);
                 break;
             case PLAYER_BUILD:
-                BuildAction buildAction = new BuildAction(((PlayerBuildRequest) message).targetWorker, ((PlayerBuildRequest) message).targetCell, ((PlayerBuildRequest) message).targetBlock);
-                serverController.handleBuildAction(message.username, buildAction);
+                BuildAction buildAction = new BuildAction(((PlayerBuildRequest) message).getTargetWorker(), ((PlayerBuildRequest) message).getTargetCell(), ((PlayerBuildRequest) message).getTargetBlock());
+                serverController.handleBuildAction(message.getUsername(), buildAction);
                 break;
             case ADD_WORKER:
-                serverController.addWorker(message.username, ((AddWorkerRequest) message).targetCell);
+                serverController.addWorker(message.getUsername(), ((AddWorkerRequest) message).getTargetCell());
                 break;
             case END_TURN:
-                serverController.passTurn(message.username);
+                serverController.passTurn(message.getUsername());
                 break;
 
             default:
-                throw new IllegalStateException("Unexpected value: " + message.content);
+                throw new IllegalStateException("Unexpected value: " + message.getContent());
         }
     }
 
@@ -79,7 +79,7 @@ public class MessageParser {
 
     public void parseMessageFromServerToClient(Message message) {
         //Passerà messaggi al server il quale farà virtualClient.notify(message)
-        server.send(message.username, message);
+        server.send(message.getUsername(), message);
     }
 
 }

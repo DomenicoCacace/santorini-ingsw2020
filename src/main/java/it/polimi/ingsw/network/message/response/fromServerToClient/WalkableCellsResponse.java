@@ -6,8 +6,8 @@ import it.polimi.ingsw.network.message.Message;
 import java.util.List;
 
 public class WalkableCellsResponse extends Message {
-    public final String outcome;
-    public List<Cell> payload;
+    private final String outcome;
+    private final List<Cell> payload;
 
     public WalkableCellsResponse(String outcome, String username, List<Cell> payload) {
         super(username, Content.WALKABLE_CELLS);
@@ -16,5 +16,13 @@ public class WalkableCellsResponse extends Message {
             this.payload = payload;
         else
             this.payload = null;
+    }
+
+    public String getOutcome() {
+        return outcome;
+    }
+
+    public List<Cell> getPayload() {
+        return payload;
     }
 }

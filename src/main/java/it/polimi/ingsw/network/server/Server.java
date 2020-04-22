@@ -120,9 +120,9 @@ public class Server extends Thread {
     }
 
     public synchronized void handleMessage(Message message) throws IOException, InterruptedException {
-        if (message.content == Message.Content.CHOOSE_PLAYER_NUMBER) {
-            if (((ChooseNumberOfPlayerResponse) message).numberOfPlayers == 2 || ((ChooseNumberOfPlayerResponse) message).numberOfPlayers == 3) {
-                MAX_PLAYER_NUMBER = ((ChooseNumberOfPlayerResponse) message).numberOfPlayers;
+        if (message.getContent() == Message.Content.CHOOSE_PLAYER_NUMBER) {
+            if (((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers() == 2 || ((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers() == 3) {
+                MAX_PLAYER_NUMBER = ((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers();
                 if(usernames.values().size() == MAX_PLAYER_NUMBER){
                     List<String> names = new ArrayList<>(usernames.keySet());
                     lobby = new Lobby(messageParser, names);
@@ -135,7 +135,7 @@ public class Server extends Thread {
                     lobby = new Lobby(messageParser, names);
                 }
             } else {
-                usernames.get(message.username).notify(new ChooseNumberOfPlayersRequest(message.username));
+                usernames.get(message.getUsername()).notify(new ChooseNumberOfPlayersRequest(message.getUsername()));
             }
         } else messageParser.parseMessageFromClientToServer(message);
     }

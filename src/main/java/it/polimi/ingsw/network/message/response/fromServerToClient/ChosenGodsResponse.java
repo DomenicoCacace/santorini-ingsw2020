@@ -9,8 +9,8 @@ import java.util.List;
 
 public class ChosenGodsResponse extends Message {
 
-    public final List<GodData> payload;
-    public final String outcome;
+    private final List<GodData> payload;
+    private final String outcome;
 
     @JsonCreator
     public ChosenGodsResponse(@JsonProperty("outcome") String outcome,@JsonProperty("username") String username,@JsonProperty("payload") List<GodData> payload) {
@@ -20,6 +20,14 @@ public class ChosenGodsResponse extends Message {
             this.payload = payload;
         else
             this.payload = null;
+    }
+
+    public List<GodData> getPayload() {
+        return payload;
+    }
+
+    public String getOutcome() {
+        return outcome;
     }
 }
 

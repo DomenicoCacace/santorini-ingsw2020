@@ -45,8 +45,8 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
         @JsonSubTypes.Type(value = WinnerDeclaredResponse.class, name = "WinnerDeclared"),
 })
 public class Message {
-    public final String username;
-    public final Content content;
+    private final String username;
+    private final Content content;
 
 
     @JsonCreator
@@ -56,9 +56,17 @@ public class Message {
     }
 
     public enum Content {
-        LOGIN, PLAYER_MOVE, PLAYER_BUILD, CHOOSE_COLOR,
+        LOGIN, PLAYER_MOVE, PLAYER_BUILD,
         END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, STARTING_PLAYER, WINNER_DECLARED,
         PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER,
         WALKABLE_CELLS, BUILDABLE_CELLS, CHOSEN_GODS, GAME_START, PLAYER_LOST
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Content getContent() {
+        return content;
     }
 }

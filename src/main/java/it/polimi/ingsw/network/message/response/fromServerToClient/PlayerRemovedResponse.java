@@ -7,12 +7,20 @@ import java.util.List;
 
 public class PlayerRemovedResponse extends Message {
 
-    public final List<Cell> payload;
-    public final String outcome;
+    private final List<Cell> payload;
+    private final String outcome;
 
     public PlayerRemovedResponse(String outcome, List<Cell> payload) {
         super("broadcast", Content.PLAYER_REMOVED);
         this.outcome = outcome;
         this.payload = payload;
+    }
+
+    public List<Cell> getPayload() {
+        return payload;
+    }
+
+    public String getOutcome() {
+        return outcome;
     }
 }

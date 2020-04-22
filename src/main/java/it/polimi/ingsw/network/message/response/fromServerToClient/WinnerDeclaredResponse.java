@@ -4,8 +4,8 @@ import it.polimi.ingsw.network.message.Message;
 
 public class WinnerDeclaredResponse extends Message {
 
-    public final String payload;
-    public final String outcome;
+    private final String payload;
+    private final String outcome;
 
     public WinnerDeclaredResponse(String outcome, String payload) {
         super("broadcast", Content.WINNER_DECLARED);
@@ -13,4 +13,11 @@ public class WinnerDeclaredResponse extends Message {
         this.payload = payload;
     }
 
+    public String getPayload() {
+        return payload;
+    }
+
+    public String getOutcome() {
+        return outcome;
+    }
 }

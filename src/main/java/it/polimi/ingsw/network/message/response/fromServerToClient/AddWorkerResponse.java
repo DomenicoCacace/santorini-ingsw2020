@@ -9,8 +9,8 @@ import java.util.List;
 
 public class AddWorkerResponse extends Message {
 
-    public final List<Cell> payload;
-    public final String outcome;
+    private final List<Cell> payload;
+    private final String outcome;
 
     @JsonCreator
     public AddWorkerResponse(@JsonProperty("outcome") String outcome,@JsonProperty("username") String username,@JsonProperty("payload") List<Cell> payload) {
@@ -21,5 +21,13 @@ public class AddWorkerResponse extends Message {
         } else {
             this.payload = null;
         }
+    }
+
+    public List<Cell> getPayload() {
+        return payload;
+    }
+
+    public String getOutcome() {
+        return outcome;
     }
 }

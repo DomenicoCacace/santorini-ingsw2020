@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.Client;
+package it.polimi.ingsw.network.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.dataClass.GodData;
@@ -29,20 +29,20 @@ public class MessageParser {
     }
 
     public void parseMessageFromServerToClient(Message message) throws IOException {
-        switch (message.content) {
+        switch (message.getContent()) {
             case LOGIN:
-                if (((LoginResponse) message).outcome.equals("OK")) {
+                if (((LoginResponse) message).getOutcome().equals("OK")) {
                     System.out.println("Login Succesfull");
                     // view.displayLobby;
                 } else {
-                    System.out.println("Error " + ((LoginResponse) message).outcome + "\n resend Login" );
+                    System.out.println("Error " + ((LoginResponse) message).getOutcome() + "\n resend Login" );
                     client.setUsername(input.nextLine());
                     // view.displayLoginError(outcome);
                     // view.displayLogin;
                 }
                 break;
             case PLAYER_MOVE:
-                if (((PlayerMoveResponse) message).outcome.equals("OK")) {
+                if (((PlayerMoveResponse) message).getOutcome().equals("OK")) {
                     //view.displayGameboard(payload);
                     //payload to be saved internally on the view
                 } else{
@@ -51,7 +51,7 @@ public class MessageParser {
                 }
                 break;
             case PLAYER_BUILD:
-                if (((PlayerBuildResponse) message).outcome.equals("OK")) {
+                if (((PlayerBuildResponse) message).getOutcome().equals("OK")) {
                     //view.displayGameboard(payload);
                     //payload to be saved internally on the view
                 } else{
@@ -60,8 +60,8 @@ public class MessageParser {
                 }
                 break;
             case END_TURN:
-                if (((EndTurnResponse) message).outcome.equals("OK")) {
-                    if(((EndTurnResponse) message).payload.equals(client.getUsername())){
+                if (((EndTurnResponse) message).getOutcome().equals("OK")) {
+                    if(((EndTurnResponse) message).getOutcome().equals(client.getUsername())){
                         client.setCurrentPlayer(true);
                         //view.displayPlayableInterface
                     } else {
@@ -74,7 +74,7 @@ public class MessageParser {
                 }
                 break;
             case ADD_WORKER:
-                if (((AddWorkerResponse) message).outcome.equals("OK")) {
+                if (((AddWorkerResponse) message).getOutcome().equals("OK")) {
                     //view.displayGameboard(payload)
                 }
                 else {
@@ -108,7 +108,7 @@ public class MessageParser {
                 client.setCurrentPlayer(true);
                 System.out.println("Choose players's number");
                 int playerN = input.nextInt();
-                message = new ChooseNumberOfPlayerResponse("OK", client.getUsername(), playerN);
+                message = new ChooseNumberOfPlayerResponse(client.getUsername(), playerN);
                 client.sendMessage(message);
                 //view.displayChooseNumberOfPlayer
                 break;
@@ -124,28 +124,28 @@ public class MessageParser {
                 //view.displayWaitingLobby
                 break;
             case SELECT_WORKER:
-                if(((SelectWorkerResponse) message).outcome.equals("OK")){
+                if(((SelectWorkerResponse) message).getOutcome().equals("OK")){
                     //view.displayChooseAction
                 } else {
                     //view.displayError(outcome)
                 }
                 break;
             case WALKABLE_CELLS:
-                if(((WalkableCellsResponse) message).outcome.equals("OK")){
+                if(((WalkableCellsResponse) message).getOutcome().equals("OK")){
                     //view.displayCellsSuperFiche
                 } else {
                     //view.displayError(outcome)
                 }
                 break;
             case BUILDABLE_CELLS:
-                if(((BuildableCellsResponse) message).outcome.equals("OK")){
+                if(((BuildableCellsResponse) message).getOutcome().equals("OK")){
                     //view.displayCellsSuperFiche
                 } else {
                     //view.displayError(outcome)
                 }
                 break;
             case CHOSEN_GODS:
-                if(((ChosenGodsResponse) message).outcome.equals("OK")){
+                if(((ChosenGodsResponse) message).getOutcome().equals("OK")){
                     //view.displayChosenGods
                 } else {
                     //view.displayError(outcome)
@@ -155,7 +155,7 @@ public class MessageParser {
                 //view.displayGame(payload)
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + message.content);
+                throw new IllegalStateException("Unexpected value: " + message.getContent());
         }
     }
 }

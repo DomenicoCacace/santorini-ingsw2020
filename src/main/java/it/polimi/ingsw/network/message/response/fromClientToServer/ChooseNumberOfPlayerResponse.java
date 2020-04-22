@@ -5,12 +5,14 @@ import it.polimi.ingsw.network.message.Message;
 
 public class ChooseNumberOfPlayerResponse extends Message {
 
-    public int numberOfPlayers;
-    public final String outcome;
+    private final int numberOfPlayers;
 
-    public ChooseNumberOfPlayerResponse(@JsonProperty("outcome") String outcome,@JsonProperty("username") String username,@JsonProperty("payload") int payload) {
+    public ChooseNumberOfPlayerResponse(@JsonProperty("username") String username,@JsonProperty("payload") int payload) {
         super(username, Content.CHOOSE_PLAYER_NUMBER);
-        this.outcome = outcome;
         this.numberOfPlayers = payload;
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
     }
 }

@@ -9,12 +9,16 @@ import java.util.List;
 
 public class ChooseInitialGodsResponse extends Message {
 
-    public final List<GodData> payload;
-
+    private final List<GodData> payload;
 
     @JsonCreator
     public ChooseInitialGodsResponse(@JsonProperty("username") String username,@JsonProperty("payload") List<GodData> payload) {
         super(username, Content.CHOOSE_INITIAL_GODS);
         this.payload = payload;
     }
+
+    public List<GodData> getPayload() {
+        return payload;
+    }
+
 }

@@ -49,9 +49,9 @@ public class VirtualClient extends Thread {
                 if (message == null) {
                     loop = false;
                 } else {
-                    if (message.content == Message.Content.LOGIN) {
+                    if (message.getContent() == Message.Content.LOGIN) {
                         try {
-                            this.username = message.username;
+                            this.username = message.getUsername();
                             server.addClient(this);
                         } catch (Exception e) {
                             logger.log(Level.WARNING, e.getMessage());

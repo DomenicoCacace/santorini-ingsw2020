@@ -6,10 +6,14 @@ import java.util.List;
 
 public class ChooseStartingPlayerRequest extends Message {
 
-    public List<String> payload;
+    private final List<String> payload;
 
     public ChooseStartingPlayerRequest(String username, List<String> payload) {
         super(username, Content.STARTING_PLAYER);
         this.payload = payload;
+    }
+
+    public List<String> getPayload() {
+        return payload;
     }
 }

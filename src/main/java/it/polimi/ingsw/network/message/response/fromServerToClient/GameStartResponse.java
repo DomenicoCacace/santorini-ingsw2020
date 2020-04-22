@@ -8,8 +8,8 @@ import it.polimi.ingsw.network.message.Message;
 
 
 public class GameStartResponse extends Message {
-    public final GameData payload;
-    public final String outcome;
+    private final GameData payload;
+    private final String outcome;
 
     @JsonCreator
     public GameStartResponse(@JsonProperty("outcome") String outcome,@JsonProperty("payload") GameData payload) {
@@ -19,5 +19,13 @@ public class GameStartResponse extends Message {
             this.payload = payload;
         else
             this.payload = null;
+    }
+
+    public GameData getPayload() {
+        return payload;
+    }
+
+    public String getOutcome() {
+        return outcome;
     }
 }

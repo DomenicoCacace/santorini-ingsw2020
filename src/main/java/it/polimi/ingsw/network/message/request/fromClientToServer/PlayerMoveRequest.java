@@ -6,12 +6,20 @@ import it.polimi.ingsw.network.message.Message;
 
 public class PlayerMoveRequest extends Message {
 
-    public final Cell targetCell;
-    public final Worker targetWorker;
+    private final Cell targetCell;
+    private final Worker targetWorker;
 
     public PlayerMoveRequest(String username, Cell targetCell, Worker targetWorker) {
         super(username, Content.PLAYER_MOVE);
         this.targetCell = targetCell;
         this.targetWorker = targetWorker;
+    }
+
+    public Cell getTargetCell() {
+        return targetCell;
+    }
+
+    public Worker getTargetWorker() {
+        return targetWorker;
     }
 }

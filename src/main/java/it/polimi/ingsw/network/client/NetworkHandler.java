@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.Client;
+package it.polimi.ingsw.network.client;
 
 
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
@@ -55,17 +55,15 @@ public class NetworkHandler implements Runnable {
                 closeConnection();
                 break;
             }
-            Message message = null;
+
+            Message message;
             try {
                 message = jacksonParser.fromStringToMessage(ioData);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
                 parser.parseMessageFromServerToClient(message);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
         System.out.println("You have been disconnected");
     }

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.Client;
+package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.message.Message;
 
@@ -63,7 +63,7 @@ public class Client {
     }
 
     public synchronized void notify(Message message) { //These come from the server to the Client
-        System.out.println("Message Received from server, message content is " + message.content);
+        System.out.println("Message Received from server, message content is " + message.getContent());
         //TODO: We could have another message parser class instead of a method, here the client will call methods of the view to display the info inside the message (errors, gameboard, etc)
     }
 }

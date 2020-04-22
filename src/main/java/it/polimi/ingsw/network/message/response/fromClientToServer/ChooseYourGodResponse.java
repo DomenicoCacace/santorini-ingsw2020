@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
 
 public class ChooseYourGodResponse extends Message {
-    public final GodData god;
+    private final GodData god;
 
     @JsonCreator
     public ChooseYourGodResponse(@JsonProperty("username") String username, @JsonProperty("god") GodData god) {
@@ -15,4 +15,7 @@ public class ChooseYourGodResponse extends Message {
         this.god = god;
     }
 
+    public GodData getGod() {
+        return god;
+    }
 }

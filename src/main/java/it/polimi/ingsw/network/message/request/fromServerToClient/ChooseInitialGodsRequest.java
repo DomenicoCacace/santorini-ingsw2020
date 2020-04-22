@@ -9,11 +9,15 @@ import java.util.List;
 
 public class ChooseInitialGodsRequest extends Message {
 
-    public final List<GodData> gods;
+    private final List<GodData> gods;
 
     @JsonCreator
     public ChooseInitialGodsRequest(@JsonProperty("username") String username,@JsonProperty("gods") List<GodData> gods) {
         super(username, Content.CHOOSE_INITIAL_GODS);
         this.gods = gods;
+    }
+
+    public List<GodData> getGods() {
+        return gods;
     }
 }

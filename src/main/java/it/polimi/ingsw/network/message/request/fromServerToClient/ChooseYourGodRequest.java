@@ -9,11 +9,15 @@ import java.util.List;
 
 public class ChooseYourGodRequest extends Message {
 
-    public final List<GodData> gods;
+    private final List<GodData> gods;
 
     @JsonCreator
     public ChooseYourGodRequest(@JsonProperty("username") String username,@JsonProperty("gods") List<GodData> gods) {
         super(username, Content.CHOOSE_GOD);
         this.gods = gods;
+    }
+
+    public List<GodData> getGods() {
+        return gods;
     }
 }
