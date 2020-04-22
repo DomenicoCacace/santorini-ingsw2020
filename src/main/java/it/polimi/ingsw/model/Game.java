@@ -123,7 +123,7 @@ public class Game implements GameInterface {
         return winner;
     }
 
-    public void validateMoveAction(MoveAction moveAction) throws IllegalActionException, IOException {
+    public void validateMoveAction(MoveAction moveAction) throws IllegalActionException {
         if (currentRuleSet.validateMoveAction(moveAction)) {
 
             if (currentRuleSet.checkWinCondition(moveAction)) {
@@ -140,7 +140,7 @@ public class Game implements GameInterface {
             throw new IllegalActionException();
     }
 
-    public void validateBuildAction(BuildAction buildAction) throws IOException, IllegalActionException {
+    public void validateBuildAction(BuildAction buildAction) throws IllegalActionException {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
             Message message = new PlayerBuildResponse("OK", "broadcast", gameBoard.cloneAllCells());
@@ -158,7 +158,7 @@ public class Game implements GameInterface {
             throw new IllegalEndingTurnException();
     }
 
-    public void endTurnAutomatically() throws IOException {
+    public void endTurnAutomatically() {
         if (currentRuleSet.canEndTurnAutomatically()) {
             generateNextTurn();
         }
@@ -171,7 +171,7 @@ public class Game implements GameInterface {
         return players.get(((players.indexOf(currentTurn.getCurrentPlayer()) + 1) % players.size()));
     }
 
-    public void generateNextTurn() throws IOException {
+    public void generateNextTurn() {
         nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
         currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
         currentRuleSet.doEffect();
@@ -185,7 +185,7 @@ public class Game implements GameInterface {
         this.saveState();
     }
 
-    private void removePlayer(Player player) throws IOException {
+    private void removePlayer(Player player) {
         for (Worker worker : player.getWorkers()) {
             worker.getPosition().setOccupiedBy(null);
             worker.setPosition(null);

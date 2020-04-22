@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.message.response.fromServerToClient;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.network.message.Message;
 
@@ -9,7 +11,8 @@ public class WalkableCellsResponse extends Message {
     private final String outcome;
     private final List<Cell> payload;
 
-    public WalkableCellsResponse(String outcome, String username, List<Cell> payload) {
+    @JsonCreator
+    public WalkableCellsResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, Content.WALKABLE_CELLS);
         this.outcome = outcome;
         if (outcome.equals("OK"))

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.message.response.fromServerToClient;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.network.message.Message;
 
@@ -10,7 +12,8 @@ public class PlayerMoveResponse extends Message {
     private final List<Cell> payload;
     private final String outcome;
 
-    public PlayerMoveResponse(String outcome, String username, List<Cell> payload) {
+    @JsonCreator
+    public PlayerMoveResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, Content.PLAYER_MOVE);
         this.outcome = outcome;
         if (outcome.equals("OK"))
