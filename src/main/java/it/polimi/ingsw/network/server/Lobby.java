@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class Lobby {
     private final List<String> userNames;
-    private final Map<String, Player> playerMap = new LinkedHashMap<>();
+    private Map<String, Player> playerMap = new LinkedHashMap<>();
     private final MessageParser parser;
     private List<GodData> chosenGods = new ArrayList<>();
     private final Map<GodData, God> godsMap = new HashMap<>();
@@ -44,7 +44,7 @@ public class Lobby {
     public void assignGod(String username, GodData god) {
         GodData finalGod = god;
         god = godsMap.keySet().stream().filter(godToRemove -> godToRemove.getName().equals(finalGod.getName())).collect(Collectors.toList()).get(0);
-        playerMap.put(username, new Player(username, godsMap.get(god), Color.BLUE)); //TODO: color random generator
+        playerMap.put(username, new Player(username, godsMap.get(god), Color.values()[playerMap.keySet().size()]));
         chosenGods = chosenGods.stream().filter(chosenGod -> !finalGod.getName().equals(chosenGod.getName())).collect(Collectors.toList());
         System.out.println("gods to choose  " + chosenGods);
         if(playerMap.values().size() == userNames.size()) {
@@ -54,7 +54,14 @@ public class Lobby {
     }
 
     public void selectStartingPlayer(String startingPlayer) {
-        /* TODO: riordinare la mappa dei players */
+        List<String> keys = new ArrayList(playerMap.keySet());
+        int position = new ArrayList<>(playerMap.keySet()).indexOf(startingPlayer);
+        Collections.rotate(keys, (position-keys.size())%keys.size());
+        Map<String, Player> tmpMap = new LinkedHashMap<>();
+        for(String name : keys){
+            tmpMap.put(name, playerMap.get(name));
+        }
+        playerMap = tmpMap;
         createGame();
     }
 

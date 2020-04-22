@@ -8,5 +8,6 @@ public class ChooseStartingPlayerResponse extends Message {
 
     public ChooseStartingPlayerResponse(String username, String payload) {
         super(username, Content.STARTING_PLAYER);
+        this.payload = payload;
     }
 }

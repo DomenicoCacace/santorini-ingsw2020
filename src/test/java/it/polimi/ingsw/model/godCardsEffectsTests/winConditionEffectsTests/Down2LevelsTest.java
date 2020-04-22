@@ -32,7 +32,7 @@ class Down2LevelsTest {
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
-        players.add(new Player("player2", gods.get(1), Color.WHITE));
+        players.add(new Player("player2", gods.get(1), Color.GREEN));
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);

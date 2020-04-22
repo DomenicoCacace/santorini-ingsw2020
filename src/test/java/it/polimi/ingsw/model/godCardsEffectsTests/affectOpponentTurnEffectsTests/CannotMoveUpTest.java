@@ -39,8 +39,8 @@ class CannotMoveUpTest {
 
         players = new ArrayList<>();
         players.add(new Player("P1", gods.get(0), Color.BLUE));
-        players.add(new Player("P2", gods.get(1), Color.WHITE));
-        players.add(new Player("P3", gods.get(2), Color.GREY));
+        players.add(new Player("P2", gods.get(1), Color.GREEN));
+        players.add(new Player("P3", gods.get(2), Color.RED));
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);
