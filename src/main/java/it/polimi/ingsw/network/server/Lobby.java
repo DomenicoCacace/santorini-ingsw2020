@@ -55,8 +55,8 @@ public class Lobby {
 
     public void selectStartingPlayer(String startingPlayer) {
         List<String> keys = new LinkedList<>(playerMap.keySet());
-        int position = new ArrayList<>(playerMap.keySet()).indexOf(startingPlayer) + 1;
-        Collections.rotate(keys, (position-keys.size())%keys.size());
+        int position = new ArrayList<>(playerMap.keySet()).indexOf(startingPlayer);
+        Collections.rotate(keys, (keys.size()-position)%keys.size());
         Map<String, Player> tmpMap = new LinkedHashMap<>();
         for(String name : keys){
             tmpMap.put(name, playerMap.get(name));

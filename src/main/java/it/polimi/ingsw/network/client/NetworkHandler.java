@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.Client;
+package it.polimi.ingsw.network.client;
 
 
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
@@ -81,8 +81,8 @@ public class NetworkHandler implements Runnable {
             inputSocket.close();
             socketClient.close();
         } catch (Exception e) {
+            System.out.println("The connection was already closed!\n");
             e.printStackTrace();
-            //Todo that means that the connection was already closed
         }
     }
 

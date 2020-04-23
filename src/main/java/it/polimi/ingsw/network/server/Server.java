@@ -29,7 +29,6 @@ public class Server extends Thread {
 
     public Server() {
         this.usernames = new LinkedHashMap<>();
-        //TODO: manage socket connection
         this.socketPort = 4321;
         this.messageParser = new MessageParser(this);
     }
@@ -87,7 +86,7 @@ public class Server extends Thread {
                 if (usernames.size() == 1) {
                     user.notify(new ChooseNumberOfPlayersRequest(user.getUsername()));
                 } else if (usernames.size() == MAX_PLAYER_NUMBER) {
-                    List<String> names = new ArrayList<>(usernames.keySet()); //TODO: test if order is maintained
+                    List<String> names = new ArrayList<>(usernames.keySet());
                     lobby = new Lobby(messageParser, names);
                 }
             }

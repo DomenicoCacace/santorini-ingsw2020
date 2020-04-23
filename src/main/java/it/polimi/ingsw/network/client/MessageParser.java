@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.Client;
+package it.polimi.ingsw.network.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.model.dataClass.GodData;
@@ -82,7 +82,7 @@ public class MessageParser {
                 break;
             case CHOOSE_INITIAL_GODS:
                 client.setCurrentPlayer(true);
-                System.out.println(" choose gods");
+                System.out.println("Choose gods");
                 List<GodData> gods = new ArrayList<>();
                 input = new Scanner(System.in);
                 for(int i = 0; i < chosenSize; i++) {
@@ -124,7 +124,7 @@ public class MessageParser {
                 break;
             case STARTING_PLAYER:
                 client.setCurrentPlayer(true);
-                System.out.println("choose the starting plater: " + ((ChooseStartingPlayerRequest) message).getPayload());
+                System.out.println("Choose the starting player: " + ((ChooseStartingPlayerRequest) message).getPayload());
                 input = new Scanner(System.in);
                 inputString = input.nextLine();
                 message = new ChooseStartingPlayerResponse(client.getUsername(), inputString);
