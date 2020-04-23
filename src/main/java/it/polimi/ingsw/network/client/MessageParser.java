@@ -1,9 +1,13 @@
 package it.polimi.ingsw.network.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.model.God;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseInitialGodsRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
@@ -11,10 +15,9 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberO
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class MessageParser {
 
@@ -25,10 +28,24 @@ public class MessageParser {
     private Scanner input;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private int chosenSize;
+    private final Map<String, GodData> godsMap;
 
     public MessageParser(Client client) {
         this.client = client;
         this.input = new Scanner(System.in);
+        this.godsMap = new HashMap<>();
+        //I need a map to link the name of the god with his godData (we can use lambdas with filter instead)
+        List<God> gods  = new ArrayList<>();
+        try {
+            gods =  objectMapper.readerFor(new TypeReference<List<God>>() {
+            }).readValue(new File("GodsConfigFile.json"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        gods.forEach(god ->{
+            godsMap.put(god.getName(), god.buildDataClass());
+        });
+
     }
 
     public void parseMessageFromServerToClient(Message message) throws IOException {
@@ -82,14 +99,19 @@ public class MessageParser {
                 break;
             case CHOOSE_INITIAL_GODS:
                 client.setCurrentPlayer(true);
-                System.out.println("Choose gods");
-                List<GodData> gods = new ArrayList<>();
+                List<GodData> gods = (((ChooseInitialGodsRequest) message).getGods());
+                System.out.println("Choose " + chosenSize + " gods between:");
+                //prints all the gods: view related
+                gods.forEach(god ->{
+                    System.out.println("-" + god.getName());
+                });
                 input = new Scanner(System.in);
+                List<GodData> chosenGods = new LinkedList<>();
                 for(int i = 0; i < chosenSize; i++) {
-                    String god = input.nextLine();
-                    gods.add(objectMapper.readerFor(GodData.class).readValue(god));
+                    String godName = input.nextLine();
+                    chosenGods.add(godsMap.get(godName));
                 }
-                Message message1 = new ChooseInitialGodsResponse(client.getUsername(), gods);
+                Message message1 = new ChooseInitialGodsResponse(client.getUsername(), chosenGods);
                 client.sendMessage(message1);
                 client.setCurrentPlayer(false);
                 //view.diplayAllGods
@@ -105,7 +127,7 @@ public class MessageParser {
                 break;
             case CHOOSE_PLAYER_NUMBER:
                 client.setCurrentPlayer(true);
-                System.out.println("Choose players's number");
+                System.out.println("Choose the number of players");
                 chosenSize = input.nextInt();
                 message = new ChooseNumberOfPlayerResponse(client.getUsername(), chosenSize);
                 client.sendMessage(message);
@@ -113,10 +135,12 @@ public class MessageParser {
                 break;
             case CHOOSE_GOD:
                 client.setCurrentPlayer(true);
-                System.out.println("Choose your God");
+                //View related: prints all the available gods
+                System.out.println("Choose your God between:");
+                ((ChooseYourGodRequest) message).getGods().forEach(godData -> System.out.println("-" + godData.getName()));
                 input = new Scanner(System.in);
                 String inputString = input.nextLine();
-                GodData chosenGod = objectMapper.readerFor(GodData.class).readValue(inputString);
+                GodData chosenGod = godsMap.get(inputString);
                 message=new ChooseYourGodResponse(client.getUsername(), chosenGod);
                 client.sendMessage(message);
                 client.setCurrentPlayer(false);
