@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
@@ -42,6 +43,14 @@ public class BuildAgainSameCell extends BuildingStrategy {
     @Override
     public void doEffect() {
         initialize();
+    }
+
+    @Override
+    public List<PossibleActions> getPossibleActions(Worker worker) {
+        List<PossibleActions> possibleActions = super.getPossibleActions(worker);
+        if(buildsAvailable==1)
+            possibleActions.add(PossibleActions.PASSTURN);
+        return possibleActions;
     }
 
     @Override

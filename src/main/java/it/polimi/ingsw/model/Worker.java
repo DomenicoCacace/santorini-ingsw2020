@@ -1,19 +1,23 @@
 package it.polimi.ingsw.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.Objects;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "workerId", scope = Worker.class)
 public class Worker {
+
+    @JsonBackReference("cell - worker")
     private Cell position;
     private final Color color;
 
+
     @JsonCreator
-    public Worker(@JsonProperty("position") Cell position, @JsonProperty("color") Color color) {
+    private Worker(@JsonProperty("color") Color color) {
+        this.color = color;
+    }
+
+    public Worker(Cell position, Color color) {
         this.position = position;
         position.setOccupiedBy(this);
         this.color = color;

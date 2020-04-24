@@ -2,11 +2,15 @@ package it.polimi.ingsw.network.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.God;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.request.fromClientToServer.AddWorkerRequest;
+import it.polimi.ingsw.network.message.request.fromClientToServer.SelectWorkerRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseInitialGodsRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
@@ -89,11 +93,32 @@ public class MessageParser {
                     //view.displayBoard(oldBoard)
                 }
                 break;
+            case WORKER_POSITION:
+                client.setCurrentPlayer(true);
+                System.out.println("place your workers");
+                input = new Scanner(System.in);
+                int coordx = input.nextInt();
+                while (coordx < 0 || coordx > 4) {
+                    System.out.println("invalid coord");
+                    coordx = input.nextInt();
+                }
+                int coordy = input.nextInt();
+                while (coordy < 0 || coordy > 4) {
+                    System.out.println("invalid coord");
+                    coordy = input.nextInt();
+                }
+                Message message1 = new AddWorkerRequest(client.getUsername(),
+                        ((ChooseWorkerPositionRequest) message).getPayload().get(5*coordx + coordy));
+                client.sendMessage(message1);
+                client.setCurrentPlayer(false);
+                break;
             case ADD_WORKER:
                 if (((AddWorkerResponse) message).getOutcome().equals("OK")) {
+                    System.out.println("Worker added succesfully" + ((AddWorkerResponse) message).getPayload().toString());
                     //view.displayGameboard(payload)
                 }
                 else {
+                    System.out.println("can't place worker in that cell");
                     //view.displayError(outcome)
                 }
                 break;
@@ -111,7 +136,7 @@ public class MessageParser {
                     String godName = input.nextLine();
                     chosenGods.add(godsMap.get(godName));
                 }
-                Message message1 = new ChooseInitialGodsResponse(client.getUsername(), chosenGods);
+                message1 = new ChooseInitialGodsResponse(client.getUsername(), chosenGods);
                 client.sendMessage(message1);
                 client.setCurrentPlayer(false);
                 //view.diplayAllGods
@@ -184,6 +209,29 @@ public class MessageParser {
                 }
                 break;
             case GAME_START:
+                System.out.println("\n The Game Started! \n" + ((GameStartResponse)message).getPayload().getBoard().toString());
+                if(((GameStartResponse)message).getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())){
+                    client.setCurrentPlayer(true);
+                    System.out.println("Make your action! Select your worker");
+                    input = new Scanner(System.in);
+                    Cell selectedCell;
+                    do {
+                        coordx = input.nextInt();
+                        while (coordx < 0 || coordx > 4) {
+                            System.out.println("invalid coord");
+                            coordx = input.nextInt();
+                        }
+                        coordy = input.nextInt();
+                        while (coordy < 0 || coordy > 4) {
+                            System.out.println("invalid coord");
+                            coordy = input.nextInt();
+                        }
+                        selectedCell = ((GameStartResponse) message).getPayload().getBoard().get(5 * coordx + coordy);
+                    } while (selectedCell.getOccupiedBy()==null);
+                    message = new SelectWorkerRequest(client.getUsername(), selectedCell.getOccupiedBy());
+                    client.sendMessage(message);
+                }
+                client.setCurrentPlayer(false);
                 //view.displayGame(payload)
                 break;
             default:

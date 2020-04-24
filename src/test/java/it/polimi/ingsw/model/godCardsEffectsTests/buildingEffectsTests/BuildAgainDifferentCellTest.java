@@ -68,6 +68,10 @@ class BuildAgainDifferentCellTest {
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertEquals(possibleActions.size(), 2);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -106,7 +110,7 @@ class BuildAgainDifferentCellTest {
         try{
             buildAction.getValidation(game);
         } catch(IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
@@ -117,11 +121,17 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest() throws IOException, IllegalActionException {
+    void cannotBuildWith2DifferentWorkersTest() throws IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
+
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 2);
+
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(3, 2));
@@ -132,7 +142,7 @@ class BuildAgainDifferentCellTest {
         try{
             buildAction.getValidation(game);
         } catch (IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(game.getGameBoard().getCell(3,3).getBlock(), Block.LEVEL2);
@@ -168,6 +178,11 @@ class BuildAgainDifferentCellTest {
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 2);
+
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());

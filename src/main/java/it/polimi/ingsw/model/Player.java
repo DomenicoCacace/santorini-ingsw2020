@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.listeners.AddWorkerListener;
 import it.polimi.ingsw.listeners.BuildableCellsListener;
+import it.polimi.ingsw.listeners.SelectWorkerListener;
 import it.polimi.ingsw.listeners.WalkableCellsListener;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.dataClass.PlayerData;
@@ -24,6 +25,7 @@ public class Player implements PlayerInterface {
     private AddWorkerListener addWorkerListener;
     private BuildableCellsListener buildableCellsListener;
     private WalkableCellsListener walkableCellsListener;
+    private SelectWorkerListener selectWorkerListener;
 
     @JsonIgnore
     private Game game;
@@ -61,14 +63,19 @@ public class Player implements PlayerInterface {
     @Override
     public void addWorker(Cell cell) throws AddingFailedException {
         if (cell.getOccupiedBy() == null && workers.size() < god.getWorkersNumber()) {
-            Worker worker = new Worker(cell, color);
+            Worker worker = new Worker(game.getGameBoard().getCell(cell), color);
             workers.add(worker);
-            cell.setOccupiedBy(worker);
+            //game.getGameBoard().getCell(cell).setOccupiedBy(worker);
             if(addWorkerListener!=null)
                 addWorkerListener.onWorkerAdd(game.buildBoardData());
         } else {
             throw new AddingFailedException();
         }
+    }
+
+    @Override
+    public boolean allWorkersArePlaced() {
+        return god.getWorkersNumber() == workers.size();
     }
 
     @Override
@@ -95,8 +102,11 @@ public class Player implements PlayerInterface {
 
     @Override
     public void setSelectedWorker(Worker selectedWorker) throws NotYourWorkerException {
-        if (workers.contains(selectedWorker))
+        if (workers.contains(selectedWorker)) {
             this.selectedWorker = selectedWorker;
+            if (selectWorkerListener!=null)
+                selectWorkerListener.onSelectedWorker(name,god.getStrategy().getPossibleActions(this.selectedWorker));
+        }
         else
             throw new NotYourWorkerException();
     }
@@ -147,6 +157,10 @@ public class Player implements PlayerInterface {
 
     public void setWalkableCellsListener(WalkableCellsListener walkableCellsListener) {
         this.walkableCellsListener = walkableCellsListener;
+    }
+
+    public void setSelectWorkerListener(SelectWorkerListener selectWorkerListener) {
+        this.selectWorkerListener = selectWorkerListener;
     }
 
     @Override

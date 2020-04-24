@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseInitialGodsRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResponse;
@@ -90,9 +91,9 @@ public class Lobby {
         List<Player> players = new ArrayList<>(playerMap.values());
         GameBoard board = new GameBoard();
         GameInterface game = new Game(board, players);
-        ServerController controller = new ServerController(game, playerInterfaces);
+        ServerController controller = new ServerController(game, playerInterfaces, parser);
         parser.setServerController(controller);
-        parser.parseMessageFromServerToClient(new GameStartResponse("OK", game.buildGameData()));
+        parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), game.buildBoardData()));
     }
 
 }

@@ -28,7 +28,7 @@ class BuildAgainSameCellTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException, AddingFailedException, IllegalActionException {
+    void SetUp() throws AddingFailedException, IllegalActionException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Hephaestus",2, ""));
         gods.get(0).setStrategy(new BuildAgainSameCell());
@@ -64,11 +64,15 @@ class BuildAgainSameCellTest {
     }
 
     @Test
-    void correctBuildAgainSameCellTest() throws IOException, IllegalActionException {
+    void correctBuildAgainSameCellTest() throws IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 2);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -116,7 +120,9 @@ class BuildAgainSameCellTest {
     void endTurnAutomaticallyAfterBuildingLevel3Test() throws IOException, IllegalActionException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 1);
         firstCell = game.getGameBoard().getCell(3, 3);
         firstBlock = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -131,6 +137,9 @@ class BuildAgainSameCellTest {
     void endTurnAutomaticallyAfterBuildingDomeTest() throws IOException, IllegalActionException {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 1);
 
         firstCell = game.getGameBoard().getCell(4, 1);
         firstBlock = Block.DOME;
@@ -161,7 +170,7 @@ class BuildAgainSameCellTest {
         try{
             buildAction.getValidation(game);
         } catch (IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
 
         // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
@@ -187,7 +196,7 @@ class BuildAgainSameCellTest {
         try{
             buildAction.getValidation(game);
         } catch (IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
         assertEquals(firstCell.getBlock(), firstBlock);

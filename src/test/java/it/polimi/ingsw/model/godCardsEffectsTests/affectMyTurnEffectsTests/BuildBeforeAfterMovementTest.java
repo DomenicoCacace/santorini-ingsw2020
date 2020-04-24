@@ -57,9 +57,18 @@ class BuildBeforeAfterMovementTest {
 
     @Test
     void correctBuildBeforeAfterMoveSameCellTest() throws IOException, IllegalActionException {
+        List<PossibleActions> possibleActions = game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
+        assertEquals(possibleActions.size(), 3);
+
         Cell buildingCell = game.getGameBoard().getCell(3,2);
         Action firstBuildAction = new BuildAction(currentWorker, buildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
+        possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        assertEquals(possibleActions.size(), 1);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(2, 2));
@@ -70,6 +79,9 @@ class BuildBeforeAfterMovementTest {
         toMoveCell = game.getGameBoard().getCell(2, 3);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
         moveAction.getValidation(game);
+        possibleActions = game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 1);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -90,6 +102,9 @@ class BuildBeforeAfterMovementTest {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        assertEquals(possibleActions.size(), 1);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(2, 2));
@@ -100,6 +115,9 @@ class BuildBeforeAfterMovementTest {
         toMoveCell = game.getGameBoard().getCell(3, 2);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
         moveAction.getValidation(game);
+        possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 1);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -121,6 +139,9 @@ class BuildBeforeAfterMovementTest {
         toMoveCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
         moveAction.getValidation(game);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 1);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -143,6 +164,9 @@ class BuildBeforeAfterMovementTest {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        assertEquals(possibleActions.size(), 1);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(2, 2));
@@ -154,7 +178,7 @@ class BuildBeforeAfterMovementTest {
         try {
             moveAction.getValidation(game);
         } catch (IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
@@ -169,6 +193,9 @@ class BuildBeforeAfterMovementTest {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        assertEquals(possibleActions.size(), 1);
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(2, 2));
@@ -180,7 +207,7 @@ class BuildBeforeAfterMovementTest {
         try{
             secondBuildAction.getValidation(game);
         } catch(IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
@@ -192,6 +219,11 @@ class BuildBeforeAfterMovementTest {
     void cannotKillYourselfTest() throws IOException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL1);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL0);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 3);
 
         Action buildaction = new BuildAction(players.get(0).getWorkers().get(1),
                 game.getGameBoard().getCell(4,4), Block.LEVEL1);
@@ -206,4 +238,28 @@ class BuildBeforeAfterMovementTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 2);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
+
+    @Test
+    void mustMoveAndBuildTest() {
+        game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL1);
+        game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL1);
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(players.get(0).getWorkers().get(1));
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
+        assertEquals(possibleActions.size(), 2);
+
+        Action buildaction = new BuildAction(players.get(0).getWorkers().get(1),
+                game.getGameBoard().getCell(4,4), Block.LEVEL2);
+        try {
+            buildaction.getValidation(game);
+        } catch (IllegalActionException e){
+            assertNotNull(e);
+        }
+        assertEquals(game.getGameBoard().getCell(4,4).getBlock(), Block.LEVEL1);
+        assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 2);
+        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
+    }
+
 }

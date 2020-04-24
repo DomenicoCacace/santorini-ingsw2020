@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -43,6 +44,27 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     @Override
     public void doEffect() {
         initialize();
+    }
+
+    @Override
+    public List<PossibleActions> getPossibleActions(Worker worker) {
+        List<PossibleActions> possibleActions = new ArrayList<>();
+        if (buildsAvailable > 0) {
+            if (movesAvailable == 0 && !hasBuiltBefore) {
+                possibleActions = super.getPossibleActions(worker);
+            } else if (movesAvailable == 0 && worker == builder) { //this is useful for the view: highlighting the correct cells
+                possibleActions = super.getPossibleActions(worker);
+            } else if (movesAvailable == 1 && !hasBuiltBefore) {
+                if(buildableCellsBeforeMoving(worker).size()>0)
+                    possibleActions.add(PossibleActions.BUILD);
+                possibleActions.add(PossibleActions.MOVE);
+                possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
+            } else if(movesAvailable == 1 && worker==builder){
+                possibleActions.add(PossibleActions.MOVE);
+            }
+        }
+
+        return possibleActions;
     }
 
     @Override
@@ -104,7 +126,6 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         Cell cellOnMyLevel = null;
         List<Cell> buildableCells = new ArrayList<>();
         super.addBuildableCells(worker, buildableCells); //Aggiungo a buildableCells tutte le celle su cui potrei costruire normalmente
-
         for (Cell cell : buildableCells) {
             heightDifference = worker.getPosition().heightDifference(cell);
             if (heightDifference < 0) {
@@ -116,7 +137,6 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
                 else cellOnMyLevel = cell; //Quando trovo la prima cella al mio stesso livello la salvo in una variabile
             }
         }
-
         if (cellsOnMyLevel == 1) {
             buildableCells.remove(cellOnMyLevel); //Se ho trovato solo una cella al mio stesso livello e non ho trovato celle più in basso allora posso costruire ovunque tranne che nella cella al mio livello
         } else

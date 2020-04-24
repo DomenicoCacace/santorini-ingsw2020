@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -29,6 +30,8 @@ public interface RuleSetStrategy {
     Worker getMovedWorker(); //Testing purpose only
 
     void setMovesUpAvailable(int num);
+
+    List<PossibleActions> getPossibleActions(Worker worker);
 
     boolean isMoveActionValid(MoveAction action);
 

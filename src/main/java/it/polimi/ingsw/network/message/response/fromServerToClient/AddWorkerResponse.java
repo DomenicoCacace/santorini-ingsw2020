@@ -16,7 +16,7 @@ public class AddWorkerResponse extends Message {
     public AddWorkerResponse(@JsonProperty("outcome") String outcome,@JsonProperty("username") String username,@JsonProperty("payload") List<Cell> payload) {
         super(username, Content.ADD_WORKER);
         this.outcome = outcome;
-        if (outcome.equals("OK")) {
+        if (outcome.equals("OK") || outcome.equals("Add another worker")) {
             this.payload = payload;
         } else {
             this.payload = null;

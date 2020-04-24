@@ -12,7 +12,7 @@ public class Cell implements Serializable {
     private final int coordY;
     private boolean hasDome;
     private Block block;
-    @JsonBackReference(" cell - worker")
+    @JsonManagedReference("cell - worker")
     private Worker occupiedBy;
 
     public Cell(int coordX, int coordY) {
@@ -39,7 +39,7 @@ public class Cell implements Serializable {
         this.hasDome = cell.hasDome;
         this.block = cell.block;
         if (cell.occupiedBy != null)
-            this.occupiedBy = cell.occupiedBy;
+            this.occupiedBy = new Worker(this, cell.occupiedBy.getColor());
         else this.occupiedBy = null;
     }
 

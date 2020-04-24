@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
@@ -107,6 +108,23 @@ public class RuleSetBase implements RuleSetStrategy {
 
     protected boolean isInsideWalkableCells(MoveAction action) {
         return getWalkableCells(action.getTargetWorker()).contains(action.getTargetCell());
+
+    }
+
+    @Override
+    public List<PossibleActions> getPossibleActions(Worker worker){
+        List<PossibleActions> possibleActions = new ArrayList<>();
+        if(getWalkableCells(worker).size() > 0 ) {
+            possibleActions.add(PossibleActions.MOVE);
+            possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
+        }
+        else if (getBuildableCells(worker).size() > 0){
+            possibleActions.add(PossibleActions.BUILD);
+        }
+        else
+            possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
+        return possibleActions;
+
 
     }
 

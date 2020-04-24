@@ -2,10 +2,12 @@ package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoveAgain extends MovementStrategy {
@@ -39,6 +41,17 @@ public class MoveAgain extends MovementStrategy {
     @Override
     public void doEffect() {
         initialize();
+    }
+
+    @Override
+    public List<PossibleActions> getPossibleActions(Worker worker) {
+        List<PossibleActions> possibleActions = new ArrayList<>();
+        if (movesAvailable == 1) {
+            possibleActions.add(PossibleActions.BUILD);
+            if (getWalkableCells(worker).size() > 0)
+                possibleActions.add(PossibleActions.MOVE);
+        } else possibleActions = super.getPossibleActions(worker);
+        return possibleActions;
     }
 
     @Override

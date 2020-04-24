@@ -30,7 +30,6 @@ public class Game implements GameInterface {
     private MoveActionListener moveActionListener;
     private EndTurnListener endTurnListener;
     private BuildActionListener buildActionListener;
-
     private EndGameListener endGameListener;
     private PlayerLostListener playerLostListener;
 
@@ -44,7 +43,7 @@ public class Game implements GameInterface {
         //just for testing
         currentRuleSet = new RuleSetContext();
         this.saveState();
-        currentTurn = new Turn(0, players.get(players.size() - 1));
+        currentTurn = new Turn(1, players.get(0));
     }
 
     /*
@@ -78,7 +77,6 @@ public class Game implements GameInterface {
         this.currentRuleSet = new RuleSetContext();
         currentRuleSet.setStrategy(this.currentTurn.getRuleSetStrategy());
         this.file = new File("../SavedGame2.json");
-
     }
 
     /*
@@ -250,7 +248,7 @@ public class Game implements GameInterface {
         ObjectMapper objectMapper = new ObjectMapper();
         Game restoredGame = objectMapper.readerFor(Game.class).readValue(file);
         for (Player player : restoredGame.players) {
-            for (Worker worker : player.getWorkers()) {
+            for (Worker worker : player.getWorkers()) { //TODO: we should do the opposite, use the occupiedBy in cell to set the position in Worker
                 x = worker.getPosition().getCoordX();
                 y = worker.getPosition().getCoordY();
                 worker.setPosition(restoredGame.gameBoard.getCell(x, y));

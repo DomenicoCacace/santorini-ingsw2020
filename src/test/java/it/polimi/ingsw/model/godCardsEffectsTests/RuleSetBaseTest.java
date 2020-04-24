@@ -101,7 +101,9 @@ class RuleSetBaseTest {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
-
+        List<PossibleActions> possibleActions = game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertEquals(possibleActions.size(), 1);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertEquals(currentWorker.getPosition(), targetCell);

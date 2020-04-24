@@ -6,31 +6,30 @@ import it.polimi.ingsw.listeners.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, EndGameListener,
-                                         EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener  {
+                                         EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener  {
 
     private final GameInterface game;
     private final Map<String, PlayerInterface> playerMap;
-    private MessageParser parser;
+    private final MessageParser parser;
+    private int cont = 0;
 
-    public ServerController(GameInterface game, Map<String, PlayerInterface> players) {
+
+    public ServerController(GameInterface game, Map<String, PlayerInterface> players, MessageParser parser) {
         this.game = game;
         this.playerMap = players;
-        /*for (Event event : Event.values()) {
-            if (event != Event.ADD_WORKER && event != Event.BUILDABLE_CELLS && event != Event.WALKABLE_CELLS)
-                    game.addObserver(this, event);
-            else {
-                playerMap.forEach((s, player) -> player.addObserver(this, event));
-            }
-        }*/
+        this.parser = parser;
         game.setBuildActionListener(this);
         game.setEndGameListener(this);
         game.setEndTurnListener(this);
@@ -39,17 +38,27 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         playerMap.values().forEach(playerInterface
                 -> {playerInterface.setAddWorkerListener(this);
                     playerInterface.setBuildableCellsListener(this);
-                    playerInterface.setWalkableCellsListener(this);});
-
+                    playerInterface.setWalkableCellsListener(this);
+                    playerInterface.setSelectWorkerListener(this);});
     }
 
     public void addWorker(String username, Cell cell) {
         try {
             playerMap.get(username).addWorker(cell);
-            //parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", username, game.cloneGameBoard()));
+
+            if(!playerMap.get(username).allWorkersArePlaced())
+                parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(username, game.buildBoardData()));
+            else {
+                cont++;
+                if(cont < playerMap.values().size()){
+                    List<String> usernames = new ArrayList<>(playerMap.keySet());
+                    parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(usernames.get(cont), game.buildBoardData()));
+                } else parser.parseMessageFromServerToClient(new GameStartResponse("OK", game.buildGameData()));
+            }
         } catch (AddingFailedException e) {
             System.out.println("Adding failed");
-            parser.parseMessageFromServerToClient(new AddWorkerResponse("Adding failed", username, game.buildBoardData())); //TODO: we can build a whole gameData and do gameData.getBoard()
+            parser.parseMessageFromServerToClient(new AddWorkerResponse("Adding failed", username, game.buildBoardData()));
+            parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(username, game.buildBoardData())); //TODO: this should be managed by the view when add_worker fails
         }
     }
 
@@ -147,5 +156,10 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     @Override
     public void onPlayerLoss(List<Cell> cells) {
         parser.parseMessageFromServerToClient(new PlayerRemovedResponse("OK", cells));
+    }
+
+    @Override
+    public void onSelectedWorker(String username, List<PossibleActions> possibleActions) {
+
     }
 }

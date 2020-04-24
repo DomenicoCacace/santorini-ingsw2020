@@ -18,4 +18,9 @@ public class TurnData {
     public int getTurnNumber() {
         return turnNumber;
     }
+
+    @JsonGetter
+    public PlayerData getCurrentPlayer(){
+        return currentPlayer;
+    }
 }
