@@ -3,10 +3,7 @@ package it.polimi.ingsw.model.rules;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.PossibleActions;
-import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 
@@ -42,6 +39,8 @@ public interface RuleSetStrategy {
     boolean checkLoseCondition();
 
     List<Cell> getBuildableCells(Worker worker);
+
+    List<Block> getBlocks(Cell selectedCell);
 
     List<Cell> getWalkableCells(Worker worker);
 

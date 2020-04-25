@@ -2,10 +2,7 @@ package it.polimi.ingsw.model.rules;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.model.PossibleActions;
-import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects.BuildBeforeAfterMovement;
@@ -94,6 +91,13 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public void setMovesUpAvailable(int num) {
         this.movesUpAvailable = num;
+    }
+
+    @Override
+    public List<Block> getBlocks(Cell selectedCell) {
+        List<Block> buildingBlocks = new ArrayList<>();
+        buildingBlocks.add(Block.values()[selectedCell.getBlock().getHeight()+1]);
+        return buildingBlocks;
     }
 
     @Override

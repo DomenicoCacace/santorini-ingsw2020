@@ -9,15 +9,13 @@ import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, EndGameListener,
+public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, EndGameListener, BuildingBlocksListener,
                                          EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener  {
 
     private final GameInterface game;
@@ -39,7 +37,8 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
                 -> {playerInterface.setAddWorkerListener(this);
                     playerInterface.setBuildableCellsListener(this);
                     playerInterface.setWalkableCellsListener(this);
-                    playerInterface.setSelectWorkerListener(this);});
+                    playerInterface.setSelectWorkerListener(this);
+                    playerInterface.setBuildingBlocksListener(this);});
     }
 
     public void addWorker(String username, Cell cell) {
@@ -67,7 +66,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
             playerMap.get(username).setSelectedWorker(worker);
             //parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username));
         } catch (NotYourWorkerException e) {
-            parser.parseMessageFromServerToClient(new SelectWorkerResponse("Not your worker", username));
+            parser.parseMessageFromServerToClient(new SelectWorkerResponse("Not your worker", username, null));
         }
     }
 
@@ -86,6 +85,14 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
             //parser.parseMessageFromServerToClient(new BuildableCellsResponse("OK",username, buildableCells));
         } catch (WrongSelectionException e) {
             parser.parseMessageFromServerToClient(new BuildableCellsResponse("Wrong selection", username, null));
+        }
+    }
+
+    public void selectBuildingCell(String username, Cell selectedCell){
+        try {
+            playerMap.get(username).obtainBuildingBlocks(selectedCell);
+        } catch (IllegalActionException e){
+            parser.parseMessageFromServerToClient(new PlayerBuildResponse("Illegal build", username, game.buildBoardData()));
         }
     }
 
@@ -138,6 +145,11 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     }
 
     @Override
+    public void onBlocksObtained(String name, List<Block> blocks) {
+        parser.parseMessageFromServerToClient(new SelectBuildingCellResponse(name ,blocks));
+    }
+
+    @Override
     public void onEndGame(String name) {
         parser.parseMessageFromServerToClient(new WinnerDeclaredResponse("OK", name));
     }
@@ -160,6 +172,8 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onSelectedWorker(String username, List<PossibleActions> possibleActions) {
-
+        parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username, possibleActions));
     }
+
+
 }

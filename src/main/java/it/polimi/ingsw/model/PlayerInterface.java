@@ -1,13 +1,8 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.listeners.AddWorkerListener;
-import it.polimi.ingsw.listeners.BuildableCellsListener;
-import it.polimi.ingsw.listeners.SelectWorkerListener;
-import it.polimi.ingsw.listeners.WalkableCellsListener;
+import it.polimi.ingsw.listeners.*;
 import it.polimi.ingsw.model.action.Action;
-
-import java.io.IOException;
 
 public interface PlayerInterface {
 
@@ -18,6 +13,8 @@ public interface PlayerInterface {
     void obtainWalkableCells() throws WrongSelectionException;
 
     void obtainBuildableCells() throws WrongSelectionException;
+
+    void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException;
 
     void useAction(Action action) throws IllegalActionException;
 
@@ -30,6 +27,8 @@ public interface PlayerInterface {
     void setWalkableCellsListener(WalkableCellsListener walkableCellsListener);
 
     void setSelectWorkerListener(SelectWorkerListener selectWorkerListener);
+
+    void setBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener);
 
     boolean allWorkersArePlaced();
 }

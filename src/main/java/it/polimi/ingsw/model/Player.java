@@ -2,11 +2,9 @@ package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.*;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.listeners.AddWorkerListener;
-import it.polimi.ingsw.listeners.BuildableCellsListener;
-import it.polimi.ingsw.listeners.SelectWorkerListener;
-import it.polimi.ingsw.listeners.WalkableCellsListener;
+import it.polimi.ingsw.listeners.*;
 import it.polimi.ingsw.model.action.Action;
+import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 
 import java.util.ArrayList;
@@ -26,6 +24,7 @@ public class Player implements PlayerInterface {
     private BuildableCellsListener buildableCellsListener;
     private WalkableCellsListener walkableCellsListener;
     private SelectWorkerListener selectWorkerListener;
+    private BuildingBlocksListener buildingBlocksListener;
 
     @JsonIgnore
     private Game game;
@@ -101,6 +100,16 @@ public class Player implements PlayerInterface {
     }
 
     @Override
+    public void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException {
+        List<Block> buildingBlocks = god.getStrategy().getBlocks(selectedCell);
+        if(buildingBlocks.size() == 1) {
+            BuildAction buildAction = new BuildAction(selectedWorker, selectedCell, buildingBlocks.get(0));
+            buildAction.getValidation(game);
+        } else if (buildingBlocksListener != null)
+            buildingBlocksListener.onBlocksObtained(name, buildingBlocks);
+    }
+
+    @Override
     public void setSelectedWorker(Worker selectedWorker) throws NotYourWorkerException {
         if (workers.contains(selectedWorker)) {
             this.selectedWorker = selectedWorker;
@@ -161,6 +170,10 @@ public class Player implements PlayerInterface {
 
     public void setSelectWorkerListener(SelectWorkerListener selectWorkerListener) {
         this.selectWorkerListener = selectWorkerListener;
+    }
+
+    public void setBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener) {
+        this.buildingBlocksListener = buildingBlocksListener;
     }
 
     @Override

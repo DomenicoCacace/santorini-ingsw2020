@@ -53,6 +53,9 @@ public class MessageParser {
             case BUILDABLE_CELLS:
                 serverController.obtainBuildableCells(message.getUsername());
                 break;
+            case SELECT_BUILDING_CELL:
+                serverController.selectBuildingCell(message.getUsername(), ((SelectBuildingCellRequest) message).getSelectedCell());
+                break;
             case PLAYER_MOVE:
                 MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).getTargetWorker(), ((PlayerMoveRequest) message).getTargetCell());
                 serverController.handleMoveAction(message.getUsername(), moveAction);

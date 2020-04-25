@@ -48,7 +48,7 @@ public class Client {
         networkHandler.login(this.username);
     }
 
-    public void sendMessage(Message message) throws IOException { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
+    public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
         if (currentPlayer)
             networkHandler.sendMessage(message);
     }

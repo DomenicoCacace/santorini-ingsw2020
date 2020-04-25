@@ -1,8 +1,13 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
+import it.polimi.ingsw.model.Block;
+import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BuildDome extends BuildingStrategy {
 
@@ -36,4 +41,12 @@ public class BuildDome extends BuildingStrategy {
         return new BuildDome(this, game);
     }
 
+    @Override
+    public List<Block> getBlocks(Cell selectedCell){
+        List<Block> buildingBlocks = new ArrayList<>();
+        buildingBlocks.add(Block.values()[selectedCell.getBlock().getHeight()+1]);
+        if(buildingBlocks.get(0) != Block.DOME)
+            buildingBlocks.add(Block.DOME);
+        return buildingBlocks;
+    }
 }
