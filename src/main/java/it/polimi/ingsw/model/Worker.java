@@ -7,7 +7,6 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "workerId", scope = Worker.class)
 public class Worker {
 
-    @JsonBackReference("cell - worker")
     private Cell position;
     private final Color color;
 

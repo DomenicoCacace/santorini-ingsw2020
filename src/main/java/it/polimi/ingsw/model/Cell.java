@@ -12,7 +12,6 @@ public class Cell implements Serializable {
     private final int coordY;
     private boolean hasDome;
     private Block block;
-    @JsonManagedReference("cell - worker")
     private Worker occupiedBy;
 
     public Cell(int coordX, int coordY) {

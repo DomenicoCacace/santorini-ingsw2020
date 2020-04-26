@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
@@ -91,7 +92,9 @@ public class NetworkHandler implements Runnable {
         try {
             outputSocket.write(json + "\n");
             outputSocket.flush();
+            //To Debug
             System.out.println(json + "message sent from " + client.getUsername() +" to Server");
+            //
         } catch (Exception e) {
             closeConnection();
         }

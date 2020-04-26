@@ -80,6 +80,13 @@ public class Player implements PlayerInterface {
     @Override
     public void useAction(Action action) throws IllegalActionException {
         action.getValidation(game);
+        if(game.getCurrentTurn().getCurrentPlayer().equals(this)){
+            List<PossibleActions> possibleActions = god.getStrategy().getPossibleActions(this.selectedWorker);
+            possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
+            if (selectWorkerListener!=null)
+                selectWorkerListener.onSelectedWorker(name,possibleActions, selectedWorker);
+        }
+
     }
 
     @Override
@@ -112,9 +119,12 @@ public class Player implements PlayerInterface {
     @Override
     public void setSelectedWorker(Worker selectedWorker) throws NotYourWorkerException {
         if (workers.contains(selectedWorker)) {
-            this.selectedWorker = selectedWorker;
+            for (Worker worker: this.workers){
+                if(worker.getPosition().equals(selectedWorker.getPosition()))
+                    this.selectedWorker = worker;
+            }
             if (selectWorkerListener!=null)
-                selectWorkerListener.onSelectedWorker(name,god.getStrategy().getPossibleActions(this.selectedWorker));
+                selectWorkerListener.onSelectedWorker(name,god.getStrategy().getPossibleActions(this.selectedWorker), this.selectedWorker);
         }
         else
             throw new NotYourWorkerException();

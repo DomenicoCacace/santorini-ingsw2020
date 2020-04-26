@@ -68,6 +68,8 @@ public class MessageParser {
                 break;
             case PLAYER_MOVE:
                 if (((PlayerMoveResponse) message).getOutcome().equals("OK")) {
+                    System.out.println(((PlayerMoveResponse) message).getPayload().toString());
+                    gameboard = ((PlayerMoveResponse) message).getPayload();
                     //view.displayGameboard(payload);
                     //payload to be saved internally on the view
                 } else{
@@ -77,6 +79,8 @@ public class MessageParser {
                 break;
             case PLAYER_BUILD:
                 if (((PlayerBuildResponse) message).getOutcome().equals("OK")) {
+                    System.out.println(((PlayerBuildResponse) message).getPayload().toString());
+                    gameboard = ((PlayerBuildResponse) message).getPayload();
                     //view.displayGameboard(payload);
                     //payload to be saved internally on the view
                 } else{
@@ -185,7 +189,7 @@ public class MessageParser {
             case SELECT_WORKER:
                 client.setCurrentPlayer(true);
                 if(((SelectWorkerResponse) message).getOutcome().equals("OK")) {
-
+                    selectedWorker = ((SelectWorkerResponse) message).getSelectedWorker();
                     System.out.println(((SelectWorkerResponse) message).getPossibleActions().toString());
                     do {
                         System.out.println("Choose a correct action");
@@ -204,20 +208,22 @@ public class MessageParser {
                 client.setCurrentPlayer(false);
                 break;
             case WALKABLE_CELLS:
+                client.setCurrentPlayer(true);
                 if(((WalkableCellsResponse) message).getOutcome().equals("OK")){
                     if(((WalkableCellsResponse) message).getPayload().size() == 0)
                         System.out.println("No walkable cells available");
                     else {
                         System.out.println(((WalkableCellsResponse) message).getPayload());
-                        System.out.println("Select the cell where you want to go");
                         int xMove, yMove;
                         do {
+                            System.out.println("Select the cell where you want to go");
                             input = new Scanner(System.in);
                             xMove = input.nextInt();
                             yMove = input.nextInt();
                         } while(!isInsideAvailableCells(xMove, yMove, ((WalkableCellsResponse) message).getPayload()));
                         message = new PlayerMoveRequest(client.getUsername(), gameboard.get(5*xMove + yMove), selectedWorker);
                         client.sendMessage(message);
+                        client.setCurrentPlayer(false);
                     }
                     //view.displayCellsSuperFiche
                 } else {
@@ -226,6 +232,7 @@ public class MessageParser {
                 }
                 break;
             case BUILDABLE_CELLS:
+                client.setCurrentPlayer(true);
                 if(((BuildableCellsResponse) message).getOutcome().equals("OK")){
                     if(((BuildableCellsResponse) message).getPayload().size() == 0)
                         System.out.println("No buildable cells available");
@@ -241,7 +248,7 @@ public class MessageParser {
                     selectedCell = gameboard.get(5*xBuild + yBuild);
                     Message message2 = new SelectBuildingCellRequest(client.getUsername(), selectedCell);
                     client.sendMessage(message2);
-
+                    client.setCurrentPlayer(false);
                     //view.displayCellsSuperFiche
                 } else {
                     //we should never enter here
@@ -250,7 +257,6 @@ public class MessageParser {
                 break;
             case SELECT_BUILDING_CELL:
                 client.setCurrentPlayer(true);
-
                 System.out.println(((SelectBuildingCellResponse) message).getBlocks().toString());
                 String block;
                 do {
@@ -307,9 +313,9 @@ public class MessageParser {
                 coordy = input.nextInt();
             }
             selectedCell = gameboard.get(5 * coordx + coordy);
-        } while (selectedCell.getOccupiedBy()==null);
+        } while (selectedCell.getOccupiedBy()==null); //TODO: remove other worker from selection
         selectedWorker = selectedCell.getOccupiedBy();
-        Message message = new SelectWorkerRequest(client.getUsername(), selectedCell.getOccupiedBy());
+        Message message = new SelectWorkerRequest(client.getUsername(), selectedWorker);
         client.sendMessage(message);
         client.setCurrentPlayer(false);
     }
@@ -328,15 +334,16 @@ public class MessageParser {
         Message message = null;
         if(input.equals("Move")){
             message = new WalkableCellsRequest(client.getUsername());
+            client.sendMessage(message);
         } else if(input.equals("Build")){
             message = new BuildableCellsRequest(client.getUsername());
+            client.sendMessage(message);
         } else if(input.equals("Pass turn")){
             message = new EndTurnRequest(client.getUsername());
-        } /* else if(input.equals("Select other worker")){
-            Message message = new SelectWorkerRequest(client.getUsername(), worker);
+            client.sendMessage(message);
+        } else if(input.equals("Select other worker")){
+            chooseWorker();
         }
-        */
-        client.sendMessage(message);
     }
 
     private boolean isInsideAvailableCells(int x, int y, List<Cell> legalCells) {

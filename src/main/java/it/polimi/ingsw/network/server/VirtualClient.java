@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
@@ -84,7 +85,9 @@ public class VirtualClient extends Thread {
         try {
             outputSocket.write(stringMessage + "\n");
             outputSocket.flush();
+            //To debug
             System.out.println(stringMessage + "Message sent from server to: " + username);
+            //
         } catch (IOException e) {
             try {
                 clientConnection.close();

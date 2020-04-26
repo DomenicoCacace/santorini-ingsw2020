@@ -37,6 +37,7 @@ public class RuleSetBase implements RuleSetStrategy {
     protected int movesUpAvailable;
     protected int buildsAvailable;
     protected boolean hasMovedUp;
+    protected Cell startingCell;
     protected Worker movedWorker;
 
     public RuleSetBase() {
@@ -143,6 +144,7 @@ public class RuleSetBase implements RuleSetStrategy {
             if (action.getTargetWorker().getPosition().heightDifference(action.getTargetCell()) == 1)
                 hasMovedUp = true;
             movedWorker = action.getTargetWorker();
+            startingCell = action.getStartingCell();
             return true;
         }
         return false;
@@ -176,9 +178,8 @@ public class RuleSetBase implements RuleSetStrategy {
 
     @Override
     public boolean checkWinCondition(MoveAction action) {
-        //removed action.getTargetCell().hasDome()
         return action.getTargetCell().getBlock().getHeight() == 3 &&
-                action.getStartingCell().heightDifference(action.getTargetCell()) == 1;
+                startingCell.heightDifference(action.getTargetCell()) == 1;
     }
 
     @Override
@@ -218,7 +219,7 @@ public class RuleSetBase implements RuleSetStrategy {
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
         if (buildsAvailable > 0) {
-            if (worker == movedWorker) {
+            if (worker.equals(movedWorker)) {
                 addBuildableCells(worker, cells);
             }
         }

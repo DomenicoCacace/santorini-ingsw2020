@@ -25,7 +25,7 @@ public class Down2Levels extends WinConditionStrategy {
     public boolean checkWinCondition(MoveAction action) {
 
         return (super.checkWinCondition(action)) || (
-                action.getStartingCell().heightDifference(action.getTargetCell()) <= -2);
+                startingCell.heightDifference(action.getTargetCell()) <= -2);
     }
 
     @Override

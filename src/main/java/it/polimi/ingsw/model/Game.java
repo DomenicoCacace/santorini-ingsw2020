@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.listeners.*;
+import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.dataClass.GameData;
@@ -41,9 +42,10 @@ public class Game implements GameInterface {
         for (Player player : players)
             player.setGame(this);
         //just for testing
-        currentRuleSet = new RuleSetContext();
         this.saveState();
         currentTurn = new Turn(1, players.get(0));
+        currentRuleSet = new RuleSetContext();
+        currentRuleSet.setStrategy(players.get(0).getGod().getStrategy());
     }
 
     /*
@@ -123,8 +125,19 @@ public class Game implements GameInterface {
     }
 
     public void validateMoveAction(MoveAction moveAction) throws IllegalActionException {
-        if (currentRuleSet.validateMoveAction(moveAction)) {
+        Cell targetCell = gameBoard.getCell(moveAction.getTargetCell());
+        Worker targetWorker = null;
+        for (Worker worker: currentTurn.getCurrentPlayer().getWorkers()){
+            if(worker.getPosition().equals(moveAction.getTargetWorker().getPosition()))
+                targetWorker = worker;
+        }
+        moveAction= new MoveAction(targetWorker, targetCell);
 
+        if (currentRuleSet.validateMoveAction(moveAction)) {
+            moveAction.apply();
+            if(moveActionListener!=null)
+                moveActionListener.onMoveAction(buildBoardData());
+             //TODO:moved before the checkWinCondition, check if this breaks something
             if (currentRuleSet.checkWinCondition(moveAction)) {
                 this.winner = currentTurn.getCurrentPlayer();
                 // TODO: manage win stuff
@@ -132,10 +145,6 @@ public class Game implements GameInterface {
                     endGameListener.onEndGame(winner.getName());
                 }
             }
-            moveAction.apply();
-
-            if(moveActionListener!=null)
-                moveActionListener.onMoveAction(buildBoardData());
 
             this.saveState();
         } else
@@ -143,6 +152,14 @@ public class Game implements GameInterface {
     }
 
     public void validateBuildAction(BuildAction buildAction) throws IllegalActionException {
+        Cell targetCell = gameBoard.getCell(buildAction.getTargetCell());
+        Worker targetWorker = null;
+        for (Worker worker: currentTurn.getCurrentPlayer().getWorkers()){
+            if(worker.getPosition().equals(buildAction.getTargetWorker().getPosition()))
+                targetWorker = worker;
+        }
+
+        buildAction= new BuildAction(targetWorker, targetCell, buildAction.getTargetBlock());
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
             if(buildActionListener!=null)
@@ -152,7 +169,6 @@ public class Game implements GameInterface {
         } else
             throw new IllegalActionException();
     }
-
     public void endTurn() throws IllegalEndingTurnException {
         if (currentRuleSet.canEndTurn()) {
             generateNextTurn();

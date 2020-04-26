@@ -222,18 +222,9 @@ class RuleSetBaseTest {
 
         assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
         assertEquals(targetCell.getBlock(), block);
+        assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
 
-        block = Block.DOME;
-        buildAction = new BuildAction(currentWorker, targetCell, block);
-        try{
-            buildAction.getValidation(game);
-        } catch(IllegalActionException e){
-            e.getMessage();
-        }
-
-        // assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        // assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 0);
-        assertEquals(targetCell.getBlock(), Block.LEVEL3);
     }
 
     @Test
