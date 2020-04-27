@@ -115,6 +115,7 @@ public class Server extends Thread {
     public void onDisconnect(String username) {
         //TODO: End match or Save match and restart once the client reconnected (persistence even when the client crashes)
         System.out.println(username + " removed");
+        usernames.get(username).closeConnection();
         this.usernames.remove(username);
     }
 
@@ -137,5 +138,12 @@ public class Server extends Thread {
                 usernames.get(message.getUsername()).notify(new ChooseNumberOfPlayersRequest(message.getUsername()));
             }
         } else messageParser.parseMessageFromClientToServer(message);
+    }
+
+    public void endGame(){
+        List<String> names = new ArrayList<>(usernames.keySet());
+        for(String name: names){
+            onDisconnect(name);
+        }
     }
 }

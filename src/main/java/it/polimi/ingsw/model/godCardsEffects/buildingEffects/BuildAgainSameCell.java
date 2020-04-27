@@ -27,7 +27,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     }
 
-
+    @Override
     public void initialize() {
         this.movesAvailable = 1;
         this.movesUpAvailable = 1;
@@ -37,7 +37,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
     }
 
     public BuildAgainSameCell() {
-        initialize();
+        super();
     }
 
     @Override

@@ -93,7 +93,6 @@ public class MessageParser {
                 break;
             case END_TURN:
                 if (((EndTurnResponse) message).getOutcome().equals("OK")) {
-
                     //view.displayPlayableInterface
                     //view.displayNonPlayableInterface(payload);
                     client.setCurrentPlayer(((EndTurnResponse) message).getPayload().equals(client.getUsername()));
@@ -153,12 +152,13 @@ public class MessageParser {
                 //view.diplayAllGods
                 break;
             case WINNER_DECLARED:
+                System.out.println(((WinnerDeclaredResponse) message).getPayload() + " WON!");
                 //view.displayWinner
                 break;
-            case PLAYER_LOST:
-                //view.displayNonPlayableInterface
-                break;
-            case PLAYER_REMOVED:
+            case PLAYER_REMOVED: //broadcast
+                if(((PlayerRemovedResponse)message).getPayload().equals(client.getUsername()))
+                    System.out.println("You lost");
+                else System.out.println(((PlayerRemovedResponse)message).getPayload() + " lost");
                 //view.displayGameboard(payload)
                 break;
             case CHOOSE_PLAYER_NUMBER:
@@ -181,6 +181,11 @@ public class MessageParser {
                 client.sendMessage(message);
                 client.setCurrentPlayer(false);
                 //view.displayWaitingLobby
+                break;
+            case CHOSEN_GODS:
+                if(((ChosenGodsResponse) message).getOutcome().equals("OK"))
+                    System.out.println(((ChosenGodsResponse)message).getPayload().toString());
+                else System.out.println(((ChosenGodsResponse)message).getOutcome());
                 break;
             case STARTING_PLAYER:
                 client.setCurrentPlayer(true);
@@ -277,13 +282,6 @@ public class MessageParser {
                 client.sendMessage(message);
 
                 client.setCurrentPlayer(false);
-                break;
-            case CHOSEN_GODS: //TODO: review this shit
-                if(((ChosenGodsResponse) message).getOutcome().equals("OK")){
-                    //view.displayChosenGods
-                } else {
-                    //view.displayError(outcome)
-                }
                 break;
             case GAME_START:
                 System.out.println("\n The Game Started! \n" + ((GameStartResponse)message).getPayload().getBoard().toString());

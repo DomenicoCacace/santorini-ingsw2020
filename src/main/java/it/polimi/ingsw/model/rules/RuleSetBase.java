@@ -41,6 +41,10 @@ public class RuleSetBase implements RuleSetStrategy {
     protected Worker movedWorker;
 
     public RuleSetBase() {
+        initialize();
+    }
+
+    protected void initialize() {
         this.movesAvailable = 1;
         this.movesUpAvailable = 1;
         this.buildsAvailable = 1;
@@ -103,11 +107,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     @Override
     public void doEffect() {
-        movesAvailable = 1;
-        movesUpAvailable = 1;
-        buildsAvailable = 1;
-        hasMovedUp = false;
-        movedWorker = null;
+        initialize();
     }
 
 

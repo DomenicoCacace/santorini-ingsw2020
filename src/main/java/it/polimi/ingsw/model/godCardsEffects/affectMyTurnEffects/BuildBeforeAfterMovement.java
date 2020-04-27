@@ -28,9 +28,10 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         this.hasBuiltBefore = buildBeforeAfterMovement.hasBuiltBefore;
         this.builder = game.getGameBoard().getCell(buildBeforeAfterMovement.builder.getPosition()).getOccupiedBy();
     }
-
+    @Override
     public void initialize() {
         this.movesAvailable = 1;
+        this.movesUpAvailable = 1;
         this.buildsAvailable = 2;
         this.hasMovedUp = false;
         this.hasBuiltBefore = false;
@@ -38,7 +39,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     public BuildBeforeAfterMovement() {
-        initialize();
+        super();
     }
 
     @Override

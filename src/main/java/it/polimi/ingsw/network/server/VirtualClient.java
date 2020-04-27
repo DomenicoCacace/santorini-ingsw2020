@@ -97,4 +97,12 @@ public class VirtualClient extends Thread {
             server.onDisconnect(username);
         }
     }
+
+    public void closeConnection(){
+        try {
+            clientConnection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

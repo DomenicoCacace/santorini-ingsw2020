@@ -30,7 +30,7 @@ public class MessageParser {
         this.serverController = serverController;
     }
 
-    public void parseMessageFromClientToServer(Message message) throws IOException, InterruptedException {
+    public void parseMessageFromClientToServer(Message message) throws InterruptedException {
         switch (message.getContent()) {
             case LOGIN:
                 lobby.addUser(message.getUsername());
@@ -81,8 +81,11 @@ public class MessageParser {
     //Parser will pass messages to the Server -> Server will pass messages to the virtualClient -> Client
 
     public void parseMessageFromServerToClient(Message message) {
-        //Passerà messaggi al server il quale farà virtualClient.notify(message)
         server.send(message.getUsername(), message);
+    }
+
+    public void endGame(){
+        server.endGame();
     }
 
 }

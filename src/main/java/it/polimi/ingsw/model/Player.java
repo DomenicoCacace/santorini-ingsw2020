@@ -25,12 +25,20 @@ public class Player implements PlayerInterface {
     private WalkableCellsListener walkableCellsListener;
     private SelectWorkerListener selectWorkerListener;
     private BuildingBlocksListener buildingBlocksListener;
-
     @JsonIgnore
     private Game game;
 
+    //Used by jackson to deserialize
+    @JsonCreator private Player(@JsonProperty("name") String name, @JsonProperty("god") God god, @JsonProperty("color") Color color,
+                                @JsonProperty("workers") List<Worker> workers, @JsonProperty("selectedWorker") Worker selectedWorker){
+        this.name = name;
+        this.god = god;
+        this.color = color;
+        this.workers = workers;
+        this.selectedWorker = selectedWorker;
+    }
 
-    public Player(@JsonProperty("name") String name, @JsonProperty("god") God god, @JsonProperty("color") Color color) {
+    public Player(String name, God god, Color color) {
         this.name = name;
         this.god = god;
         this.color = color;
@@ -82,7 +90,7 @@ public class Player implements PlayerInterface {
         action.getValidation(game);
         if(game.getCurrentTurn().getCurrentPlayer().equals(this)){
             List<PossibleActions> possibleActions = god.getStrategy().getPossibleActions(this.selectedWorker);
-            possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
+            //possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
             if (selectWorkerListener!=null)
                 selectWorkerListener.onSelectedWorker(name,possibleActions, selectedWorker);
         }
@@ -111,7 +119,7 @@ public class Player implements PlayerInterface {
         List<Block> buildingBlocks = god.getStrategy().getBlocks(selectedCell);
         if(buildingBlocks.size() == 1) {
             BuildAction buildAction = new BuildAction(selectedWorker, selectedCell, buildingBlocks.get(0));
-            buildAction.getValidation(game);
+            useAction(buildAction);
         } else if (buildingBlocksListener != null)
             buildingBlocksListener.onBlocksObtained(name, buildingBlocks);
     }

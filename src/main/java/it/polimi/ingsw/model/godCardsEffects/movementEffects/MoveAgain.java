@@ -14,16 +14,18 @@ public class MoveAgain extends MovementStrategy {
 
     private Cell startingCell;
 
+
+    public MoveAgain() {
+        super();
+    }
+
+    @Override
     public void initialize() {
         this.movesAvailable = 2;
         this.movesUpAvailable = 2;
         this.buildsAvailable = 1;
         this.hasMovedUp = false;
         this.movedWorker = null;
-    }
-
-    public MoveAgain() {
-        initialize();
     }
 
     private MoveAgain(MoveAgain moveAgain, Game game) {

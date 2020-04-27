@@ -9,17 +9,17 @@ import java.util.List;
 
 public class PlayerRemovedResponse extends Message {
 
-    private final List<Cell> payload;
+    private final String payload;
     private final String outcome;
 
     @JsonCreator
-    public PlayerRemovedResponse(@JsonProperty("outcome")String outcome, @JsonProperty("payload") List<Cell> payload) {
+    public PlayerRemovedResponse(@JsonProperty("outcome")String outcome, @JsonProperty("payload") String payload) {
         super("broadcast", Content.PLAYER_REMOVED);
         this.outcome = outcome;
         this.payload = payload;
     }
 
-    public List<Cell> getPayload() {
+    public String getPayload() {
         return payload;
     }
 

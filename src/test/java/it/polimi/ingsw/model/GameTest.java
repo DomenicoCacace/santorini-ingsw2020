@@ -84,7 +84,7 @@ class GameTest {
 
     @Test
     void persistenceTest() throws IOException, IllegalActionException {
-        game.generateNextTurn();
+
         Worker currentWorker = game.getPlayers().get(0).getWorkers().get(0);
         Cell targetCell = game.getGameBoard().getCell(2, 3);
         Action moveAction = new MoveAction(currentWorker, targetCell);
@@ -99,7 +99,7 @@ class GameTest {
         try{
             moveAction.getValidation(game);
         } catch (IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
         assertEquals(game.getGameBoard().getCell(2,3), currentWorker.getPosition());
 
@@ -118,7 +118,7 @@ class GameTest {
         try{
             moveAction.getValidation(game);
         } catch (IllegalActionException e){
-            e.getMessage();
+            assertNotNull(e);
         }
     }
 
@@ -189,9 +189,9 @@ class GameTest {
         Game savedGame = game.saveStateToVariable(); //Save the current state in savedGame
 
         game.saveState(); //Uguali
-        String gameToSTring = objectMapper.writeValueAsString(game);
+        String gameToSTring = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(game);
         savedGame.saveState();
-        String savedGameToString = objectMapper.writeValueAsString(savedGame);
+        String savedGameToString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(savedGame);
 
         assertEquals(savedGameToString, gameToSTring);
 

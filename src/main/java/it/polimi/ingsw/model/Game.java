@@ -54,6 +54,8 @@ public class Game implements GameInterface {
     private Game(@JsonProperty("gameBoard") GameBoard gameBoard, @JsonProperty("players") List<Player> players, @JsonProperty("currentTurn") Turn currentTurn, @JsonProperty("nextTurn") Turn nextTurn, @JsonProperty("winner") Player winner, @JsonProperty("currentRuleset") RuleSetContext currentRuleSet) {
         this.gameBoard = gameBoard;
         this.players = players;
+        for (Player player : this.players)
+            //setCellsReferences(player);
         this.currentTurn = currentTurn;
         this.nextTurn = nextTurn;
         this.winner = winner;
@@ -70,7 +72,6 @@ public class Game implements GameInterface {
         for (Player player : game.players) {
             this.players.add(player.clonePlayer(this));
         }
-
         this.currentTurn = game.currentTurn.cloneTurn(this);
         this.nextTurn = game.nextTurn.cloneTurn(this);
         if (game.winner != null) {
@@ -145,7 +146,6 @@ public class Game implements GameInterface {
                     endGameListener.onEndGame(winner.getName());
                 }
             }
-
             this.saveState();
         } else
             throw new IllegalActionException();
@@ -212,7 +212,7 @@ public class Game implements GameInterface {
         players.remove(player);
 
         if(playerLostListener!=null)
-            playerLostListener.onPlayerLoss(buildBoardData());
+            playerLostListener.onPlayerLoss(player.getName());
 
 
         if (players.size() == 1) {
@@ -264,12 +264,13 @@ public class Game implements GameInterface {
         ObjectMapper objectMapper = new ObjectMapper();
         Game restoredGame = objectMapper.readerFor(Game.class).readValue(file);
         for (Player player : restoredGame.players) {
-            for (Worker worker : player.getWorkers()) { //TODO: we should do the opposite, use the occupiedBy in cell to set the position in Worker
+            /*for (Worker worker : player.getWorkers()) { //TODO: we should do the opposite, use the occupiedBy in cell to set the position in Worker
                 x = worker.getPosition().getCoordX();
                 y = worker.getPosition().getCoordY();
                 worker.setPosition(restoredGame.gameBoard.getCell(x, y));
                 restoredGame.getGameBoard().getCell(x, y).setOccupiedBy(worker);
             }
+             */
             player.setGame(restoredGame);
         }
         return restoredGame;

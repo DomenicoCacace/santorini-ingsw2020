@@ -35,7 +35,14 @@ public class Worker {
     }
 
     public Worker cloneWorker() {
-        return new Worker(this.position, this.color);
+        return new Worker(this.position.cloneCell(), this.color);
+    }
+
+    @Override
+    public String toString() {
+        return "Worker{" +
+                "color=" + color +
+                '}';
     }
 
     @Override

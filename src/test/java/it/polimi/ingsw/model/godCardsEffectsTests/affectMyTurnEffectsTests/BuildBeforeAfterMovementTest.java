@@ -25,7 +25,7 @@ class BuildBeforeAfterMovementTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException, AddingFailedException {
+    void SetUp() throws AddingFailedException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Prometeus", 2, ""));
         gods.get(0).setStrategy(new BuildBeforeAfterMovement());
@@ -56,7 +56,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveSameCellTest() throws IOException, IllegalActionException {
+    void correctBuildBeforeAfterMoveSameCellTest() throws IllegalActionException {
         List<PossibleActions> possibleActions = game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
         assertTrue(possibleActions.contains(PossibleActions.MOVE));
@@ -135,7 +135,8 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctMoveUpAndBuildTest() throws IOException, IllegalActionException {
+    void correctMoveUpAndBuildTest() throws IllegalActionException {
+
         toMoveCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
         moveAction.getValidation(game);
@@ -157,10 +158,12 @@ class BuildBeforeAfterMovementTest {
         assertEquals(currentWorker.getPosition(), game.getGameBoard().getCell(2, 1));
         assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
         assertEquals(buildingCell.getBlock(), Block.LEVEL1);
+
+
     }
 
     @Test
-    void cannotBuildThenMoveUpTest() throws IOException, IllegalActionException {
+    void cannotBuildThenMoveUpTest() throws IllegalActionException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -261,5 +264,7 @@ class BuildBeforeAfterMovementTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 2);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
+
+
 
 }

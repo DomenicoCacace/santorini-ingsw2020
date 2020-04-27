@@ -26,7 +26,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
         else this.movedWorker = null;
         chosenCell = game.getGameBoard().getCell(buildAgainDifferentCell.chosenCell);
     }
-
+    @Override
     public void initialize() {
         this.movesAvailable = 1;
         this.movesUpAvailable = 1;
@@ -36,7 +36,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
     }
 
     public BuildAgainDifferentCell() {
-        initialize();
+        super();
     }
 
     @Override

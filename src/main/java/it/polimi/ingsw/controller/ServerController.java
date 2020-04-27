@@ -152,6 +152,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     @Override
     public void onEndGame(String name) {
         parser.parseMessageFromServerToClient(new WinnerDeclaredResponse("OK", name));
+        parser.endGame();
     }
 
     @Override
@@ -166,8 +167,8 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     }
 
     @Override
-    public void onPlayerLoss(List<Cell> cells) {
-        parser.parseMessageFromServerToClient(new PlayerRemovedResponse("OK", cells));
+    public void onPlayerLoss(String username) {
+        parser.parseMessageFromServerToClient(new PlayerRemovedResponse("OK", username));
     }
 
     @Override

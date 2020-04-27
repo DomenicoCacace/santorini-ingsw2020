@@ -96,7 +96,7 @@ public class Cell implements Serializable {
                     ", coordY=" + coordY +
                     ", hasDome=" + hasDome +
                     ", is not empty" +
-                    // ", occupiedBy=" + occupiedBy +
+                    ", occupiedBy=" + occupiedBy +
                     ", block=" + block +
                     "}\n";
         }
