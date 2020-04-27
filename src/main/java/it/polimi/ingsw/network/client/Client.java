@@ -15,8 +15,8 @@ public class Client {
         System.out.println("Choose username");
         Scanner in = new Scanner(System.in);
         String username = in.nextLine();
-        System.out.println("IP");
-        String ip = in.nextLine();
+        String ip = "127.0.0.1"; // TODO: just for speed up socket testing, we will change this
+        System.out.println("IP: " + ip);
         Client client = new Client(username, ip);
         client.startConnection();
         //TODO: Here I ask the user if he wants to use the Cli/Gui

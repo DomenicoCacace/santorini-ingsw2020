@@ -60,8 +60,11 @@ public class MessageParser {
                     System.out.println("Login Succesfull");
                     // view.displayLobby;
                 } else {
-                    System.out.println("Error " + ((LoginResponse) message).getOutcome() + "\n resend Login" );
-                    client.setUsername(input.nextLine());
+                    System.out.println("Error " + ((LoginResponse) message).getOutcome() + "\n" );
+                    if(!((LoginResponse) message).getOutcome().equals("Match already started")) {
+                        System.out.println("Resend login");
+                        client.setUsername(input.nextLine());
+                    }
                     // view.displayLoginError(outcome);
                     // view.displayLogin;
                 }
@@ -93,7 +96,9 @@ public class MessageParser {
 
                     //view.displayPlayableInterface
                     //view.displayNonPlayableInterface(payload);
-                    client.setCurrentPlayer(((EndTurnResponse) message).getOutcome().equals(client.getUsername()));
+                    client.setCurrentPlayer(((EndTurnResponse) message).getPayload().equals(client.getUsername()));
+                    if(client.getUsername().equals(((EndTurnResponse) message).getPayload()))
+                        chooseWorker();
                 } else{
                     //view.displayIllegalTurnEndingError(outcome)
                     //view.displayBoard(oldBoard)
@@ -195,7 +200,6 @@ public class MessageParser {
                         System.out.println("Choose a correct action");
                         input = new Scanner(System.in);
                         inputString = input.nextLine();
-
                     } while (!compare(inputString, ((SelectWorkerResponse) message).getPossibleActions()));
 
                     messageToSend(inputString);
@@ -238,9 +242,9 @@ public class MessageParser {
                         System.out.println("No buildable cells available");
                     else
                         System.out.println(((BuildableCellsResponse) message).getPayload());
-                    System.out.println("Select the cell where you want to build");
                     int xBuild, yBuild;
                     do {
+                        System.out.println("Select the cell where you want to build");
                         input = new Scanner(System.in);
                         xBuild = input.nextInt();
                         yBuild = input.nextInt();
@@ -262,7 +266,7 @@ public class MessageParser {
                 do {
                     input = new Scanner(System.in);
                     block = input.nextLine();
-                    input.close();  //TODO: close input in all the scanners
+                    //TODO: close input in all the scanners
                 } while(!isValidBlock(block,((SelectBuildingCellResponse) message).getBlocks()));
 
                 String chosenBlock = block;

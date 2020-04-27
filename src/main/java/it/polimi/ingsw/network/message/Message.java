@@ -31,6 +31,7 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
         @JsonSubTypes.Type(value = WinnerDeclaredResponse.class, name = "WinnerDeclared"),
         @JsonSubTypes.Type(value = AddWorkerResponse.class, name = "AddWorker"),
         @JsonSubTypes.Type(value = BuildableCellsResponse.class, name = "BuildableCells"),
+        @JsonSubTypes.Type(value = SelectBuildingCellResponse.class, name = "SelectBuildingCell"),
         @JsonSubTypes.Type(value = EndTurnResponse.class, name = "EndTurn"),
         @JsonSubTypes.Type(value = LoginResponse.class, name = "Login"),
         @JsonSubTypes.Type(value = PlayerBuildResponse.class, name = "PlayerBuild"),
