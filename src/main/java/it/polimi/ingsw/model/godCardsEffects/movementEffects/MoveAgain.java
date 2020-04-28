@@ -26,6 +26,7 @@ public class MoveAgain extends MovementStrategy {
         this.buildsAvailable = 1;
         this.hasMovedUp = false;
         this.movedWorker = null;
+        this.startingCell = null;
     }
 
     private MoveAgain(MoveAgain moveAgain, Game game) {

@@ -36,6 +36,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         this.hasMovedUp = false;
         this.hasBuiltBefore = false;
         this.movedWorker = null;
+        this.builder = null;
     }
 
     public BuildBeforeAfterMovement() {

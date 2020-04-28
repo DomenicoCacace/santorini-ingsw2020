@@ -33,6 +33,7 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
         this.buildsAvailable = 2;
         this.hasMovedUp = false;
         this.movedWorker = null;
+        this.chosenCell = null;
     }
 
     public BuildAgainDifferentCell() {
