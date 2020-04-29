@@ -11,13 +11,13 @@ public class ChooseWorkerPositionRequest extends Message {
 
     private final List<Cell> payload;
 
-   @JsonCreator
+    @JsonCreator
     public ChooseWorkerPositionRequest(@JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, Content.WORKER_POSITION);
         this.payload = payload;
     }
 
-    public List<Cell> getPayload(){
-       return this.payload;
+    public List<Cell> getPayload() {
+        return this.payload;
     }
 }

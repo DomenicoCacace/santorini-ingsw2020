@@ -13,7 +13,7 @@ public class PlayerBuildResponse extends Message {
     private final String outcome;
 
     @JsonCreator
-    public PlayerBuildResponse(@JsonProperty("outcome")String outcome, @JsonProperty("username") String username,@JsonProperty("payload") List<Cell> payload) {
+    public PlayerBuildResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, Content.PLAYER_BUILD);
         this.outcome = outcome;
         if (outcome.equals("OK"))

@@ -10,7 +10,7 @@ public class WinnerDeclaredResponse extends Message {
     private final String outcome;
 
     @JsonCreator
-    public WinnerDeclaredResponse(@JsonProperty("outcome")String outcome, @JsonProperty("username") String payload) {
+    public WinnerDeclaredResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username") String payload) {
         super("broadcast", Content.WINNER_DECLARED);
         this.outcome = outcome;
         this.payload = payload;

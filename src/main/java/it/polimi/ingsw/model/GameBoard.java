@@ -46,7 +46,7 @@ public class GameBoard {
     public Cell getCell(int x, int y) {
         if (isInsideGameBoard(x, y))
             return board[x][y];
-        return null; //TODO: out of bound
+        return null; //out of bound, will never happen
     }
 
     public Cell getCell(Cell cell) {

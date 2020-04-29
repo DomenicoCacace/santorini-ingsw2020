@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.cli.utils;
 
 import it.polimi.ingsw.model.Cell;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
@@ -29,7 +30,7 @@ public class PrettyPrinter {
         this.boardSize = 5;
         this.rowToColumnRatio = 3;
         this.horizontalDashes = (maxPrintableSize() - boardSize - 1) / boardSize;
-        this.verticalDashes = horizontalDashes/rowToColumnRatio;
+        this.verticalDashes = horizontalDashes / rowToColumnRatio;
     }
 
     /**
@@ -43,9 +44,10 @@ public class PrettyPrinter {
     /**
      * Provides the game board
      * <p>
-     *     Provides a string containing the full board representation, starting from a list of {@linkplain Cell}s
-     *     containing ALL the cells of the game board (25 total cells by default)
+     * Provides a string containing the full board representation, starting from a list of {@linkplain Cell}s
+     * containing ALL the cells of the game board (25 total cells by default)
      * </p>
+     *
      * @param cells the game board, represented as an array of cells
      */
     public String getGameBoard(List<Cell> cells) {
@@ -53,14 +55,14 @@ public class PrettyPrinter {
 
         int center;
         for (Cell cell : cells) {
-            center = (horizontalDashes-cell.getBlock().toString().length())/2+2;
-            board.replace((maxPrintableSize()+1)*(2+cell.getCoordX()*(1+verticalDashes)) +
-                            cell.getCoordX()*(1+verticalDashes) + 1 +
-                            cell.getCoordY()*(horizontalDashes + 2) + center,
-                            (maxPrintableSize()+1)*(2+cell.getCoordX()*(1+verticalDashes)) +
-                            cell.getCoordX()*(1+verticalDashes) + 1 +
-                            cell.getCoordY()*(horizontalDashes + 2) + cell.getBlock().toString().length() + center,
-                            cell.getBlock().name());
+            center = (horizontalDashes - cell.getBlock().toString().length()) / 2 + 2;
+            board.replace((maxPrintableSize() + 1) * (2 + cell.getCoordX() * (1 + verticalDashes)) +
+                            cell.getCoordX() * (1 + verticalDashes) + 1 +
+                            cell.getCoordY() * (horizontalDashes + 2) + center,
+                    (maxPrintableSize() + 1) * (2 + cell.getCoordX() * (1 + verticalDashes)) +
+                            cell.getCoordX() * (1 + verticalDashes) + 1 +
+                            cell.getCoordY() * (horizontalDashes + 2) + cell.getBlock().toString().length() + center,
+                    cell.getBlock().name());
             if (cell.getOccupiedBy() != null) {
                 center = (horizontalDashes - cell.getOccupiedBy().getColor().toString().length()) / 2 + 2;
                 board.replace((maxPrintableSize() + 1) * (4 + cell.getCoordX() * (1 + verticalDashes)) +
@@ -77,6 +79,7 @@ public class PrettyPrinter {
 
     /**
      * Prints a given message
+     *
      * @param message the message to print
      */
     public void printMessage(String message) {
@@ -112,8 +115,9 @@ public class PrettyPrinter {
      * <br>
      * Could probably be organized better but it's not worth it, so we'll leave it as is.
      * </p>
+     *
      * @param gameBoard the board to build
-     * @param cells, the list of cells to highlight
+     * @param cells,    the list of cells to highlight
      * @return the board, as a string, with highlighted cells
      */
     public String highlightCells(List<Cell> gameBoard, List<Cell> cells) {
@@ -121,49 +125,49 @@ public class PrettyPrinter {
         StringBuilder toPrint = new StringBuilder(String.valueOf(board));
         for (Cell cell : cells) {
 
-            toPrint.setCharAt((maxPrintableSize()+1)*(1+cell.getCoordX()*(1+verticalDashes)) +
-                                 cell.getCoordX()*(1+verticalDashes) + 1 +
-                                cell.getCoordY()*(horizontalDashes + 2) + 1,
-                                TableDividers.TOP_LEFT_CORNER.getAsChar());
+            toPrint.setCharAt((maxPrintableSize() + 1) * (1 + cell.getCoordX() * (1 + verticalDashes)) +
+                            cell.getCoordX() * (1 + verticalDashes) + 1 +
+                            cell.getCoordY() * (horizontalDashes + 2) + 1,
+                    TableDividers.TOP_LEFT_CORNER.getAsChar());
 
             for (int i = 1; i < horizontalDashes; i++) {
-                toPrint.setCharAt((maxPrintableSize()+1)*(1+cell.getCoordX()*(1+verticalDashes)) +
-                                cell.getCoordX()*(1+verticalDashes) + 1 +
-                                cell.getCoordY()*(horizontalDashes + 2) + 1 + i,
+                toPrint.setCharAt((maxPrintableSize() + 1) * (1 + cell.getCoordX() * (1 + verticalDashes)) +
+                                cell.getCoordX() * (1 + verticalDashes) + 1 +
+                                cell.getCoordY() * (horizontalDashes + 2) + 1 + i,
                         TableDividers.HORIZONTAL_LINE.getAsChar());
 
-                toPrint.setCharAt((maxPrintableSize()+1)*(verticalDashes+cell.getCoordX()*(1+verticalDashes)) +
-                                cell.getCoordX()*(1+verticalDashes) +  verticalDashes +
-                                cell.getCoordY()*(horizontalDashes + 2) + 1 + i,
+                toPrint.setCharAt((maxPrintableSize() + 1) * (verticalDashes + cell.getCoordX() * (1 + verticalDashes)) +
+                                cell.getCoordX() * (1 + verticalDashes) + verticalDashes +
+                                cell.getCoordY() * (horizontalDashes + 2) + 1 + i,
                         TableDividers.HORIZONTAL_LINE.getAsChar());
             }
 
             for (int i = 2; i < verticalDashes; i++) {
-                toPrint.setCharAt((maxPrintableSize()+1)*(i+cell.getCoordX()*(1+verticalDashes)) +
-                                (cell.getCoordX())*(1+verticalDashes) + i +
-                                cell.getCoordY()*(horizontalDashes + 2) + 1,
+                toPrint.setCharAt((maxPrintableSize() + 1) * (i + cell.getCoordX() * (1 + verticalDashes)) +
+                                (cell.getCoordX()) * (1 + verticalDashes) + i +
+                                cell.getCoordY() * (horizontalDashes + 2) + 1,
                         TableDividers.VERTICAL_LINE.getAsChar());
 
-                toPrint.setCharAt((maxPrintableSize()+1)*(i+cell.getCoordX()*(1+verticalDashes)) +
-                                (cell.getCoordX())*(1+verticalDashes) + i +
-                                cell.getCoordY()*(horizontalDashes + 2) + horizontalDashes + 1,
+                toPrint.setCharAt((maxPrintableSize() + 1) * (i + cell.getCoordX() * (1 + verticalDashes)) +
+                                (cell.getCoordX()) * (1 + verticalDashes) + i +
+                                cell.getCoordY() * (horizontalDashes + 2) + horizontalDashes + 1,
                         TableDividers.VERTICAL_LINE.getAsChar());
             }
 
-            toPrint.setCharAt((maxPrintableSize()+1)*(1+cell.getCoordX()*(1+verticalDashes)) +
-                            cell.getCoordX()*(1+verticalDashes) + 2 +
-                            cell.getCoordY()*(horizontalDashes + 2) + horizontalDashes,
+            toPrint.setCharAt((maxPrintableSize() + 1) * (1 + cell.getCoordX() * (1 + verticalDashes)) +
+                            cell.getCoordX() * (1 + verticalDashes) + 2 +
+                            cell.getCoordY() * (horizontalDashes + 2) + horizontalDashes,
                     TableDividers.TOP_RIGHT_CORNER.getAsChar());
 
-            toPrint.setCharAt((maxPrintableSize()+1)*(verticalDashes+cell.getCoordX()*(1+verticalDashes)) +
-                                 cell.getCoordX()*(1+verticalDashes) + verticalDashes +
-                                cell.getCoordY()*(horizontalDashes + 2) + 1,
-                                TableDividers.BOTTOM_LEFT_CORNER.getAsChar());
+            toPrint.setCharAt((maxPrintableSize() + 1) * (verticalDashes + cell.getCoordX() * (1 + verticalDashes)) +
+                            cell.getCoordX() * (1 + verticalDashes) + verticalDashes +
+                            cell.getCoordY() * (horizontalDashes + 2) + 1,
+                    TableDividers.BOTTOM_LEFT_CORNER.getAsChar());
 
 
-            toPrint.setCharAt((maxPrintableSize()+1)*(verticalDashes+cell.getCoordX()*(1+verticalDashes)) +
-                            cell.getCoordX()*(1+verticalDashes) + 1 + verticalDashes +
-                            cell.getCoordY()*(horizontalDashes + 2) + horizontalDashes,
+            toPrint.setCharAt((maxPrintableSize() + 1) * (verticalDashes + cell.getCoordX() * (1 + verticalDashes)) +
+                            cell.getCoordX() * (1 + verticalDashes) + 1 + verticalDashes +
+                            cell.getCoordY() * (horizontalDashes + 2) + horizontalDashes,
                     TableDividers.BOTTOM_RIGHT_CORNER.getAsChar());
 
         }
@@ -182,6 +186,7 @@ public class PrettyPrinter {
      * <br>
      * The result is provided in terms of number of printable characters,
      * </p>
+     *
      * @return the minimum <i>dimension</i> of the console
      */
     private int maxPrintableSize() {
@@ -194,12 +199,13 @@ public class PrettyPrinter {
      * Given some dimensions (see {@linkplain #PrettyPrinter()}), this method creates a printable String, containing a
      * formatted game board.
      * </p>
+     *
      * @return a String containing the board
      */
     private String emptyGameBoard() {
         StringBuilder firstLine = new StringBuilder(TableDividers.TOP_LEFT_CORNER.toString());
         for (int cellNum = 0; cellNum < boardSize; cellNum++) {
-            for (int i = 0; i < (maxPrintableSize() - boardSize) / boardSize ; i++)
+            for (int i = 0; i < (maxPrintableSize() - boardSize) / boardSize; i++)
                 firstLine.append(TableDividers.HORIZONTAL_LINE.toString());
             firstLine.append(TableDividers.HORIZONTAL_T_DOWN.toString());
         }
@@ -207,32 +213,32 @@ public class PrettyPrinter {
         firstLine.append(TableDividers.TOP_RIGHT_CORNER.toString());
 
         String middleLine = firstLine.toString().replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                                              TableDividers.VERTICAL_LINE.toString());
+                TableDividers.VERTICAL_LINE.toString());
         middleLine = middleLine.replace(TableDividers.HORIZONTAL_T_DOWN.toString(),
-                                        TableDividers.VERTICAL_LINE.toString());
+                TableDividers.VERTICAL_LINE.toString());
         middleLine = middleLine.replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                                        TableDividers.VERTICAL_LINE.toString());
+                TableDividers.VERTICAL_LINE.toString());
         middleLine = middleLine.replace(TableDividers.TOP_RIGHT_CORNER.toString(),
-                                        TableDividers.VERTICAL_LINE.toString());
+                TableDividers.VERTICAL_LINE.toString());
         middleLine = middleLine.replace(TableDividers.HORIZONTAL_LINE.toString(), " ");
 
         String middleDividerLine = firstLine.toString().replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                                                    TableDividers.VERTICAL_T_RIGHT.toString());
+                TableDividers.VERTICAL_T_RIGHT.toString());
         middleDividerLine = middleDividerLine.replace(TableDividers.TOP_RIGHT_CORNER.toString(),
-                                                      TableDividers.VERTICAL_T_LEFT.toString());
+                TableDividers.VERTICAL_T_LEFT.toString());
         middleDividerLine = middleDividerLine.replace(TableDividers.HORIZONTAL_T_DOWN.toString(),
-                                                      TableDividers.CROSS.toString());
+                TableDividers.CROSS.toString());
 
         String lastLine = firstLine.toString().replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                                            TableDividers.BOTTOM_LEFT_CORNER.toString());
+                TableDividers.BOTTOM_LEFT_CORNER.toString());
         lastLine = lastLine.replace(TableDividers.TOP_RIGHT_CORNER.toString(),
-                                    TableDividers.BOTTOM_RIGHT_CORNER.toString());
+                TableDividers.BOTTOM_RIGHT_CORNER.toString());
         lastLine = lastLine.replace(TableDividers.HORIZONTAL_T_DOWN.toString(),
-                                    TableDividers.HORIZONTAL_T_UP.toString());
+                TableDividers.HORIZONTAL_T_UP.toString());
 
         StringBuilder toPrint = new StringBuilder(firstLine + "\n");
         for (int cellNum = 0; cellNum < boardSize; cellNum++) {
-            for (int i = 0; i < (maxPrintableSize() - boardSize - 1) / (rowToColumnRatio*boardSize); i++)
+            for (int i = 0; i < (maxPrintableSize() - boardSize - 1) / (rowToColumnRatio * boardSize); i++)
                 toPrint.append(middleLine).append("\n");
 
             toPrint.append(middleDividerLine).append("\n");
@@ -241,7 +247,7 @@ public class PrettyPrinter {
         toPrint.append(lastLine).append("\n");
 
 
-       return toPrint.toString();
+        return toPrint.toString();
     }
 
     /**
@@ -250,13 +256,14 @@ public class PrettyPrinter {
      * Since the CLI uses some ASCII arts that might be difficult to recreate, we decided to include them in the
      * resources instead of generating them every time.
      * </p>
+     *
      * @param filepath the file to convert, as an {@linkplain InputStream}
      * @return the String representation of the file
      */
     private String fileToString(InputStream filepath) {
         StringBuilder string = new StringBuilder();
         Scanner reader = new Scanner(filepath);
-        while(reader.hasNextLine())
+        while (reader.hasNextLine())
             string.append(reader.nextLine()).append("\n");
         reader.close();
         return string.toString();

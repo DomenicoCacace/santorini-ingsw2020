@@ -13,7 +13,7 @@ public class BuildableCellsResponse extends Message {
     private final String outcome;
 
     @JsonCreator
-    public BuildableCellsResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username")String username,@JsonProperty("payload") List<Cell> payload) {
+    public BuildableCellsResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, Content.BUILDABLE_CELLS);
         this.outcome = outcome;
         if (outcome.equals("OK"))

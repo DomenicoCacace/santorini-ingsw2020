@@ -12,7 +12,7 @@ public class GameData {
     private final TurnData currentTurn;
 
     @JsonCreator
-    public GameData(@JsonProperty("board") List<Cell> board,@JsonProperty("players") List<PlayerData> players,@JsonProperty("currentTurn") TurnData currentTurn) {
+    public GameData(@JsonProperty("board") List<Cell> board, @JsonProperty("players") List<PlayerData> players, @JsonProperty("currentTurn") TurnData currentTurn) {
         this.board = board;
         this.players = players;
         this.currentTurn = currentTurn;

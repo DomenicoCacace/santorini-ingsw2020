@@ -8,7 +8,7 @@ public class LoginResponse extends Message {
     private final String outcome;
 
     @JsonCreator
-    public LoginResponse(@JsonProperty("outcome")String outcome,@JsonProperty("username") String username) {
+    public LoginResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username") String username) {
         super(username, Content.LOGIN);
         this.outcome = outcome;
     }

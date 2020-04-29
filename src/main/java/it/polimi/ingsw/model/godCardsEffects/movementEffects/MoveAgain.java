@@ -19,16 +19,6 @@ public class MoveAgain extends MovementStrategy {
         super();
     }
 
-    @Override
-    public void initialize() {
-        this.movesAvailable = 2;
-        this.movesUpAvailable = 2;
-        this.buildsAvailable = 1;
-        this.hasMovedUp = false;
-        this.movedWorker = null;
-        this.startingCell = null;
-    }
-
     private MoveAgain(MoveAgain moveAgain, Game game) {
         this.game = game;
         this.movesAvailable = moveAgain.getMovesAvailable();
@@ -39,6 +29,16 @@ public class MoveAgain extends MovementStrategy {
             this.movedWorker = game.getGameBoard().getCell(moveAgain.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
         this.startingCell = game.getGameBoard().getCell(moveAgain.startingCell);
+    }
+
+    @Override
+    public void initialize() {
+        this.movesAvailable = 2;
+        this.movesUpAvailable = 2;
+        this.buildsAvailable = 1;
+        this.hasMovedUp = false;
+        this.movedWorker = null;
+        this.startingCell = null;
     }
 
     @Override

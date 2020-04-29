@@ -8,14 +8,12 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;
 
-import java.io.IOException;
-
 public class BuildAction extends Action {
 
     protected final Block targetBlock;
 
     @JsonCreator
-    public BuildAction(@JsonProperty("targetWorker")Worker targetWorker,@JsonProperty("targetCell") Cell targetCell,@JsonProperty("targetBlock") Block targetBlock) {
+    public BuildAction(@JsonProperty("targetWorker") Worker targetWorker, @JsonProperty("targetCell") Cell targetCell, @JsonProperty("targetBlock") Block targetBlock) {
         super(targetWorker, targetCell);
         this.targetBlock = targetBlock;
     }

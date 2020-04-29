@@ -12,7 +12,7 @@ public class ChooseInitialGodsRequest extends Message {
     private final List<GodData> gods;
 
     @JsonCreator
-    public ChooseInitialGodsRequest(@JsonProperty("username") String username,@JsonProperty("gods") List<GodData> gods) {
+    public ChooseInitialGodsRequest(@JsonProperty("username") String username, @JsonProperty("gods") List<GodData> gods) {
         super(username, Content.CHOOSE_INITIAL_GODS);
         this.gods = gods;
     }

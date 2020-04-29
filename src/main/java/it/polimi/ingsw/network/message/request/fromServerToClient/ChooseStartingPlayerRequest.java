@@ -11,7 +11,7 @@ public class ChooseStartingPlayerRequest extends Message {
     private final List<String> payload;
 
     @JsonCreator
-    public ChooseStartingPlayerRequest(@JsonProperty("username")String username, @JsonProperty("payload")List<String> payload) {
+    public ChooseStartingPlayerRequest(@JsonProperty("username") String username, @JsonProperty("payload") List<String> payload) {
         super(username, Content.STARTING_PLAYER);
         this.payload = payload;
     }

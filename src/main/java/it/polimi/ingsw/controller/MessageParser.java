@@ -10,13 +10,11 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGod
 import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.network.server.Server;
 
-import java.io.IOException;
-
 public class MessageParser {
 
+    private final Server server;
     private Lobby lobby;
     private ServerController serverController;
-    private final Server server;
 
     public MessageParser(Server server) {
         this.server = server;
@@ -84,7 +82,7 @@ public class MessageParser {
         server.send(message.getUsername(), message);
     }
 
-    public void endGame(){
+    public void endGame() {
         server.endGame();
     }
 

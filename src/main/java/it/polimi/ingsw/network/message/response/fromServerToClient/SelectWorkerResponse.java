@@ -14,16 +14,16 @@ public class SelectWorkerResponse extends Message {
     private final Worker selectedWorker;
 
     @JsonCreator
-    public SelectWorkerResponse(@JsonProperty("outcome")String outcome, @JsonProperty("username") String username,
+    public SelectWorkerResponse(@JsonProperty("outcome") String outcome, @JsonProperty("username") String username,
                                 @JsonProperty("possible actions") List<PossibleActions> possibleActions, @JsonProperty("SelectedWorker") Worker selectedWorker) {
         super(username, Content.SELECT_WORKER);
         this.outcome = outcome;
-        if(outcome.equals("OK")) {
+        if (outcome.equals("OK")) {
             this.possibleActions = possibleActions;
             this.selectedWorker = selectedWorker;
         } else {
             this.possibleActions = null;
-            this.selectedWorker=null;
+            this.selectedWorker = null;
         }
     }
 

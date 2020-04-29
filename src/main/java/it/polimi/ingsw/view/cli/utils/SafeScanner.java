@@ -5,7 +5,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class SafeScanner {
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public SafeScanner(InputStream inputStream) {
         scanner = new Scanner(inputStream);

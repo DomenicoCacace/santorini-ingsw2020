@@ -42,10 +42,10 @@ public class BuildDome extends BuildingStrategy {
     }
 
     @Override
-    public List<Block> getBlocks(Cell selectedCell){
+    public List<Block> getBlocks(Cell selectedCell) {
         List<Block> buildingBlocks = new ArrayList<>();
-        buildingBlocks.add(Block.values()[selectedCell.getBlock().getHeight()+1]);
-        if(buildingBlocks.get(0) != Block.DOME)
+        buildingBlocks.add(Block.values()[selectedCell.getBlock().getHeight() + 1]);
+        if (buildingBlocks.get(0) != Block.DOME)
             buildingBlocks.add(Block.DOME);
         return buildingBlocks;
     }

@@ -7,7 +7,7 @@ import it.polimi.ingsw.network.message.Message;
 public class LoginRequest extends Message {
 
     @JsonCreator
-    public LoginRequest(@JsonProperty("username")String username) {
+    public LoginRequest(@JsonProperty("username") String username) {
         super(username, Content.LOGIN);
     }
 }

@@ -9,7 +9,7 @@ public class SelectWorkerRequest extends Message {
     private final Worker targetWorker;
 
     @JsonCreator
-    public SelectWorkerRequest(@JsonProperty("username")String username, @JsonProperty("targetWorker") Worker targetWorker) {
+    public SelectWorkerRequest(@JsonProperty("username") String username, @JsonProperty("targetWorker") Worker targetWorker) {
         super(username, Content.SELECT_WORKER);
         this.targetWorker = targetWorker;
     }

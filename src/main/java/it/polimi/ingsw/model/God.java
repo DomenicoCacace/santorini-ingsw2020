@@ -8,9 +8,9 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "GodId", scope = God.class)
 public class God {
-    private RuleSetStrategy strategy;
     private final String name;
     private final int workersNumber;
+    private RuleSetStrategy strategy;
     private String descriptionStrategy;
 
     private God(God god, Game game) {

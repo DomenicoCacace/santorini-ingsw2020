@@ -11,19 +11,17 @@ import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStarting
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResponse;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Lobby {
     private final List<String> userNames;
-    private Map<String, Player> playerMap = new LinkedHashMap<>();
     private final MessageParser parser;
-    private List<GodData> chosenGods = new ArrayList<>();
     private final Map<GodData, God> godsMap = new HashMap<>();
+    private Map<String, Player> playerMap = new LinkedHashMap<>();
+    private List<GodData> chosenGods = new ArrayList<>();
 
     public Lobby(MessageParser parser, List<String> userNames) throws IOException {
         this.parser = parser;
@@ -48,18 +46,17 @@ public class Lobby {
         playerMap.put(username, new Player(username, godsMap.get(god), Color.values()[playerMap.keySet().size()]));
         chosenGods = chosenGods.stream().filter(chosenGod -> !finalGod.getName().equals(chosenGod.getName())).collect(Collectors.toList());
         System.out.println("gods to choose  " + chosenGods);
-        if(playerMap.values().size() == userNames.size()) {
+        if (playerMap.values().size() == userNames.size()) {
             parser.parseMessageFromServerToClient(new ChooseStartingPlayerRequest(userNames.get(0), userNames));
-        }
-        else askToChooseGod(userNames.get((userNames.indexOf(username) + 1) % userNames.size()));
+        } else askToChooseGod(userNames.get((userNames.indexOf(username) + 1) % userNames.size()));
     }
 
     public void selectStartingPlayer(String startingPlayer) {
         List<String> keys = new LinkedList<>(playerMap.keySet());
         int position = new ArrayList<>(playerMap.keySet()).indexOf(startingPlayer);
-        Collections.rotate(keys, (keys.size()-position)%keys.size());
+        Collections.rotate(keys, (keys.size() - position) % keys.size());
         Map<String, Player> tmpMap = new LinkedHashMap<>();
-        for(String name : keys){
+        for (String name : keys) {
             tmpMap.put(name, playerMap.get(name));
         }
         playerMap = tmpMap;

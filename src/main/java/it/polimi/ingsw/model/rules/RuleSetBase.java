@@ -44,14 +44,6 @@ public class RuleSetBase implements RuleSetStrategy {
         initialize();
     }
 
-    protected void initialize() {
-        this.movesAvailable = 1;
-        this.movesUpAvailable = 1;
-        this.buildsAvailable = 1;
-        this.hasMovedUp = false;
-        this.movedWorker = null;
-    }
-
     public RuleSetBase(RuleSetStrategy ruleSetBase, Game game) {
         this.game = game;
         this.movesAvailable = ruleSetBase.getMovesAvailable();
@@ -63,6 +55,14 @@ public class RuleSetBase implements RuleSetStrategy {
         else this.movedWorker = null;
     }
 
+    protected void initialize() {
+        this.movesAvailable = 1;
+        this.movesUpAvailable = 1;
+        this.buildsAvailable = 1;
+        this.hasMovedUp = false;
+        this.movedWorker = null;
+    }
+
     @Override
     public int getMovesAvailable() {
         return movesAvailable;
@@ -71,6 +71,11 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public int getMovesUpAvailable() {
         return movesUpAvailable;
+    }
+
+    @Override
+    public void setMovesUpAvailable(int num) {
+        this.movesUpAvailable = num;
     }
 
     @Override
@@ -94,14 +99,9 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public void setMovesUpAvailable(int num) {
-        this.movesUpAvailable = num;
-    }
-
-    @Override
     public List<Block> getBlocks(Cell selectedCell) {
         List<Block> buildingBlocks = new ArrayList<>();
-        buildingBlocks.add(Block.values()[selectedCell.getBlock().getHeight()+1]);
+        buildingBlocks.add(Block.values()[selectedCell.getBlock().getHeight() + 1]);
         return buildingBlocks;
     }
 
@@ -117,16 +117,14 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
-    public List<PossibleActions> getPossibleActions(Worker worker){
+    public List<PossibleActions> getPossibleActions(Worker worker) {
         List<PossibleActions> possibleActions = new ArrayList<>();
-        if(getWalkableCells(worker).size() > 0 ) {
+        if (getWalkableCells(worker).size() > 0) {
             possibleActions.add(PossibleActions.MOVE);
             possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
-        }
-        else if (getBuildableCells(worker).size() > 0){
+        } else if (getBuildableCells(worker).size() > 0) {
             possibleActions.add(PossibleActions.BUILD);
-        }
-        else
+        } else
             possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
         return possibleActions;
 

@@ -28,6 +28,11 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         this.hasBuiltBefore = buildBeforeAfterMovement.hasBuiltBefore;
         this.builder = game.getGameBoard().getCell(buildBeforeAfterMovement.builder.getPosition()).getOccupiedBy();
     }
+
+    public BuildBeforeAfterMovement() {
+        super();
+    }
+
     @Override
     public void initialize() {
         this.movesAvailable = 1;
@@ -37,10 +42,6 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         this.hasBuiltBefore = false;
         this.movedWorker = null;
         this.builder = null;
-    }
-
-    public BuildBeforeAfterMovement() {
-        super();
     }
 
     @Override
@@ -57,11 +58,11 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
             } else if (movesAvailable == 0 && worker == builder) { //this is useful for the view: highlighting the correct cells
                 possibleActions = super.getPossibleActions(worker);
             } else if (movesAvailable == 1 && !hasBuiltBefore) {
-                if(buildableCellsBeforeMoving(worker).size()>0)
+                if (buildableCellsBeforeMoving(worker).size() > 0)
                     possibleActions.add(PossibleActions.BUILD);
                 possibleActions.add(PossibleActions.MOVE);
                 possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
-            } else if(movesAvailable == 1 && worker==builder){
+            } else if (movesAvailable == 1 && worker == builder) {
                 possibleActions.add(PossibleActions.MOVE);
             }
         }

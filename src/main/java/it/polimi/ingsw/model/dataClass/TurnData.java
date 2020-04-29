@@ -20,7 +20,7 @@ public class TurnData {
     }
 
     @JsonGetter
-    public PlayerData getCurrentPlayer(){
+    public PlayerData getCurrentPlayer() {
         return currentPlayer;
     }
 }

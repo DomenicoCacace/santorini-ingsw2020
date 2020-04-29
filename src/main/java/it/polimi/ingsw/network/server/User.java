@@ -23,7 +23,7 @@ public class User {
         virtualClient.notify(message);
     }
 
-    public void closeConnection(){
+    public void closeConnection() {
         virtualClient.closeConnection();
     }
 

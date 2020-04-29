@@ -18,18 +18,19 @@ import java.util.logging.Logger;
 
 
 public class Server extends Thread {
+    private static final Logger logger = Logger.getLogger("server");
+    private static final int MAX_POSSIBLE_CONNECTIONS = 3;
     private final int socketPort;
+    private final Map<String, User> usernames;
+    private final MessageParser messageParser;
     private Socket newClientConnection;
     private int MAX_PLAYER_NUMBER;
     private Lobby lobby;
-    private final Map<String, User> usernames;
-    private final MessageParser messageParser;
     private ServerSocket server;
-    private static final Logger logger = Logger.getLogger("server");
 
     public Server() {
         this.usernames = new LinkedHashMap<>();
-        this.socketPort = 4321;
+        this.socketPort = 4321; //FIXME: get from file
         this.messageParser = new MessageParser(this);
     }
 
@@ -75,7 +76,7 @@ public class Server extends Thread {
 
 
     public synchronized void addClient(VirtualClient virtualClient) throws IOException {        // Login of the player
-        if (usernames.size() < 3 && lobby == null) {
+        if (usernames.size() < MAX_POSSIBLE_CONNECTIONS && lobby == null) {
             if (usernames.containsKey(virtualClient.getUsername()) || virtualClient.getUsername().equals("broadcast")) {
                 virtualClient.notify(new LoginResponse("Invalid username!", null));
             } else {
@@ -90,7 +91,7 @@ public class Server extends Thread {
                     lobby = new Lobby(messageParser, names);
                 }
             }
-        } else{
+        } else {
             virtualClient.notify(new LoginResponse("Match already started", null));
         }
     }
@@ -113,22 +114,31 @@ public class Server extends Thread {
     }
 
     public void onDisconnect(String username) {
-        //TODO: End match or Save match and restart once the client reconnected (persistence even when the client crashes)
         System.out.println(username + " removed");
         usernames.get(username).closeConnection();
         this.usernames.remove(username);
+
+        if (lobby == null) {
+            if (usernames.size() > 0) {
+                Message message = new ChooseNumberOfPlayersRequest(usernames.keySet().toArray()[0].toString());
+                send(usernames.keySet().toArray()[0].toString(), message);
+            }
+        } else {
+            endGame();
+        }
+
     }
 
     public synchronized void handleMessage(Message message) throws IOException, InterruptedException {
         if (message.getContent() == Message.Content.CHOOSE_PLAYER_NUMBER) {
             if (((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers() == 2 || ((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers() == 3) {
                 MAX_PLAYER_NUMBER = ((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers();
-                if(usernames.values().size() == MAX_PLAYER_NUMBER){
+                if (usernames.values().size() == MAX_PLAYER_NUMBER) {
                     List<String> names = new ArrayList<>(usernames.keySet());
                     lobby = new Lobby(messageParser, names);
-                } else if (usernames.values().size() > MAX_PLAYER_NUMBER){
+                } else if (usernames.values().size() > MAX_PLAYER_NUMBER) {
                     List<String> names = new ArrayList<>(usernames.keySet());
-                    for(int i = MAX_PLAYER_NUMBER; i<names.size(); i++ ){
+                    for (int i = MAX_PLAYER_NUMBER; i < names.size(); i++) {
                         onDisconnect(names.get(i));
                     }
                     names = new ArrayList<>(usernames.keySet());
@@ -140,10 +150,12 @@ public class Server extends Thread {
         } else messageParser.parseMessageFromClientToServer(message);
     }
 
-    public void endGame(){
+    public void endGame() {
         List<String> names = new ArrayList<>(usernames.keySet());
-        for(String name: names){
-            onDisconnect(name);
+        for (String name : names) {
+            usernames.get(name).closeConnection();
         }
+        MAX_PLAYER_NUMBER = 0;
+        lobby = null;
     }
 }

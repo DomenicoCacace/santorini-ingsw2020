@@ -51,16 +51,9 @@ public class Message {
 
 
     @JsonCreator
-    public Message(@JsonProperty("username") String username,@JsonProperty("content") Content content) {
+    public Message(@JsonProperty("username") String username, @JsonProperty("content") Content content) {
         this.username = username;
         this.content = content;
-    }
-
-    public enum Content {
-        LOGIN, PLAYER_MOVE, PLAYER_BUILD, SELECT_BUILDING_CELL,
-        END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, STARTING_PLAYER, WINNER_DECLARED,
-        PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER,
-        WALKABLE_CELLS, BUILDABLE_CELLS, CHOSEN_GODS, GAME_START, WORKER_POSITION
     }
 
     public String getUsername() {
@@ -69,5 +62,12 @@ public class Message {
 
     public Content getContent() {
         return content;
+    }
+
+    public enum Content {
+        LOGIN, PLAYER_MOVE, PLAYER_BUILD, SELECT_BUILDING_CELL,
+        END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, STARTING_PLAYER, WINNER_DECLARED,
+        PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER,
+        WALKABLE_CELLS, BUILDABLE_CELLS, CHOSEN_GODS, GAME_START, WORKER_POSITION
     }
 }

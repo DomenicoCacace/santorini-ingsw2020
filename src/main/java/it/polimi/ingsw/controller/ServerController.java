@@ -16,7 +16,7 @@ import java.util.Map;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, EndGameListener, BuildingBlocksListener,
-                                         EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener  {
+        EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener {
 
     private final GameInterface game;
     private final Map<String, PlayerInterface> playerMap;
@@ -34,22 +34,24 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         game.setMoveActionListener(this);
         game.setPlayerLostListener(this);
         playerMap.values().forEach(playerInterface
-                -> {playerInterface.setAddWorkerListener(this);
-                    playerInterface.setBuildableCellsListener(this);
-                    playerInterface.setWalkableCellsListener(this);
-                    playerInterface.setSelectWorkerListener(this);
-                    playerInterface.setBuildingBlocksListener(this);});
+                -> {
+            playerInterface.setAddWorkerListener(this);
+            playerInterface.setBuildableCellsListener(this);
+            playerInterface.setWalkableCellsListener(this);
+            playerInterface.setSelectWorkerListener(this);
+            playerInterface.setBuildingBlocksListener(this);
+        });
     }
 
     public void addWorker(String username, Cell cell) {
         try {
             playerMap.get(username).addWorker(cell);
 
-            if(!playerMap.get(username).allWorkersArePlaced())
+            if (!playerMap.get(username).allWorkersArePlaced())
                 parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(username, game.buildBoardData()));
             else {
                 cont++;
-                if(cont < playerMap.values().size()){
+                if (cont < playerMap.values().size()) {
                     List<String> usernames = new ArrayList<>(playerMap.keySet());
                     parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(usernames.get(cont), game.buildBoardData()));
                 } else parser.parseMessageFromServerToClient(new GameStartResponse("OK", game.buildGameData()));
@@ -57,7 +59,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         } catch (AddingFailedException e) {
             System.out.println("Adding failed");
             parser.parseMessageFromServerToClient(new AddWorkerResponse("Adding failed", username, game.buildBoardData()));
-            parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(username, game.buildBoardData())); //TODO: this should be managed by the view when add_worker fails
+            parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(username, game.buildBoardData()));
         }
     }
 
@@ -88,10 +90,10 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         }
     }
 
-    public void selectBuildingCell(String username, Cell selectedCell){
+    public void selectBuildingCell(String username, Cell selectedCell) {
         try {
             playerMap.get(username).obtainBuildingBlocks(selectedCell);
-        } catch (IllegalActionException e){
+        } catch (IllegalActionException e) {
             parser.parseMessageFromServerToClient(new PlayerBuildResponse("Illegal build", username, game.buildBoardData()));
         }
     }
@@ -146,7 +148,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onBlocksObtained(String name, List<Block> blocks) {
-        parser.parseMessageFromServerToClient(new SelectBuildingCellResponse(name ,blocks));
+        parser.parseMessageFromServerToClient(new SelectBuildingCellResponse(name, blocks));
     }
 
     @Override

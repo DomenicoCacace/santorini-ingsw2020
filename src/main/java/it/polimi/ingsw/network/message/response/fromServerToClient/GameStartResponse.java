@@ -12,7 +12,7 @@ public class GameStartResponse extends Message {
     private final String outcome;
 
     @JsonCreator
-    public GameStartResponse(@JsonProperty("outcome") String outcome,@JsonProperty("payload") GameData payload) {
+    public GameStartResponse(@JsonProperty("outcome") String outcome, @JsonProperty("payload") GameData payload) {
         super("broadcast", Content.GAME_START);
         this.outcome = outcome;
         if (outcome.equals("OK"))

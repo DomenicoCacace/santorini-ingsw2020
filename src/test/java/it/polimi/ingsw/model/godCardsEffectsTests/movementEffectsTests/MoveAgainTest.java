@@ -158,31 +158,6 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotMoveAfterWinningTest() throws IllegalActionException {
-        worker2.getPosition().setBlock(Block.LEVEL2);
-        targetCell = game.getGameBoard().getCell(4, 1);
-        moveAction = new MoveAction(worker2, targetCell);
-        moveAction.getValidation(game);
-
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker2);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
-        assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker2.getPosition(), targetCell);
-        assertEquals(game.getWinner(), players.get(0));
-
-        targetCell = game.getGameBoard().getCell(4, 2);
-        moveAction = new MoveAction(worker2, targetCell);
-        moveAction.getValidation(game);
-
-    /*TODO: we need the lobby to test this (game must finish after first move)
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
-        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker2.getPosition(), game.getGameBoard().getCell(4,1));
-    */
-
-    }
-
-    @Test
     void endTurnAutomaticallyAfterBuildTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);

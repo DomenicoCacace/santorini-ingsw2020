@@ -61,7 +61,7 @@ public class CLI implements ViewInterface {
             if (chosenWorker.getOccupiedBy() != null)
                 showErrorMessage("There's no worker in that cell!");
             else
-                return  chosenWorker;
+                return chosenWorker;
         }
     }
 
@@ -70,13 +70,12 @@ public class CLI implements ViewInterface {
         if (walkableCells.size() == 0) {
             showErrorMessage("No walkable cells available.");
             return null;//TODO: make the player choose another action(?)
-        }
-        else {
+        } else {
             System.out.println(printer.highlightCells(gameBoard, walkableCells));   //TODO: enhance
             while (true) {
                 System.out.println("Choose a cell to step on:");
                 Cell chosenCell = chooseCell();
-                for (Cell cell: walkableCells) {
+                for (Cell cell : walkableCells) {
                     if (cell.getCoordX() == chosenCell.getCoordX() && cell.getCoordY() == chosenCell.getCoordY())
                         /* cannot use the .equals() method, as it checks other attributes too*/
                         return cell;
@@ -91,8 +90,7 @@ public class CLI implements ViewInterface {
         if (buildableCells.size() == 0) {
             showErrorMessage("No buildable cells available.");
             return null;//TODO: make the player choose another action(?)
-        }
-        else {
+        } else {
             System.out.println(printer.highlightCells(gameBoard, buildableCells));   //TODO: enhance
             while (true) {  //TODO: might extract private method for move/buildAction
                 System.out.println("Choose a cell to build on:");
@@ -127,6 +125,8 @@ public class CLI implements ViewInterface {
     @Override
     public void showErrorMessage(String error) {
         printer.printError(error);   //TODO: enhance
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
     @Override
@@ -183,8 +183,7 @@ public class CLI implements ViewInterface {
                 if (chosenGods.size() <= i && checker.size() < chosenGods.size()) {   // the god was not found, hence not added to the list
                     showErrorMessage("God choice not valid!");
                     i--;
-                }
-                else {
+                } else {
                     showSuccessMessage("Nice!");
                 }
             }

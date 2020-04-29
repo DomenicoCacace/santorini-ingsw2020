@@ -15,7 +15,7 @@ public class PlayerBuildRequest extends Message {
 
     @JsonCreator
     public PlayerBuildRequest(@JsonProperty("username") String username, @JsonProperty("targetCell") Cell targetCell,
-                              @JsonProperty("targetBlock") Block targetBlock, @JsonProperty ("targetWorker") Worker targetWorker) {
+                              @JsonProperty("targetBlock") Block targetBlock, @JsonProperty("targetWorker") Worker targetWorker) {
 
         super(username, Content.PLAYER_BUILD);
         this.targetCell = targetCell;

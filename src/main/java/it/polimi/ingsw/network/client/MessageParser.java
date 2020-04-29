@@ -1,8 +1,9 @@
 package it.polimi.ingsw.network.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.Block;
+import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.PossibleActions;
+import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
@@ -16,37 +17,20 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartin
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import java.util.List;
 
 public class MessageParser {
-    //FIXME: IMO chosenSize, gameboard, selectedWorker, selectedCell and view should be client attributes, accessed by getters
     private final Client client;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ViewInterface view;
     private int chosenSize;
-    private final Map<String, GodData> godsMap;
     private List<Cell> gameboard;
     private Worker selectedWorker;
     private Cell selectedCell;
-    private ViewInterface view;
 
     public MessageParser(Client client) {
         this.client = client;
-        this.godsMap = new HashMap<>();
-        //I need a map to link the name of the god with his godData (we can use lambdas with filter instead)
-        List<God> gods  = new ArrayList<>();
-        try {
-            gods =  objectMapper.readerFor(new TypeReference<List<God>>() {
-            }).readValue(this.getClass().getResourceAsStream("GodsConfigFile.json")); // FIXME should not be used
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        gods.forEach(god ->{
-            godsMap.put(god.getName(), god.buildDataClass());
-        });
-
-        this.view = client.getView();  //FIXME: testing purposes only
+        this.view = client.getView();
     }
 
     public void parseMessageFromServerToClient(Message message) {
@@ -59,7 +43,7 @@ public class MessageParser {
                     // view.displayLobby;
                 } else {
                     view.showErrorMessage("Error " + ((LoginResponse) message).getOutcome());
-                    if(!((LoginResponse) message).getOutcome().equals("Match already started")) {   // TODO: define constant value
+                    if (!((LoginResponse) message).getOutcome().equals("Match already started")) {   // TODO: define constant value
                         view.showErrorMessage("Login error, please retry");
                         view.loginScreen();
                     }
@@ -68,7 +52,7 @@ public class MessageParser {
                 }
                 break;
 
-           // Move action response
+            // Move action response
             case PLAYER_MOVE:
                 if (((PlayerMoveResponse) message).getOutcome().equals("OK"))
                     gameboard = ((PlayerMoveResponse) message).getPayload();
@@ -84,9 +68,9 @@ public class MessageParser {
                 if (((PlayerBuildResponse) message).getOutcome().equals("OK"))
                     gameboard = ((PlayerBuildResponse) message).getPayload();
                     //payload to be saved internally on the view
-                 else
+                else
                     view.showErrorMessage(((PlayerBuildResponse) message).getOutcome());
-                    //view.displayBoard(oldBoard)
+                //view.displayBoard(oldBoard)
 
                 view.showGameBoard(gameboard);
                 break;
@@ -97,9 +81,9 @@ public class MessageParser {
                     //view.displayPlayableInterface
                     //view.displayNonPlayableInterface(payload);
                     client.setCurrentPlayer(((EndTurnResponse) message).getPayload().equals(client.getUsername()));
-                    if(client.getUsername().equals(((EndTurnResponse) message).getPayload()))   //if currentPlayer
+                    if (client.getUsername().equals(((EndTurnResponse) message).getPayload()))   //if currentPlayer
                         beginTurn();
-                } else{
+                } else {
                     view.showErrorMessage("You can't end your turn now.");
                     //view.displayBoard(oldBoard)
                 }
@@ -112,7 +96,7 @@ public class MessageParser {
 
                 // without taking the cell from the received payload we can overwrite cells, and that's bad.
                 Message addWorkerRequest = new AddWorkerRequest(client.getUsername(),
-                        ((ChooseWorkerPositionRequest) message).getPayload().get(5*workerCell.getCoordX() + workerCell.getCoordY()));
+                        ((ChooseWorkerPositionRequest) message).getPayload().get(5 * workerCell.getCoordX() + workerCell.getCoordY()));
                 client.sendMessage(addWorkerRequest);
                 client.setCurrentPlayer(false);
                 break;
@@ -122,8 +106,7 @@ public class MessageParser {
                 if (((AddWorkerResponse) message).getOutcome().equals("OK")) {
                     view.showSuccessMessage("Worker placed!");
                     view.showGameBoard(((AddWorkerResponse) message).getPayload());
-                }
-                else {
+                } else {
                     view.showErrorMessage("Can't place a worker in that cell :(");
                     //view.showErrorMessage(((AddWorkerResponse) message).getOutcome());
                 }
@@ -132,6 +115,7 @@ public class MessageParser {
             // Select gods for the match, request
             case CHOOSE_INITIAL_GODS:
                 client.setCurrentPlayer(true);
+
                 List<GodData> chosenGods = view.chooseGameGods(((ChooseInitialGodsRequest) message).getGods(), chosenSize);
                 Message chooseInitialGods = new ChooseInitialGodsResponse(client.getUsername(), chosenGods);
                 client.sendMessage(chooseInitialGods);
@@ -146,7 +130,7 @@ public class MessageParser {
 
             // Player removed, received by all users
             case PLAYER_REMOVED: //broadcast
-                if(((PlayerRemovedResponse)message).getPayload().equals(client.getUsername()))
+                if (((PlayerRemovedResponse) message).getPayload().equals(client.getUsername()))
                     view.showErrorMessage("You lost");
                 else {
                     view.showSuccessMessage(((PlayerRemovedResponse) message).getPayload() + " lost");
@@ -173,11 +157,11 @@ public class MessageParser {
                 //view.displayWaitingLobby
                 break;
             case CHOSEN_GODS:
-                if(((ChosenGodsResponse) message).getOutcome().equals("OK"))
+                if (((ChosenGodsResponse) message).getOutcome().equals("OK"))
                     view.showSuccessMessage("Choice accepted!");
                     //System.out.println(((ChosenGodsResponse)message).getPayload().toString());
                 else
-                    view.showErrorMessage(((ChosenGodsResponse)message).getOutcome());
+                    view.showErrorMessage(((ChosenGodsResponse) message).getOutcome());
                 break;
 
             // the first player chooses who plays first
@@ -192,11 +176,11 @@ public class MessageParser {
             // AFTER selecting a worker, this is the response
             case SELECT_WORKER:
                 client.setCurrentPlayer(true);
-                if(((SelectWorkerResponse) message).getOutcome().equals("OK")) {
+                if (((SelectWorkerResponse) message).getOutcome().equals("OK")) {
                     selectedWorker = ((SelectWorkerResponse) message).getSelectedWorker();
                     PossibleActions action = view.chooseAction(((SelectWorkerResponse) message).getPossibleActions());
                     messageToSend(action);
-                //view.displayChooseAction
+                    //view.displayChooseAction
                 } else {
                     System.out.println("Wrong worker selected");
                     beginTurn();
@@ -208,78 +192,25 @@ public class MessageParser {
 
             case WALKABLE_CELLS:
                 client.setCurrentPlayer(true);
-                if(((WalkableCellsResponse) message).getOutcome().equals("OK")) {
-                    Cell moveTo = view.moveAction(gameboard, ((WalkableCellsResponse) message).getPayload());
-                    if (moveTo != null) {
-                        Message moveRequest = new PlayerMoveRequest(client.getUsername(), gameboard.get(5*moveTo.getCoordX() + moveTo.getCoordY()), selectedWorker);
-                        client.sendMessage(moveRequest);
-                    }
-                    else {
-                        // TODO: no walkable cells available, manage here/in view.moveAction?
-                    }
+                if (((WalkableCellsResponse) message).getOutcome().equals("OK")) {
+                    selectedCell = view.moveAction(gameboard, ((WalkableCellsResponse) message).getPayload());
+                    Message moveRequest = new PlayerMoveRequest(client.getUsername(), gameboard.get(5 * selectedCell.getCoordX() + selectedCell.getCoordY()), selectedWorker);
+                    client.sendMessage(moveRequest);
                     client.setCurrentPlayer(false);
-                    }
-                    else {
-                    //we should never enter here
-                    //view.displayError(outcome)
-                }
-                break;
-
-            /*case BUILDABLE_CELLS:
-                client.setCurrentPlayer(true);
-                if(((BuildableCellsResponse) message).getOutcome().equals("OK")){
-                    if(((BuildableCellsResponse) message).getPayload().size() == 0)
-                        System.out.println("No buildable cells available");
-                    else
-                        System.out.println(((BuildableCellsResponse) message).getPayload());
-                    int xBuild, yBuild;
-                    do {
-                        System.out.println("Select the cell where you want to build");
-                        input = new Scanner(System.in);
-                        xBuild = input.nextInt();
-                        yBuild = input.nextInt();
-                    } while(!isInsideAvailableCells(xBuild, yBuild, ((BuildableCellsResponse) message).getPayload()));
-                    selectedCell = gameboard.get(5*xBuild + yBuild);
-                    Message message2 = new SelectBuildingCellRequest(client.getUsername(), selectedCell);
-                    client.sendMessage(message2);
-                    client.setCurrentPlayer(false);
-                    //view.displayCellsSuperFiche
                 } else {
                     //we should never enter here
                     //view.displayError(outcome)
                 }
                 break;
-            case SELECT_BUILDING_CELL:
-                client.setCurrentPlayer(true);
-                System.out.println(((SelectBuildingCellResponse) message).getBlocks().toString());
-                String block;
-                do {
-                    input = new Scanner(System.in);
-                    block = input.nextLine();
-                    //TODO: close input in all the scanners
-                } while(!isValidBlock(block,((SelectBuildingCellResponse) message).getBlocks()));
-                String chosenBlock = block;
-                Block toBuildBlock = ((SelectBuildingCellResponse) message).getBlocks().stream().filter(b -> b.toString().equals(chosenBlock))
-                        .collect(Collectors.toList()).get(0);
-                message = new PlayerBuildRequest(client.getUsername(), selectedCell, toBuildBlock ,selectedWorker);
-                client.sendMessage(message);
-                client.setCurrentPlayer(false);
-                break;*/
 
             case BUILDABLE_CELLS:
                 client.setCurrentPlayer(true);
-                if(((BuildableCellsResponse) message).getOutcome().equals("OK")) {
+                if (((BuildableCellsResponse) message).getOutcome().equals("OK")) {
                     selectedCell = view.buildAction(gameboard, ((BuildableCellsResponse) message).getPayload());
-                    if (selectedCell != null) {
-                        Message blockRequest = new SelectBuildingCellRequest(client.getUsername(), gameboard.get(5*selectedCell.getCoordX() + selectedCell.getCoordY()));
-                        client.sendMessage(blockRequest);
-                    }
-                    else {
-                        // TODO: no buildable cells available, manage here/in view.buildAction?
-                    }
+                    Message blockRequest = new SelectBuildingCellRequest(client.getUsername(), gameboard.get(5 * selectedCell.getCoordX() + selectedCell.getCoordY()));
+                    client.sendMessage(blockRequest);
                     client.setCurrentPlayer(false);
-                }
-                else {
+                } else {
                     //we should never enter here
                     //view.displayError(outcome)
                 }
@@ -288,20 +219,15 @@ public class MessageParser {
             case SELECT_BUILDING_CELL:
                 client.setCurrentPlayer(true);
                 Block chosenBlock = view.chooseBlockToBuild(((SelectBuildingCellResponse) message).getBlocks());
-                //String chosenBlock = block;
-                //Block toBuildBlock = ((SelectBuildingCellResponse) message).getBlocks().stream().filter(b -> b.toString().equals(chosenBlock))
-                 //                       .collect(Collectors.toList()).get(0);
-
-                //TODO: check if works
-                Message buildRequest = new PlayerBuildRequest(client.getUsername(), selectedCell, chosenBlock ,selectedWorker);
+                Message buildRequest = new PlayerBuildRequest(client.getUsername(), selectedCell, chosenBlock, selectedWorker);
                 client.sendMessage(buildRequest);
                 client.setCurrentPlayer(false);
                 break;
 
             case GAME_START:
-                view.gameStartScreen(((GameStartResponse)message).getPayload().getBoard());
+                view.gameStartScreen(((GameStartResponse) message).getPayload().getBoard());
                 gameboard = ((GameStartResponse) message).getPayload().getBoard();
-                if(((GameStartResponse)message).getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())){
+                if (((GameStartResponse) message).getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())) {
                     beginTurn();
                 }
                 break;
@@ -310,28 +236,15 @@ public class MessageParser {
         }
     }
 
-    public ViewInterface getView() {
-        return view;
-    }
-
     private void beginTurn() {
         client.setCurrentPlayer(true);
         Cell workerCell = view.chooseWorker();
-        selectedWorker = gameboard.get(5*workerCell.getCoordX() + workerCell.getCoordY()).getOccupiedBy();
+        selectedWorker = gameboard.get(5 * workerCell.getCoordX() + workerCell.getCoordY()).getOccupiedBy();
         Message selectWorkerRequest = new SelectWorkerRequest(client.getUsername(), selectedWorker);
         client.sendMessage(selectWorkerRequest);
         client.setCurrentPlayer(false);
     }
 
-    private boolean compare(String action, List<PossibleActions> possibleActions){
-        List<String> actionsAvailable = new ArrayList<>();
-        possibleActions.forEach(s -> actionsAvailable.add(s.toString()));
-        for(String string : actionsAvailable) {
-            if (string.equals(action))
-                return true;
-        }
-        return false;
-    }
 
     private void messageToSend(PossibleActions chosenAction) {
         Message nextAction = null;
@@ -352,24 +265,8 @@ public class MessageParser {
         }
 
         if (nextAction != null)
-                client.sendMessage(nextAction);
+            client.sendMessage(nextAction);
     }
 
-    private boolean isInsideAvailableCells(int x, int y, List<Cell> legalCells) {
-        for(Cell cell : legalCells){
-            if(x == cell.getCoordX() && y == cell.getCoordY())
-                return true;
-        }
-        return false;
-    }
-
-    private boolean isValidBlock(String input, List<Block> blocks){
-        List<String> blocksAvailable = new ArrayList<>();
-        blocks.forEach(s -> blocksAvailable.add(s.toString()));
-        for(String string : blocksAvailable) {
-            if (string.equals(input))
-                return true;
-        }
-        return false;
-    }
 }
+

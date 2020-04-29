@@ -14,9 +14,8 @@ public class PlayerData {
     private final GodData god;
 
     @JsonCreator
-    public PlayerData(@JsonProperty("name") String name,@JsonProperty("color") Color color,
-                      @JsonProperty("workers") List<Worker> workers,@JsonProperty("god") GodData god)
-    {
+    public PlayerData(@JsonProperty("name") String name, @JsonProperty("color") Color color,
+                      @JsonProperty("workers") List<Worker> workers, @JsonProperty("god") GodData god) {
         this.name = name;
         this.color = color;
         this.workers = workers;

@@ -17,9 +17,8 @@ public class Player implements PlayerInterface {
     private final String name;
     private final Color color;
     private final List<Worker> workers;
-    private Worker selectedWorker;
     private final God god;
-
+    private Worker selectedWorker;
     private AddWorkerListener addWorkerListener;
     private BuildableCellsListener buildableCellsListener;
     private WalkableCellsListener walkableCellsListener;
@@ -29,8 +28,9 @@ public class Player implements PlayerInterface {
     private Game game;
 
     //Used by jackson to deserialize
-    @JsonCreator private Player(@JsonProperty("name") String name, @JsonProperty("god") God god, @JsonProperty("color") Color color,
-                                @JsonProperty("workers") List<Worker> workers, @JsonProperty("selectedWorker") Worker selectedWorker){
+    @JsonCreator
+    private Player(@JsonProperty("name") String name, @JsonProperty("god") God god, @JsonProperty("color") Color color,
+                   @JsonProperty("workers") List<Worker> workers, @JsonProperty("selectedWorker") Worker selectedWorker) {
         this.name = name;
         this.god = god;
         this.color = color;
@@ -73,7 +73,7 @@ public class Player implements PlayerInterface {
             Worker worker = new Worker(game.getGameBoard().getCell(cell), color);
             workers.add(worker);
             //game.getGameBoard().getCell(cell).setOccupiedBy(worker);
-            if(addWorkerListener!=null)
+            if (addWorkerListener != null)
                 addWorkerListener.onWorkerAdd(game.buildBoardData());
         } else {
             throw new AddingFailedException();
@@ -88,11 +88,11 @@ public class Player implements PlayerInterface {
     @Override
     public void useAction(Action action) throws IllegalActionException {
         action.getValidation(game);
-        if(game.getCurrentTurn().getCurrentPlayer().equals(this)){
+        if (game.getCurrentTurn().getCurrentPlayer().equals(this)) {
             List<PossibleActions> possibleActions = god.getStrategy().getPossibleActions(this.selectedWorker);
             //possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
-            if (selectWorkerListener!=null)
-                selectWorkerListener.onSelectedWorker(name,possibleActions, selectedWorker);
+            if (selectWorkerListener != null)
+                selectWorkerListener.onSelectedWorker(name, possibleActions, selectedWorker);
         }
 
     }
@@ -117,7 +117,7 @@ public class Player implements PlayerInterface {
     @Override
     public void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException {
         List<Block> buildingBlocks = god.getStrategy().getBlocks(selectedCell);
-        if(buildingBlocks.size() == 1) {
+        if (buildingBlocks.size() == 1) {
             BuildAction buildAction = new BuildAction(selectedWorker, selectedCell, buildingBlocks.get(0));
             useAction(buildAction);
         } else if (buildingBlocksListener != null)
@@ -127,14 +127,13 @@ public class Player implements PlayerInterface {
     @Override
     public void setSelectedWorker(Worker selectedWorker) throws NotYourWorkerException {
         if (workers.contains(selectedWorker)) {
-            for (Worker worker: this.workers){
-                if(worker.getPosition().equals(selectedWorker.getPosition()))
+            for (Worker worker : this.workers) {
+                if (worker.getPosition().equals(selectedWorker.getPosition()))
                     this.selectedWorker = worker;
             }
-            if (selectWorkerListener!=null)
-                selectWorkerListener.onSelectedWorker(name,god.getStrategy().getPossibleActions(this.selectedWorker), this.selectedWorker);
-        }
-        else
+            if (selectWorkerListener != null)
+                selectWorkerListener.onSelectedWorker(name, god.getStrategy().getPossibleActions(this.selectedWorker), this.selectedWorker);
+        } else
             throw new NotYourWorkerException();
     }
 
@@ -145,7 +144,7 @@ public class Player implements PlayerInterface {
             for (Cell cell : game.getWalkableCells(selectedWorker)) {
                 walkableCells.add(cell.cloneCell());
             }
-            if(walkableCellsListener!=null)
+            if (walkableCellsListener != null)
                 walkableCellsListener.onWalkableCells(name, walkableCells);
         } else
             throw new WrongSelectionException();
@@ -158,7 +157,7 @@ public class Player implements PlayerInterface {
             for (Cell cell : game.getBuildableCells(selectedWorker)) {
                 buildableCells.add(cell.cloneCell());
             }
-            if (buildableCellsListener!=null)
+            if (buildableCellsListener != null)
                 buildableCellsListener.onBuildableCell(name, buildableCells);
         } else
             throw new WrongSelectionException();

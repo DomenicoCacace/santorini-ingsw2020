@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.listeners.*;
-import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.dataClass.GameData;
@@ -23,11 +22,10 @@ import java.util.stream.Collectors;
 public class Game implements GameInterface {
     private final GameBoard gameBoard;
     private final List<Player> players;
+    private final RuleSetContext currentRuleSet;
     private Turn currentTurn;
     private Turn nextTurn;
     private Player winner;
-    private final RuleSetContext currentRuleSet;
-
     private MoveActionListener moveActionListener;
     private EndTurnListener endTurnListener;
     private BuildActionListener buildActionListener;
@@ -56,7 +54,7 @@ public class Game implements GameInterface {
         this.players = players;
         for (Player player : this.players)
             //setCellsReferences(player);
-        this.currentTurn = currentTurn;
+            this.currentTurn = currentTurn;
         this.nextTurn = nextTurn;
         this.winner = winner;
         this.currentRuleSet = currentRuleSet;
@@ -64,7 +62,7 @@ public class Game implements GameInterface {
 
 
     /*
-        this construct an exact copy of a game, used to implement undo: TODO: where should the savedGame variable be stored?
+        this construct an exact copy of a game, used to implement undo:
      */
     private Game(Game game) {
         this.gameBoard = game.gameBoard.cloneGameBoard();
@@ -128,21 +126,19 @@ public class Game implements GameInterface {
     public void validateMoveAction(MoveAction moveAction) throws IllegalActionException {
         Cell targetCell = gameBoard.getCell(moveAction.getTargetCell());
         Worker targetWorker = null;
-        for (Worker worker: currentTurn.getCurrentPlayer().getWorkers()){
-            if(worker.getPosition().equals(moveAction.getTargetWorker().getPosition()))
+        for (Worker worker : currentTurn.getCurrentPlayer().getWorkers()) {
+            if (worker.getPosition().equals(moveAction.getTargetWorker().getPosition()))
                 targetWorker = worker;
         }
-        moveAction= new MoveAction(targetWorker, targetCell);
+        moveAction = new MoveAction(targetWorker, targetCell);
 
         if (currentRuleSet.validateMoveAction(moveAction)) {
             moveAction.apply();
-            if(moveActionListener!=null)
+            if (moveActionListener != null)
                 moveActionListener.onMoveAction(buildBoardData());
-             //TODO:moved before the checkWinCondition, check if this breaks something
             if (currentRuleSet.checkWinCondition(moveAction)) {
                 this.winner = currentTurn.getCurrentPlayer();
-                // TODO: manage win stuff
-                if(endGameListener!=null) {
+                if (endGameListener != null) {
                     endGameListener.onEndGame(winner.getName());
                 }
             }
@@ -154,21 +150,22 @@ public class Game implements GameInterface {
     public void validateBuildAction(BuildAction buildAction) throws IllegalActionException {
         Cell targetCell = gameBoard.getCell(buildAction.getTargetCell());
         Worker targetWorker = null;
-        for (Worker worker: currentTurn.getCurrentPlayer().getWorkers()){
-            if(worker.getPosition().equals(buildAction.getTargetWorker().getPosition()))
+        for (Worker worker : currentTurn.getCurrentPlayer().getWorkers()) {
+            if (worker.getPosition().equals(buildAction.getTargetWorker().getPosition()))
                 targetWorker = worker;
         }
 
-        buildAction= new BuildAction(targetWorker, targetCell, buildAction.getTargetBlock());
+        buildAction = new BuildAction(targetWorker, targetCell, buildAction.getTargetBlock());
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
-            if(buildActionListener!=null)
+            if (buildActionListener != null)
                 buildActionListener.onBuildAction(buildBoardData());
             this.saveState();
             endTurnAutomatically();
         } else
             throw new IllegalActionException();
     }
+
     public void endTurn() throws IllegalEndingTurnException {
         if (currentRuleSet.canEndTurn()) {
             generateNextTurn();
@@ -196,7 +193,7 @@ public class Game implements GameInterface {
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
         currentTurn = nextTurn;
 
-        if(endTurnListener!=null)
+        if (endTurnListener != null)
             endTurnListener.onTurnEnd(currentTurn.getCurrentPlayer().getName());
         if (currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
@@ -211,13 +208,13 @@ public class Game implements GameInterface {
         }
         players.remove(player);
 
-        if(playerLostListener!=null)
+        if (playerLostListener != null)
             playerLostListener.onPlayerLoss(player.getName());
 
 
         if (players.size() == 1) {
             this.winner = players.get(0);
-            if(endGameListener!=null)
+            if (endGameListener != null)
                 endGameListener.onEndGame(this.winner.getName());
         }
         generateNextTurn();
@@ -260,20 +257,12 @@ public class Game implements GameInterface {
     }
 
     public Game restoreState() throws IOException {
-        int x, y;
         ObjectMapper objectMapper = new ObjectMapper();
         Game restoredGame = objectMapper.readerFor(Game.class).readValue(file);
         //FIXME: manage file path
-        for (Player player : restoredGame.players) {
-            /*for (Worker worker : player.getWorkers()) { //TODO: we should do the opposite, use the occupiedBy in cell to set the position in Worker
-                x = worker.getPosition().getCoordX();
-                y = worker.getPosition().getCoordY();
-                worker.setPosition(restoredGame.gameBoard.getCell(x, y));
-                restoredGame.getGameBoard().getCell(x, y).setOccupiedBy(worker);
-            }
-             */
+        for (Player player : restoredGame.players)
             player.setGame(restoredGame);
-        }
+
         return restoredGame;
     }
 

@@ -9,7 +9,7 @@ public class ChooseNumberOfPlayerResponse extends Message {
     private final int numberOfPlayers;
 
     @JsonCreator
-    public ChooseNumberOfPlayerResponse(@JsonProperty("username") String username,@JsonProperty("payload") int payload) {
+    public ChooseNumberOfPlayerResponse(@JsonProperty("username") String username, @JsonProperty("payload") int payload) {
         super(username, Content.CHOOSE_PLAYER_NUMBER);
         this.numberOfPlayers = payload;
     }

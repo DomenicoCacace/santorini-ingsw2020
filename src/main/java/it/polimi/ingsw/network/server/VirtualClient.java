@@ -1,9 +1,7 @@
 package it.polimi.ingsw.network.server;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,13 +12,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class VirtualClient extends Thread {
+    private static final Logger logger = Logger.getLogger("virtualClient");
     private final Server server;
     private final Socket clientConnection;
+    private final JacksonMessageBuilder jsonParser;
     private String username;
-    private static final Logger logger = Logger.getLogger("virtualClient");
     private BufferedReader inputSocket;
     private OutputStreamWriter outputSocket;
-    private final JacksonMessageBuilder jsonParser;
 
     public VirtualClient(Server server, Socket clientConnection) {
         this.server = server;
@@ -41,32 +39,34 @@ public class VirtualClient extends Thread {
     @Override
     public void run() {
         try {
-            boolean loop = true;
-            while (loop) {
+            while (true) {
+                Message message;
                 //When a message is received, forward to Server
                 String input = inputSocket.readLine();
-                System.out.println("message received" + input);
-                Message message = jsonParser.fromStringToMessage(input);
-                if (message == null) {
-                    loop = false;
+                System.out.println("message received " + input);
+                try {
+                    message = jsonParser.fromStringToMessage(input);
+                } catch (NullPointerException e) {
+                    server.onDisconnect(username);
+                    break;
+                }
+
+                if (message.getContent() == Message.Content.LOGIN) {
+                    try {
+                        this.username = message.getUsername();
+                        server.addClient(this);
+                    } catch (Exception e) {
+                        logger.log(Level.WARNING, e.getMessage());
+                        this.clientConnection.close();
+                    }
+                } else if (server.containClient(username)) {
+                    server.handleMessage(message);
                 } else {
-                    if (message.getContent() == Message.Content.LOGIN) {
-                        try {
-                            this.username = message.getUsername();
-                            server.addClient(this);
-                        } catch (Exception e) {
-                            logger.log(Level.WARNING, e.getMessage());
-                            this.clientConnection.close();
-                        }
-                    } else if (server.containClient(username)) {
-                        server.handleMessage(message);
-                    } else {
-                        try {
-                            clientConnection.close();
-                            server.onDisconnect(username);
-                        } catch (IOException e) {
-                            //Do nothing, connection already closed
-                        }
+                    try {
+                        clientConnection.close();
+                        server.onDisconnect(username);
+                    } catch (IOException e) {
+                        //Do nothing, connection already closed
                     }
                 }
             }
@@ -98,7 +98,7 @@ public class VirtualClient extends Thread {
         }
     }
 
-    public void closeConnection(){
+    public void closeConnection() {
         try {
             clientConnection.close();
         } catch (IOException e) {

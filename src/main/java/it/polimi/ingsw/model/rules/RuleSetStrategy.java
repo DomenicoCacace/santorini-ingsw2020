@@ -18,6 +18,8 @@ public interface RuleSetStrategy {
 
     int getMovesUpAvailable(); //Testing purpose only
 
+    void setMovesUpAvailable(int num);
+
     int getMovesAvailable(); //Testing purpose only
 
     boolean hasMovedUp(); //Testing purpose only
@@ -25,8 +27,6 @@ public interface RuleSetStrategy {
     int getBuildsAvailable(); //Testing purpose only
 
     Worker getMovedWorker(); //Testing purpose only
-
-    void setMovesUpAvailable(int num);
 
     List<PossibleActions> getPossibleActions(Worker worker);
 
