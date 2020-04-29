@@ -31,7 +31,7 @@ public class Lobby {
         parser.setLobby(this);
         ObjectMapper objectMapper = new ObjectMapper();
         List<God> allGods = objectMapper.readerFor(new TypeReference<List<God>>() {
-        }).readValue(new File("GodsConfigFile.json"));
+        }).readValue(this.getClass().getResourceAsStream("GodsConfigFile.json"));
         for (God god : allGods) {
             godsMap.put(god.buildDataClass(), god);
         }

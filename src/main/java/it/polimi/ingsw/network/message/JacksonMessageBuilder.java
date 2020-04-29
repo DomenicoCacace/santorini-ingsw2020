@@ -31,6 +31,6 @@ public class JacksonMessageBuilder {
     }
 
     public Message fromStringToMessage(String jsonString) throws IOException {
-        return objectReader.readValue(jsonString);
+        return objectReader.readValue(jsonString); //TODO: may return null when the client interrupts
     }
 }

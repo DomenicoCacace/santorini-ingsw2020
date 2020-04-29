@@ -25,8 +25,8 @@ public class NetworkHandler implements Runnable {
         try {
             this.client = client;
             this.jacksonParser = new JacksonMessageBuilder();
-            this.socketClient = new Socket(client.getIpAddress(), 4321);
-            System.out.println(socketClient.toString() + " client");
+            this.socketClient = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
+            //System.out.println(socketClient.toString() + " client");
             this.inputSocket = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
             this.outputSocket = new OutputStreamWriter(socketClient.getOutputStream());
             this.outputSocket.flush();
@@ -44,7 +44,7 @@ public class NetworkHandler implements Runnable {
 
             try {
                 ioData = inputSocket.readLine();
-                System.out.println(ioData);
+                //System.out.println(ioData);
             } catch (IOException e) {
                 System.out.println("IOEXception");
                 break;
@@ -52,7 +52,8 @@ public class NetworkHandler implements Runnable {
 
             if (ioData == null) {
                 openConnection = false;
-                System.out.println("null");
+                //TODO: might be null in other situations
+                client.getView().showErrorMessage("The server has been terminated unexpectedly. Disconnecting...");
                 closeConnection();
                 break;
             }
@@ -66,12 +67,12 @@ public class NetworkHandler implements Runnable {
             }
 
         }
-        System.out.println("You have been disconnected");
+        client.getView().showErrorMessage("You have been disconnected");
     }
 
     public void login(String username) {
         sendMessage(new LoginRequest(username));
-        System.out.println("Login sent");
+        client.getView().showSuccessMessage("Login request sent, waiting for a response...");
     }
 
 
@@ -82,7 +83,7 @@ public class NetworkHandler implements Runnable {
             inputSocket.close();
             socketClient.close();
         } catch (Exception e) {
-            System.out.println("The connection was already closed!\n");
+            client.getView().showErrorMessage("The connection was already closed!\n");
             e.printStackTrace();
         }
     }

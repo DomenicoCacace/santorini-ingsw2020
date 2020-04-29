@@ -263,6 +263,7 @@ public class Game implements GameInterface {
         int x, y;
         ObjectMapper objectMapper = new ObjectMapper();
         Game restoredGame = objectMapper.readerFor(Game.class).readValue(file);
+        //FIXME: manage file path
         for (Player player : restoredGame.players) {
             /*for (Worker worker : player.getWorkers()) { //TODO: we should do the opposite, use the occupiedBy in cell to set the position in Worker
                 x = worker.getPosition().getCoordX();
