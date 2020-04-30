@@ -2,12 +2,14 @@ package it.polimi.ingsw.network.message.response.fromClientToServer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.MessageFromClientToServer;
 
 import java.util.List;
 
-public class ChooseInitialGodsResponse extends Message {
+public class ChooseInitialGodsResponse extends MessageFromClientToServer {
 
     private final List<GodData> payload;
 
@@ -19,6 +21,11 @@ public class ChooseInitialGodsResponse extends Message {
 
     public List<GodData> getPayload() {
         return payload;
+    }
+
+    @Override
+    public void callVisitor(ServerMessageManagerVisitor visitor){
+        visitor.chooseInitialGods(this);
     }
 
 }

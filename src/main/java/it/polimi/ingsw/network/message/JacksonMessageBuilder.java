@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -16,6 +17,7 @@ public class JacksonMessageBuilder {
         objectMapper = new ObjectMapper();
         objectReader = objectMapper.readerFor(Message.class);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.configure(JsonParser.Feature.AUTO_CLOSE_SOURCE, true);
     }
 
     public String fromMessageToString(Message message) {

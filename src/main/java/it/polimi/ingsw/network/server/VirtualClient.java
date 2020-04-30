@@ -70,7 +70,7 @@ public class VirtualClient extends Thread {
                     }
                 }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             server.onDisconnect(username);
             e.printStackTrace();
         }

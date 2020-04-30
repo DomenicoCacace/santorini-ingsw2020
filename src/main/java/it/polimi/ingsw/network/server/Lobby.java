@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPo
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,15 +30,11 @@ public class Lobby {
         parser.setLobby(this);
         ObjectMapper objectMapper = new ObjectMapper();
         List<God> allGods = objectMapper.readerFor(new TypeReference<List<God>>() {
-        }).readValue(this.getClass().getResourceAsStream("GodsConfigFile.json"));
+        }).readValue(new File("GodsConfigFile.json"));
         for (God god : allGods) {
             godsMap.put(god.buildDataClass(), god);
         }
         askGods(new ArrayList<>(godsMap.keySet()));
-    }
-
-    public void addUser(String username) {
-        userNames.add(username);
     }
 
     public void assignGod(String username, GodData god) {
@@ -71,7 +68,7 @@ public class Lobby {
         parser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(userNames.get(0), gods));
     }
 
-    public void chooseGods(List<GodData> gods) throws InterruptedException {
+    public void chooseGods(List<GodData> gods) {
         if ((int) gods.stream().distinct().count() == userNames.size() && gods.size() == userNames.size()) {
             chosenGods = gods;
             parser.parseMessageFromServerToClient(new ChosenGodsResponse("OK", "broadcast", chosenGods));

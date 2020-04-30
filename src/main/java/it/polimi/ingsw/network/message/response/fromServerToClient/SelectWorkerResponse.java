@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.MessageFromServerToClient;
 
 import java.util.List;
 
-public class SelectWorkerResponse extends Message {
+public class SelectWorkerResponse extends MessageFromServerToClient {
     private final String outcome;
     private final List<PossibleActions> possibleActions;
     private final Worker selectedWorker;
@@ -37,5 +39,11 @@ public class SelectWorkerResponse extends Message {
 
     public Worker getSelectedWorker() {
         return selectedWorker;
+    }
+
+
+    @Override
+    public void callVisitor(ClientMessageManagerVisitor visitor) {
+        visitor.onWorkerSelected(this);
     }
 }

@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.MessageParser;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.MessageFromClientToServer;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseNumberOfPlayersRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.LoginResponse;
@@ -129,7 +130,7 @@ public class Server extends Thread {
 
     }
 
-    public synchronized void handleMessage(Message message) throws IOException, InterruptedException {
+    public synchronized void handleMessage(Message message) throws IOException {
         if (message.getContent() == Message.Content.CHOOSE_PLAYER_NUMBER) {
             if (((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers() == 2 || ((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers() == 3) {
                 MAX_PLAYER_NUMBER = ((ChooseNumberOfPlayerResponse) message).getNumberOfPlayers();
@@ -139,7 +140,7 @@ public class Server extends Thread {
                 } else if (usernames.values().size() > MAX_PLAYER_NUMBER) {
                     List<String> names = new ArrayList<>(usernames.keySet());
                     for (int i = MAX_PLAYER_NUMBER; i < names.size(); i++) {
-                        onDisconnect(names.get(i));
+                        onDisconnect(names.get(i)); //TODO: can't do onDisconnect, we have to send a quit message and remove him from the map
                     }
                     names = new ArrayList<>(usernames.keySet());
                     lobby = new Lobby(messageParser, names);
@@ -147,7 +148,7 @@ public class Server extends Thread {
             } else {
                 usernames.get(message.getUsername()).notify(new ChooseNumberOfPlayersRequest(message.getUsername()));
             }
-        } else messageParser.parseMessageFromClientToServer(message);
+        } else ((MessageFromClientToServer) message).callVisitor(messageParser);
     }
 
     public void endGame() {

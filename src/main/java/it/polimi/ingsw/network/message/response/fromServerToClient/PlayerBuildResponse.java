@@ -3,11 +3,13 @@ package it.polimi.ingsw.network.message.response.fromServerToClient;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.MessageFromServerToClient;
 
 import java.util.List;
 
-public class PlayerBuildResponse extends Message {
+public class PlayerBuildResponse extends MessageFromServerToClient {
 
     private final List<Cell> payload;
     private final String outcome;
@@ -28,5 +30,10 @@ public class PlayerBuildResponse extends Message {
 
     public String getOutcome() {
         return outcome;
+    }
+
+    @Override
+    public void callVisitor(ClientMessageManagerVisitor visitor) {
+        visitor.onPlayerBuild(this);
     }
 }

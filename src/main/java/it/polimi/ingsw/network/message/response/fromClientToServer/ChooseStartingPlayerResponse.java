@@ -2,9 +2,11 @@ package it.polimi.ingsw.network.message.response.fromClientToServer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.MessageFromClientToServer;
 
-public class ChooseStartingPlayerResponse extends Message {
+public class ChooseStartingPlayerResponse extends MessageFromClientToServer {
 
     private final String payload;
 
@@ -16,5 +18,10 @@ public class ChooseStartingPlayerResponse extends Message {
 
     public String getPayload() {
         return payload;
+    }
+
+    @Override
+    public void callVisitor(ServerMessageManagerVisitor visitor) {
+        visitor.chooseStartingPlayer(this);
     }
 }

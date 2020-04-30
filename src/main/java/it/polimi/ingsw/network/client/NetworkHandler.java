@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 
 import java.io.BufferedReader;
@@ -25,7 +26,6 @@ public class NetworkHandler implements Runnable {
             this.client = client;
             this.jacksonParser = new JacksonMessageBuilder();
             this.socketClient = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
-            //System.out.println(socketClient.toString() + " client");
             this.inputSocket = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
             this.outputSocket = new OutputStreamWriter(socketClient.getOutputStream());
             this.outputSocket.flush();
@@ -59,7 +59,7 @@ public class NetworkHandler implements Runnable {
             Message message;
             try {
                 message = jacksonParser.fromStringToMessage(ioData);
-                parser.parseMessageFromServerToClient(message);
+                ((MessageFromServerToClient)message).callVisitor(parser);  //TODO: In both server and client we need to cast the input Message in MessageFromServerToclient or MessageFromClientToServer in order to use callVisitor method
             } catch (IOException e) {
                 e.printStackTrace();
             }

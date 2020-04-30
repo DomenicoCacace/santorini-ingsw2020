@@ -10,7 +10,7 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGod
 import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.network.server.Server;
 
-public class MessageParser {
+public class MessageParser implements ServerMessageManagerVisitor {
 
     private final Server server;
     private Lobby lobby;
@@ -27,53 +27,6 @@ public class MessageParser {
     public void setServerController(ServerController serverController) {
         this.serverController = serverController;
     }
-
-    public void parseMessageFromClientToServer(Message message) throws InterruptedException {
-        switch (message.getContent()) {
-            case LOGIN:
-                lobby.addUser(message.getUsername());
-                break;
-            case CHOOSE_INITIAL_GODS:
-                lobby.chooseGods(((ChooseInitialGodsResponse) message).getPayload());
-                break;
-            case CHOOSE_GOD:
-                lobby.assignGod(message.getUsername(), ((ChooseYourGodResponse) message).getGod());
-                break;
-            case STARTING_PLAYER:
-                lobby.selectStartingPlayer(((ChooseStartingPlayerResponse) message).getPayload());
-                break;
-            case SELECT_WORKER:
-                serverController.selectWorker(message.getUsername(), ((SelectWorkerRequest) message).getTargetWorker());
-                break;
-            case WALKABLE_CELLS:
-                serverController.obtainWalkableCells(message.getUsername());
-                break;
-            case BUILDABLE_CELLS:
-                serverController.obtainBuildableCells(message.getUsername());
-                break;
-            case SELECT_BUILDING_CELL:
-                serverController.selectBuildingCell(message.getUsername(), ((SelectBuildingCellRequest) message).getSelectedCell());
-                break;
-            case PLAYER_MOVE:
-                MoveAction moveAction = new MoveAction(((PlayerMoveRequest) message).getTargetWorker(), ((PlayerMoveRequest) message).getTargetCell());
-                serverController.handleMoveAction(message.getUsername(), moveAction);
-                break;
-            case PLAYER_BUILD:
-                BuildAction buildAction = new BuildAction(((PlayerBuildRequest) message).getTargetWorker(), ((PlayerBuildRequest) message).getTargetCell(), ((PlayerBuildRequest) message).getTargetBlock());
-                serverController.handleBuildAction(message.getUsername(), buildAction);
-                break;
-            case ADD_WORKER:
-                serverController.addWorker(message.getUsername(), ((AddWorkerRequest) message).getTargetCell());
-                break;
-            case END_TURN:
-                serverController.passTurn(message.getUsername());
-                break;
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + message.getContent());
-        }
-    }
-
     //Client -> sends message request -> virtualClient -> server -> parseMessageFromClientToServer(MessageRequest) -> message parser will call methods of ServerController and Lobby
     //Controller will call methods of model -> the model will return responses to the Controller -> Controller will pass the message to the Parser with parseMessageFromServerToClient
     //Parser will pass messages to the Server -> Server will pass messages to the virtualClient -> Client
@@ -86,4 +39,61 @@ public class MessageParser {
         server.endGame();
     }
 
+    //This methods replace the switch with a visitor pattern
+    @Override
+    public void chooseInitialGods(ChooseInitialGodsResponse message) {
+        lobby.chooseGods(message.getPayload());
+    }
+
+    @Override
+    public void chooseGod(ChooseYourGodResponse message) {
+        lobby.assignGod(message.getUsername(), message.getGod());
+    }
+
+    @Override
+    public void chooseStartingPlayer(ChooseStartingPlayerResponse message) {
+        lobby.selectStartingPlayer(message.getPayload());
+    }
+
+    @Override
+    public void selectWorker(SelectWorkerRequest message) {
+        serverController.selectWorker(message.getUsername(), message.getTargetWorker());
+    }
+
+    @Override
+    public void walkableCells(WalkableCellsRequest message) {
+        serverController.obtainWalkableCells(message.getUsername());
+    }
+
+    @Override
+    public void buildableCells(BuildableCellsRequest message) {
+        serverController.obtainBuildableCells(message.getUsername());
+    }
+
+    @Override
+    public void selectCellToBuild(SelectBuildingCellRequest message) {
+        serverController.selectBuildingCell(message.getUsername(), message.getSelectedCell());
+    }
+
+    @Override
+    public void managePlayerMove(PlayerMoveRequest message) {
+        MoveAction moveAction = new MoveAction(message.getTargetWorker(), message.getTargetCell());
+        serverController.handleMoveAction(message.getUsername(), moveAction);
+    }
+
+    @Override
+    public void managePlayerBuild(PlayerBuildRequest message) {
+        BuildAction buildAction = new BuildAction(message.getTargetWorker(), message.getTargetCell(), message.getTargetBlock());
+        serverController.handleBuildAction(message.getUsername(), buildAction);
+    }
+
+    @Override
+    public void addWorkerOnBoard(AddWorkerRequest message) {
+        serverController.addWorker(message.getUsername(), message.getTargetCell());
+    }
+
+    @Override
+    public void endTurn(EndTurnRequest message) {
+        serverController.passTurn(message.getUsername());
+    }
 }

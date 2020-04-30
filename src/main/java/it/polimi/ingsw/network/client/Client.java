@@ -69,7 +69,7 @@ public class Client {
     }
 
 
-    public void stopConnection() throws IOException {
+    public void stopConnection() {
         networkHandler.closeConnection();
     }
 
