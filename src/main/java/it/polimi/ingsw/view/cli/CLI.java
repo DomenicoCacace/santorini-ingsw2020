@@ -124,18 +124,10 @@ public class CLI implements ViewInterface {
     @Override
     public Block chooseBlockToBuild(List<Block> buildableBlocks) {
         //buildableBlocks.size always > 1, see player in model
-        while (true) {
-            System.out.println("Choose the block to build: ");
-            buildableBlocks.forEach(block -> System.out.println("-" + block.toString()));
-
-            SafeScanner scanner = new SafeScanner(System.in);
-            String chosenBlock = scanner.nextLine();
-            for (Block block : buildableBlocks) {
-                if (block.toString().equals(chosenBlock))
-                    return block;
-            }
-            showErrorMessage("Block not valid!");
-        }
+        System.out.println("Choose the block to build: ");
+        List<String> blocks = new ArrayList<>();
+        buildableBlocks.forEach(b -> blocks.add(b.toString()));
+        return buildableBlocks.get(chooseFromList(blocks));
     }
 
     @Override
@@ -163,48 +155,26 @@ public class CLI implements ViewInterface {
             showSuccessMessage("Your god is " + possibleGods.get(0).getName());
             return possibleGods.get(0);
         }
-        while (true) {
-            System.out.println("Choose your god:");
-            possibleGods.forEach(godData -> System.out.println("-" + godData.getName()));
-
-            SafeScanner scanner = new SafeScanner(System.in);
-            String name = scanner.nextLine();
-
-            for (GodData data : possibleGods) {
-                if (data.getName().equals(name)) {
-                    showSuccessMessage("Your god is " + data.getName());
-                    return data;
-                }
-            }
-            showErrorMessage("God not valid!");
-        }
+        System.out.println("Choose your god:");
+        List<String> gods = new ArrayList<>();
+        possibleGods.forEach(g -> gods.add(g.getName()));
+        return possibleGods.get(chooseFromList(gods));
     }
 
     @Override
     public List<GodData> chooseGameGods(List<GodData> allGods, int size) {
         List<GodData> chosenGods = new ArrayList<>();
-        while (true) {
-            System.out.println("Choose " + (size - chosenGods.size()) + " gods:");
-            allGods.forEach(godData -> System.out.println("-" + godData.getName()));
+        System.out.println("Choose " + (size) + " gods:");
+        List<String> gods = new LinkedList<>();
+        allGods.forEach(g -> gods.add(g.getName()));
 
-            for (int i = 0; i < size; i++) {
-                SafeScanner scanner = new SafeScanner(System.in);
-                String name = scanner.nextLine();
-
-                for (GodData data : allGods) {
-                    if (data.getName().equals(name))
-                        chosenGods.add(data);
-                }
-                Set<GodData> checker = new HashSet<>(chosenGods);   // does not accept duplicates
-                if (chosenGods.size() <= i && checker.size() < chosenGods.size()) {   // the god was not found, hence not added to the list
-                    showErrorMessage("God choice not valid!");
-                    i--;
-                } else {
-                    showSuccessMessage("Nice!");
-                }
-            }
-            return chosenGods;  // its size will always be the same as size
+        for (int i = 0; i < size; i++) {
+            int choice = chooseFromList(gods);
+            chosenGods.add(allGods.get(choice));
+            gods.remove(choice);
+            allGods.remove(choice);
         }
+        return chosenGods;
     }
 
     @Override
@@ -226,32 +196,18 @@ public class CLI implements ViewInterface {
 
     @Override
     public String chooseStartingPlayer(List<String> players) {
-        while (true) {
-            System.out.println("Choose the first player:");
-            players.forEach(player -> System.out.println("-" + player));
-            SafeScanner scanner = new SafeScanner(System.in);
-            String first = scanner.nextLine();
-            if (players.contains(first)) {
-                System.out.println("Gotcha!");
-                return first;
-            }
-            showErrorMessage(first + " is not a valid player");  // FIXME: manage upper/lowercase
-        }
+        System.out.println("Choose the first player:");
+        return players.get(chooseFromList(players));
     }
 
     @Override
     public PossibleActions chooseAction(List<PossibleActions> possibleActions) {
-        while (true) {
-            System.out.println("Select an action: ");
-            possibleActions.forEach(possibleAction -> System.out.println("-" + possibleAction.toString()));
-            SafeScanner scanner = new SafeScanner(System.in);
-            String chosenAction = scanner.nextLine();
-            for (PossibleActions possibleAction : possibleActions) {
-                if (possibleAction.toString().equals(chosenAction))
-                    return possibleAction;
-            }
-            System.out.println(possibleActions + " is not a valid action");
-        }
+        if (possibleActions.size() == 1)
+            return possibleActions.get(0);
+        System.out.println("Select an action: ");
+        List<String> actions = new ArrayList<>();
+        possibleActions.forEach(a -> actions.add(a.toString()));
+        return possibleActions.get(chooseFromList(actions));
     }
 
     private Cell chooseCell() {
@@ -266,5 +222,20 @@ public class CLI implements ViewInterface {
                 return new Cell(coordX - 1, coordY - 1);
             showErrorMessage("Coordinates out of bounds");
         }
+    }
+
+    private int chooseFromList(List<String> list) {
+        int choice;
+        while(true) {
+            SafeScanner scanner = new SafeScanner(System.in);
+            for (int i = 1; i < list.size() + 1; i++)
+                System.out.println(i + "- " + list.get(i-1));
+            choice = scanner.nextInt();
+            if (choice > 0 && choice < list.size() + 1)
+                break;
+            showErrorMessage("Not valid");
+        }
+
+        return choice - 1;
     }
 }
