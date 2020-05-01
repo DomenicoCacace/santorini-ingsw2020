@@ -1,0 +1,121 @@
+[ {
+  "name" : "Base",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "No Effect",
+  "strategy" : {
+    "Effect Name" : "RuleSetBase",
+    "stratId" : 1,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Apollo",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Swap",
+    "stratId" : 2,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Minotaur",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Push",
+    "stratId" : 3,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Artemis",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Move Again",
+    "stratId" : 4,
+    "movesAvailable" : 2,
+    "movesUpAvailable" : 2,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Atlas",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Build Dome",
+    "stratId" : 5,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Demeter",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Build again in different cell",
+    "stratId" : 6,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 2,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Hephaestus",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Build again in same cell",
+    "stratId" : 7,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 2,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Prometheus",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "BuildBeforeAfterMovement",
+    "stratId" : 8,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 2,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Athena",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Cannot move up",
+    "stratId" : 9,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Pan",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "",
+  "strategy" : {
+    "Effect Name" : "Down 2 Levels",
+    "stratId" : 10,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+} ]
