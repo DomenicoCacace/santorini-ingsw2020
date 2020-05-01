@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.listeners.*;
 import it.polimi.ingsw.model.*;
@@ -9,6 +10,8 @@ import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +25,29 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     private final Map<String, PlayerInterface> playerMap;
     private final MessageParser parser;
     private int cont = 0;
+    private final File file;
 
 
     public ServerController(GameInterface game, Map<String, PlayerInterface> players, MessageParser parser) {
         this.game = game;
         this.playerMap = players;
         this.parser = parser;
+        ///////////////////////////////////////////////File creation////////////////////////////////////////////////////
+        StringBuilder fileName = new StringBuilder();
+        List<String> usernames = new ArrayList<>(players.keySet());
+        for(String player: usernames) {
+            if (!(usernames.indexOf(player) == players.size() - 1))
+                fileName.append(player).append("_");
+            else
+                fileName.append(player);
+        }
+        file = new File("../"+fileName + ".json" );
+        try {
+            file.createNewFile();
+        } catch (IOException e) { //Cannot create file
+            e.printStackTrace();
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         game.setBuildActionListener(this);
         game.setEndGameListener(this);
         game.setEndTurnListener(this);
@@ -126,18 +146,30 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         }
     }
 
+    public void saveState() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValue(file, game);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onMoveAction(List<Cell> cells) {
+        saveState();
         parser.parseMessageFromServerToClient(new PlayerMoveResponse("OK", "broadcast", cells));
     }
 
     @Override
     public void onWorkerAdd(List<Cell> cells) {
+        saveState();
         parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", "broadcast", cells));
     }
 
     @Override
     public void onBuildAction(List<Cell> cells) {
+        saveState();
         parser.parseMessageFromServerToClient(new PlayerBuildResponse("OK", "broadcast", cells));
     }
 
@@ -159,6 +191,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onTurnEnd(String name) {
+        saveState();
         parser.parseMessageFromServerToClient(new EndTurnResponse("OK", "broadcast", name));
     }
 
@@ -170,13 +203,13 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onPlayerLoss(String username) {
+        saveState();
         parser.parseMessageFromServerToClient(new PlayerRemovedResponse("OK", username));
     }
 
     @Override
     public void onSelectedWorker(String username, List<PossibleActions> possibleActions, Worker selectedWorker) {
+        saveState();
         parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username, possibleActions, selectedWorker));
     }
-
-
 }

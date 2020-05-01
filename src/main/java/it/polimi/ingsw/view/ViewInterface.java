@@ -17,6 +17,8 @@ public interface ViewInterface {
 
     Cell chooseWorker();
 
+    boolean chooseMatchReload();
+
     Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells);
 
     Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells);

@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 
 public class Game implements GameInterface {
+
     private final GameBoard gameBoard;
     private final List<Player> players;
     private final RuleSetContext currentRuleSet;
@@ -32,15 +33,13 @@ public class Game implements GameInterface {
     private EndGameListener endGameListener;
     private PlayerLostListener playerLostListener;
 
-    private File file = new File("../SavedGame.json");
-
     public Game(GameBoard gameBoard, List<Player> players) {
         this.gameBoard = gameBoard;
         this.players = players;
-        for (Player player : players)
+        for (Player player : players) {
             player.setGame(this);
+        }
         //just for testing
-        this.saveState();
         currentTurn = new Turn(1, players.get(0));
         currentRuleSet = new RuleSetContext();
         currentRuleSet.setStrategy(players.get(0).getGod().getStrategy());
@@ -77,7 +76,7 @@ public class Game implements GameInterface {
         } else this.winner = null;
         this.currentRuleSet = new RuleSetContext();
         currentRuleSet.setStrategy(this.currentTurn.getRuleSetStrategy());
-        this.file = new File("../SavedGame2.json");
+
     }
 
     /*
@@ -142,7 +141,7 @@ public class Game implements GameInterface {
                     endGameListener.onEndGame(winner.getName());
                 }
             }
-            this.saveState();
+
         } else
             throw new IllegalActionException();
     }
@@ -160,7 +159,7 @@ public class Game implements GameInterface {
             buildAction.apply();
             if (buildActionListener != null)
                 buildActionListener.onBuildAction(buildBoardData());
-            this.saveState();
+
             endTurnAutomatically();
         } else
             throw new IllegalActionException();
@@ -198,7 +197,7 @@ public class Game implements GameInterface {
         if (currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
         }
-        this.saveState();
+
     }
 
     private void removePlayer(Player player) {
@@ -247,23 +246,19 @@ public class Game implements GameInterface {
         return new Game(this);
     }
 
-    public void saveState() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValue(file, this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Game restoreState() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Game restoredGame = objectMapper.readerFor(Game.class).readValue(file);
+    @Override
+    public void restoreState() {
         //FIXME: manage file path
-        for (Player player : restoredGame.players)
-            player.setGame(restoredGame);
-
-        return restoredGame;
+        for (Player player : this.players) {
+            player.setGame(this);
+            int x, y;
+            for (Worker worker : player.getWorkers()) {
+                x = worker.getPosition().getCoordX();
+                y = worker.getPosition().getCoordY();
+                worker.setPosition(this.gameBoard.getCell(x, y));
+                this.getGameBoard().getCell(x, y).setOccupiedBy(worker);
+            }
+        }
     }
 
     public void setMoveActionListener(MoveActionListener moveActionListener) {

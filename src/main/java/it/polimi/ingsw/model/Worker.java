@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import java.util.Objects;
 
@@ -33,6 +30,7 @@ public class Worker {
         return position;
     }
 
+    @JsonAnySetter
     public void setPosition(Cell position) {
         this.position = position;
     }

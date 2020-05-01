@@ -8,14 +8,10 @@ import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
-import java.io.IOException;
 import java.util.List;
 
 
@@ -236,6 +232,12 @@ public class MessageParser implements ClientMessageManagerVisitor{
     public void onQuit(QuitRequest message) {
         //TODO: close connection
         client.stopConnection();
+    }
+
+    @Override
+    public void chooseToReloadMatch(ChooseToReloadMatchRequest message) {
+        Message messageResponse = new ChooseToReloadMatchResponse(client.getUsername(), view.chooseMatchReload());
+        client.sendMessage(messageResponse);
     }
 
     private void beginTurn() {

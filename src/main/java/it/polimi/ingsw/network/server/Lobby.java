@@ -6,11 +6,9 @@ import it.polimi.ingsw.controller.MessageParser;
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.dataClass.GodData;
-import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseInitialGodsRequest;
-import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
-import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
-import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseYourGodRequest;
+import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +21,7 @@ public class Lobby {
     private final Map<GodData, God> godsMap = new HashMap<>();
     private Map<String, Player> playerMap = new LinkedHashMap<>();
     private List<GodData> chosenGods = new ArrayList<>();
+    private File savedGame;
 
     public Lobby(MessageParser parser, List<String> userNames) throws IOException {
         this.parser = parser;
@@ -34,7 +33,55 @@ public class Lobby {
         for (God god : allGods) {
             godsMap.put(god.buildDataClass(), god);
         }
-        askGods(new ArrayList<>(godsMap.keySet()));
+       if(checkSavedGame())
+           parser.parseMessageFromServerToClient(new ChooseToReloadMatchRequest(userNames.get(0)));
+       else askGods(new ArrayList<>(godsMap.keySet()));
+    }
+
+    private boolean checkSavedGame(){
+        StringBuilder userPermutation = new StringBuilder();
+        List<String> usernameToRotate = new ArrayList<>(userNames);
+        for(int i = 0; i < usernameToRotate.size(); i++){
+            for(String player: usernameToRotate) {
+                if (!(usernameToRotate.indexOf(player) == (usernameToRotate.size() - 1)))
+                    userPermutation.append(player).append("_");
+                else
+                    userPermutation.append(player).append(".json");
+            }
+            System.out.println(userPermutation);
+            savedGame = new File("../" + userPermutation);
+            if(savedGame.exists()) {
+                System.out.println("File exists");
+                return true;
+            }
+            else {
+                userPermutation = new StringBuilder();
+                Collections.rotate(usernameToRotate, 1);
+            }
+        }
+        savedGame = null;
+        return false;
+    }
+
+    public void reloadMatch(boolean wantToReload){
+        if(wantToReload) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Game restoredGame = null;
+            try {
+                restoredGame = objectMapper.readerFor(Game.class).readValue(savedGame);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Map<String, PlayerInterface> playerInterfaces = new LinkedHashMap<>();
+            if(restoredGame!=null) {
+                restoredGame.restoreState();
+                restoredGame.getPlayers().forEach(player -> playerInterfaces.put(player.getName(), player));
+                playerMap.keySet().forEach(s -> playerInterfaces.put(s, playerMap.get(s)));
+                ServerController controller = new ServerController(restoredGame, playerInterfaces, parser);
+                parser.setServerController(controller);
+                parser.parseMessageFromServerToClient(new GameStartResponse("OK", restoredGame.buildGameData()));
+            }
+        } else askGods(new ArrayList<>(godsMap.keySet()));
     }
 
     public void assignGod(String username, GodData god) {

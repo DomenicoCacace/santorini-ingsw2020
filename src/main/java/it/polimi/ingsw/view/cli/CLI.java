@@ -10,10 +10,13 @@ import it.polimi.ingsw.view.cli.utils.SafeScanner;
 
 import java.util.*;
 
+
 /**
  * Command Line Interface manager
  */
 public class CLI implements ViewInterface {
+    public static final String YES = "y";
+    public static final String NO = "n";
     private final PrettyPrinter printer;
 
     public CLI() {
@@ -62,6 +65,19 @@ public class CLI implements ViewInterface {
                 showErrorMessage("There's no worker in that cell!");
             else
                 return chosenWorker;
+        }
+    }
+
+    @Override
+    public boolean chooseMatchReload(){
+        while (true) {
+            System.out.println("I found a match to reload! do you want to reload? (" + YES + "/" + NO + ")");
+            SafeScanner scanner = new SafeScanner(System.in);
+            String input = scanner.nextLine();
+            if (input.equals(YES))
+                return true;
+            if (input.equals(NO))
+                return false;
         }
     }
 

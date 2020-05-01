@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.network.server.Server;
@@ -40,6 +41,12 @@ public class MessageParser implements ServerMessageManagerVisitor {
     }
 
     //This methods replace the switch with a visitor pattern
+
+    @Override
+    public void onMatchReloadResponse(ChooseToReloadMatchResponse message){
+        lobby.reloadMatch(message.wantToReload());
+    }
+
     @Override
     public void chooseInitialGods(ChooseInitialGodsResponse message) {
         lobby.chooseGods(message.getPayload());

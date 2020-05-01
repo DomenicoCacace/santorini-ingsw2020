@@ -1,35 +1,17 @@
 package it.polimi.ingsw.model.rules;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects.BuildBeforeAfterMovement;
-import it.polimi.ingsw.model.godCardsEffects.affectOpponentTurnEffects.CannotMoveUp;
-import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildAgainDifferentCell;
-import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildAgainSameCell;
-import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildDome;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.MoveAgain;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = RuleSetBase.class, name = "Basic rules"),
-        @JsonSubTypes.Type(value = Push.class, name = "Push opponent"),
-        @JsonSubTypes.Type(value = Swap.class, name = "Swap with opponent"),
-        @JsonSubTypes.Type(value = MoveAgain.class, name = "Move again"),
-        @JsonSubTypes.Type(value = BuildAgainDifferentCell.class, name = "Build again but in different cells"),
-        @JsonSubTypes.Type(value = BuildAgainSameCell.class, name = "Build again in the same cell"),
-        @JsonSubTypes.Type(value = BuildDome.class, name = "Build dome"),
-        @JsonSubTypes.Type(value = CannotMoveUp.class, name = "Stop the opponents from moving up"),
-        @JsonSubTypes.Type(value = BuildBeforeAfterMovement.class, name = "Build before and after movement"),
 
-})
+
 public class RuleSetBase implements RuleSetStrategy {
 
     protected Game game;

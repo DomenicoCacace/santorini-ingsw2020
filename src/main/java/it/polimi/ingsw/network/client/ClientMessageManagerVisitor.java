@@ -24,5 +24,6 @@ public interface ClientMessageManagerVisitor {
     void onBuildingCellSelected(SelectBuildingCellResponse message);
     void onGameStart(GameStartResponse message);
     void onQuit(QuitRequest message);
+    void chooseToReloadMatch(ChooseToReloadMatchRequest message);
 
 }

@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
+
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
+
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
@@ -66,7 +67,7 @@ public abstract class Message {
     }
 
     public enum Content { //FIXME: We use content only to check if the message is a login or choose_player_number, we don't need all the others
-        LOGIN, PLAYER_MOVE, PLAYER_BUILD, SELECT_BUILDING_CELL,
+        LOGIN, PLAYER_MOVE, PLAYER_BUILD, SELECT_BUILDING_CELL, RELOAD_MATCH,
         END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, STARTING_PLAYER, WINNER_DECLARED,
         PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER,
         WALKABLE_CELLS, BUILDABLE_CELLS, CHOSEN_GODS, GAME_START, WORKER_POSITION

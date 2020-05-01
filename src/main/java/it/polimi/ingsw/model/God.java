@@ -2,11 +2,13 @@ package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "GodId", scope = God.class)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "name")
 public class God {
     private final String name;
     private final int workersNumber;
@@ -17,6 +19,7 @@ public class God {
         this.name = god.name;
         this.strategy = god.strategy.cloneStrategy(game);
         this.workersNumber = god.workersNumber;
+        this.descriptionStrategy= god.getDescriptionStrategy();
     }
 
     public God(@JsonProperty("name") String name, @JsonProperty("workersNumber") int workersNumber, @JsonProperty("descriptionStrategy") String descriptionStrategy) {
@@ -33,6 +36,8 @@ public class God {
     public String getName() {
         return name;
     }
+
+    public String getDescriptionStrategy(){return descriptionStrategy;}
 
     public int getWorkersNumber() {
         return workersNumber;
