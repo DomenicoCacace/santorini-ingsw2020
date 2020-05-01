@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,10 +38,12 @@ public class MessageParser implements ClientMessageManagerVisitor{
             view.showErrorMessage("Error " + message.getOutcome());
             if (!message.getOutcome().equals("Match already started")) {   // TODO: define constant value
                 view.showErrorMessage("Login error, please retry");
-                view.loginScreen();
+                client.setUsername(view.askUsername());
             }
-            view.loginScreen();
-            view.showErrorMessage(message.getOutcome());
+            else {
+                view.showErrorMessage(message.getOutcome());
+                client.stopConnection();
+            }
         }
     }
 

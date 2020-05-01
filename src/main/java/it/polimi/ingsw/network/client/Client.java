@@ -5,6 +5,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Client {
@@ -27,7 +28,9 @@ public class Client {
         else
             viewInterface = new CLI(); //FIXME: implement gui
 
-        List<String> loginData = viewInterface.loginScreen();
+        List<String> loginData = new ArrayList<>();
+        loginData.add(viewInterface.askIP());
+        loginData.add(viewInterface.askUsername());
         Client client = new Client(loginData.get(1), loginData.get(0), viewInterface);
         client.startConnection();
         //TODO: Here I ask the user if he wants to use the Cli/Gui

@@ -90,6 +90,7 @@ public class Player implements PlayerInterface {
         action.getValidation(game);
         if (game.getCurrentTurn().getCurrentPlayer().equals(this)) {
             List<PossibleActions> possibleActions = god.getStrategy().getPossibleActions(this.selectedWorker);
+            //TODO: automatizza scelta azioni se size == 1
             //possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
             if (selectWorkerListener != null)
                 selectWorkerListener.onSelectedWorker(name, possibleActions, selectedWorker);

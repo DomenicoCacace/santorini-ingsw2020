@@ -42,7 +42,7 @@ public class Lobby {
         StringBuilder userPermutation = new StringBuilder();
         List<String> usernameToRotate = new ArrayList<>(userNames);
         for(int i = 0; i < usernameToRotate.size(); i++){
-            for(String player: usernameToRotate) {
+            for(String player: usernameToRotate) { //TODO: alphabetic order
                 if (!(usernameToRotate.indexOf(player) == (usernameToRotate.size() - 1)))
                     userPermutation.append(player).append("_");
                 else
@@ -51,7 +51,6 @@ public class Lobby {
             System.out.println(userPermutation);
             savedGame = new File("../" + userPermutation);
             if(savedGame.exists()) {
-                System.out.println("File exists");
                 return true;
             }
             else {

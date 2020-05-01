@@ -24,18 +24,18 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public List<String> loginScreen() {
-        List<String> loginParameters = new ArrayList<>();
+    public String askIP(){
         printer.printLogin();
         SafeScanner scanner = new SafeScanner(System.in);
         System.out.print("\t\tInsert the server address: ");
-        String address = scanner.nextLine();
-        //TODO: perform checks
-        loginParameters.add(0, address);
+        return scanner.nextLine();
+    }
+
+    @Override
+    public String askUsername(){
         System.out.print("\t\tInsert your username: ");
-        String username = scanner.nextLine();  //TODO: add a maximum username length?
-        loginParameters.add(1, username);
-        return loginParameters;
+        SafeScanner scanner = new SafeScanner(System.in);
+        return scanner.nextLine();  //TODO: add a maximum username length?
     }
 
     @Override

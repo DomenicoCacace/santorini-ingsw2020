@@ -163,7 +163,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onWorkerAdd(List<Cell> cells) {
-        saveState();
+        //saveState();
         parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", "broadcast", cells));
     }
 
@@ -185,6 +185,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onEndGame(String name) {
+        file.delete();
         parser.parseMessageFromServerToClient(new WinnerDeclaredResponse("OK", name));
         parser.endGame();
     }

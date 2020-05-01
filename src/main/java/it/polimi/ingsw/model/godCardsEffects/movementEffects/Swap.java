@@ -62,7 +62,7 @@ public class Swap extends MovementStrategy {
         List<Cell> cells = new ArrayList<>();
         if (movesAvailable > 0) {
             for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
-                if (canGo(worker, cell) && canBuildOnAtLeastOneCell(cell))
+                if (canGo(worker, cell) && canBuildOnAtLeastOneCell(cell)) //TODO: let apollo kill himself
                     if (cell.getOccupiedBy() == null || isNotSameOwner(cell))
                         cells.add(cell);
             }

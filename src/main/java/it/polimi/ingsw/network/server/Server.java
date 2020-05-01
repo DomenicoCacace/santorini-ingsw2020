@@ -76,7 +76,7 @@ public class Server extends Thread {
     }
 
 
-    public synchronized void addClient(VirtualClient virtualClient) throws IOException {        // Login of the player
+    public synchronized void addClient(VirtualClient virtualClient) throws IOException {  // Login of the player
         if (usernames.size() < MAX_POSSIBLE_CONNECTIONS && lobby == null) {
             if (usernames.containsKey(virtualClient.getUsername()) || virtualClient.getUsername().equals("broadcast")) {
                 virtualClient.notify(new LoginResponse("Invalid username!", null));

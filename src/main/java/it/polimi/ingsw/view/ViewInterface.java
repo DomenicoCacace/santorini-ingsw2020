@@ -8,7 +8,10 @@ import it.polimi.ingsw.model.dataClass.GodData;
 import java.util.List;
 
 public interface ViewInterface {
-    List<String> loginScreen();
+
+    String askIP();
+
+    String askUsername();
 
     void gameStartScreen(List<Cell> gameBoard);
 
