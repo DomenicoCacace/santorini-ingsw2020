@@ -3,7 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.listeners.*;
 import it.polimi.ingsw.model.dataClass.GameData;
 
-import java.io.File;
 import java.util.List;
 
 public interface GameInterface {

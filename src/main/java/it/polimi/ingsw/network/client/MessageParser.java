@@ -12,7 +12,6 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -130,6 +129,7 @@ public class MessageParser implements ClientMessageManagerVisitor{
         if (message.getPayload().equals(client.getUsername()))
             view.showErrorMessage("You lost");
         else {
+            view.showGameBoard(message.getGameboard());
             view.showSuccessMessage(message.getPayload() + " lost");
             // board without the loser's workers sent somewhere else
         }

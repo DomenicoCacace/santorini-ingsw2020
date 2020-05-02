@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
@@ -25,7 +26,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     private final Map<String, PlayerInterface> playerMap;
     private final MessageParser parser;
     private int cont = 0;
-    private final File file;
+    private File file;
 
 
     public ServerController(GameInterface game, Map<String, PlayerInterface> players, MessageParser parser) {
@@ -33,18 +34,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         this.playerMap = players;
         this.parser = parser;
         ///////////////////////////////////////////////File creation////////////////////////////////////////////////////
-        StringBuilder orderedNames = new StringBuilder();
-        List<String> sortedNames = new ArrayList<>(players.keySet());
-        for(String name : sortedNames)
-            orderedNames.append(name).append("_");
-        orderedNames.deleteCharAt(orderedNames.length()-1);
-        orderedNames.append(".json");
-        file = new File("../"+orderedNames);
-        try {
-            file.createNewFile();
-        } catch (IOException e) { //Cannot create file
-            e.printStackTrace();
-        }
+        fileCreation();
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         game.setBuildActionListener(this);
         game.setEndGameListener(this);
@@ -59,6 +49,23 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
             playerInterface.setSelectWorkerListener(this);
             playerInterface.setBuildingBlocksListener(this);
         });
+    }
+
+    private void fileCreation() {
+        StringBuilder orderedNames = new StringBuilder();
+        List<String> sortedNames = playerMap.keySet().stream().sorted().collect(Collectors.toList());
+        for(String name : sortedNames)
+            orderedNames.append(name).append("_");
+        orderedNames.deleteCharAt(orderedNames.length()-1);
+        orderedNames.append(".json");
+        System.out.println(orderedNames);
+        file = new File("../"+orderedNames);
+        try {
+            if(!file.exists())
+                file.createNewFile();
+        } catch (IOException e) { //Cannot create file
+            e.printStackTrace();
+        }
     }
 
     public void addWorker(String username, Cell cell) {
@@ -153,6 +160,16 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         }
     }
 
+    /*
+    public void restoreStatus(){
+        for(PlayerInterface playerInterface : playerMap.values()){
+            if(playerInterface.isSelectedWorker())
+
+        }
+    }
+
+     */
+
     @Override
     public void onMoveAction(List<Cell> cells) {
         saveState();
@@ -201,9 +218,12 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     }
 
     @Override
-    public void onPlayerLoss(String username) {
+    public void onPlayerLoss(String username, List<Cell> gameboard) {
+        parser.parseMessageFromServerToClient(new PlayerRemovedResponse("OK", username, gameboard));
+        playerMap.remove(username);
+        file.delete();
+        fileCreation();
         saveState();
-        parser.parseMessageFromServerToClient(new PlayerRemovedResponse("OK", username));
     }
 
     @Override

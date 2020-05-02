@@ -16,7 +16,6 @@ public interface ViewInterface {
     void gameStartScreen(List<Cell> gameBoard);
 
     //void showLobby(); TODO: implement
-    void turnBegin();
 
     Cell chooseWorker();
 

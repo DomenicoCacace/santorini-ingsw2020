@@ -31,4 +31,6 @@ public interface PlayerInterface {
     void setBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener);
 
     boolean allWorkersArePlaced();
+
+   // boolean isSelectedWorker();
 }

@@ -1,11 +1,10 @@
 package it.polimi.ingsw.model.rules;
 
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,9 @@ import java.util.List;
 
 public class RuleSetBase implements RuleSetStrategy {
 
+    @JsonIgnore
     protected Game game;
+
     protected int movesAvailable;
     protected int movesUpAvailable;
     protected int buildsAvailable;

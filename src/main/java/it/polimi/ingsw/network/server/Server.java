@@ -140,7 +140,8 @@ public class Server extends Thread {
                 } else if (usernames.values().size() > MAX_PLAYER_NUMBER) {
                     List<String> names = new ArrayList<>(usernames.keySet());
                     for (int i = MAX_PLAYER_NUMBER; i < names.size(); i++) {
-                        onDisconnect(names.get(i)); //TODO: can't do onDisconnect, we have to send a quit message and remove him from the map
+                        usernames.get(names.get(i)).closeConnection();
+                        this.usernames.remove(names.get(i));
                     }
                     names = new ArrayList<>(usernames.keySet());
                     lobby = new Lobby(messageParser, names);

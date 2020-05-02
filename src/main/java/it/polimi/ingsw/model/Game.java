@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.listeners.*;
@@ -12,8 +11,6 @@ import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.model.dataClass.TurnData;
 import it.polimi.ingsw.model.rules.RuleSetContext;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -193,14 +190,14 @@ public class Game implements GameInterface {
         currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
         currentRuleSet.doEffect();
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
+        //currentTurn.getCurrentPlayer().resetSelectedWorker();
         currentTurn = nextTurn;
 
-        if (endTurnListener != null)
-            endTurnListener.onTurnEnd(currentTurn.getCurrentPlayer().getName());
         if (currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
         }
-
+        else if (endTurnListener != null)
+            endTurnListener.onTurnEnd(currentTurn.getCurrentPlayer().getName());
     }
 
     private void removePlayer(Player player) {
@@ -210,15 +207,15 @@ public class Game implements GameInterface {
         }
         players.remove(player);
 
-        if (playerLostListener != null)
-            playerLostListener.onPlayerLoss(player.getName());
-
-
         if (players.size() == 1) {
             this.winner = players.get(0);
             if (endGameListener != null)
                 endGameListener.onEndGame(this.winner.getName());
         }
+
+        else if (playerLostListener != null)
+            playerLostListener.onPlayerLoss(player.getName(), buildBoardData());
+
         generateNextTurn();
 
     }

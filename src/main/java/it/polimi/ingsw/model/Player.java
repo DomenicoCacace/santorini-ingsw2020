@@ -12,13 +12,15 @@ import java.util.List;
 import java.util.Objects;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "idPlayer", scope = Player.class)
-@JsonPropertyOrder({"idPlayer", "name", "color", "workers"}) //Pulire
+@JsonPropertyOrder({"idPlayer", "name", "color", "workers", "selectedWorker"})
 public class Player implements PlayerInterface {
+
     private final String name;
     private final Color color;
     private final List<Worker> workers;
     private final God god;
     private Worker selectedWorker;
+
     private AddWorkerListener addWorkerListener;
     private BuildableCellsListener buildableCellsListener;
     private WalkableCellsListener walkableCellsListener;
@@ -90,7 +92,6 @@ public class Player implements PlayerInterface {
         action.getValidation(game);
         if (game.getCurrentTurn().getCurrentPlayer().equals(this)) {
             List<PossibleActions> possibleActions = god.getStrategy().getPossibleActions(this.selectedWorker);
-            //TODO: automatizza scelta azioni se size == 1
             //possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
             if (selectWorkerListener != null)
                 selectWorkerListener.onSelectedWorker(name, possibleActions, selectedWorker);
@@ -115,6 +116,11 @@ public class Player implements PlayerInterface {
         return name;
     }
 
+    @JsonGetter
+    private Worker getSelectedWorker() {
+        return selectedWorker;
+    }
+
     @Override
     public void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException {
         List<Block> buildingBlocks = god.getStrategy().getBlocks(selectedCell);
@@ -137,6 +143,18 @@ public class Player implements PlayerInterface {
         } else
             throw new NotYourWorkerException();
     }
+
+    /*
+    public void resetSelectedWorker(){
+        selectedWorker = null;
+    }
+
+    @Override
+    public boolean isSelectedWorker(){
+        return selectedWorker != null;
+    }
+
+     */
 
     @Override
     public void obtainWalkableCells() throws WrongSelectionException {

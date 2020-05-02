@@ -202,7 +202,7 @@ public class PrettyPrinter {
      *
      * @return a String containing the board
      */
-    private String emptyGameBoard() {
+    public String emptyGameBoard() {
         StringBuilder firstLine = new StringBuilder(TableDividers.TOP_LEFT_CORNER.toString());
         for (int cellNum = 0; cellNum < boardSize; cellNum++) {
             for (int i = 0; i < (maxPrintableSize() - boardSize) / boardSize; i++)

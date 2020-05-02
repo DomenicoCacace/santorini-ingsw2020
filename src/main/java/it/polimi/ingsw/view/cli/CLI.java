@@ -46,12 +46,6 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void turnBegin() {
-
-    }
-
-
-    @Override
     public void showGameBoard(List<Cell> gameBoard) {
         System.out.println(printer.getGameBoard(gameBoard) + "\r");
     }
@@ -187,7 +181,9 @@ public class CLI implements ViewInterface {
     @Override
     public String chooseStartingPlayer(List<String> players) {
         System.out.println("Choose the first player:");
-        return players.get(chooseFromList(players));
+        String initialPlayer = players.get(chooseFromList(players));
+        System.out.println(printer.emptyGameBoard());
+        return initialPlayer;
     }
 
     @Override
