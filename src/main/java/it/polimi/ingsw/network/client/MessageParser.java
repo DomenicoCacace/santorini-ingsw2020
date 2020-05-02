@@ -119,7 +119,10 @@ public class MessageParser implements ClientMessageManagerVisitor{
 
     @Override // Winner declaration, received by all users
     public void onWinnerDeclared(WinnerDeclaredResponse message) {
-        view.showSuccessMessage(message.getPayload() + " WON!");//view.displayWinner
+        if (message.getPayload().equals(client.getUsername()))
+            view.showSuccessMessage("You won!!");
+        else
+            view.showSuccessMessage(message.getPayload() + " WON!");//view.displayWinner
     }
 
     @Override  // Player removed, received by all users

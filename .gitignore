@@ -24,3 +24,5 @@ AM37.iml
 *.zip
 *.tar.gz
 *.rar
+
+src/main/resources/server/META-INF/

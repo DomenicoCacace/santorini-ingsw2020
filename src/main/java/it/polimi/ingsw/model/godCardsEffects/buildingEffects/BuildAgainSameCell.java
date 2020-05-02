@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.PossibleActions;
@@ -10,9 +11,11 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class BuildAgainSameCell extends BuildingStrategy {
 
     private Cell chosenCell;
+
 
     private BuildAgainSameCell(BuildAgainSameCell buildAgainSameCell, Game game) {
         this.game = game;

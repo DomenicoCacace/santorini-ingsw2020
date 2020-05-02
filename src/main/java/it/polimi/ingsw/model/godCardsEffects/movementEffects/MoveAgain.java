@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.PossibleActions;
@@ -10,10 +11,10 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MoveAgain extends MovementStrategy {
 
     private Cell startingCell;
-
 
     public MoveAgain() {
         super();
@@ -76,6 +77,11 @@ public class MoveAgain extends MovementStrategy {
         if (movedWorker != null)
             adjacentCells.remove(startingCell);
         return adjacentCells;
+    }
+
+    @Override
+    public boolean checkLoseCondition(MoveAction moveAction){
+        return (getBuildableCells(moveAction.getTargetWorker()).size()==0 && movesAvailable==0);
     }
 
     @Override

@@ -33,15 +33,13 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         this.playerMap = players;
         this.parser = parser;
         ///////////////////////////////////////////////File creation////////////////////////////////////////////////////
-        StringBuilder fileName = new StringBuilder();
-        List<String> usernames = new ArrayList<>(players.keySet());
-        for(String player: usernames) {
-            if (!(usernames.indexOf(player) == players.size() - 1))
-                fileName.append(player).append("_");
-            else
-                fileName.append(player);
-        }
-        file = new File("../"+fileName + ".json" );
+        StringBuilder orderedNames = new StringBuilder();
+        List<String> sortedNames = new ArrayList<>(players.keySet());
+        for(String name : sortedNames)
+            orderedNames.append(name).append("_");
+        orderedNames.deleteCharAt(orderedNames.length()-1);
+        orderedNames.append(".json");
+        file = new File("../"+orderedNames);
         try {
             file.createNewFile();
         } catch (IOException e) { //Cannot create file
@@ -210,7 +208,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onSelectedWorker(String username, List<PossibleActions> possibleActions, Worker selectedWorker) {
-        saveState();
         parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username, possibleActions, selectedWorker));
     }
 }

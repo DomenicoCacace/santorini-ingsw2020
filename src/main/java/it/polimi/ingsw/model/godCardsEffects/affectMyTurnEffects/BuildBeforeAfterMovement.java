@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.PossibleActions;
@@ -11,10 +12,13 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
 
     private boolean hasBuiltBefore;
     private Worker builder;
+
+
 
     private BuildBeforeAfterMovement(BuildBeforeAfterMovement buildBeforeAfterMovement, Game game) {
         this.game = game;

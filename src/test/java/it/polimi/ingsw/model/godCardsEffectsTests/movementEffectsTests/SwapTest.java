@@ -21,7 +21,7 @@ class SwapTest {
     private List<Player> players;
     private Game game;
     private Action moveAction;
-    private Cell myCell, myCell2;
+    private Cell myCell, opponentCell;
     Player currentPlayer;
 
     @BeforeEach
@@ -52,10 +52,10 @@ class SwapTest {
     @Test
     void correctSwapSameLevelTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
-        myCell2 = game.getGameBoard().getCell(4, 3);
+        opponentCell = game.getGameBoard().getCell(4, 3);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(opponentCell);
         game.generateNextTurn();
 
         currentPlayer = game.getCurrentTurn().getCurrentPlayer();
@@ -63,15 +63,15 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction = new MoveAction(myWorker, opponentCell);
         moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), myCell2);
+        assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker.getPosition(), myCell);
-        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(opponentCell.getOccupiedBy(), myWorker);
         assertEquals(myCell.getOccupiedBy(), opponentWorker);
 
     }
@@ -79,60 +79,60 @@ class SwapTest {
     @Test
     void correctSwapHigherOneLevelTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
-        myCell2 = game.getGameBoard().getCell(4, 2);
+        opponentCell = game.getGameBoard().getCell(4, 2);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(opponentCell);
 
         game.generateNextTurn();
         currentPlayer = game.getCurrentTurn().getCurrentPlayer();
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction = new MoveAction(myWorker, opponentCell);
         moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), myCell2);
+        assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker.getPosition(), myCell);
-        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(opponentCell.getOccupiedBy(), myWorker);
         assertEquals(myCell.getOccupiedBy(), opponentWorker);
     }
 
     @Test
     void correctSwapLowerAnyLevelTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 3);
-        myCell2 = game.getGameBoard().getCell(3, 2);
+        opponentCell = game.getGameBoard().getCell(3, 2);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(opponentCell);
 
         game.generateNextTurn();
         currentPlayer = game.getCurrentTurn().getCurrentPlayer();
 
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
-        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction = new MoveAction(myWorker, opponentCell);
         moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), myCell2);
+        assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker.getPosition(), myCell);
-        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(opponentCell.getOccupiedBy(), myWorker);
         assertEquals(myCell.getOccupiedBy(), opponentWorker);
     }
 
     @Test
     void cannotSwapTooHighTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
-        myCell2 = game.getGameBoard().getCell(3, 3);
+        opponentCell = game.getGameBoard().getCell(3, 3);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(opponentCell);
 
         game.generateNextTurn();
         currentPlayer = game.getCurrentTurn().getCurrentPlayer();
@@ -140,7 +140,7 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction = new MoveAction(myWorker, opponentCell);
         try {
             moveAction.getValidation(game);
         } catch (IllegalActionException e){
@@ -150,18 +150,18 @@ class SwapTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
-        assertEquals(opponentWorker.getPosition(), myCell2);
+        assertEquals(opponentWorker.getPosition(), opponentCell);
         assertEquals(myCell.getOccupiedBy(), myWorker);
-        assertEquals(myCell2.getOccupiedBy(), opponentWorker);
+        assertEquals(opponentCell.getOccupiedBy(), opponentWorker);
     }
 
     @Test
     void cannotSwapTooFarTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
-        myCell2 = game.getGameBoard().getCell(1, 2);
+        opponentCell = game.getGameBoard().getCell(1, 2);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(opponentCell);
 
         game.generateNextTurn();
         currentPlayer = game.getCurrentTurn().getCurrentPlayer();
@@ -169,7 +169,7 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker opponentWorker = players.get(1).getWorkers().get(0);
 
-        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction = new MoveAction(myWorker, opponentCell);
         try {
             moveAction.getValidation(game);
         } catch (IllegalActionException e){
@@ -180,20 +180,20 @@ class SwapTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
-        assertEquals(opponentWorker.getPosition(), myCell2);
+        assertEquals(opponentWorker.getPosition(), opponentCell);
         assertEquals(myCell.getOccupiedBy(), myWorker);
-        assertEquals(myCell2.getOccupiedBy(), opponentWorker);
+        assertEquals(opponentCell.getOccupiedBy(), opponentWorker);
     }
 
     @Test
     void cannotSwapTwiceTest() throws IOException, AddingFailedException, IllegalActionException {
         Cell secondCellOpponent;
         myCell = game.getGameBoard().getCell(3, 2);
-        myCell2 = game.getGameBoard().getCell(2, 2);
+        opponentCell = game.getGameBoard().getCell(2, 2);
         secondCellOpponent = game.getGameBoard().getCell(1, 2);
 
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(opponentCell);
         players.get(1).addWorker(secondCellOpponent);
 
         game.generateNextTurn();
@@ -203,7 +203,7 @@ class SwapTest {
         Worker opponentWorker1 = players.get(1).getWorkers().get(0);
         Worker opponentWorker2 = players.get(1).getWorkers().get(1);
 
-        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction = new MoveAction(myWorker, opponentCell);
         moveAction.getValidation(game);
 
         moveAction = new MoveAction(myWorker, secondCellOpponent);
@@ -215,10 +215,10 @@ class SwapTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), myCell2);
+        assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker1.getPosition(), myCell);
         assertEquals(opponentWorker2.getPosition(), secondCellOpponent);
-        assertEquals(myCell2.getOccupiedBy(), myWorker);
+        assertEquals(opponentCell.getOccupiedBy(), myWorker);
         assertEquals(myCell.getOccupiedBy(), opponentWorker1);
         assertEquals(opponentWorker2, secondCellOpponent.getOccupiedBy());
 
@@ -229,10 +229,10 @@ class SwapTest {
     @Test
     void cannotSwapWithMyWorkerTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
-        myCell2 = game.getGameBoard().getCell(4, 3);
+        opponentCell = game.getGameBoard().getCell(4, 3);
 
         players.get(0).addWorker(myCell);
-        players.get(0).addWorker(myCell2);
+        players.get(0).addWorker(opponentCell);
 
         game.generateNextTurn();
         currentPlayer = game.getCurrentTurn().getCurrentPlayer();
@@ -240,7 +240,7 @@ class SwapTest {
         Worker myWorker = currentPlayer.getWorkers().get(0);
         Worker myWorker2 = players.get(0).getWorkers().get(1);
 
-        moveAction = new MoveAction(myWorker, myCell2);
+        moveAction = new MoveAction(myWorker, opponentCell);
         try {
             moveAction.getValidation(game);
         } catch (IllegalActionException e){
@@ -250,44 +250,58 @@ class SwapTest {
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
-        assertEquals(myWorker2.getPosition(), myCell2);
+        assertEquals(myWorker2.getPosition(), opponentCell);
         assertEquals(myCell.getOccupiedBy(), myWorker);
-        assertEquals(myCell2.getOccupiedBy(), myWorker2);
+        assertEquals(opponentCell.getOccupiedBy(), myWorker2);
     }
 
     @Test
-    void cannotKillYourselfTest() throws IOException, AddingFailedException, IllegalActionException {
+    void cannotKillYourselfIfYouCanMoveWithOtherWorkerTest() throws AddingFailedException {
+        myCell = game.getGameBoard().getCell(3, 2);
+        opponentCell = game.getGameBoard().getCell(4, 2);
+        game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
         game.getGameBoard().getCell(4,1).setBlock(Block.DOME);
         game.getGameBoard().getCell(4,3).setBlock(Block.DOME);
         game.getGameBoard().getCell(3,3).setBlock(Block.DOME);
-
-        myCell = game.getGameBoard().getCell(3, 2);
-        myCell2 = game.getGameBoard().getCell(4, 2);
-
+        game.getGameBoard().getCell(2,0).setBlock(Block.DOME);
+        game.getGameBoard().getCell(2,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,0).setBlock(Block.LEVEL1);
+        players.get(0).addWorker(game.getGameBoard().getCell(4,0));
         players.get(0).addWorker(myCell);
-        players.get(1).addWorker(myCell2);
+        players.get(1).addWorker(opponentCell);
+        players.get(1).addWorker(game.getGameBoard().getCell(3,0));
         game.generateNextTurn();
 
-        currentPlayer = game.getCurrentTurn().getCurrentPlayer();
+        assertEquals(0, game.getWalkableCells(players.get(0).getWorkers().get(0)).size());
+        assertEquals(2, game.getWalkableCells(players.get(0).getWorkers().get(1)).size());
+        assertEquals(game.getGameBoard().getCell(2,2), game.getWalkableCells(players.get(0).getWorkers().get(1)).get(0));
+        assertEquals(game.getGameBoard().getCell(2,3), game.getWalkableCells(players.get(0).getWorkers().get(1)).get(1));
+    }
 
-        Worker myWorker = currentPlayer.getWorkers().get(0);
-        Worker opponentWorker = players.get(1).getWorkers().get(0);
+    @Test
+    void canKillYourselfIfIsTheOnlyOptionTest() throws AddingFailedException {
+        myCell = game.getGameBoard().getCell(3, 2);
+        opponentCell = game.getGameBoard().getCell(4, 2);
+        game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL1);
+        game.getGameBoard().getCell(4,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(2,3).setBlock(Block.DOME);
+        game.getGameBoard().getCell(2,2).setBlock(Block.DOME);
+        game.getGameBoard().getCell(4,3).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,3).setBlock(Block.DOME);
+        game.getGameBoard().getCell(2,0).setBlock(Block.DOME);
+        game.getGameBoard().getCell(2,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,0).setBlock(Block.LEVEL1);
+        players.get(0).addWorker(game.getGameBoard().getCell(4,0));
+        players.get(0).addWorker(myCell);
+        players.get(1).addWorker(opponentCell);
+        players.get(1).addWorker(game.getGameBoard().getCell(3,0));
+        game.generateNextTurn();
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-
-        moveAction = new MoveAction(myWorker, myCell2);
-        try {
-            moveAction.getValidation(game);
-        } catch (IllegalActionException e){
-            e.getMessage();
-        }
-
-        assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
-        assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(myWorker.getPosition(), myCell);
-        assertEquals(opponentWorker.getPosition(), myCell2);
-        assertEquals(myCell.getOccupiedBy(), myWorker);
-        assertEquals(myCell2.getOccupiedBy(), opponentWorker);
+        assertEquals(1, game.getWalkableCells(players.get(0).getWorkers().get(0)).size());
+        assertEquals(game.getGameBoard().getCell(3,0), game.getWalkableCells(players.get(0).getWorkers().get(0)).get(0));
+        assertEquals(1, game.getWalkableCells(players.get(0).getWorkers().get(1)).size());
+        assertEquals(game.getGameBoard().getCell(4,2), game.getWalkableCells(players.get(0).getWorkers().get(1)).get(0));
     }
 }

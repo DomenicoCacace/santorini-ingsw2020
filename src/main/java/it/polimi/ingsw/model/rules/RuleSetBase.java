@@ -163,6 +163,11 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
+    public boolean checkLoseCondition(MoveAction moveAction){
+        return (getBuildableCells(moveAction.getTargetWorker()).size()==0);
+    }
+
+    @Override
     public boolean checkLoseCondition() {
         /* calling this function at the beginning of the turn
          * to check if the player can make a move

@@ -39,27 +39,21 @@ public class Lobby {
     }
 
     private boolean checkSavedGame(){
-        StringBuilder userPermutation = new StringBuilder();
-        List<String> usernameToRotate = new ArrayList<>(userNames);
-        for(int i = 0; i < usernameToRotate.size(); i++){
-            for(String player: usernameToRotate) { //TODO: alphabetic order
-                if (!(usernameToRotate.indexOf(player) == (usernameToRotate.size() - 1)))
-                    userPermutation.append(player).append("_");
-                else
-                    userPermutation.append(player).append(".json");
-            }
-            System.out.println(userPermutation);
-            savedGame = new File("../" + userPermutation);
-            if(savedGame.exists()) {
-                return true;
-            }
-            else {
-                userPermutation = new StringBuilder();
-                Collections.rotate(usernameToRotate, 1);
-            }
+        StringBuilder orderedNames = new StringBuilder();
+        List<String> sortedNames = userNames.stream().sorted().collect(Collectors.toList());
+        for(String name : sortedNames)
+            orderedNames.append(name).append("_");
+        orderedNames.deleteCharAt(orderedNames.length()-1);
+        orderedNames.append(".json");
+        System.out.println(orderedNames);
+        savedGame = new File("../" + orderedNames);
+        if(savedGame.exists()) {
+            return true;
         }
-        savedGame = null;
-        return false;
+        else {
+            savedGame = null;
+            return false;
+        }
     }
 
     public void reloadMatch(boolean wantToReload){

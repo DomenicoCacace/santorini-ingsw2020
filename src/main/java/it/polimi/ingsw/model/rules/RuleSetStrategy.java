@@ -58,6 +58,8 @@ public interface RuleSetStrategy {
 
     boolean checkWinCondition(MoveAction action);
 
+    boolean checkLoseCondition(MoveAction moveAction);
+
     boolean checkLoseCondition();
 
     List<Cell> getBuildableCells(Worker worker);

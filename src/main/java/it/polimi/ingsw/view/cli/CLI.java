@@ -83,41 +83,31 @@ public class CLI implements ViewInterface {
 
     @Override
     public Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
-        if (walkableCells.size() == 0) {
-            showErrorMessage("No walkable cells available.");
-            return null;//TODO: make the player choose another action(?)
-        } else {
-            System.out.println(printer.highlightCells(gameBoard, walkableCells));   //TODO: enhance
-            while (true) {
-                System.out.println("Choose a cell to step on:");
-                Cell chosenCell = chooseCell();
-                for (Cell cell : walkableCells) {
-                    if (cell.getCoordX() == chosenCell.getCoordX() && cell.getCoordY() == chosenCell.getCoordY())
-                        /* cannot use the .equals() method, as it checks other attributes too*/
-                        return cell;
-                }
-                showErrorMessage("You can't go on that cell!");
+        System.out.println(printer.highlightCells(gameBoard, walkableCells));   //TODO: enhance
+        while (true) {
+            System.out.println("Choose a cell to step on:");
+            Cell chosenCell = chooseCell();
+            for (Cell cell : walkableCells) {
+                if (cell.getCoordX() == chosenCell.getCoordX() && cell.getCoordY() == chosenCell.getCoordY())
+                    /* cannot use the .equals() method, as it checks other attributes too*/
+                    return cell;
             }
+            showErrorMessage("You can't go on that cell!");
         }
     }
 
     @Override
     public Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
-        if (buildableCells.size() == 0) {
-            showErrorMessage("No buildable cells available.");
-            return null;//TODO: make the player choose another action(?)
-        } else {
-            System.out.println(printer.highlightCells(gameBoard, buildableCells));   //TODO: enhance
-            while (true) {  //TODO: might extract private method for move/buildAction
-                System.out.println("Choose a cell to build on:");
-                Cell chosenCell = chooseCell();
-                for (Cell cell : buildableCells) {
-                    if (cell.getCoordX() == chosenCell.getCoordX() && cell.getCoordY() == chosenCell.getCoordY())
-                        /* cannot use the .equals() method, as it checks other attributes too*/
-                        return cell;
-                }
-                showErrorMessage("You can't build on that cell!");
+        System.out.println(printer.highlightCells(gameBoard, buildableCells));   //TODO: enhance
+        while (true) {  //TODO: might extract private method for move/buildAction
+            System.out.println("Choose a cell to build on:");
+            Cell chosenCell = chooseCell();
+            for (Cell cell : buildableCells) {
+                if (cell.getCoordX() == chosenCell.getCoordX() && cell.getCoordY() == chosenCell.getCoordY())
+                    /* cannot use the .equals() method, as it checks other attributes too*/
+                    return cell;
             }
+            showErrorMessage("You can't build on that cell!");
         }
     }
 

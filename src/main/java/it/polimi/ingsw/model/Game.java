@@ -135,13 +135,16 @@ public class Game implements GameInterface {
             moveAction.apply();
             if (moveActionListener != null)
                 moveActionListener.onMoveAction(buildBoardData());
-            if (currentRuleSet.checkWinCondition(moveAction)) {
-                this.winner = currentTurn.getCurrentPlayer();
-                if (endGameListener != null) {
-                    endGameListener.onEndGame(winner.getName());
+            if(currentRuleSet.checkLoseCondition(moveAction))
+                removePlayer(currentTurn.getCurrentPlayer());
+            else {
+                if (currentRuleSet.checkWinCondition(moveAction)) {
+                    this.winner = currentTurn.getCurrentPlayer();
+                    if (endGameListener != null) {
+                        endGameListener.onEndGame(winner.getName());
+                    }
                 }
             }
-
         } else
             throw new IllegalActionException();
     }
