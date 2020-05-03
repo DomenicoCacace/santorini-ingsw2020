@@ -12,6 +12,7 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -32,6 +33,12 @@ public class MessageParser implements ClientMessageManagerVisitor{
     public void onLogin(LoginResponse message) {
         if (message.getOutcome().equals("OK")) {
             view.showSuccessMessage("Login successful!");
+            try {
+                client.writeSettingsToFile(client.getIpAddress(), client.getUsername());
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.print("Cannot modify config file!");
+            }
             // view.displayLobby;
         } else {
             view.showErrorMessage("Error " + message.getOutcome());
@@ -44,6 +51,12 @@ public class MessageParser implements ClientMessageManagerVisitor{
                 client.stopConnection();
             }
         }
+    }
+
+    @Override
+    public void onGameBoardUpdate(GameBoardMessage message) {
+        gameboard=message.getGameBoard();
+        view.showGameBoard(message.getGameBoard());
     }
 
     @Override // Move action response

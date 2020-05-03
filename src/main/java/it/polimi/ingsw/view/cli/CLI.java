@@ -24,8 +24,40 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public String askIP(){
+    public List<String> askToReloadLastSettings(List<String> savedUsers) {
+        System.out.print("\t\tThere are some settings saved! do you want to load one of them? [" + YES + "/" + NO + "]: ");
+        List<String> chosenConfig = new ArrayList<>();
+        while (true) {
+            SafeScanner scanner = new SafeScanner(System.in);
+            String input = scanner.nextLine();
+            if (input.equals(YES)) {
+                System.out.println("Select the config you want to load!");
+                List<String> savedConfigs = new LinkedList<>();
+                savedConfigs.add("Use a different username/IP instead!");
+                for (int i = 1; i <= savedUsers.size(); i += 2) {
+                    savedConfigs.add(savedUsers.get(i) + " -- " + savedUsers.get(i - 1)); //This convert
+                }
+                int index = chooseFromList(savedConfigs);
+                if (index != 0) { //If index == 0 the player chose to manually input user/Ip
+                    index--;
+                    index = index*2;
+                    chosenConfig.add(savedUsers.get(index));
+                    chosenConfig.add(savedUsers.get(index+1));
+                }
+                return chosenConfig;
+            } else if (input.equals(NO))
+                return chosenConfig;
+            System.out.println("please insert a correct option: (" + YES + "/" + NO + ")");
+        }
+    }
+
+    @Override
+    public void printLogo(){
         printer.printLogin();
+    }
+
+    @Override
+    public String askIP(){
         SafeScanner scanner = new SafeScanner(System.in);
         System.out.print("\t\tInsert the server address: ");
         return scanner.nextLine();
@@ -70,7 +102,7 @@ public class CLI implements ViewInterface {
             String input = scanner.nextLine();
             if (input.equals(YES))
                 return true;
-            if (input.equals(NO))
+            else if (input.equals(NO))
                 return false;
         }
     }
@@ -181,9 +213,7 @@ public class CLI implements ViewInterface {
     @Override
     public String chooseStartingPlayer(List<String> players) {
         System.out.println("Choose the first player:");
-        String initialPlayer = players.get(chooseFromList(players));
-        System.out.println(printer.emptyGameBoard());
-        return initialPlayer;
+        return players.get(chooseFromList(players));
     }
 
     @Override

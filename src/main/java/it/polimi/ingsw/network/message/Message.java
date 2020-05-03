@@ -69,7 +69,7 @@ public abstract class Message {
     public enum Content { //FIXME: We use content only to check if the message is a login or choose_player_number, we don't need all the others
         LOGIN, PLAYER_MOVE, PLAYER_BUILD, SELECT_BUILDING_CELL, RELOAD_MATCH,
         END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, STARTING_PLAYER, WINNER_DECLARED,
-        PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER,
+        PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER, GAMEBOARD,
         WALKABLE_CELLS, BUILDABLE_CELLS, CHOSEN_GODS, GAME_START, WORKER_POSITION
     }
 }

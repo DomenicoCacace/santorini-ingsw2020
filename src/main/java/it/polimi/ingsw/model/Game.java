@@ -190,7 +190,7 @@ public class Game implements GameInterface {
         currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
         currentRuleSet.doEffect();
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
-        //currentTurn.getCurrentPlayer().resetSelectedWorker();
+        currentTurn.getCurrentPlayer().resetSelectedWorker();
         currentTurn = nextTurn;
 
         if (currentRuleSet.checkLoseCondition()) {

@@ -121,6 +121,10 @@ public class Player implements PlayerInterface {
         return selectedWorker;
     }
 
+    public void resetSelectedWorker(){
+        this.selectedWorker=null;
+    }
+
     @Override
     public void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException {
         List<Block> buildingBlocks = god.getStrategy().getBlocks(selectedCell);
@@ -143,18 +147,6 @@ public class Player implements PlayerInterface {
         } else
             throw new NotYourWorkerException();
     }
-
-    /*
-    public void resetSelectedWorker(){
-        selectedWorker = null;
-    }
-
-    @Override
-    public boolean isSelectedWorker(){
-        return selectedWorker != null;
-    }
-
-     */
 
     @Override
     public void obtainWalkableCells() throws WrongSelectionException {
@@ -189,7 +181,9 @@ public class Player implements PlayerInterface {
     public PlayerData buildDataClass() {
         List<Worker> workersData = new ArrayList<>();
         this.workers.forEach(worker -> workersData.add(worker.cloneWorker()));
-        return new PlayerData(this.name, this.color, workersData, god.buildDataClass());
+        if(selectedWorker!=null)
+            return new PlayerData(this.name, this.color, workersData, god.buildDataClass(), selectedWorker.cloneWorker());
+        return new PlayerData(this.name, this.color, workersData, god.buildDataClass(), null);
     }
 
     public void setAddWorkerListener(AddWorkerListener addWorkerListener) {

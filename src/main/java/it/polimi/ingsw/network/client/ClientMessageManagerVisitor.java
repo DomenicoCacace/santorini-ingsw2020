@@ -25,5 +25,6 @@ public interface ClientMessageManagerVisitor {
     void onGameStart(GameStartResponse message);
     void onQuit(QuitRequest message);
     void chooseToReloadMatch(ChooseToReloadMatchRequest message);
+    void onGameBoardUpdate(GameBoardMessage message);
 
 }

@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface ViewInterface {
 
+    List<String> askToReloadLastSettings(List<String> savedUsers);
+
+    void printLogo();
+
     String askIP();
 
     String askUsername();

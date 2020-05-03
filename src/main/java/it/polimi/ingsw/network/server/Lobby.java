@@ -8,10 +8,14 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardMessage;
 import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResponse;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,7 +42,7 @@ public class Lobby {
        else askGods(new ArrayList<>(godsMap.keySet()));
     }
 
-    private boolean checkSavedGame(){
+    private boolean checkSavedGame() throws IOException {
         StringBuilder orderedNames = new StringBuilder();
         List<String> sortedNames = userNames.stream().sorted().collect(Collectors.toList());
         for(String name : sortedNames)
@@ -48,12 +52,11 @@ public class Lobby {
         System.out.println(orderedNames);
         savedGame = new File("../" + orderedNames);
         if(savedGame.exists()) {
-            return true;
+            if(!Files.readString(Paths.get(String.valueOf(savedGame))).isBlank())
+                return true;
         }
-        else {
-            savedGame = null;
-            return false;
-        }
+        savedGame = null;
+        return false;
     }
 
     public void reloadMatch(boolean wantToReload){
@@ -72,7 +75,7 @@ public class Lobby {
                 playerMap.keySet().forEach(s -> playerInterfaces.put(s, playerMap.get(s)));
                 ServerController controller = new ServerController(restoredGame, playerInterfaces, parser);
                 parser.setServerController(controller);
-                parser.parseMessageFromServerToClient(new GameStartResponse("OK", restoredGame.buildGameData()));
+                controller.handleGameRestore();
             }
         } else askGods(new ArrayList<>(godsMap.keySet()));
     }
@@ -127,6 +130,7 @@ public class Lobby {
         GameInterface game = new Game(board, players);
         ServerController controller = new ServerController(game, playerInterfaces, parser);
         parser.setServerController(controller);
+        parser.parseMessageFromServerToClient(new GameBoardMessage(players.get(0).getName(), game.buildBoardData()));
         parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), game.buildBoardData()));
     }
 

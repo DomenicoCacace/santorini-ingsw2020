@@ -7,6 +7,7 @@ import it.polimi.ingsw.listeners.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
@@ -66,6 +67,19 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         } catch (IOException e) { //Cannot create file
             e.printStackTrace();
         }
+    }
+
+    public void handleGameRestore(){
+        PlayerData currPlayerData = game.buildGameData().getCurrentTurn().getCurrentPlayer();
+        PlayerInterface currPlayerInterface=  playerMap.get(currPlayerData.getName());
+        if(currPlayerData.getSelectedWorker()!=null) { //Now i have selectedWorker inside the playerDataClass
+            try {
+                parser.parseMessageFromServerToClient(new GameBoardMessage(currPlayerData.getName(), game.buildBoardData())); //need this otherwise client doesn't have gameboard saved locally!
+                currPlayerInterface.setSelectedWorker(currPlayerData.getSelectedWorker());//simulate a setWorker, in this way the player will call the SelectWorkerlistener.
+            } catch (NotYourWorkerException e) {
+                e.printStackTrace(); //shouldn't go here
+            }
+        } else  parser.parseMessageFromServerToClient(new GameStartResponse("OK", game.buildGameData()));
     }
 
     public void addWorker(String username, Cell cell) {
@@ -160,16 +174,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         }
     }
 
-    /*
-    public void restoreStatus(){
-        for(PlayerInterface playerInterface : playerMap.values()){
-            if(playerInterface.isSelectedWorker())
-
-        }
-    }
-
-     */
-
     @Override
     public void onMoveAction(List<Cell> cells) {
         saveState();
@@ -178,7 +182,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onWorkerAdd(List<Cell> cells) {
-        //saveState();
         parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", "broadcast", cells));
     }
 
@@ -228,6 +231,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onSelectedWorker(String username, List<PossibleActions> possibleActions, Worker selectedWorker) {
+        saveState();
         parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username, possibleActions, selectedWorker));
     }
 }
