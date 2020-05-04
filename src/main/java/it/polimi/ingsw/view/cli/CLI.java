@@ -150,8 +150,6 @@ public class CLI implements ViewInterface {
     @Override
     public void showErrorMessage(String error) {
         printer.printError(error);   //TODO: enhance
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
     }
 
     @Override

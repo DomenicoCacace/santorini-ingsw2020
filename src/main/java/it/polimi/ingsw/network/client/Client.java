@@ -25,40 +25,47 @@ public class Client {
         this.ipAddress = ipAddress;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ViewInterface viewInterface;
         try {
         if (args.length == 0 || !args[0].equals("--GUI"))
             viewInterface = new CLI();
         else
             viewInterface = new CLI(); //FIXME: implement gui
-        List<String> loginData = new ArrayList<>();
-        viewInterface.printLogo();
-        if (!CONFIG_FILE.createNewFile()) {
-            FileReader fileReader = new FileReader(CONFIG_FILE);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line;
-            List<String> savedUsers = new ArrayList<>();
-            while ((line = bufferedReader.readLine()) != null) {
-                savedUsers.add(line);
-                savedUsers.add(bufferedReader.readLine());
-            }
-            bufferedReader.close();
-            if ((loginData = viewInterface.askToReloadLastSettings(savedUsers)).size()==0) {
-                loginData.add(viewInterface.askIP());
-                loginData.add(viewInterface.askUsername());
-            }
-        } else { //If the file is empty
-            loginData.add(viewInterface.askIP());
-            loginData.add(viewInterface.askUsername());
-        }
-        Client client = new Client(loginData.get(1), loginData.get(0), viewInterface);
-        client.startConnection();
+            initClient(viewInterface);
         } catch (IOException e) {
             System.out.println("Error: resources not found");
             System.exit(1);
         }
         //TODO: Here I ask the user if he wants to use the Cli/Gui
+    }
+
+    public static void initClient(ViewInterface viewInterface){
+        List<String> loginData = new ArrayList<>();
+        viewInterface.printLogo();
+        try {
+            if (!CONFIG_FILE.createNewFile()) {
+                FileReader fileReader = new FileReader(CONFIG_FILE);
+                BufferedReader bufferedReader = new BufferedReader(fileReader);
+                String line;
+                List<String> savedUsers = new ArrayList<>();
+                while ((line = bufferedReader.readLine()) != null) {
+                    savedUsers.add(line);
+                    savedUsers.add(bufferedReader.readLine());
+                }
+                bufferedReader.close();
+                if ((loginData = viewInterface.askToReloadLastSettings(savedUsers)).size()==0) {
+                    loginData.add(viewInterface.askIP());
+                    loginData.add(viewInterface.askUsername());
+                }
+            } else { //If the file is empty
+                loginData.add(viewInterface.askIP());
+                loginData.add(viewInterface.askUsername());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        new Client(loginData.get(1), loginData.get(0), viewInterface).startConnection();
     }
 
     public void writeSettingsToFile(String ip, String username) throws IOException {
@@ -108,13 +115,18 @@ public class Client {
          */
     public void startConnection() {
         networkHandler = new NetworkHandler(this);
-        new Thread(networkHandler).start();
         networkHandler.login(this.username);
+        new Thread(networkHandler).start();
     }
 
     public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
-        if (currentPlayer)
-            networkHandler.sendMessage(message);
+        if (currentPlayer) {
+            try {
+                networkHandler.sendMessage(message);
+            } catch (IOException e) {
+                networkHandler.closeConnection();
+            }
+        }
     }
 
 

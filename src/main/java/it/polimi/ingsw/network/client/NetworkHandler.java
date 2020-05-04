@@ -22,15 +22,15 @@ public class NetworkHandler implements Runnable {
     private MessageParser parser;
 
     public NetworkHandler(Client client) {
+        this.jacksonParser = new JacksonMessageBuilder();
+        this.client = client;
+        this.openConnection = true;
+        this.parser = new MessageParser(client);
         try {
-            this.client = client;
-            this.jacksonParser = new JacksonMessageBuilder();
             this.socketClient = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
             this.inputSocket = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
             this.outputSocket = new OutputStreamWriter(socketClient.getOutputStream());
             this.outputSocket.flush();
-            this.openConnection = true;
-            this.parser = new MessageParser(client);
         } catch (IOException e) {
             this.openConnection = false;
         }
@@ -40,22 +40,18 @@ public class NetworkHandler implements Runnable {
     public void run() {
         while (openConnection) {
             String ioData;
-
             try {
                 ioData = inputSocket.readLine();
                 //System.out.println(ioData);
             } catch (IOException e) {
-                System.out.println("IOEXception");
+                System.out.println("IOException");
                 break;
             }
-
             if (ioData == null) {
                 openConnection = false;
-                client.getView().showSuccessMessage("The server has been terminated unexpectedly. Disconnecting...");
-                closeConnection();
+                client.getView().showErrorMessage("You have been disconnected");
                 break;
             }
-
             Message message;
             try {
                 message = jacksonParser.fromStringToMessage(ioData);
@@ -63,14 +59,18 @@ public class NetworkHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
-        client.getView().showErrorMessage("You have been disconnected");
+        Client.initClient(client.getView());
     }
 
     public void login(String username) {
-        sendMessage(new LoginRequest(username));
-        client.getView().showSuccessMessage("Login request sent, waiting for a response...");
+        try {
+            sendMessage(new LoginRequest(username));
+            client.getView().showSuccessMessage("Login request sent, waiting for a response...");
+        } catch (IOException e) {
+            closeConnection();
+        }
+
     }
 
 
@@ -81,23 +81,18 @@ public class NetworkHandler implements Runnable {
             inputSocket.close();
             socketClient.close();
         } catch (Exception e) {
-            client.getView().showErrorMessage("The connection was already closed!\n");
-            e.printStackTrace();
+            client.getView().showErrorMessage("Couldn't connect to the server with IP address: " + client.getIpAddress() + "!\n");
         }
     }
 
-    public synchronized void sendMessage(Message message) {
+    public synchronized void sendMessage(Message message) throws IOException {
         String json = jacksonParser.fromMessageToString(message);
-        try {
+        if(openConnection) {
             outputSocket.write(json + "\n");
             outputSocket.flush();
-            //To Debug
             System.out.println(json + "message sent from " + client.getUsername() + " to Server");
-            //
-        } catch (Exception e) {
-            closeConnection();
         }
+        else throw new IOException();
     }
-
 }
 
