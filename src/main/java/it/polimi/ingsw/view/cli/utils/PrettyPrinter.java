@@ -1,80 +1,75 @@
 package it.polimi.ingsw.view.cli.utils;
 
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.GameBoard;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
 /**
  * Console Printing Utilities
- */
-public class PrettyPrinter {
 
-    private final int width;
-    private final int height;
-    private final int boardSize;
-    private final int rowToColumnRatio;
-    private final int horizontalDashes;
-    private final int verticalDashes;
+ * </p>
+ */
+ public class PrettyPrinter {
+    private final int verticalWallWidth;
+    private final int horizontalWallWidth;
+    private final int cellWidth;
+    private final int cellHeight;
+    private final List<PrintableObject> buildingBlocks;
+    private final List<PrintableObject> workers;
+    private final PrintableObject cellFrame;
+    private final String[][] emptyBoard;
+    private final String[][] logo;
+    private List<Cell> lastGameBoardPrinted;
+    private final String[][] cachedBoard;
 
     /**
      * Default constructor
      * <p>
-     * Loads its values from a file
+     * Loads the <i>graphics</i> from file into PrintableObjects
      * </p>
-     */
-    public PrettyPrinter() {
-        this.width = 145;
-        this.height = 125;
-        this.boardSize = 5;
-        this.rowToColumnRatio = 3;
-        this.horizontalDashes = (maxPrintableSize() - boardSize - 1) / boardSize;
-        this.verticalDashes = horizontalDashes / rowToColumnRatio;
+  */
+    public PrettyPrinter() throws IOException {
+        // FIXME: Load from configuration file
+        int tableWidth = 120 + 1;  // includes the ansi reset sequence as last element
+        int tableHeight = 61;
+        this.verticalWallWidth = 2;
+        this.horizontalWallWidth = 1;
+        this.cellWidth = 21+1;
+        this.cellHeight = 11;
+
+        buildingBlocks = new ArrayList<>();
+        workers = new ArrayList<>();
+
+        emptyBoard = new PrintableObject(this.getClass().getResourceAsStream("board.art"), tableWidth, tableHeight).getObject();
+        cachedBoard = cloneMatrix(emptyBoard);
+        lastGameBoardPrinted = new GameBoard().getAllCells();
+
+        cellFrame = new PrintableObject(this.getClass().getResourceAsStream("cellFrame.art"), cellWidth, cellHeight);
+
+        logo = new PrintableObject(this.getClass().getResourceAsStream("mainLogo.art"), 151, 24).getObject();
+
+        buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream("blocks/firstLevelTop.art"), cellWidth, cellHeight));
+        buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream("blocks/secondLevelTop.art"), cellWidth, cellHeight));
+        buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream("blocks/thirdLevelTop.art"), cellWidth, cellHeight));
+        buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream("blocks/domeTop.art"), cellWidth, cellHeight));
+
+        workers.add(new PrintableObject(this.getClass().getResourceAsStream("workers/blueWorker.art"), cellWidth, cellHeight));
+        workers.add(new PrintableObject(this.getClass().getResourceAsStream("workers/greenWorker.art"), cellWidth, cellHeight));
+        workers.add(new PrintableObject(this.getClass().getResourceAsStream("workers/redWorker.art"), cellWidth, cellHeight));
     }
 
     /**
      * Prints the login screen
      */
     public void printLogin() {
-        String text = fileToString(this.getClass().getResourceAsStream("mainLogo.txt"));
-        System.out.println(text);
-    }
-
-    /**
-     * Provides the game board
-     * <p>
-     * Provides a string containing the full board representation, starting from a list of {@linkplain Cell}s
-     * containing ALL the cells of the game board (25 total cells by default)
-     * </p>
-     *
-     * @param cells the game board, represented as an array of cells
-     */
-    public String getGameBoard(List<Cell> cells) {
-        StringBuilder board = new StringBuilder(emptyGameBoard());
-
-        int center;
-        for (Cell cell : cells) {
-            center = (horizontalDashes - cell.getBlock().toString().length()) / 2 + 2;
-            board.replace((maxPrintableSize() + 1) * (2 + cell.getCoordX() * (1 + verticalDashes)) +
-                            cell.getCoordX() * (1 + verticalDashes) + 1 +
-                            cell.getCoordY() * (horizontalDashes + 2) + center,
-                    (maxPrintableSize() + 1) * (2 + cell.getCoordX() * (1 + verticalDashes)) +
-                            cell.getCoordX() * (1 + verticalDashes) + 1 +
-                            cell.getCoordY() * (horizontalDashes + 2) + cell.getBlock().toString().length() + center,
-                    cell.getBlock().name());
-            if (cell.getOccupiedBy() != null) {
-                center = (horizontalDashes - cell.getOccupiedBy().getColor().toString().length()) / 2 + 2;
-                board.replace((maxPrintableSize() + 1) * (4 + cell.getCoordX() * (1 + verticalDashes)) +
-                                cell.getCoordX() * (1 + verticalDashes) + 1 +
-                                cell.getCoordY() * (horizontalDashes + 4) + center,
-                        (maxPrintableSize() + 1) * (4 + cell.getCoordX() * (1 + verticalDashes)) +
-                                cell.getCoordX() * (1 + verticalDashes) + 1 +
-                                cell.getCoordY() * (horizontalDashes + 4) + cell.getOccupiedBy().getColor().toString().length() + center,
-                        cell.getOccupiedBy().getColor().toString());
-            }
-        }
-        return board.toString();
+        showMatrix(logo);
     }
 
     /**
@@ -87,185 +82,182 @@ public class PrettyPrinter {
     }
 
     /**
-     * Provides a game board with highlighted cells
-     * <p>
-     * Given:
-     * <ul>
-     *     <li>n: number of horizontal dashes per cell</li>
-     *     <li>k: ratio between horizontal and vertical dashes</li>
-     *     <li>len: length of a row, including the '\n' character (maxPrintableSize() + 1)</li>
-     *     <li>x: the X coordinate of the cell to highlight</li>
-     *     <li>y: the Y coordinate of the cell to highlight</li>
-     * </ul>
-     * we can define a bijection between the printed matrix and the string; for example, to find the position of the
-     * top left corner of the frame for a cell, we can apply the following formula:
-     * <br>
-     * <code>
-     *     TCL = (len*(1+x*n/k)) + (x*(1+n/k)+1) + (y*(2+n)) + 1
-     * </code>
-     * where:
-     * <ul>
-     * <li><code>len*(1+x*(1+k/n))</code> is the vertical offset per board row</li>
-     * <li><code>x*(1+n/k)+1</code> is the number of '\n' characters at the end of each line</li>
-     * <li><code>y*(2+n)</code> is the horizontal offset per board column</li>
-     * <li><code>+1</code> to "move" into the top left corner</li>
-     * </ul>
-     * By changing the factors of the equation, we can obtain every position inside the drawn cell, in order to draw
-     * a frame to highlight some cells.
-     * <br>
-     * Could probably be organized better but it's not worth it, so we'll leave it as is.
-     * </p>
-     *
-     * @param gameBoard the board to build
-     * @param cells,    the list of cells to highlight
-     * @return the board, as a string, with highlighted cells
+     * Prints an error message
+     * @param error the error message to print
      */
-    public String highlightCells(List<Cell> gameBoard, List<Cell> cells) {
-        String board = getGameBoard(gameBoard);
-        StringBuilder toPrint = new StringBuilder(String.valueOf(board));
-        for (Cell cell : cells) {
-
-            toPrint.setCharAt((maxPrintableSize() + 1) * (1 + cell.getCoordX() * (1 + verticalDashes)) +
-                            cell.getCoordX() * (1 + verticalDashes) + 1 +
-                            cell.getCoordY() * (horizontalDashes + 2) + 1,
-                    TableDividers.TOP_LEFT_CORNER.getAsChar());
-
-            for (int i = 1; i < horizontalDashes; i++) {
-                toPrint.setCharAt((maxPrintableSize() + 1) * (1 + cell.getCoordX() * (1 + verticalDashes)) +
-                                cell.getCoordX() * (1 + verticalDashes) + 1 +
-                                cell.getCoordY() * (horizontalDashes + 2) + 1 + i,
-                        TableDividers.HORIZONTAL_LINE.getAsChar());
-
-                toPrint.setCharAt((maxPrintableSize() + 1) * (verticalDashes + cell.getCoordX() * (1 + verticalDashes)) +
-                                cell.getCoordX() * (1 + verticalDashes) + verticalDashes +
-                                cell.getCoordY() * (horizontalDashes + 2) + 1 + i,
-                        TableDividers.HORIZONTAL_LINE.getAsChar());
-            }
-
-            for (int i = 2; i < verticalDashes; i++) {
-                toPrint.setCharAt((maxPrintableSize() + 1) * (i + cell.getCoordX() * (1 + verticalDashes)) +
-                                (cell.getCoordX()) * (1 + verticalDashes) + i +
-                                cell.getCoordY() * (horizontalDashes + 2) + 1,
-                        TableDividers.VERTICAL_LINE.getAsChar());
-
-                toPrint.setCharAt((maxPrintableSize() + 1) * (i + cell.getCoordX() * (1 + verticalDashes)) +
-                                (cell.getCoordX()) * (1 + verticalDashes) + i +
-                                cell.getCoordY() * (horizontalDashes + 2) + horizontalDashes + 1,
-                        TableDividers.VERTICAL_LINE.getAsChar());
-            }
-
-            toPrint.setCharAt((maxPrintableSize() + 1) * (1 + cell.getCoordX() * (1 + verticalDashes)) +
-                            cell.getCoordX() * (1 + verticalDashes) + 2 +
-                            cell.getCoordY() * (horizontalDashes + 2) + horizontalDashes,
-                    TableDividers.TOP_RIGHT_CORNER.getAsChar());
-
-            toPrint.setCharAt((maxPrintableSize() + 1) * (verticalDashes + cell.getCoordX() * (1 + verticalDashes)) +
-                            cell.getCoordX() * (1 + verticalDashes) + verticalDashes +
-                            cell.getCoordY() * (horizontalDashes + 2) + 1,
-                    TableDividers.BOTTOM_LEFT_CORNER.getAsChar());
-
-
-            toPrint.setCharAt((maxPrintableSize() + 1) * (verticalDashes + cell.getCoordX() * (1 + verticalDashes)) +
-                            cell.getCoordX() * (1 + verticalDashes) + 1 + verticalDashes +
-                            cell.getCoordY() * (horizontalDashes + 2) + horizontalDashes,
-                    TableDividers.BOTTOM_RIGHT_CORNER.getAsChar());
-
-        }
-        return toPrint.toString();
-    }
-
     public void printError(String error) {
         System.out.println(error); //TODO: enhance
     }
 
-
     /**
-     * Provides the shortest side of the console
-     * <p>
-     * In order to print a well-formatted square board, it is needed not to exceed the shortest side of the console.
-     * <br>
-     * The result is provided in terms of number of printable characters,
-     * </p>
-     *
-     * @return the minimum <i>dimension</i> of the console
+     * Prints the gameBoard
+     * @param board the board to print
      */
-    private int maxPrintableSize() {
-        return Math.min(width, height);
+    public void printBoard(List<Cell> board) {
+        updateCachedBoard(board);
+        showMatrix(cachedBoard);
     }
 
     /**
-     * Provides a printable gameBoard
-     * <p>
-     * Given some dimensions (see {@linkplain #PrettyPrinter()}), this method creates a printable String, containing a
-     * formatted game board.
-     * </p>
-     *
-     * @return a String containing the board
+     * Prints the gameBoard, highlighting
+     * @param board the board to print
+     * @param toHighlight the cells to highlight
      */
-    public String emptyGameBoard() {
-        StringBuilder firstLine = new StringBuilder(TableDividers.TOP_LEFT_CORNER.toString());
-        for (int cellNum = 0; cellNum < boardSize; cellNum++) {
-            for (int i = 0; i < (maxPrintableSize() - boardSize) / boardSize; i++)
-                firstLine.append(TableDividers.HORIZONTAL_LINE.toString());
-            firstLine.append(TableDividers.HORIZONTAL_T_DOWN.toString());
+    public void printBoard(List<Cell> board, List<Cell> toHighlight) {
+        updateCachedBoard(board);
+        String[][] gameBoard = cloneMatrix(cachedBoard);
+        for (Cell cell : toHighlight) {
+            highlight(cell, gameBoard);
         }
-        firstLine = new StringBuilder(firstLine.substring(0, firstLine.length() - 1));
-        firstLine.append(TableDividers.TOP_RIGHT_CORNER.toString());
-
-        String middleLine = firstLine.toString().replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                TableDividers.VERTICAL_LINE.toString());
-        middleLine = middleLine.replace(TableDividers.HORIZONTAL_T_DOWN.toString(),
-                TableDividers.VERTICAL_LINE.toString());
-        middleLine = middleLine.replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                TableDividers.VERTICAL_LINE.toString());
-        middleLine = middleLine.replace(TableDividers.TOP_RIGHT_CORNER.toString(),
-                TableDividers.VERTICAL_LINE.toString());
-        middleLine = middleLine.replace(TableDividers.HORIZONTAL_LINE.toString(), " ");
-
-        String middleDividerLine = firstLine.toString().replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                TableDividers.VERTICAL_T_RIGHT.toString());
-        middleDividerLine = middleDividerLine.replace(TableDividers.TOP_RIGHT_CORNER.toString(),
-                TableDividers.VERTICAL_T_LEFT.toString());
-        middleDividerLine = middleDividerLine.replace(TableDividers.HORIZONTAL_T_DOWN.toString(),
-                TableDividers.CROSS.toString());
-
-        String lastLine = firstLine.toString().replace(TableDividers.TOP_LEFT_CORNER.toString(),
-                TableDividers.BOTTOM_LEFT_CORNER.toString());
-        lastLine = lastLine.replace(TableDividers.TOP_RIGHT_CORNER.toString(),
-                TableDividers.BOTTOM_RIGHT_CORNER.toString());
-        lastLine = lastLine.replace(TableDividers.HORIZONTAL_T_DOWN.toString(),
-                TableDividers.HORIZONTAL_T_UP.toString());
-
-        StringBuilder toPrint = new StringBuilder(firstLine + "\n");
-        for (int cellNum = 0; cellNum < boardSize; cellNum++) {
-            for (int i = 0; i < (maxPrintableSize() - boardSize - 1) / (rowToColumnRatio * boardSize); i++)
-                toPrint.append(middleLine).append("\n");
-
-            toPrint.append(middleDividerLine).append("\n");
-        }
-        toPrint = new StringBuilder(toPrint.substring(0, toPrint.length() - middleDividerLine.length() - 1));
-        toPrint.append(lastLine).append("\n");
-
-
-        return toPrint.toString();
+        showMatrix(gameBoard);
     }
 
     /**
-     * Converts a plaintext file to a String object
+     * Updates the cached board
      * <p>
-     * Since the CLI uses some ASCII arts that might be difficult to recreate, we decided to include them in the
-     * resources instead of generating them every time.
+     *     Assuming that both the cached and new board are ordered in the same way (see {@linkplain GameBoard#getAllCells()}),
+     *     this method updates the cached board to a new provided version, ready to be printed.
      * </p>
      *
-     * @param filepath the file to convert, as an {@linkplain InputStream}
-     * @return the String representation of the file
+     * @param board the updated board
      */
-    private String fileToString(InputStream filepath) {
-        StringBuilder string = new StringBuilder();
-        Scanner reader = new Scanner(filepath);
-        while (reader.hasNextLine())
-            string.append(reader.nextLine()).append("\n");
-        reader.close();
-        return string.toString();
+    private void updateCachedBoard(List<Cell> board) {
+        for (int i = 0; i < board.size(); i++) {
+            if (!board.get(i).equals(lastGameBoardPrinted.get(i)))
+                drawBlock(board.get(i));
+            if (board.get(i).getOccupiedBy() != lastGameBoardPrinted.get(i).getOccupiedBy())
+                drawWorker(board.get(i));
+        }
+        lastGameBoardPrinted = board;   //TODO: check if safe
     }
+
+    /**
+     * Draws a frame around some given cells
+     * <p>
+     *     Since the frame should not be saved on the <i>original</i> board, the {@linkplain #drawOnCell} method requires
+     *     a String[][] parameter on which the frame will be printed.
+     * </p>
+     * @param cell the cell to highlight
+     * @param board the board to print the frame on
+     */
+    private void highlight(Cell cell, String[][] board) {
+        drawOnCell(cellFrame, board, cell.getCoordX(), cell.getCoordY());
+    }
+
+    /**
+     * Draws a building block on a cell
+     * @param cell the cell to draw the building on
+     */
+    private void drawBlock(Cell cell) {
+        PrintableObject block = buildingBlocks.get(cell.getBlock().getHeight() - 1);
+        restoreBuild(cell); //TODO: send specific message from server to client to avoid restoring
+        //drawOnCell(block, cachedBoard, cell.getCoordX(), cell.getCoordY());
+    }
+
+    /**
+     * Reloads all the building sprites on a cell
+     * @param cell the cell to restore
+     */
+    private void restoreBuild(Cell cell) {
+        int level = cell.getBlock().getHeight();
+
+        for (int i = 0; i < level; i++)
+            drawOnCell(buildingBlocks.get(i), cachedBoard, cell.getCoordX(), cell.getCoordY());
+    }
+
+    /**
+     * Draws a Worker on a cell
+     * <p>
+     *     In case the given {@linkplain Cell#getOccupiedBy()} is not null, calls the {@link #drawOnCell} method, passing
+     *     the <i>sprite</i> corresponding to the worker's color; if the cell contains no worker, the original board
+     *     texture is reloaded, then the building, if existing, has to be restored.
+     * </p>
+     * @param cell the cell containing
+     */
+    private void drawWorker(Cell cell) {
+        PrintableObject worker;
+        if (cell.getOccupiedBy() != null) {
+            switch (cell.getOccupiedBy().getColor()) {
+                case BLUE:
+                    worker = workers.get(0);
+                    break;
+                case GREEN:
+                    worker = workers.get(1);
+                    break;
+                case RED:
+                    worker = workers.get(2);
+                    break;
+                default:
+                    worker = null;  // never gets here
+            }
+            drawOnCell(worker, cachedBoard, cell.getCoordX(), cell.getCoordY());
+        }
+        else {
+            int rowOffset = (horizontalWallWidth + cell.getCoordX() * (horizontalWallWidth + cellHeight));
+            int colOffset = (verticalWallWidth + cell.getCoordY() * (verticalWallWidth + cellWidth));
+            for (int row = rowOffset; row < cellHeight + rowOffset; row++) {
+                for (int col = colOffset; col < cellWidth + colOffset; col++) {
+                    if (!emptyBoard[row][col].contains("\033[0m"))  // ignores resets to preserve the original background
+                        cachedBoard[row][col] = emptyBoard[row][col];
+                }
+            }
+            restoreBuild(cell);
+        }
+    }
+
+    /**
+     * "Decorates" a cell
+     * Given a PrintableObject and the cell coordinates to draw on, this method alters the board representation.
+     * This method requires the PrintableObject to be the same size of a cell; in any other case, the behaviour is not
+     * guaranteed.
+     *
+     * @param object the object to print
+     * @param coordX the X coordinate of the cell to print
+     * @param coordY the Y coordinate of the cell to print
+     */
+    private void drawOnCell(PrintableObject object, String[][] board, int coordX, int coordY) {
+        int rowOffset = (horizontalWallWidth + coordX*(horizontalWallWidth + cellHeight));
+        int colOffset = (verticalWallWidth + coordY*(verticalWallWidth + cellWidth));
+
+        for (int row = 0; row < cellHeight; row++) {
+            for (int col = 0; col < cellWidth; col++) {
+                if (!object.getObject()[row][col].contains("\033[0m"))  // ignores resets to preserve the original background
+                    board[rowOffset + row][colOffset + col] = object.getObject()[row][col];
+            }
+
+        }
+    }
+
+    /**
+     * Prints a given String matrix
+     * @param matrix the Matrix to print
+     */
+    private void showMatrix(String[][] matrix) {
+        System.out.println();
+        for (int row = 0; row < matrix.length; row++) {
+            System.out.print("\t");
+            for (int col = 0; col < matrix[0].length; col++) {
+                System.out.print(matrix[row][col]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+
+
+    /**
+     * Clones a String matrix
+     * @param input the matrix to clone
+     * @return a copy of the input
+     */
+    private String[][] cloneMatrix(String[][] input) {
+        String[][] clone = new String[input.length][input[0].length];
+        for (int row = 0; row < input.length; row++) {
+            for (int col = 0; col < input[0].length; col++) {
+                clone[row][col] = input[row][col];
+            }
+        }
+        return clone;
+    }
+    
 }

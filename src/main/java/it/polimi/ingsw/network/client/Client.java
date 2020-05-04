@@ -27,6 +27,7 @@ public class Client {
 
     public static void main(String[] args) throws IOException {
         ViewInterface viewInterface;
+        try {
         if (args.length == 0 || !args[0].equals("--GUI"))
             viewInterface = new CLI();
         else
@@ -53,6 +54,10 @@ public class Client {
         }
         Client client = new Client(loginData.get(1), loginData.get(0), viewInterface);
         client.startConnection();
+        } catch (IOException e) {
+            System.out.println("Error: resources not found");
+            System.exit(1);
+        }
         //TODO: Here I ask the user if he wants to use the Cli/Gui
     }
 

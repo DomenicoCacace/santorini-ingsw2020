@@ -8,6 +8,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.utils.PrettyPrinter;
 import it.polimi.ingsw.view.cli.utils.SafeScanner;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -19,7 +20,7 @@ public class CLI implements ViewInterface {
     public static final String NO = "n";
     private final PrettyPrinter printer;
 
-    public CLI() {
+    public CLI() throws IOException {
         printer = new PrettyPrinter();
     }
 
@@ -79,7 +80,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public void showGameBoard(List<Cell> gameBoard) {
-        System.out.println(printer.getGameBoard(gameBoard) + "\r");
+        printer.printBoard(gameBoard);
     }
 
     @Override
@@ -109,7 +110,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
-        System.out.println(printer.highlightCells(gameBoard, walkableCells));   //TODO: enhance
+        printer.printBoard(gameBoard, walkableCells);   //TODO: enhance
         while (true) {
             System.out.println("Choose a cell to step on:");
             Cell chosenCell = chooseCell();
@@ -124,7 +125,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
-        System.out.println(printer.highlightCells(gameBoard, buildableCells));   //TODO: enhance
+        printer.printBoard(gameBoard, buildableCells);   //TODO: enhance
         while (true) {  //TODO: might extract private method for move/buildAction
             System.out.println("Choose a cell to build on:");
             Cell chosenCell = chooseCell();
