@@ -62,6 +62,8 @@ public interface RuleSetStrategy {
 
     boolean checkLoseCondition();
 
+    boolean checkLoseCondition(BuildAction buildAction);
+
     List<Cell> getBuildableCells(Worker worker);
 
     List<Block> getBlocks(Cell selectedCell);

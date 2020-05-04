@@ -15,11 +15,6 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = AddWorkerResponse.class, name = "AddWorker"),
-        @JsonSubTypes.Type(value = BuildableCellsResponse.class, name = "BuildableCells"),
-        @JsonSubTypes.Type(value = EndTurnResponse.class, name = "EndTurn"),
-        @JsonSubTypes.Type(value = LoginResponse.class, name = "Login"),
-        @JsonSubTypes.Type(value = PlayerBuildResponse.class, name = "PlayerBuild"),
         @JsonSubTypes.Type(value = PlayerMoveResponse.class, name = "PlayerMove"),
         @JsonSubTypes.Type(value = SelectWorkerResponse.class, name = "SelectWorker"),
         @JsonSubTypes.Type(value = WalkableCellsResponse.class, name = "WalkableCells"),

@@ -265,6 +265,116 @@ class BuildBeforeAfterMovementTest {
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 
+    @Test
+    void buildAndLoseIfItIsTheOnlyActionYouCanDo() throws IllegalActionException {
+        game.generateNextTurn();
+        game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(2,1).setBlock(Block.LEVEL0);
+        game.getGameBoard().getCell(3,4).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(4,1).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(1,1).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(1,0).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(1,2).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(2,0).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(2,2).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(3,0).setBlock(Block.LEVEL3);
+        Worker worker1 = players.get(0).getWorkers().get(0);
+        worker1.setPosition(game.getGameBoard().getCell(2, 1));
+        Worker worker2 = players.get(0).getWorkers().get(1);
+        game.getGameBoard().getCell(2, 1).setOccupiedBy(worker1);
+        game.getGameBoard().getCell(2, 2).setOccupiedBy(null);
+        game.generateNextTurn();
+
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker1);
+        assertEquals(2, possibleActions.size());
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
+        possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker2);
+        assertEquals(2, possibleActions.size());
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
+        List<Cell> cellsToAssert=game.getWalkableCells(worker1);
+        assertEquals(0, cellsToAssert.size());
+        cellsToAssert=game.getWalkableCells(worker2);
+        assertEquals(0, cellsToAssert.size());
+        cellsToAssert=(game.getBuildableCells(worker1));
+        assertEquals(7, cellsToAssert.size());
+        assertEquals(cellsToAssert.get(0), game.getGameBoard().getCell(1,0));
+        assertEquals(cellsToAssert.get(1), game.getGameBoard().getCell(1,1));
+        assertEquals(cellsToAssert.get(2), game.getGameBoard().getCell(1,2));
+        assertEquals(cellsToAssert.get(3), game.getGameBoard().getCell(2,0));
+        assertEquals(cellsToAssert.get(4), game.getGameBoard().getCell(2,2));
+        assertEquals(cellsToAssert.get(5), game.getGameBoard().getCell(3,0));
+        assertEquals(cellsToAssert.get(6), game.getGameBoard().getCell(3,2));
+        cellsToAssert=game.getBuildableCells(worker2);
+        assertEquals(cellsToAssert.size(), 4);
+        assertEquals(cellsToAssert.get(0), game.getGameBoard().getCell(3,2));
+        assertEquals(cellsToAssert.get(1), game.getGameBoard().getCell(3,3));
+        assertEquals(cellsToAssert.get(2), game.getGameBoard().getCell(4,2));
+        assertEquals(cellsToAssert.get(3), game.getGameBoard().getCell(4,4));
+        assertNull(game.getWinner());
+        BuildAction buildAction = new BuildAction(worker1, game.getGameBoard().getCell(3,2), Block.LEVEL3);
+        buildAction.getValidation(game);
+        assertEquals(game.getWinner().getName(), "player2");
+
+    }
+
+    @Test
+    void cannotKillHimselfWhenOnlyOneWorkerIsStuckTest() throws IllegalActionException {
+        game.generateNextTurn();
+        game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL0);
+        game.getGameBoard().getCell(2,1).setBlock(Block.LEVEL0);
+        game.getGameBoard().getCell(3,4).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
+        game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL2);
+        game.getGameBoard().getCell(4,1).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(1,1).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(1,0).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(1,2).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(2,0).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(2,2).setBlock(Block.LEVEL3);
+        game.getGameBoard().getCell(3,0).setBlock(Block.LEVEL3);
+        Worker worker1 = players.get(0).getWorkers().get(0);
+        worker1.setPosition(game.getGameBoard().getCell(2, 1));
+        Worker worker2 = players.get(0).getWorkers().get(1);
+        game.getGameBoard().getCell(2, 1).setOccupiedBy(worker1);
+        game.getGameBoard().getCell(2, 2).setOccupiedBy(null);
+        game.generateNextTurn();
+
+
+        List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker1);
+        assertEquals(1, possibleActions.size());
+        assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
+        possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker2);
+        assertEquals(3, possibleActions.size());
+        assertTrue(possibleActions.contains(PossibleActions.BUILD));
+        assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
+        assertTrue(possibleActions.contains(PossibleActions.MOVE));
+        List<Cell> cellsToAssert=game.getWalkableCells(worker1);
+        assertEquals(0, cellsToAssert.size());
+        cellsToAssert=game.getWalkableCells(worker2);
+        assertEquals(1, cellsToAssert.size());
+        assertEquals(cellsToAssert.get(0), game.getGameBoard().getCell(4,4));
+        cellsToAssert=(game.getBuildableCells(worker1));
+        assertEquals(0, cellsToAssert.size());
+        cellsToAssert=game.getBuildableCells(worker2);
+        assertEquals(cellsToAssert.size(), 3);
+        assertEquals(cellsToAssert.get(0), game.getGameBoard().getCell(3,2));
+        assertEquals(cellsToAssert.get(1), game.getGameBoard().getCell(3,3));
+        assertEquals(cellsToAssert.get(2), game.getGameBoard().getCell(4,2));
+        assertNull(game.getWinner());
+        BuildAction buildAction = new BuildAction(worker2, game.getGameBoard().getCell(4,2), Block.LEVEL3);
+        buildAction.getValidation(game);
+        assertNull(game.getWinner());
+    }
+
+
 
 
 }

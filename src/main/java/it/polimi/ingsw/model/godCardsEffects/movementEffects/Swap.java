@@ -15,7 +15,7 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Swap extends MovementStrategy {
 
-    private List<Worker> stuckWorkers;
+    private final List<Worker> stuckWorkers;
 
     public Swap() {
         super();
@@ -31,6 +31,7 @@ public class Swap extends MovementStrategy {
         if (swap.getMovedWorker() != null)
             this.movedWorker = game.getGameBoard().getCell(swap.getMovedWorker().getPosition()).getOccupiedBy();
         else this.movedWorker = null;
+        this.stuckWorkers=swap.stuckWorkers;
     }
 
     public void swapAction(MoveAction action) {

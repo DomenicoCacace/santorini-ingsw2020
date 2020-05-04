@@ -53,6 +53,10 @@ public class RuleSetContext {
         return strategy.checkLoseCondition(action);
     }
 
+    public boolean checkLoseCondition(BuildAction action){
+        return strategy.checkLoseCondition(action);
+    }
+
     public boolean checkLoseCondition() {
         return strategy.checkLoseCondition();
     }

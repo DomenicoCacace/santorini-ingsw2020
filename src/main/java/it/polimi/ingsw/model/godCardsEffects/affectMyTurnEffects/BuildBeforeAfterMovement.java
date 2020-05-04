@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.PossibleActions;
@@ -17,6 +18,8 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
 
     private boolean hasBuiltBefore;
     private Worker builder;
+    private int stuckWorkers;
+
 
 
 
@@ -31,6 +34,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         else this.movedWorker = null;
         this.hasBuiltBefore = buildBeforeAfterMovement.hasBuiltBefore;
         this.builder = game.getGameBoard().getCell(buildBeforeAfterMovement.builder.getPosition()).getOccupiedBy();
+        this.stuckWorkers = buildBeforeAfterMovement.stuckWorkers;
     }
 
     public BuildBeforeAfterMovement() {
@@ -46,6 +50,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         this.hasBuiltBefore = false;
         this.movedWorker = null;
         this.builder = null;
+        this.stuckWorkers = 0;
     }
 
     @Override
@@ -62,13 +67,22 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
             } else if (movesAvailable == 0 && worker == builder) { //this is useful for the view: highlighting the correct cells
                 possibleActions = super.getPossibleActions(worker);
             } else if (movesAvailable == 1 && !hasBuiltBefore) {
-                if (buildableCellsBeforeMoving(worker).size() > 0)
+                if (getWalkableCells(worker).size() == 0) {
+                    if (stuckWorkers==2) {
+                        List<Cell> buildableCells = new ArrayList<>();
+                        addBuildableCells(worker, buildableCells);
+                        if (buildableCells.size() > 0)
+                            possibleActions.add(PossibleActions.BUILD);
+                    }
+                } else if (buildableCellsBeforeMoving(worker).size() > 0)
                     possibleActions.add(PossibleActions.BUILD);
-                possibleActions.add(PossibleActions.MOVE);
+                if (getWalkableCells(worker).size() > 0)
+                    possibleActions.add(PossibleActions.MOVE);
                 possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
-            } else if (movesAvailable == 1 && worker == builder) {
+
+
+            } else if (movesAvailable == 1 && worker == builder)
                 possibleActions.add(PossibleActions.MOVE);
-            }
         }
 
         return possibleActions;
@@ -99,6 +113,24 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     }
 
     @Override
+    public boolean checkLoseCondition() {
+        List<Cell> legalCells = new ArrayList<>();
+        for (Worker worker : game.getCurrentTurn().getCurrentPlayer().getWorkers()) {
+            legalCells = getWalkableCells(worker);
+            if(legalCells.size() == 0) {
+                stuckWorkers++;
+                legalCells = getBuildableCells(worker);
+            }
+        }
+        return legalCells.size()==0;
+    }
+
+    @Override
+    public boolean checkLoseCondition(BuildAction buildAction) {
+        return stuckWorkers==2;
+    }
+
+    @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> canGoCells = new ArrayList<>();
         if (hasBuiltBefore) {
@@ -116,39 +148,43 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        if (buildsAvailable > 0) {
-            if (movesAvailable == 0 && !hasBuiltBefore) {
-                cells = super.getBuildableCells(worker);
-            } else if (movesAvailable == 0 && worker == builder) { //this is useful for the view: highlighting the correct cells
-                cells = super.getBuildableCells(worker);
-            } else if (movesAvailable == 1 && !hasBuiltBefore) {
-                cells = buildableCellsBeforeMoving(worker);
+        if(stuckWorkers<2) {
+            if (buildsAvailable > 0) {
+                if (movesAvailable == 0 && !hasBuiltBefore) {
+                    cells = super.getBuildableCells(worker);
+                } else if (movesAvailable == 0 && worker == builder) { //this is useful for the view: highlighting the correct cells
+                    cells = super.getBuildableCells(worker);
+                } else if (movesAvailable == 1 && !hasBuiltBefore) {
+                    cells = buildableCellsBeforeMoving(worker);
+                }
             }
-        }
+        }else addBuildableCells(worker,cells);
         return cells;
     }
 
     private List<Cell> buildableCellsBeforeMoving(Worker worker) {
+        List<Cell> buildableCells = new ArrayList<>();
+
         int cellsOnMyLevel = 0;
         int heightDifference;
         Cell cellOnMyLevel = null;
-        List<Cell> buildableCells = new ArrayList<>();
-        super.addBuildableCells(worker, buildableCells); //Aggiungo a buildableCells tutte le celle su cui potrei costruire normalmente
+        super.addBuildableCells(worker, buildableCells);
         for (Cell cell : buildableCells) {
             heightDifference = worker.getPosition().heightDifference(cell);
             if (heightDifference < 0) {
-                return buildableCells; //Se trovo una Cella ad un livello inferiore di quello in cui mi trovo allora non c'è rischio di suicidarmi
-            } else if (heightDifference == 0) { //Conto quante celle al mio stesso livello ci sono
+                return buildableCells;
+            } else if (heightDifference == 0) {
                 cellsOnMyLevel++;
-                if (cellsOnMyLevel > 1) //Se trovo 2 celle al mio stesso livello allora non c'è rischio di suicidarmi
+                if (cellsOnMyLevel > 1)
                     return buildableCells;
-                else cellOnMyLevel = cell; //Quando trovo la prima cella al mio stesso livello la salvo in una variabile
+                else
+                    cellOnMyLevel = cell;
             }
         }
         if (cellsOnMyLevel == 1) {
-            buildableCells.remove(cellOnMyLevel); //Se ho trovato solo una cella al mio stesso livello e non ho trovato celle più in basso allora posso costruire ovunque tranne che nella cella al mio livello
+            buildableCells.remove(cellOnMyLevel);
         } else
-            buildableCells = new ArrayList<>(); //Se arrivo in questo else è perché sono circondato da celle più in alto, quindi non posso costruire prima di muovermi
+            buildableCells = new ArrayList<>();
         return buildableCells;
     }
 

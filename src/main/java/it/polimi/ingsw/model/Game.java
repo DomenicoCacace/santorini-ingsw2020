@@ -159,8 +159,9 @@ public class Game implements GameInterface {
             buildAction.apply();
             if (buildActionListener != null)
                 buildActionListener.onBuildAction(buildBoardData());
-
-            endTurnAutomatically();
+            if(currentRuleSet.checkLoseCondition(buildAction))
+                removePlayer(currentTurn.getCurrentPlayer());
+            else endTurnAutomatically();
         } else
             throw new IllegalActionException();
     }

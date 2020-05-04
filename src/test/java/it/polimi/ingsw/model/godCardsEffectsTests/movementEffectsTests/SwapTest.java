@@ -273,6 +273,10 @@ class SwapTest {
         players.get(1).addWorker(game.getGameBoard().getCell(3,0));
         game.generateNextTurn();
 
+        List<PossibleActions> action =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(players.get(0).getWorkers().get(0));
+        assertEquals(1, action.size());
+        action =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(players.get(0).getWorkers().get(1));
+        assertEquals(2, action.size());
         assertEquals(0, game.getWalkableCells(players.get(0).getWorkers().get(0)).size());
         assertEquals(2, game.getWalkableCells(players.get(0).getWorkers().get(1)).size());
         assertEquals(game.getGameBoard().getCell(2,2), game.getWalkableCells(players.get(0).getWorkers().get(1)).get(0));
@@ -299,6 +303,10 @@ class SwapTest {
         players.get(1).addWorker(game.getGameBoard().getCell(3,0));
         game.generateNextTurn();
 
+        List<PossibleActions> action =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(players.get(0).getWorkers().get(0));
+        assertEquals(2, action.size());
+        action =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(players.get(0).getWorkers().get(1));
+        assertEquals(2, action.size());
         assertEquals(1, game.getWalkableCells(players.get(0).getWorkers().get(0)).size());
         assertEquals(game.getGameBoard().getCell(3,0), game.getWalkableCells(players.get(0).getWorkers().get(0)).get(0));
         assertEquals(1, game.getWalkableCells(players.get(0).getWorkers().get(1)).size());

@@ -180,6 +180,11 @@ public class RuleSetBase implements RuleSetStrategy {
     }
 
     @Override
+    public boolean checkLoseCondition(BuildAction buildAction) {
+        return false; //He can't lose after building
+    }
+
+    @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
         if (movesAvailable > 0) {

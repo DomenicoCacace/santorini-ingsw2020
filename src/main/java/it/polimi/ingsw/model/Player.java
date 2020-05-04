@@ -69,6 +69,7 @@ public class Player implements PlayerInterface {
         return workers;
     }
 
+
     @Override
     public void addWorker(Cell cell) throws AddingFailedException {
         if (cell.getOccupiedBy() == null && workers.size() < god.getWorkersNumber()) {
