@@ -78,6 +78,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
     public boolean isMoveActionValid(MoveAction action) {
         if (!hasBuiltBefore && super.isMoveActionValid(action)) {
             buildsAvailable--;
+            startingCell=action.getStartingCell();
             return true;
         }
         return super.isMoveActionValid(action);

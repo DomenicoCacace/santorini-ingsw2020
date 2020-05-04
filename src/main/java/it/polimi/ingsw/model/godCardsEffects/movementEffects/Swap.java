@@ -57,6 +57,7 @@ public class Swap extends MovementStrategy {
             movedWorker = action.getTargetWorker();
             swapAction(action);
             movesAvailable--;
+            startingCell = action.getStartingCell();
             if (movesUpAvailable > 0)
                 movesUpAvailable--;
             return true;

@@ -44,8 +44,8 @@ public class Push extends MovementStrategy {
 
     @Override
     public boolean isMoveActionValid(MoveAction action) {
-
         if (super.isMoveActionValid(action)) {
+            startingCell = action.getStartingCell();
             opponentAction(action);
             return true;
         }
