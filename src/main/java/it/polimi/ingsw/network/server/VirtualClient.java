@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -93,13 +94,13 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             outputSocket.flush();
             logger.log(Level.FINER, ("Message sent from room to " + user.getUsername()).replace(ReservedUsernames.BROADCAST.toString(), "all players"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
             try {
                 logger.log(Level.SEVERE, "Message format non valid, disconnecting " + user.getUsername());
                 clientConnection.close();
             } catch (IOException e2) {
                 logger.log(Level.SEVERE, " ");
-                e2.printStackTrace();
+                logger.log(Level.SEVERE, e2.getMessage(), e2);
             }
             server.onDisconnect(user);
         }
@@ -109,7 +110,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         try {
             clientConnection.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
@@ -200,7 +201,8 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
 
         if (lobby != null) {
             ((MessageFromClientToServer) message).callVisitor(lobby.getRoomParser());
-            logger.log(Level.INFO, "Forwarding message to " + lobby.getRoomName());
+            logger.log(Level.INFO, "Forwarding message to lobby: " + lobby.getRoomName());
+            logger.log(Level.INFO, Arrays.toString(logger.getHandlers()));
         }
         else {
             logger.log(Level.WARNING, "No lobby associated with user, cannot handle message");

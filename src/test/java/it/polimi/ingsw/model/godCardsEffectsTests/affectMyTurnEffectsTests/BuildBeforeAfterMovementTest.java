@@ -33,7 +33,7 @@ class BuildBeforeAfterMovementTest {
         gods.get(1).setStrategy(new RuleSetBase());
 
         players.add(new Player("player1", gods.get(0), Color.BLUE));
-        players.add(new Player("player2", gods.get(1), Color.GREEN));
+        players.add(new Player("player2", gods.get(1), Color.PURPLE));
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);

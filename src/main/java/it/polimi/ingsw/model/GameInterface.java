@@ -19,7 +19,7 @@ public interface GameInterface {
 
     void setEndGameListener(EndGameListener endGameListener);
 
-    void setPlayerLostListener(PlayerLostListener playerLostListener);
+    void addPlayerLostListener(PlayerLostListener playerLostListener);
 
     void restoreState();
 }

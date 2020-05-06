@@ -43,7 +43,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         game.setEndGameListener(this);
         game.setEndTurnListener(this);
         game.setMoveActionListener(this);
-        game.setPlayerLostListener(this);
+        game.addPlayerLostListener(this);
         playerMap.values().forEach(playerInterface
                 -> {
             playerInterface.setAddWorkerListener(this);

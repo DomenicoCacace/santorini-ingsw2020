@@ -28,7 +28,7 @@ public class Game implements GameInterface {
     private EndTurnListener endTurnListener;
     private BuildActionListener buildActionListener;
     private EndGameListener endGameListener;
-    private PlayerLostListener playerLostListener;
+    private List<PlayerLostListener> playerLostListener = new ArrayList<>();
 
     public Game(GameBoard gameBoard, List<Player> players) {
         this.gameBoard = gameBoard;
@@ -213,12 +213,10 @@ public class Game implements GameInterface {
             if (endGameListener != null)
                 endGameListener.onEndGame(this.winner.getName());
         }
-
         else if (playerLostListener != null)
-            playerLostListener.onPlayerLoss(player.getName(), buildBoardData());
+            playerLostListener.forEach(listener -> listener.onPlayerLoss(player.getName(), buildBoardData()));
 
         generateNextTurn();
-
     }
 
     /*
@@ -278,8 +276,8 @@ public class Game implements GameInterface {
         this.endGameListener = endGameListener;
     }
 
-    public void setPlayerLostListener(PlayerLostListener playerLostListener) {
-        this.playerLostListener = playerLostListener;
+    public void addPlayerLostListener(PlayerLostListener playerLostListener) {
+        this.playerLostListener.add(playerLostListener);
     }
 
 }

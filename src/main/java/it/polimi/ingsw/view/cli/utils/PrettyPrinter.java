@@ -1,15 +1,11 @@
 package it.polimi.ingsw.view.cli.utils;
 
 import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.GameBoard;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Console Printing Utilities
@@ -61,7 +57,7 @@ import java.util.Scanner;
         buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream("blocks/domeTop.art"), cellWidth, cellHeight));
 
         workers.add(new PrintableObject(this.getClass().getResourceAsStream("workers/blueWorker.art"), cellWidth, cellHeight));
-        workers.add(new PrintableObject(this.getClass().getResourceAsStream("workers/greenWorker.art"), cellWidth, cellHeight));
+        workers.add(new PrintableObject(this.getClass().getResourceAsStream("workers/purpleWorker.art"), cellWidth, cellHeight));
         workers.add(new PrintableObject(this.getClass().getResourceAsStream("workers/redWorker.art"), cellWidth, cellHeight));
     }
 
@@ -181,7 +177,7 @@ import java.util.Scanner;
                 case BLUE:
                     worker = workers.get(0);
                     break;
-                case GREEN:
+                case PURPLE:
                     worker = workers.get(1);
                     break;
                 case RED:

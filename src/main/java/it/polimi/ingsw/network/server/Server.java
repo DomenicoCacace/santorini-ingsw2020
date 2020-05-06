@@ -5,19 +5,25 @@ import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.response.fromServerToClient.LoginResponse;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
+import jdk.jfr.Timestamp;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.stream.Collectors;
 
 /**
  * Manages the client connections
  */
 public class Server extends Thread {
+    private final static int MAX_STORED_LOGS = 100;
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private final Map<String, Lobby> gameLobbies;
     private final List<User> waitingRoom;
@@ -26,6 +32,7 @@ public class Server extends Thread {
     private final int socketGreeterPort;
     private ServerSocket serverSocket;
     private Socket newClientSocket;
+    private File logFile;
 
     /**
      * Default constructor
@@ -33,20 +40,43 @@ public class Server extends Thread {
      *     Creates a new server instance
      * </p>
      */
-    public Server() {   //FIXME: implement singleton pattern for the Server
+    public Server() throws IOException {   //FIXME: implement singleton pattern for the Server
         socketGreeterPort = 4321; // TODO: get from file
         //FIXME: define additional type for this lobby
         this.gameLobbies = new LinkedHashMap<>();
         this.users = new LinkedHashMap<>();
         this.waitingRoom = new LinkedList<>();
-
+        File logDir = new File("./logs");
+        logDir.mkdir();
+        this.logFile = new File(logDir + File.separator + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt");
+        logFile.createNewFile();
+        File directory = new File(logFile.getAbsoluteFile().getParent());
+        String[] filesInDirectory = directory.list();
+        if(filesInDirectory!=null) {
+            for (String filename : filesInDirectory) {
+                if (filename.endsWith(".lck")) {
+                    String absoluteFilePath = directory.toString() + File.separator + filename;
+                    File fileToDelete = new File(absoluteFilePath);
+                    fileToDelete.delete();
+                }
+            }
+        }
+        FileHandler fileHandler;
+        try {
+            fileHandler = new FileHandler(logFile.getPath());
+            logger.addHandler(fileHandler);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fileHandler.setFormatter(formatter);
+        } catch (SecurityException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * Creates and runs the server
      * @param args currently none
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Server server = new Server();
         server.startServer();
         //TODO: implement server console to monitor things
@@ -158,22 +188,23 @@ public class Server extends Thread {
      * @param user the user to kick
      */
     public void onDisconnect(User user) {
-        Lobby lobby = users.remove(user);
+        Lobby lobby = users.get(user);
         if (lobby != null) {
             List<User> usersInLobby = getUsersInRoom(lobby);
-            if (lobby.gameStarted()) {
+
+            if (!lobby.gameStarted() || lobby.hasLost(user.getUsername())) {
+                lobby.removeUser(user);
+            }
+            else {
                 usersInLobby.forEach(User::closeConnection);
                 removeRoom(lobby);
                 return;
-            }
-            else {
-                lobby.removeUser(user);
             }
         }
         else
             waitingRoom.remove(user);
 
-
+        users.remove(user);
         logger.log(Level.INFO, user.getUsername() + " has been kicked from the lobby");
         //user.closeConnection(); not needed, user already disconnected himself
 
@@ -210,7 +241,6 @@ public class Server extends Thread {
             if (getUsersInRoom(oldLobby).size() == 0)
                 removeRoom(oldLobby);
         }
-
     }
 
 

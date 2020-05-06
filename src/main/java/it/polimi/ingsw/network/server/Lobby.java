@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.MessageManagerParser;
 import it.polimi.ingsw.controller.ServerController;
+import it.polimi.ingsw.listeners.PlayerLostListener;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
@@ -34,7 +35,7 @@ import java.util.stream.Collectors;
  *     start a new game
  * </p>
  */
-public class Lobby {
+public class Lobby implements PlayerLostListener {
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private boolean gameStarted;
     private final List<String> forbiddenUsernames;
@@ -81,7 +82,9 @@ public class Lobby {
     }
 
     private boolean checkSavedGame() {
-        savedGame = new File("../" + getFileName());
+        File savedGameDir = new File("./savedGames");
+        savedGameDir.mkdir();
+        savedGame = new File(savedGameDir + File.separator + getFileName());
         if (savedGame.exists()) {
             try {
                 if (!Files.readString(Paths.get(String.valueOf(savedGame))).isBlank())
@@ -161,8 +164,10 @@ public class Lobby {
     private File fileCreation() {
         File gameToSave;
         String fileName = getFileName();
+        File savedGameDir = new File("./savedGames");
+        savedGameDir.mkdir();
         logger.log(Level.INFO, "Created game backup : " + fileName);
-        gameToSave = new File("../"+fileName);
+        gameToSave = new File(savedGameDir + File.separator + fileName);
         try {
             if (!gameToSave.exists())
                 gameToSave.createNewFile();
@@ -295,4 +300,12 @@ public class Lobby {
         return messageParser;
     }
 
+    public boolean hasLost(String username){
+        return playerMap.containsKey(server.getUser(username));
+    }
+
+    @Override
+    public void onPlayerLoss(String username, List<Cell> gameboard) {
+        playerMap.remove(server.getUser(username));
+    }
 }
