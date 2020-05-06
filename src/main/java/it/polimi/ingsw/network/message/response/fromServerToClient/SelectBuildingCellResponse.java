@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
-import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
+import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ public class SelectBuildingCellResponse extends MessageFromServerToClient {
     private final List<Block> blocks;
 
     @JsonCreator
-    public SelectBuildingCellResponse(@JsonProperty("username") String username, @JsonProperty("blocks") List<Block> blocks) {
-        super(username, Content.SELECT_BUILDING_CELL);
+    public SelectBuildingCellResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("blocks") List<Block> blocks) {
+        super(username, type);
         this.blocks = blocks;
     }
 

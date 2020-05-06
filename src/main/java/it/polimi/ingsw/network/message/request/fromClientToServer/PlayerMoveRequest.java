@@ -3,10 +3,10 @@ package it.polimi.ingsw.network.message.request.fromClientToServer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
+import it.polimi.ingsw.network.message.MessageFromClientToServer;
+import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Worker;
-import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.MessageFromClientToServer;
 
 public class PlayerMoveRequest extends MessageFromClientToServer {
 
@@ -16,7 +16,7 @@ public class PlayerMoveRequest extends MessageFromClientToServer {
     @JsonCreator
     public PlayerMoveRequest(@JsonProperty("username") String username, @JsonProperty("targetCell") Cell targetCell,
                              @JsonProperty("targetWorker") Worker targetWorker) {
-        super(username, Content.PLAYER_MOVE);
+        super(username, Type.CLIENT_REQUEST);
         this.targetCell = targetCell;
         this.targetWorker = targetWorker;
     }

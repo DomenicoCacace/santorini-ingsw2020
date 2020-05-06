@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
 import it.polimi.ingsw.network.message.MessageFromClientToServer;
+import it.polimi.ingsw.network.message.Type;
 
 public class ChooseToReloadMatchResponse extends MessageFromClientToServer {
 
@@ -12,7 +13,7 @@ public class ChooseToReloadMatchResponse extends MessageFromClientToServer {
 
     @JsonCreator
     public ChooseToReloadMatchResponse(@JsonProperty("username") String username,@JsonProperty("reload") boolean reload) {
-        super(username, Content.RELOAD_MATCH);
+        super(username, Type.NOTIFY);
         this.reload=reload;
     }
 
@@ -21,8 +22,10 @@ public class ChooseToReloadMatchResponse extends MessageFromClientToServer {
         return reload;
     }
 
+
     @Override
     public void callVisitor(ServerMessageManagerVisitor visitor) {
         visitor.onMatchReloadResponse(this);
+
     }
 }

@@ -2,29 +2,59 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.message.Message;
 
+/**
+ * The entity connecting to the server; can be used to keep a game history or something similar
+ */
 public class User {
-    private final String username;
+    private String username;
     private final VirtualClient virtualClient;
+    private final Server server;
 
-    public User(VirtualClient virtualClient) {
+    /**
+     * Default constructor
+     * <p>
+     *     When created, a user is associated to a virtualClient, which handles all its requests
+     * </p>
+     * @param virtualClient the virtualClient associated to the user
+     */
+    public User(VirtualClient virtualClient, Server server) {
         this.virtualClient = virtualClient;
-        this.username = virtualClient.getUsername();
+        this.server = server;
     }
 
+    /**
+     * <i>username</i> getter
+     * @return the user's username
+     */
     public String getUsername() {
         return username;
     }
 
-    public VirtualClient getVirtualClient() {
-        return virtualClient;
+    /**
+     * <i>username</i> setter
+     * @param username the user's username
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
+    /**
+     * Sends a message to the client
+     * @param message the message to send
+     */
     public void notify(Message message) {
         virtualClient.notify(message);
     }
 
+    /**
+     * Ends the connection between the server and client
+     */
     public void closeConnection() {
         virtualClient.closeConnection();
+    }
+
+    public Lobby getRoom() {
+        return server.getUsers().get(this);
     }
 
 }

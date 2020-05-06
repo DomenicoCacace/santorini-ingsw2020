@@ -3,9 +3,9 @@ package it.polimi.ingsw.network.message.request.fromClientToServer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
-import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.MessageFromClientToServer;
+import it.polimi.ingsw.network.message.Type;
+import it.polimi.ingsw.model.Cell;
 
 
 public class AddWorkerRequest extends MessageFromClientToServer {
@@ -13,7 +13,7 @@ public class AddWorkerRequest extends MessageFromClientToServer {
 
     @JsonCreator
     public AddWorkerRequest(@JsonProperty("username") String username, @JsonProperty("targetCell") Cell targetCell) {
-        super(username, Content.ADD_WORKER);
+        super(username, Type.CLIENT_REQUEST);
         this.targetCell = targetCell;
     }
 

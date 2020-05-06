@@ -19,13 +19,13 @@ public class NetworkHandler implements Runnable {
     private boolean openConnection;
     private JacksonMessageBuilder jacksonParser;
     private Client client;
-    private MessageParser parser;
+    private MessageManagerParser parser;
 
     public NetworkHandler(Client client) {
         this.jacksonParser = new JacksonMessageBuilder();
         this.client = client;
         this.openConnection = true;
-        this.parser = new MessageParser(client);
+        this.parser = new MessageManagerParser(client);
         try {
             this.socketClient = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
             this.inputSocket = new BufferedReader(new InputStreamReader(socketClient.getInputStream()));

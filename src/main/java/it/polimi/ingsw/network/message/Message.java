@@ -5,16 +5,31 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
-
+/**
+ * Abstract message
+ * <p>
+ *     Each message has, in any case, two attributes:
+ *     <ul>
+ *         <li>username: a String, containing the sender's username</li>
+ *         <li>type: an Enum value, which indicates what kind of payload to expect</li>
+ *     </ul>
+ * </p>
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = LoginResponse.class, name = "Login"),
+        @JsonSubTypes.Type(value = JoinLobbyResponse.class, name = "JoinLobby"),
+        @JsonSubTypes.Type(value = CreateLobbyResponse.class, name = "CreateLobby"),
+        @JsonSubTypes.Type(value = AddWorkerResponse.class, name = "AddWorker"),
+        @JsonSubTypes.Type(value = BuildableCellsResponse.class, name = "BuildableCells"),
+        @JsonSubTypes.Type(value = EndTurnResponse.class, name = "EndTurn"),
+        @JsonSubTypes.Type(value = PlayerBuildResponse.class, name = "PlayerBuild"),
         @JsonSubTypes.Type(value = PlayerMoveResponse.class, name = "PlayerMove"),
         @JsonSubTypes.Type(value = SelectWorkerResponse.class, name = "SelectWorker"),
         @JsonSubTypes.Type(value = WalkableCellsResponse.class, name = "WalkableCells"),
@@ -44,27 +59,32 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 })
 public abstract class Message {
     private final String username;
-    private final Content content;
+    private final Type type;
 
-
+    /**
+     * Message constructor
+     * @param username the sender's username
+     * @param type the message type
+     */
     @JsonCreator
-    public Message(@JsonProperty("username") String username, @JsonProperty("content") Content content) {
+    public Message(@JsonProperty("username") String username, @JsonProperty("type") Type type) {
         this.username = username;
-        this.content = content;
+        this.type = type;
     }
 
+    /**
+     * <i>username</i> getter
+     * @return the sender's username
+     */
     public String getUsername() {
         return username;
     }
 
-    public Content getContent() {
-        return content;
-    }
-
-    public enum Content { //FIXME: We use content only to check if the message is a login or choose_player_number, we don't need all the others
-        LOGIN, PLAYER_MOVE, PLAYER_BUILD, SELECT_BUILDING_CELL, RELOAD_MATCH,
-        END_TURN, ADD_WORKER, CHOOSE_INITIAL_GODS, STARTING_PLAYER, WINNER_DECLARED,
-        PLAYER_REMOVED, CHOOSE_PLAYER_NUMBER, CHOOSE_GOD, SELECT_WORKER, GAMEBOARD,
-        WALKABLE_CELLS, BUILDABLE_CELLS, CHOSEN_GODS, GAME_START, WORKER_POSITION
+    /**
+     * <i>type</i> getter
+     * @return the message type
+     */
+    public Type getType() {
+        return type;
     }
 }

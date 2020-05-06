@@ -8,35 +8,37 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.dataClass.PlayerData;
+import it.polimi.ingsw.network.ReservedUsernames;
+import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
+import it.polimi.ingsw.network.server.User;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, EndGameListener, BuildingBlocksListener,
         EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener {
 
+    private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private final GameInterface game;
     private final Map<String, PlayerInterface> playerMap;
-    private final MessageParser parser;
+    private final MessageManagerParser parser;
     private int cont = 0;
-    private File file;
+    private final File file;
 
 
-    public ServerController(GameInterface game, Map<String, PlayerInterface> players, MessageParser parser) {
+    public ServerController(GameInterface game, Map<User, PlayerInterface> players, MessageManagerParser parser, File gameToSave) {
         this.game = game;
-        this.playerMap = players;
+        playerMap = new LinkedHashMap<>();
+        players.forEach((u, p) -> playerMap.put(u.getUsername(), p));
         this.parser = parser;
-        ///////////////////////////////////////////////File creation////////////////////////////////////////////////////
-        fileCreation();
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        this.file = gameToSave;
         game.setBuildActionListener(this);
         game.setEndGameListener(this);
         game.setEndTurnListener(this);
@@ -52,22 +54,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         });
     }
 
-    private void fileCreation() {
-        StringBuilder orderedNames = new StringBuilder();
-        List<String> sortedNames = playerMap.keySet().stream().sorted().collect(Collectors.toList());
-        for(String name : sortedNames)
-            orderedNames.append(name).append("_");
-        orderedNames.deleteCharAt(orderedNames.length()-1);
-        orderedNames.append(".json");
-        System.out.println(orderedNames);
-        file = new File("../"+orderedNames);
-        try {
-            if(!file.exists())
-                file.createNewFile();
-        } catch (IOException e) { //Cannot create file
-            e.printStackTrace();
-        }
-    }
 
     public void handleGameRestore(){
         PlayerData currPlayerData = game.buildGameData().getCurrentTurn().getCurrentPlayer();
@@ -79,7 +65,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
             } catch (NotYourWorkerException e) {
                 e.printStackTrace(); //shouldn't go here
             }
-        } else  parser.parseMessageFromServerToClient(new GameStartResponse("OK", game.buildGameData()));
+        } else  parser.parseMessageFromServerToClient(new GameStartResponse(Type.OK, game.buildGameData()));
     }
 
     public void addWorker(String username, Cell cell) {
@@ -93,11 +79,11 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
                 if (cont < playerMap.values().size()) {
                     List<String> usernames = new ArrayList<>(playerMap.keySet());
                     parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(usernames.get(cont), game.buildBoardData()));
-                } else parser.parseMessageFromServerToClient(new GameStartResponse("OK", game.buildGameData()));
+                } else parser.parseMessageFromServerToClient(new GameStartResponse(Type.OK, game.buildGameData()));
             }
         } catch (AddingFailedException e) {
-            System.out.println("Adding failed");
-            parser.parseMessageFromServerToClient(new AddWorkerResponse("Adding failed", username, game.buildBoardData()));
+            logger.log(Level.INFO, username + " failed to add a worker");
+            parser.parseMessageFromServerToClient(new AddWorkerResponse(Type.ADDING_FAILED, username, game.buildBoardData()));
             parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(username, game.buildBoardData()));
         }
     }
@@ -105,27 +91,27 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     public void selectWorker(String username, Worker worker) {
         try {
             playerMap.get(username).setSelectedWorker(worker);
-            //parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username));
+            //parser.parseMessageFromServerToClient(new SelectWorkerResponse(Type.OK, username));
         } catch (NotYourWorkerException e) {
-            parser.parseMessageFromServerToClient(new SelectWorkerResponse("Not your worker", username, null, null));
+            parser.parseMessageFromServerToClient(new SelectWorkerResponse(Type.NOT_YOUR_WORKER, username, null, null));
         }
     }
 
     public void obtainWalkableCells(String username) {
         try {
             playerMap.get(username).obtainWalkableCells();
-            //parser.parseMessageFromServerToClient(new WalkableCellsResponse("OK",username, walkableCells));
+            //parser.parseMessageFromServerToClient(new WalkableCellsResponse(Type.OK,username, walkableCells));
         } catch (WrongSelectionException e) {
-            parser.parseMessageFromServerToClient(new WalkableCellsResponse("Wrong selection", username, null));
+            parser.parseMessageFromServerToClient(new WalkableCellsResponse(Type.NOT_YOUR_WORKER, username, null));
         }
     }
 
     public void obtainBuildableCells(String username) {
         try {
             playerMap.get(username).obtainBuildableCells();
-            //parser.parseMessageFromServerToClient(new BuildableCellsResponse("OK",username, buildableCells));
+            //parser.parseMessageFromServerToClient(new BuildableCellsResponse(Type.OK,username, buildableCells));
         } catch (WrongSelectionException e) {
-            parser.parseMessageFromServerToClient(new BuildableCellsResponse("Wrong selection", username, null));
+            parser.parseMessageFromServerToClient(new BuildableCellsResponse(Type.NOT_YOUR_WORKER, username, null));
         }
     }
 
@@ -133,16 +119,16 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         try {
             playerMap.get(username).obtainBuildingBlocks(selectedCell);
         } catch (IllegalActionException e) {
-            parser.parseMessageFromServerToClient(new PlayerBuildResponse("Illegal build", username, game.buildBoardData()));
+            parser.parseMessageFromServerToClient(new PlayerBuildResponse(Type.ILLEGAL_BUILD, username, game.buildBoardData()));
         }
     }
 
     public void handleMoveAction(String username, MoveAction moveAction) {
         try {
             playerMap.get(username).useAction(moveAction);
-            //parser.parseMessageFromServerToClient(new PlayerMoveResponse("OK", username, game.cloneGameBoard()));
+            //parser.parseMessageFromServerToClient(new PlayerMoveResponse(Type.OK, username, game.cloneGameBoard()));
         } catch (IllegalActionException e) {
-            parser.parseMessageFromServerToClient(new PlayerMoveResponse("Illegal move", username, game.buildBoardData()));
+            parser.parseMessageFromServerToClient(new PlayerMoveResponse(Type.ILLEGAL_MOVEMENT, username, game.buildBoardData()));
         }
 
     }
@@ -150,18 +136,18 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     public void handleBuildAction(String username, BuildAction buildAction) {
         try {
             playerMap.get(username).useAction(buildAction);
-            //parser.parseMessageFromServerToClient(new PlayerBuildResponse("OK", username, game.cloneGameBoard()));
+            //parser.parseMessageFromServerToClient(new PlayerBuildResponse(Type.OK, username, game.cloneGameBoard()));
         } catch (IllegalActionException e) {
-            parser.parseMessageFromServerToClient(new PlayerBuildResponse("Illegal build", username, game.buildBoardData()));
+            parser.parseMessageFromServerToClient(new PlayerBuildResponse(Type.ILLEGAL_BUILD, username, game.buildBoardData()));
         }
     }
 
     public void passTurn(String username) {
         try {
             playerMap.get(username).askPassTurn();
-            // parser.parseMessageFromServerToClient(new EndTurnResponse("OK", username));
+            // parser.parseMessageFromServerToClient(new EndTurnResponse(Type.OK, username));
         } catch (IllegalEndingTurnException e) {
-            parser.parseMessageFromServerToClient(new EndTurnResponse("You cannot end turn now", username, null));
+            parser.parseMessageFromServerToClient(new EndTurnResponse(Type.CANNOT_END_TURN, username, null));
         }
     }
 
@@ -177,61 +163,60 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     @Override
     public void onMoveAction(List<Cell> cells) {
         saveState();
-        parser.parseMessageFromServerToClient(new PlayerMoveResponse("OK", "broadcast", cells));
+        parser.parseMessageFromServerToClient(new PlayerMoveResponse(Type.OK, ReservedUsernames.BROADCAST.toString(), cells));
     }
 
     @Override
     public void onWorkerAdd(List<Cell> cells) {
-        parser.parseMessageFromServerToClient(new AddWorkerResponse("OK", "broadcast", cells));
+        parser.parseMessageFromServerToClient(new AddWorkerResponse(Type.OK, ReservedUsernames.BROADCAST.toString(), cells));
     }
 
     @Override
     public void onBuildAction(List<Cell> cells) {
         saveState();
-        parser.parseMessageFromServerToClient(new PlayerBuildResponse("OK", "broadcast", cells));
+        parser.parseMessageFromServerToClient(new PlayerBuildResponse(Type.OK, ReservedUsernames.BROADCAST.toString(), cells));
     }
 
     @Override
     public void onBuildableCell(String name, List<Cell> cells) {
-        parser.parseMessageFromServerToClient(new BuildableCellsResponse("OK", name, cells));
+        parser.parseMessageFromServerToClient(new BuildableCellsResponse(Type.OK, name, cells));
     }
 
     @Override
     public void onBlocksObtained(String name, List<Block> blocks) {
-        parser.parseMessageFromServerToClient(new SelectBuildingCellResponse(name, blocks));
+        parser.parseMessageFromServerToClient(new SelectBuildingCellResponse(Type.NOTIFY, name, blocks));
     }
 
     @Override
     public void onEndGame(String name) {
         file.delete();
-        parser.parseMessageFromServerToClient(new WinnerDeclaredResponse("OK", name));
+        parser.parseMessageFromServerToClient(new WinnerDeclaredResponse(name));
         parser.endGame();
     }
 
     @Override
     public void onTurnEnd(String name) {
         saveState();
-        parser.parseMessageFromServerToClient(new EndTurnResponse("OK", "broadcast", name));
+        parser.parseMessageFromServerToClient(new EndTurnResponse(Type.OK, ReservedUsernames.BROADCAST.toString(), name));
     }
 
 
     @Override
     public void onWalkableCells(String name, List<Cell> cells) {
-        parser.parseMessageFromServerToClient(new WalkableCellsResponse("OK", name, cells));
+        parser.parseMessageFromServerToClient(new WalkableCellsResponse(Type.OK, name, cells));
     }
 
     @Override
     public void onPlayerLoss(String username, List<Cell> gameboard) {
-        parser.parseMessageFromServerToClient(new PlayerRemovedResponse("OK", username, gameboard));
+        parser.parseMessageFromServerToClient(new PlayerRemovedResponse(username, gameboard));
         playerMap.remove(username);
         file.delete();
-        fileCreation();
         saveState();
     }
 
     @Override
     public void onSelectedWorker(String username, List<PossibleActions> possibleActions, Worker selectedWorker) {
         saveState();
-        parser.parseMessageFromServerToClient(new SelectWorkerResponse("OK", username, possibleActions, selectedWorker));
+        parser.parseMessageFromServerToClient(new SelectWorkerResponse(Type.OK, username, possibleActions, selectedWorker));
     }
 }

@@ -5,25 +5,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.network.message.MessageFromClientToServer;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
-import it.polimi.ingsw.model.Cell;
 
-public class SelectBuildingCellRequest extends MessageFromClientToServer {
-
-    private final Cell selectedCell;
+public class JoinLobbyRequest extends MessageFromClientToServer {
+    private final String lobbyName;
 
     @JsonCreator
-    public SelectBuildingCellRequest(@JsonProperty("username") String username, @JsonProperty("selected cell") Cell selectedCell) {
+    public JoinLobbyRequest(@JsonProperty("username")String username, @JsonProperty("lobby name") String lobbyName) {
         super(username, Type.CLIENT_REQUEST);
-        this.selectedCell = selectedCell;
+        this.lobbyName = lobbyName;
     }
 
-    public Cell getSelectedCell() {
-        return selectedCell;
+    public String getLobbyName() {
+        return lobbyName;
     }
 
     @Override
     public void callVisitor(ServerMessageManagerVisitor visitor) {
-        visitor.selectCellToBuild(this);
+        visitor.joinLobby(this);
     }
 
 }

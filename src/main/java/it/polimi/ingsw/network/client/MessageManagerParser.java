@@ -6,17 +6,19 @@ import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.util.LinkedList;
 import java.io.IOException;
 import java.util.List;
 
 
-public class MessageParser implements ClientMessageManagerVisitor{
+public class MessageManagerParser implements ClientMessageManagerVisitor {
     private final Client client;
     private final ViewInterface view;
     private int chosenSize;
@@ -24,33 +26,104 @@ public class MessageParser implements ClientMessageManagerVisitor{
     private Worker selectedWorker;
     private Cell selectedCell;
 
-    public MessageParser(Client client) {
+    public MessageManagerParser(Client client) {
         this.client = client;
         this.view = client.getView();
     }
 
-    @Override // Login response confirmation/error
+    /**
+     * Manages the login response
+     * <p>
+     *    Based on the {@linkplain LoginResponse} outcome
+     *    <ul>
+     *        <li>OK: login successful, the user is in the waiting room and asked to create/join a lobby</li>
+     *        <li>SERVER_FULL: the server has exceeded its maximum capacity, won't accept new connections</li>
+     *        <li>INVALID_NAME: the username is already taken or forbidden</li>
+     *    </ul>
+     *    At this stage, the method also tries to save the address+username combo in a file, for quick access on the
+     *    next login.
+     * </p>
+     * @param message the login response
+     */
+    @Override
     public void onLogin(LoginResponse message) {
-        if (message.getOutcome().equals("OK")) {
-            view.showSuccessMessage("Login successful!");
-            try {
-                client.writeSettingsToFile(client.getIpAddress(), client.getUsername());
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.print("Cannot modify config file!");
-            }
-            // view.displayLobby;
-        } else {
-            view.showErrorMessage("Error " + message.getOutcome());
-            if (!message.getOutcome().equals("Match already started")) {   // TODO: define constant value
+
+        switch (message.getType()) {
+            case OK:
+                view.showSuccessMessage("Login successful!");
+
+                try {
+                    client.writeSettingsToFile(client.getIpAddress(), client.getUsername());
+                } catch (IOException e) {
+                    view.showErrorMessage("Could not save credentials");
+                }
+                enterLobby(message.getLobbies());
+                break;
+            case SERVER_FULL:
+            view.showErrorMessage("Error " + message.getType());
+            if (!message.getType().equals(Type.SERVER_FULL)) {
                 view.showErrorMessage("Login error, please retry");
                 client.setUsername(view.askUsername());
             }
             else {
-                view.showErrorMessage(message.getOutcome());
+                view.showErrorMessage(message.getType().toString());
                 client.stopConnection();
             }
         }
+    }
+
+    /**
+     * Lets the user join or create a lobby
+     * <p>
+     *     <ul>
+     *         Creation: asks lobby name and size, sends a {@linkplain CreateLobbyRequest}
+     *         Join; asks the lobby name from a list of existing lobbies, sends a {@linkplain JoinLobbyRequest}
+     *     </ul>
+     * </p>
+     * @param lobbiesAvailable the list of available lobbies
+     */
+    private void enterLobby(List<String> lobbiesAvailable) {
+        List<String> options = new LinkedList<>();
+        options.add("Create lobby");
+        if (lobbiesAvailable.size() > 0)
+            options.add("Join lobby");
+        String choice = view.lobbyOptions(options);
+        if (choice.equals(options.get(0))) {    // Create new
+            String lobbyName = view.askLobbyName();
+            chosenSize = view.askLobbySize();
+            client.sendMessage(new CreateLobbyRequest(client.getUsername(), lobbyName, chosenSize));
+
+        }
+        else {  // Join existing lobby
+            String chosenLobby = view.chooseLobbyToJoin(lobbiesAvailable);
+            client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
+
+        }
+    }
+
+
+    @Override
+    public void createLobby(CreateLobbyResponse message) {
+        if (message.getType().equals(Type.OK)) {
+            view.showSuccessMessage("You created lobby");
+            view.showSuccessMessage("Waiting for other players to connect");
+        }
+        else {
+            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+            enterLobby(message.getLobbies());
+        }
+    }
+
+    @Override
+    public void joinLobby(JoinLobbyResponse message) {
+        if (message.getType().equals(Type.OK)) {
+            view.showSuccessMessage("You entered lobby");
+        }
+        else {
+            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+            //TODO: lobby
+        }
+
     }
 
     @Override
@@ -61,11 +134,11 @@ public class MessageParser implements ClientMessageManagerVisitor{
 
     @Override // Move action response
     public void onPlayerMove(PlayerMoveResponse message) {
-        if (message.getOutcome().equals("OK"))
+        if (message.getType().equals(Type.OK))
             gameboard = message.getPayload();
             //payload to be saved internally on the view
         else
-            view.showErrorMessage(message.getOutcome());
+            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
 
         view.showGameBoard(gameboard);
 
@@ -73,11 +146,11 @@ public class MessageParser implements ClientMessageManagerVisitor{
 
     @Override // Build action response
     public void onPlayerBuild(PlayerBuildResponse message) {
-        if (message.getOutcome().equals("OK"))
+        if (message.getType().equals(Type.OK))
             gameboard = message.getPayload();
             //payload to be saved internally on the view
         else
-            view.showErrorMessage(message.getOutcome());
+            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
         //view.displayBoard(oldBoard)
 
         view.showGameBoard(gameboard);
@@ -85,7 +158,7 @@ public class MessageParser implements ClientMessageManagerVisitor{
 
     @Override // End turn response
     public void onTurnEnd(EndTurnResponse message) {
-        if (message.getOutcome().equals("OK")) {
+        if (message.getType().equals(Type.OK)) {
             //view.displayPlayableInterface
             //view.displayNonPlayableInterface(payload);
             client.setCurrentPlayer(message.getPayload().equals(client.getUsername()));
@@ -110,12 +183,12 @@ public class MessageParser implements ClientMessageManagerVisitor{
 
     @Override  // Place worker response
     public void onWorkerAdd(AddWorkerResponse message) {
-        if (message.getOutcome().equals("OK")) {
+        if (message.getType().equals(Type.OK)) {
             view.showSuccessMessage("Worker placed!");
             view.showGameBoard(message.getPayload());
         } else {
             view.showErrorMessage("Can't place a worker in that cell :(");
-            //view.showErrorMessage(((AddWorkerResponse) message).getOutcome());
+            //view.showErrorMessage(((AddWorkerResponse) message).getType());
         }
     }
 
@@ -169,11 +242,11 @@ public class MessageParser implements ClientMessageManagerVisitor{
 
     @Override
     public void onGodChosen(ChosenGodsResponse message) {
-        if (message.getOutcome().equals("OK"))
+        if (message.getType().equals(Type.OK))
             view.showSuccessMessage("Choice accepted!");
             //System.out.println(((ChosenGodsResponse)message).getPayload().toString());
         else
-            view.showErrorMessage(message.getOutcome());
+            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
     }
 
     @Override
@@ -188,7 +261,7 @@ public class MessageParser implements ClientMessageManagerVisitor{
     @Override
     public void onWorkerSelected(SelectWorkerResponse message) {
         client.setCurrentPlayer(true);
-        if (message.getOutcome().equals("OK")) {
+        if (message.getType().equals(Type.OK)) {
             selectedWorker = message.getSelectedWorker();
             PossibleActions action = view.chooseAction(message.getPossibleActions());
             messageToSend(action);
@@ -204,7 +277,7 @@ public class MessageParser implements ClientMessageManagerVisitor{
     @Override
     public void onWalkableCellsReceived(WalkableCellsResponse message) {
         client.setCurrentPlayer(true);
-        if (message.getOutcome().equals("OK")) {
+        if (message.getType().equals(Type.OK)) {
             selectedCell = view.moveAction(gameboard, message.getPayload());
             Message moveRequest = new PlayerMoveRequest(client.getUsername(), gameboard.get(5 * selectedCell.getCoordX() + selectedCell.getCoordY()), selectedWorker);
             client.sendMessage(moveRequest);
@@ -218,7 +291,7 @@ public class MessageParser implements ClientMessageManagerVisitor{
     @Override
     public void onBuildableCellsReceived(BuildableCellsResponse message) {
         client.setCurrentPlayer(true);
-        if (message.getOutcome().equals("OK")) {
+        if (message.getType().equals(Type.OK)) {
             selectedCell = view.buildAction(gameboard, message.getPayload());
             Message blockRequest = new SelectBuildingCellRequest(client.getUsername(), gameboard.get(5 * selectedCell.getCoordX() + selectedCell.getCoordY()));
             client.sendMessage(blockRequest);
@@ -258,6 +331,8 @@ public class MessageParser implements ClientMessageManagerVisitor{
         Message messageResponse = new ChooseToReloadMatchResponse(client.getUsername(), view.chooseMatchReload());
         client.sendMessage(messageResponse);
     }
+
+  
 
     private void beginTurn() {
         client.setCurrentPlayer(true);

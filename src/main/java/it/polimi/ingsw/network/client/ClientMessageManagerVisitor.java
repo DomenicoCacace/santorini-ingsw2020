@@ -6,6 +6,8 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 public interface ClientMessageManagerVisitor {
 
     void onLogin(LoginResponse message);
+    void joinLobby(JoinLobbyResponse message);
+    void createLobby(CreateLobbyResponse message);
     void onPlayerMove(PlayerMoveResponse message);
     void onPlayerBuild(PlayerBuildResponse message);
     void onTurnEnd(EndTurnResponse message);
@@ -25,6 +27,5 @@ public interface ClientMessageManagerVisitor {
     void onGameStart(GameStartResponse message);
     void onQuit(QuitRequest message);
     void chooseToReloadMatch(ChooseToReloadMatchRequest message);
-    void onGameBoardUpdate(GameBoardMessage message);
-
+    void onGameBoardUpdate(GameBoardMessage gameBoardMessage);
 }

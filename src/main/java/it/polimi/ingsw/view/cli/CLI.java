@@ -66,6 +66,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public String askUsername(){
+        //TODO: make the user choose if it wants the default one
         System.out.print("\t\tInsert your username: ");
         SafeScanner scanner = new SafeScanner(System.in);
         return scanner.nextLine();  //TODO: add a maximum username length?
@@ -77,6 +78,38 @@ public class CLI implements ViewInterface {
         showGameBoard(gameBoard);
         //TODO: enhance
     }
+
+    @Override
+    public String lobbyOptions(List<String> options) {
+        return options.get(chooseFromList(options));
+    }
+
+    @Override
+    public String askLobbyName() {
+        System.out.print("Choose your lobby name ");
+        SafeScanner scanner = new SafeScanner(System.in);
+        return scanner.nextLine();
+    }
+
+
+    @Override
+    public int askLobbySize() {
+        while(true) {
+            System.out.print("Choose the room size");
+            SafeScanner scanner = new SafeScanner(System.in);
+            int size = scanner.nextInt();
+            if (size == 2 || size == 3)
+                return size;
+            showErrorMessage("Size not valid");
+        }
+    }
+
+    @Override
+    public String chooseLobbyToJoin(List<String> lobbiesAvailable) {
+        return lobbiesAvailable.get(chooseFromList(lobbiesAvailable));
+    }
+
+
 
     @Override
     public void showGameBoard(List<Cell> gameBoard) {

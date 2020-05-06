@@ -9,38 +9,34 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartin
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.server.Lobby;
-import it.polimi.ingsw.network.server.Server;
 
-public class MessageParser implements ServerMessageManagerVisitor {
+public class MessageManagerParser implements ServerMessageManagerVisitor {
 
-    private final Server server;
-    private Lobby lobby;
+    private final Lobby lobby;
     private ServerController serverController;
 
-    public MessageParser(Server server) {
-        this.server = server;
-    }
 
-    public void setLobby(Lobby lobby) {
+    public MessageManagerParser(Lobby lobby) {
         this.lobby = lobby;
     }
 
     public void setServerController(ServerController serverController) {
         this.serverController = serverController;
     }
-    //Client -> sends message request -> virtualClient -> server -> parseMessageFromClientToServer(MessageRequest) -> message parser will call methods of ServerController and Lobby
+    //Client -> sends message request -> virtualClient -> lobby -> parseMessageFromClientToServer(MessageRequest) -> message parser will call methods of GameController and Lobby
     //Controller will call methods of model -> the model will return responses to the Controller -> Controller will pass the message to the Parser with parseMessageFromServerToClient
-    //Parser will pass messages to the Server -> Server will pass messages to the virtualClient -> Client
+    //Parser will pass messages to the Lobby -> Lobby will pass messages to the virtualClient -> Client
 
     public void parseMessageFromServerToClient(Message message) {
-        server.send(message.getUsername(), message);
+        lobby.sendMessage(message.getUsername(), message);
     }
 
     public void endGame() {
-        server.endGame();
+        lobby.endGame();
     }
 
     //This methods replace the switch with a visitor pattern
+
 
     @Override
     public void onMatchReloadResponse(ChooseToReloadMatchResponse message){
@@ -102,5 +98,10 @@ public class MessageParser implements ServerMessageManagerVisitor {
     @Override
     public void endTurn(EndTurnRequest message) {
         serverController.passTurn(message.getUsername());
+    }
+
+    @Override
+    public void cannotHandleMessage(Message message) {
+        //do nothing
     }
 }

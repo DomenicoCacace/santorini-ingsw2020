@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
-import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class ChooseYourGodRequest extends MessageFromServerToClient {
 
     @JsonCreator
     public ChooseYourGodRequest(@JsonProperty("username") String username, @JsonProperty("gods") List<GodData> gods) {
-        super(username, Content.CHOOSE_GOD);
+        super(username, Type.SERVER_REQUEST);
         this.gods = gods;
     }
 

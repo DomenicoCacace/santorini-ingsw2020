@@ -12,42 +12,26 @@ public interface ViewInterface {
     List<String> askToReloadLastSettings(List<String> savedUsers);
 
     void printLogo();
-
     String askIP();
-
     String askUsername();
-
     void gameStartScreen(List<Cell> gameBoard);
-
-    //void showLobby(); TODO: implement
-
+    String lobbyOptions(List<String> options);  //FIXME: write decent code
+    String askLobbyName();
+    int askLobbySize();
+    String chooseLobbyToJoin(List<String> lobbiesAvailable);
     Cell chooseWorker();
-
     boolean chooseMatchReload();
-
     Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells);
-
     Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells);
-
     Block chooseBlockToBuild(List<Block> buildableBlocks);
-
     void showGameBoard(List<Cell> gameBoard);
-
     void showErrorMessage(String error);
-
     void showSuccessMessage(String message);
-
     Cell placeWorker();
-
     GodData chooseUserGod(List<GodData> possibleGods);
-
     List<GodData> chooseGameGods(List<GodData> allGods, int size);
-
     int choosePlayersNumber();
-
     String chooseStartingPlayer(List<String> players);
-
     PossibleActions chooseAction(List<PossibleActions> possibleActions);
-
 
 }

@@ -2,9 +2,20 @@ package it.polimi.ingsw.network.message;
 
 import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
 
+/**
+ * Abstract Message type
+ * <p>
+ *     Generalizes all the messages travelling from the clients to the server;
+ *     <br>
+ *         Defines the abstract method <i>callVisitor</i>, to implement the
+ *         <a href url=https://archive.org/details/designpatternsel00gamm/page/351>Visitor pattern</a>.
+ * </p>
+ * @see it.polimi.ingsw.network.server.VirtualClient
+ * @see it.polimi.ingsw.controller.MessageManagerParser
+ */
 public abstract class MessageFromClientToServer extends Message {
-    public MessageFromClientToServer(String username, Content content) {
-        super(username, content);
+    public MessageFromClientToServer(String username, Type type) {
+        super(username, type);
     }
 
     public abstract void callVisitor(ServerMessageManagerVisitor visitor);

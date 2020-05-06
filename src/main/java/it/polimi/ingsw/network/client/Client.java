@@ -120,14 +120,12 @@ public class Client {
     }
 
     public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
-        if (currentPlayer) {
-            try {
-                networkHandler.sendMessage(message);
-            } catch (IOException e) {
-                networkHandler.closeConnection();
-            }
+        try {
+            networkHandler.sendMessage(message);
+        } catch (IOException e) {
+            networkHandler.closeConnection();
         }
-    }
+}
 
 
     public void stopConnection() {
@@ -139,4 +137,3 @@ public class Client {
     }
 
 }
-

@@ -62,7 +62,7 @@ public class Player implements PlayerInterface {
 
     public void setGame(Game game) {
         this.game = game;
-        god.getStrategy().setGame(game); //We can either do this here or in the Server class after it called the game constructor.
+        god.getStrategy().setGame(game); //We can either do this here or in the Lobby class after it called the game constructor.
     }
 
     public List<Worker> getWorkers() {

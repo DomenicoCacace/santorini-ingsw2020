@@ -8,24 +8,22 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class LoginResponse extends MessageFromServerToClient {
-    ;
+public class CreateLobbyResponse extends MessageFromServerToClient {
+
     private final List<String> lobbies;
 
     @JsonCreator
-    public LoginResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("lobbies") List<String> lobbies) {
+    public CreateLobbyResponse(@JsonProperty("username") String username, @JsonProperty("type") Type type, @JsonProperty("lobbies") List<String> lobbies) {
         super(username, type);
         this.lobbies = lobbies;
+    }
+
+    @Override
+    public void callVisitor(ClientMessageManagerVisitor visitor) {
+        visitor.createLobby(this);
     }
 
     public List<String> getLobbies() {
         return lobbies;
     }
-
-
-    @Override
-    public void callVisitor(ClientMessageManagerVisitor visitor) {
-        visitor.onLogin(this);
-    }
-
 }
