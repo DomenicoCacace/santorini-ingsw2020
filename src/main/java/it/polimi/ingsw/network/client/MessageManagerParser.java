@@ -60,15 +60,16 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 enterLobby(message.getLobbies());
                 break;
             case SERVER_FULL:
-            view.showErrorMessage("Error " + message.getType());
-            if (!message.getType().equals(Type.SERVER_FULL)) {
-                view.showErrorMessage("Login error, please retry");
-                client.setUsername(view.askUsername());
-            }
-            else {
-                view.showErrorMessage(message.getType().toString());
-                client.stopConnection();
-            }
+                view.showErrorMessage("Error " + message.getType());
+                if (!message.getType().equals(Type.SERVER_FULL)) {
+                    view.showErrorMessage("Login error, please retry");
+                    client.setUsername(view.askUsername());
+                }
+                else {
+                    view.showErrorMessage(message.getType().toString());
+                    client.stopConnection();
+                }
+                break;
         }
     }
 
@@ -116,14 +117,20 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override
     public void joinLobby(JoinLobbyResponse message) {
-        if (message.getType().equals(Type.OK)) {
-            view.showSuccessMessage("You entered lobby");
+        switch(message.getType()) {
+            case OK:
+                view.showSuccessMessage("You entered lobby");
+                chosenSize = message.getLobbySize();
+                break;
+            case INVALID_NAME:
+                view.showErrorMessage("Username not valid");
+                client.setUsername(view.askUsername());
+                break;
+            case LOBBY_FULL:
+                view.showErrorMessage("The lobby is full");
+                enterLobby(message.getAvailableLobbies());
+                //TODO: maybe ask if the user wants to change username or lobby
         }
-        else {
-            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
-            //TODO: lobby
-        }
-
     }
 
     @Override
