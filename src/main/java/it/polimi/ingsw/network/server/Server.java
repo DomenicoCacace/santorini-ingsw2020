@@ -64,12 +64,13 @@ public class Server extends Thread {
         FileHandler fileHandler;
         try {
             fileHandler = new FileHandler(logFile.getPath());
-            logger.addHandler(fileHandler);
             SimpleFormatter formatter = new SimpleFormatter();
             fileHandler.setFormatter(formatter);
+            logger.addHandler(fileHandler);
         } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
+
     }
 
     /**

@@ -30,7 +30,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     private final Map<String, PlayerInterface> playerMap;
     private final MessageManagerParser parser;
     private int cont = 0;
-    private final File file;
+    private File file;
 
 
     public ServerController(GameInterface game, Map<User, PlayerInterface> players, MessageManagerParser parser, File gameToSave) {
@@ -68,6 +68,11 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         } else  parser.parseMessageFromServerToClient(new GameStartResponse(Type.OK, game.buildGameData()));
     }
 
+    public void setFile(File file) {
+        this.file = file;
+        saveState();
+    }
+
     public void addWorker(String username, Cell cell) {
         try {
             playerMap.get(username).addWorker(cell);
@@ -79,7 +84,8 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
                 if (cont < playerMap.values().size()) {
                     List<String> usernames = new ArrayList<>(playerMap.keySet());
                     parser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(usernames.get(cont), game.buildBoardData()));
-                } else parser.parseMessageFromServerToClient(new GameStartResponse(Type.OK, game.buildGameData()));
+                } else if(!game.hasFirstPlayerLost())
+                    parser.parseMessageFromServerToClient(new GameStartResponse(Type.OK, game.buildGameData()));
             }
         } catch (AddingFailedException e) {
             logger.log(Level.INFO, username + " failed to add a worker");
@@ -211,7 +217,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         parser.parseMessageFromServerToClient(new PlayerRemovedResponse(username, gameboard));
         playerMap.remove(username);
         file.delete();
-        saveState();
+
     }
 
     @Override

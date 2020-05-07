@@ -45,6 +45,7 @@ public class Lobby implements PlayerLostListener {
     private List<GodData> availableGods;
     private final int maxRoomSize;
     private final Server server;
+    private ServerController controller;
     private final String roomName;
     private File savedGame;
 
@@ -195,7 +196,8 @@ public class Lobby implements PlayerLostListener {
                     playerInterfaces.put(server.getUser(p.getName(), this), p);
                     playerMap.put(server.getUser(p.getName(), this), p);
                 });
-                ServerController controller = new ServerController(restoredGame, playerInterfaces, messageParser, savedGame);
+                restoredGame.addPlayerLostListener(this);
+                controller = new ServerController(restoredGame, playerInterfaces, messageParser, savedGame);
                 this.gameStarted=true;
                 messageParser.setServerController(controller);
                 controller.handleGameRestore();
@@ -273,8 +275,9 @@ public class Lobby implements PlayerLostListener {
         playerMap.keySet().forEach(u -> playerInterfaceMap.put(u, playerMap.get(u)));
         List<Player> players = new LinkedList<>(playerMap.values());
         GameInterface gameInterface = new Game(new GameBoard(), players);
-        ServerController serverController = new ServerController(gameInterface, playerInterfaceMap, messageParser, fileCreation());
-        messageParser.setServerController(serverController);
+        controller = new ServerController(gameInterface, playerInterfaceMap, messageParser, fileCreation());
+        gameInterface.addPlayerLostListener(this);
+        messageParser.setServerController(controller);
         messageParser.parseMessageFromServerToClient(new GameBoardMessage(players.get(0).getName(), gameInterface.buildBoardData()));
         messageParser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), gameInterface.buildBoardData()));
     }
@@ -311,5 +314,6 @@ public class Lobby implements PlayerLostListener {
     @Override
     public void onPlayerLoss(String username, List<Cell> gameboard) {
         playerMap.remove(server.getUser(username, this));
+        controller.setFile(fileCreation());
     }
 }

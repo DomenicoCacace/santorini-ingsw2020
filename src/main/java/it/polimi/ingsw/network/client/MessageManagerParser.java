@@ -219,6 +219,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override  // Player removed, received by all users
     public void onPlayerRemoved(PlayerRemovedResponse message) {
+        gameboard = message.getGameboard();
         if (message.getPayload().equals(client.getUsername()))
             view.showErrorMessage("You lost");
         else {

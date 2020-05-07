@@ -9,6 +9,8 @@ public interface GameInterface {
 
     List<Cell> buildBoardData();
 
+    boolean hasFirstPlayerLost();
+
     GameData buildGameData();
 
     void setMoveActionListener(MoveActionListener moveActionListener);

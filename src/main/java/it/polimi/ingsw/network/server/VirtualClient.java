@@ -15,7 +15,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,7 +57,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             closeConnection();
         }
         jsonParser = new JacksonMessageBuilder();
-
         user = new User(this, server);
     }
 
@@ -76,7 +74,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
                 ((MessageFromClientToServer) message).callVisitor(this);
             }
         } catch (IOException | NullPointerException e) {
-            logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()));
+            logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()), e);
             server.onDisconnect(this.user);
         }
     }
@@ -92,7 +90,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         try {
             outputSocket.write(stringMessage + "\n");
             outputSocket.flush();
-            logger.log(Level.FINER, ("Message sent from room to " + user.getUsername()).replace(ReservedUsernames.BROADCAST.toString(), "all players"));
+            logger.log(Level.INFO, ("Message sent from room to: " + message.getUsername()).replace(ReservedUsernames.BROADCAST.toString(), "all players"));
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             try {
@@ -201,8 +199,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
 
         if (lobby != null) {
             ((MessageFromClientToServer) message).callVisitor(lobby.getRoomParser());
-            logger.log(Level.INFO, "Forwarding message to lobby: " + lobby.getRoomName());
-            logger.log(Level.INFO, Arrays.toString(logger.getHandlers()));
+            logger.log(Level.INFO, "Forwarding message: " + message.getClass().toGenericString() + " to lobby: " + lobby.getRoomName());
         }
         else {
             logger.log(Level.WARNING, "No lobby associated with user, cannot handle message");

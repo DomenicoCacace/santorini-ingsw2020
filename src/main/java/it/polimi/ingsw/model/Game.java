@@ -201,6 +201,15 @@ public class Game implements GameInterface {
             endTurnListener.onTurnEnd(currentTurn.getCurrentPlayer().getName());
     }
 
+    @Override
+    public boolean hasFirstPlayerLost() {
+        if (currentRuleSet.checkLoseCondition()){
+            removePlayer(currentTurn.getCurrentPlayer());
+            return true;
+    }
+        return false;
+    }
+
     private void removePlayer(Player player) {
         for (Worker worker : player.getWorkers()) {
             worker.getPosition().setOccupiedBy(null);
