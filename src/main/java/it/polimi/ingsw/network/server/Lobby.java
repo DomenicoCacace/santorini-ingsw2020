@@ -151,6 +151,7 @@ public class Lobby implements PlayerLostListener {
         playerMap.put(user, null);
         forbiddenUsernames.add(user.getUsername());
         if (server.getUsersInRoom(this).size() == maxRoomSize) {
+            gameStarted=true;
             if(checkSavedGame())
                 messageParser.parseMessageFromServerToClient(new ChooseToReloadMatchRequest(new ArrayList<>(playerMap.keySet()).get(0).getUsername()));
             else
@@ -190,9 +191,12 @@ public class Lobby implements PlayerLostListener {
             Map<User, PlayerInterface> playerInterfaces = new LinkedHashMap<>();
             if(restoredGame != null) {
                 restoredGame.restoreState();
-                restoredGame.getPlayers().forEach(p -> playerInterfaces.put(server.getUser(p.getName()), p));
-                //server.getUsersInRoom(this).forEach(u -> playerInterfaces.put(u, playerMap.get(u)));
+                restoredGame.getPlayers().forEach(p -> {
+                    playerInterfaces.put(server.getUser(p.getName(), this), p);
+                    playerMap.put(server.getUser(p.getName(), this), p);
+                });
                 ServerController controller = new ServerController(restoredGame, playerInterfaces, messageParser, savedGame);
+                this.gameStarted=true;
                 messageParser.setServerController(controller);
                 controller.handleGameRestore();
             }
@@ -259,7 +263,7 @@ public class Lobby implements PlayerLostListener {
         int index = usernames.indexOf(username);
         Collections.rotate(usernames, (usernames.size() - index) % usernames.size());
         Map<User, Player> tmpMap = new LinkedHashMap<>();
-        usernames.forEach(u -> tmpMap.put(server.getUser(u), playerMap.get(server.getUser(u))));
+        usernames.forEach(u -> tmpMap.put(server.getUser(u, this), playerMap.get(server.getUser(u, this))));
         playerMap = tmpMap;
         createGame();
     }
@@ -300,12 +304,12 @@ public class Lobby implements PlayerLostListener {
         return messageParser;
     }
 
-    public boolean hasLost(String username){
-        return playerMap.containsKey(server.getUser(username));
+    public boolean hasLost(User user){
+        return !playerMap.containsKey(user);
     }
 
     @Override
     public void onPlayerLoss(String username, List<Cell> gameboard) {
-        playerMap.remove(server.getUser(username));
+        playerMap.remove(server.getUser(username, this));
     }
 }

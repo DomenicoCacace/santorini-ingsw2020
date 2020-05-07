@@ -26,3 +26,7 @@ AM37.iml
 *.rar
 
 src/main/resources/server/META-INF/
+
+logs/
+
+savedGames/

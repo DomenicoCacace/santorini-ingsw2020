@@ -95,7 +95,7 @@ public class CLI implements ViewInterface {
     @Override
     public int askLobbySize() {
         while(true) {
-            System.out.print("Choose the room size");
+            System.out.print("Choose the room size: ");
             SafeScanner scanner = new SafeScanner(System.in);
             int size = scanner.nextInt();
             if (size == 2 || size == 3)

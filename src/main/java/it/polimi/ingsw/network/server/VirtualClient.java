@@ -152,7 +152,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         else {
             try {
                 logger.log(Level.INFO, message.getUsername() + " joined " + message.getLobbyName());
-                lobby.addUser(server.getUser(message.getUsername()));
+                lobby.addUser(this.user);
                 //server.moveToRoom(this.getUser(), lobby);
             }
             catch (RoomFullException e) {

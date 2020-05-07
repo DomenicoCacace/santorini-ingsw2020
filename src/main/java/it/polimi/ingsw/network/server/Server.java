@@ -191,8 +191,7 @@ public class Server extends Thread {
         Lobby lobby = users.get(user);
         if (lobby != null) {
             List<User> usersInLobby = getUsersInRoom(lobby);
-
-            if (!lobby.gameStarted() || lobby.hasLost(user.getUsername())) {
+            if (!lobby.gameStarted() || lobby.hasLost(user)) {
                 lobby.removeUser(user);
             }
             else {
@@ -244,8 +243,8 @@ public class Server extends Thread {
     }
 
 
-    public User getUser(String username) {
-        return users.keySet().stream().filter(u -> u.getUsername().equals(username)).collect(Collectors.toList()).get(0);
+    public User getUser(String username, Lobby lobby) {
+        return users.keySet().stream().filter(u -> (u.getUsername().equals(username) && u.getRoom().equals(lobby))).collect(Collectors.toList()).get(0);
     }
 
     public Map<String, Lobby> getGameLobbies() {
