@@ -65,6 +65,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
      */
     @Override
     public void run() {
+        new Thread(new PingFromServer(this)).start();
         try {
             while (true) {
                 Message message;
@@ -100,6 +101,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
                 logger.log(Level.SEVERE, " ");
                 logger.log(Level.SEVERE, e2.getMessage(), e2);
             }
+
             server.onDisconnect(user);
         }
     }
@@ -110,6 +112,17 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
         }
+    }
+
+    public void disconnectFromServer(){
+        server.onDisconnect(user);
+    }
+
+    public int ping() throws IOException {
+        if( clientConnection.isClosed() || !clientConnection.getInetAddress().isReachable(3000)){
+            throw new IOException();
+        }
+        return 0;
     }
 
     /**

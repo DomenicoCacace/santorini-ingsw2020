@@ -46,6 +46,7 @@ public class Server extends Thread {
         this.gameLobbies = new LinkedHashMap<>();
         this.users = new LinkedHashMap<>();
         this.waitingRoom = new LinkedList<>();
+
         File logDir = new File("./logs");
         logDir.mkdir();
         this.logFile = new File(logDir + File.separator + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt");
@@ -70,7 +71,6 @@ public class Server extends Thread {
         } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -206,8 +206,7 @@ public class Server extends Thread {
 
         users.remove(user);
         logger.log(Level.INFO, user.getUsername() + " has been kicked from the lobby");
-        //user.closeConnection(); not needed, user already disconnected himself
-
+        user.closeConnection();
     }
 
     public HashMap<User, Lobby> getUsers() {
