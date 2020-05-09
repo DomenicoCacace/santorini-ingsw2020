@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseNumberOfPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
@@ -34,7 +33,6 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
         @JsonSubTypes.Type(value = SelectWorkerResponse.class, name = "SelectWorker"),
         @JsonSubTypes.Type(value = WalkableCellsResponse.class, name = "WalkableCells"),
         @JsonSubTypes.Type(value = ChooseInitialGodsResponse.class, name = "ChooseInitialGodsResponse"),
-        @JsonSubTypes.Type(value = ChooseNumberOfPlayerResponse.class, name = "ChooseNumberOfPlayers"),
         @JsonSubTypes.Type(value = ChosenGodsResponse.class, name = "ChooseYourGodResponse"),
         @JsonSubTypes.Type(value = ChooseStartingPlayerRequest.class, name = "ChooseStartingPlayer"),
         @JsonSubTypes.Type(value = ChooseStartingPlayerResponse.class, name = "ChooseStartingPlayer"),
@@ -51,7 +49,6 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
         @JsonSubTypes.Type(value = SelectWorkerResponse.class, name = "SelectWorker"),
         @JsonSubTypes.Type(value = WalkableCellsResponse.class, name = "WalkableCells"),
         @JsonSubTypes.Type(value = ChooseInitialGodsResponse.class, name = "ChooseInitialGodsResponse"),
-        @JsonSubTypes.Type(value = ChooseNumberOfPlayerResponse.class, name = "ChooseNumberOfPlayers"),
         @JsonSubTypes.Type(value = ChosenGodsResponse.class, name = "ChooseYourGodResponse"),
         @JsonSubTypes.Type(value = GameStartResponse.class, name = "GameStarted"),
         @JsonSubTypes.Type(value = PlayerRemovedResponse.class, name = "PlayerRemoved"),

@@ -9,12 +9,12 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class GameBoardMessage extends MessageFromServerToClient {
+public class GameBoardResponse extends MessageFromServerToClient {
 
     private final List<Cell> gameBoard;
 
     @JsonCreator
-    public GameBoardMessage(@JsonProperty("username") String username,@JsonProperty("gameBoard") List<Cell> gameBoard) {
+    public GameBoardResponse(@JsonProperty("username") String username, @JsonProperty("gameBoard") List<Cell> gameBoard) {
         super(username, Type.NOTIFY);
         this.gameBoard = gameBoard;
     }

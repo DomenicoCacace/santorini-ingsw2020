@@ -12,8 +12,7 @@ import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardMessage;
-import it.polimi.ingsw.network.message.response.fromServerToClient.GameStartResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.JoinLobbyResponse;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
@@ -25,7 +24,6 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -278,7 +276,7 @@ public class Lobby implements PlayerLostListener {
         controller = new ServerController(gameInterface, playerInterfaceMap, messageParser, fileCreation());
         gameInterface.addPlayerLostListener(this);
         messageParser.setServerController(controller);
-        messageParser.parseMessageFromServerToClient(new GameBoardMessage(players.get(0).getName(), gameInterface.buildBoardData()));
+        messageParser.parseMessageFromServerToClient(new GameBoardResponse(players.get(0).getName(), gameInterface.buildBoardData()));
         messageParser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), gameInterface.buildBoardData()));
     }
 

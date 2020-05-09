@@ -86,7 +86,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public String askLobbyName() {
-        System.out.print("Choose your lobby name ");
+        System.out.print("Choose your lobby name:\n");
         SafeScanner scanner = new SafeScanner(System.in);
         return scanner.nextLine();
     }
@@ -95,7 +95,7 @@ public class CLI implements ViewInterface {
     @Override
     public int askLobbySize() {
         while(true) {
-            System.out.print("Choose the room size: ");
+            System.out.print("Choose the room size:\n");
             SafeScanner scanner = new SafeScanner(System.in);
             int size = scanner.nextInt();
             if (size == 2 || size == 3)
@@ -200,7 +200,7 @@ public class CLI implements ViewInterface {
     @Override
     public GodData chooseUserGod(List<GodData> possibleGods) {
         if (possibleGods.size() == 1) {
-            showSuccessMessage("Your god is " + possibleGods.get(0).getName());
+            showSuccessMessage("\nYour god is " + possibleGods.get(0).getName() + "\n");
             return possibleGods.get(0);
         }
         System.out.println("Choose your god:");
@@ -226,23 +226,6 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public int choosePlayersNumber() {
-        while (true) {
-            System.out.println("Choose the number of players for the match: ");
-            SafeScanner scanner = new SafeScanner(System.in);
-            int numPlayers = scanner.nextInt();
-            if (numPlayers < 2)
-                showErrorMessage("You can't play alone!");
-            else if (numPlayers > 3)
-                showErrorMessage("Too many players!");  // "un'orgia di players"
-            else {
-                System.out.println("Good!");
-                return numPlayers;
-            }
-        }
-    }
-
-    @Override
     public String chooseStartingPlayer(List<String> players) {
         System.out.println("Choose the first player:");
         return players.get(chooseFromList(players));
@@ -261,10 +244,10 @@ public class CLI implements ViewInterface {
     private Cell chooseCell() {
         while (true) {
             System.out.println("Insert the cell coordinates (1-5):");
-            System.out.print("X: ");
+            System.out.print("row: ");
             SafeScanner scanner = new SafeScanner(System.in);
             int coordX = scanner.nextInt();
-            System.out.print("Y: ");
+            System.out.print("col: ");
             int coordY = scanner.nextInt();
             if (!(coordX < 1 || coordY < 1 || coordX > 5 || coordY > 5))
                 return new Cell(coordX - 1, coordY - 1);

@@ -134,7 +134,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void onGameBoardUpdate(GameBoardMessage message) {
+    public void onGameBoardUpdate(GameBoardResponse message) {
         gameboard=message.getGameBoard();
         view.showGameBoard(message.getGameBoard());
     }
@@ -230,15 +230,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         //view.displayGameboard(payload)
     }
 
-    @Override
-    public void choosePlayerNumber(ChooseNumberOfPlayersRequest message) {
-        client.setCurrentPlayer(true);
-        chosenSize = view.choosePlayersNumber();
-        Message numberOfPlayers = new ChooseNumberOfPlayerResponse(client.getUsername(), chosenSize);
-        client.sendMessage(numberOfPlayers);
-        //view.displayChooseNumberOfPlayer
-    }
-
     @Override  // choosing the player's unique god
     public void chooseYourGod(ChooseYourGodRequest message) {
         client.setCurrentPlayer(true);
@@ -250,9 +241,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override
     public void onGodChosen(ChosenGodsResponse message) {
-        if (message.getType().equals(Type.OK))
-            view.showSuccessMessage("Choice accepted!");
-            //System.out.println(((ChosenGodsResponse)message).getPayload().toString());
+        if (message.getType().equals(Type.OK)) {
+            //view.showSuccessMessage("The chosen gods are:");
+            //view.showSuccessMessage((message).getPayload().toString()); //TODO: print better chosen gods (now we print memory address)
+        }
         else
             view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
     }

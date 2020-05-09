@@ -11,7 +11,6 @@ public interface ServerMessageManagerVisitor {
     default void joinLobby(JoinLobbyRequest message) {cannotHandleMessage(message);}
     default void createLobby(CreateLobbyRequest message) {cannotHandleMessage(message);}
 
-
     // game setup related, handled by the MessageManagerParser
     default void chooseInitialGods(ChooseInitialGodsResponse message) {cannotHandleMessage(message);}
     default void chooseGod(ChooseYourGodResponse message) {cannotHandleMessage(message);}

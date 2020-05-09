@@ -60,7 +60,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         PlayerInterface currPlayerInterface=  playerMap.get(currPlayerData.getName());
         if(currPlayerData.getSelectedWorker()!=null) { //Now i have selectedWorker inside the playerDataClass
             try {
-                parser.parseMessageFromServerToClient(new GameBoardMessage(currPlayerData.getName(), game.buildBoardData())); //need this otherwise client doesn't have gameboard saved locally!
+                parser.parseMessageFromServerToClient(new GameBoardResponse(currPlayerData.getName(), game.buildBoardData())); //need this otherwise client doesn't have gameboard saved locally!
                 currPlayerInterface.setSelectedWorker(currPlayerData.getSelectedWorker());//simulate a setWorker, in this way the player will call the SelectWorkerlistener.
             } catch (NotYourWorkerException e) {
                 e.printStackTrace(); //shouldn't go here

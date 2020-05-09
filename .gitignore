@@ -11,7 +11,6 @@ target/
 .DS_Store
 # ignore .idea and .iml
 .idea/
-
 AM37.iml
 # Compiled class file
 *.class
@@ -24,9 +23,11 @@ AM37.iml
 *.zip
 *.tar.gz
 *.rar
-
+# ignore META-INF
 src/main/resources/server/META-INF/
-
+# ignore log files
 logs/
-
+# ignore file json with the match saved
 savedGames/
+# ignore txt files
+*.txt

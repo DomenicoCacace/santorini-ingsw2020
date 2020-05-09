@@ -16,7 +16,6 @@ public interface ClientMessageManagerVisitor {
     void chooseInitialGods(ChooseInitialGodsRequest message);
     void onWinnerDeclared(WinnerDeclaredResponse message);
     void onPlayerRemoved(PlayerRemovedResponse message);
-    void choosePlayerNumber(ChooseNumberOfPlayersRequest message);
     void chooseYourGod(ChooseYourGodRequest message);
     void onGodChosen(ChosenGodsResponse message);
     void chooseStartingPlayer(ChooseStartingPlayerRequest message);
@@ -27,5 +26,5 @@ public interface ClientMessageManagerVisitor {
     void onGameStart(GameStartResponse message);
     void onQuit(QuitRequest message);
     void chooseToReloadMatch(ChooseToReloadMatchRequest message);
-    void onGameBoardUpdate(GameBoardMessage gameBoardMessage);
+    void onGameBoardUpdate(GameBoardResponse gameBoardResponse);
 }

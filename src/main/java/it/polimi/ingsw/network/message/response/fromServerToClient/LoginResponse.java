@@ -9,7 +9,7 @@ import it.polimi.ingsw.network.message.Type;
 import java.util.List;
 
 public class LoginResponse extends MessageFromServerToClient {
-    ;
+
     private final List<String> lobbies;
 
     @JsonCreator
