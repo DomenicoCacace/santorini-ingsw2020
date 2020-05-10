@@ -201,6 +201,7 @@ public class Server extends Thread {
                     gameLobbies.remove(lobby.getRoomName());
             }
             else {
+                lobby.removeUser(user);
                 List<User> usersInLobby = getUsersInRoom(lobby);
                 removeRoom(lobby);
                 usersInLobby.forEach(user1 -> {
@@ -209,12 +210,10 @@ public class Server extends Thread {
                     gameLobbies.values().forEach(lobbies -> lobbyNames.put(lobbies.getRoomName(), lobbies.lobbyInfo()));
                     user1.notify(new MovedToWaitingRoomResponse(user1.getUsername(), Type.OK, lobbyNames, user.getUsername()));
                 });
-                return;
             }
         }
         else
             waitingRoom.remove(user);
-
         users.remove(user);
         logger.log(Level.INFO, user.getUsername() + " has been kicked from the lobby");
         user.closeConnection();
@@ -244,7 +243,7 @@ public class Server extends Thread {
     }
 
     public void moveToWaitingRoom(User user) {
-        Lobby oldRoom = users.replace(user, null);
+        Lobby oldRoom = users.replace(user,null);
         if (oldRoom != null) {
             logger.log(Level.INFO, user.getUsername() + " moved from " + oldRoom.getRoomName() + " waiting room");
         }
@@ -252,7 +251,8 @@ public class Server extends Thread {
 
 
     public User getUser(String username, Lobby lobby) {
-        return users.keySet().stream().filter(u -> (u.getUsername().equals(username) && u.getRoom().equals(lobby))).collect(Collectors.toList()).get(0);
+        return users.keySet().stream()
+                .filter(u -> (u.getUsername().equals(username) && u.getRoom().equals(lobby))).collect(Collectors.toList()).get(0);
     }
 
     public Map<String, Lobby> getGameLobbies() {

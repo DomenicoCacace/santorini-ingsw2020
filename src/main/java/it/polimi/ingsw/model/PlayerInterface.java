@@ -20,15 +20,15 @@ public interface PlayerInterface {
 
     void askPassTurn() throws IllegalEndingTurnException;
 
-    void setAddWorkerListener(AddWorkerListener addWorkerListener);
+    void addWorkerListener(AddWorkerListener addWorkerListener);
 
-    void setBuildableCellsListener(BuildableCellsListener buildableCellsListener);
+    void addBuildableCellsListener(BuildableCellsListener buildableCellsListener);
 
-    void setWalkableCellsListener(WalkableCellsListener walkableCellsListener);
+    void addWalkableCellsListener(WalkableCellsListener walkableCellsListener);
 
-    void setSelectWorkerListener(SelectWorkerListener selectWorkerListener);
+    void addSelectWorkerListener(SelectWorkerListener selectWorkerListener);
 
-    void setBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener);
+    void addBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener);
 
     boolean allWorkersArePlaced();
 

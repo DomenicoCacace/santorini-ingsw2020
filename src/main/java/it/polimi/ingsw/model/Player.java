@@ -21,11 +21,11 @@ public class Player implements PlayerInterface {
     private final God god;
     private Worker selectedWorker;
 
-    private AddWorkerListener addWorkerListener;
-    private BuildableCellsListener buildableCellsListener;
-    private WalkableCellsListener walkableCellsListener;
-    private SelectWorkerListener selectWorkerListener;
-    private BuildingBlocksListener buildingBlocksListener;
+    private List<AddWorkerListener> addWorkerListener;
+    private List<BuildableCellsListener> buildableCellsListener;
+    private List<WalkableCellsListener> walkableCellsListener;
+    private List<SelectWorkerListener> selectWorkerListener;
+    private List<BuildingBlocksListener> buildingBlocksListener;
     @JsonIgnore
     private Game game;
 
@@ -77,7 +77,7 @@ public class Player implements PlayerInterface {
             workers.add(worker);
             //game.getGameBoard().getCell(cell).setOccupiedBy(worker);
             if (addWorkerListener != null)
-                addWorkerListener.onWorkerAdd(game.buildBoardData());
+                addWorkerListener.forEach(addWorkerListener1 -> addWorkerListener1.onWorkerAdd(game.buildBoardData()));
         } else {
             throw new AddingFailedException();
         }
@@ -95,7 +95,7 @@ public class Player implements PlayerInterface {
             List<PossibleActions> possibleActions = god.getStrategy().getPossibleActions(this.selectedWorker);
             //possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
             if (selectWorkerListener != null)
-                selectWorkerListener.onSelectedWorker(name, possibleActions, selectedWorker);
+                selectWorkerListener.forEach(selectWorkerListener1 -> selectWorkerListener1.onSelectedWorker(name, possibleActions, selectedWorker));
         }
 
     }
@@ -133,7 +133,7 @@ public class Player implements PlayerInterface {
             BuildAction buildAction = new BuildAction(selectedWorker, selectedCell, buildingBlocks.get(0));
             useAction(buildAction);
         } else if (buildingBlocksListener != null)
-            buildingBlocksListener.onBlocksObtained(name, buildingBlocks);
+            buildingBlocksListener.forEach(buildingBlocksListener1 -> buildingBlocksListener1.onBlocksObtained(name, buildingBlocks));
     }
 
     @Override
@@ -144,7 +144,9 @@ public class Player implements PlayerInterface {
                     this.selectedWorker = worker;
             }
             if (selectWorkerListener != null)
-                selectWorkerListener.onSelectedWorker(name, god.getStrategy().getPossibleActions(this.selectedWorker), this.selectedWorker);
+                selectWorkerListener.
+                        forEach(selectWorkerListener1 ->
+                                selectWorkerListener1.onSelectedWorker(name, god.getStrategy().getPossibleActions(this.selectedWorker), this.selectedWorker));
         } else
             throw new NotYourWorkerException();
     }
@@ -157,7 +159,7 @@ public class Player implements PlayerInterface {
                 walkableCells.add(cell.cloneCell());
             }
             if (walkableCellsListener != null)
-                walkableCellsListener.onWalkableCells(name, walkableCells);
+                walkableCellsListener.forEach(walkableCellsListener1 -> walkableCellsListener1.onWalkableCells(name, walkableCells));
         } else
             throw new WrongSelectionException();
     }
@@ -170,7 +172,7 @@ public class Player implements PlayerInterface {
                 buildableCells.add(cell.cloneCell());
             }
             if (buildableCellsListener != null)
-                buildableCellsListener.onBuildableCell(name, buildableCells);
+                buildableCellsListener.forEach(buildableCellsListener1 -> buildableCellsListener1.onBuildableCell(name, buildableCells));
         } else
             throw new WrongSelectionException();
     }
@@ -187,24 +189,25 @@ public class Player implements PlayerInterface {
         return new PlayerData(this.name, this.color, workersData, god.buildDataClass(), null);
     }
 
-    public void setAddWorkerListener(AddWorkerListener addWorkerListener) {
-        this.addWorkerListener = addWorkerListener;
+    @Override
+    public void addWorkerListener(AddWorkerListener addWorkerListener) {
+        this.addWorkerListener.add(addWorkerListener);
     }
-
-    public void setBuildableCellsListener(BuildableCellsListener buildableCellsListener) {
-        this.buildableCellsListener = buildableCellsListener;
+    @Override
+    public void addBuildableCellsListener(BuildableCellsListener buildableCellsListener) {
+        this.buildableCellsListener.add(buildableCellsListener);
     }
-
-    public void setWalkableCellsListener(WalkableCellsListener walkableCellsListener) {
-        this.walkableCellsListener = walkableCellsListener;
+    @Override
+    public void addWalkableCellsListener(WalkableCellsListener walkableCellsListener) {
+        this.walkableCellsListener.add(walkableCellsListener);
     }
-
-    public void setSelectWorkerListener(SelectWorkerListener selectWorkerListener) {
-        this.selectWorkerListener = selectWorkerListener;
+    @Override
+    public void addSelectWorkerListener(SelectWorkerListener selectWorkerListener) {
+        this.selectWorkerListener.add(selectWorkerListener);
     }
-
-    public void setBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener) {
-        this.buildingBlocksListener = buildingBlocksListener;
+    @Override
+    public void addBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener) {
+        this.buildingBlocksListener.add(buildingBlocksListener);
     }
 
     @Override

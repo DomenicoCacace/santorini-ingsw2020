@@ -24,10 +24,10 @@ public class Game implements GameInterface {
     private Turn currentTurn;
     private Turn nextTurn;
     private Player winner;
-    private MoveActionListener moveActionListener;
-    private EndTurnListener endTurnListener;
-    private BuildActionListener buildActionListener;
-    private EndGameListener endGameListener;
+    private List<MoveActionListener> moveActionListener;
+    private List<EndTurnListener> endTurnListener;
+    private List<BuildActionListener> buildActionListener;
+    private List<EndGameListener> endGameListener;
     private List<PlayerLostListener> playerLostListener = new ArrayList<>();
 
     public Game(GameBoard gameBoard, List<Player> players) {
@@ -131,14 +131,14 @@ public class Game implements GameInterface {
         if (currentRuleSet.validateMoveAction(moveAction)) {
             moveAction.apply();
             if (moveActionListener != null)
-                moveActionListener.onMoveAction(buildBoardData());
+                moveActionListener.forEach(moveActionListener1 -> moveActionListener1.onMoveAction(buildBoardData()));
             if(currentRuleSet.checkLoseCondition(moveAction))
                 removePlayer(currentTurn.getCurrentPlayer());
             else {
                 if (currentRuleSet.checkWinCondition(moveAction)) {
                     this.winner = currentTurn.getCurrentPlayer();
                     if (endGameListener != null) {
-                        endGameListener.onEndGame(winner.getName());
+                        endGameListener.forEach(endGameListener1 -> endGameListener1.onEndGame(winner.getName()));
                     }
                 }
             }
@@ -158,7 +158,7 @@ public class Game implements GameInterface {
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
             if (buildActionListener != null)
-                buildActionListener.onBuildAction(buildBoardData());
+                buildActionListener.forEach(buildActionListener1 -> buildActionListener1.onBuildAction(buildBoardData()));
             if(currentRuleSet.checkLoseCondition(buildAction))
                 removePlayer(currentTurn.getCurrentPlayer());
             else endTurnAutomatically();
@@ -198,7 +198,7 @@ public class Game implements GameInterface {
             removePlayer(currentTurn.getCurrentPlayer());
         }
         else if (endTurnListener != null)
-            endTurnListener.onTurnEnd(currentTurn.getCurrentPlayer().getName());
+            endTurnListener.forEach(endTurnListener1 -> endTurnListener1.onTurnEnd(currentTurn.getCurrentPlayer().getName()));
     }
 
     @Override
@@ -220,7 +220,7 @@ public class Game implements GameInterface {
         if (players.size() == 1) {
             this.winner = players.get(0);
             if (endGameListener != null)
-                endGameListener.onEndGame(this.winner.getName());
+                endGameListener.forEach(endGameListener1 -> endGameListener1.onEndGame(this.winner.getName()));
         }
         else if (playerLostListener != null)
             playerLostListener.forEach(listener -> listener.onPlayerLoss(player.getName(), buildBoardData()));
@@ -268,23 +268,27 @@ public class Game implements GameInterface {
             }
         }
     }
-
-    public void setMoveActionListener(MoveActionListener moveActionListener) {
-        this.moveActionListener = moveActionListener;
+    @Override
+    public void addMoveActionListener(MoveActionListener moveActionListener) {
+        this.moveActionListener.add(moveActionListener);
     }
 
-    public void setEndTurnListener(EndTurnListener endTurnListener) {
-        this.endTurnListener = endTurnListener;
+    @Override
+    public void addEndTurnListener(EndTurnListener endTurnListener) {
+        this.endTurnListener.add(endTurnListener);
     }
 
-    public void setBuildActionListener(BuildActionListener buildActionListener) {
-        this.buildActionListener = buildActionListener;
+    @Override
+    public void addBuildActionListener(BuildActionListener buildActionListener) {
+        this.buildActionListener.add(buildActionListener);
     }
 
-    public void setEndGameListener(EndGameListener endGameListener) {
-        this.endGameListener = endGameListener;
+    @Override
+    public void addEndGameListener(EndGameListener endGameListener) {
+        this.endGameListener.add(endGameListener);
     }
 
+    @Override
     public void addPlayerLostListener(PlayerLostListener playerLostListener) {
         this.playerLostListener.add(playerLostListener);
     }

@@ -293,7 +293,8 @@ public class Lobby implements PlayerLostListener {
     public void removeUser(User user) {
         playerMap.remove(user);
         usersInLobby.remove(user.getUsername());
-        server.getGameLobbies().put(this.roomName, this);
+        if(!gameStarted)
+            server.getGameLobbies().put(this.roomName, this);
     }
 
     public List<String> lobbyInfo(){

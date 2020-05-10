@@ -39,18 +39,18 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         players.forEach((u, p) -> playerMap.put(u.getUsername(), p));
         this.parser = parser;
         this.file = gameToSave;
-        game.setBuildActionListener(this);
-        game.setEndGameListener(this);
-        game.setEndTurnListener(this);
-        game.setMoveActionListener(this);
+        game.addBuildActionListener(this);
+        game.addEndGameListener(this);
+        game.addEndTurnListener(this);
+        game.addMoveActionListener(this);
         game.addPlayerLostListener(this);
         playerMap.values().forEach(playerInterface
                 -> {
-            playerInterface.setAddWorkerListener(this);
-            playerInterface.setBuildableCellsListener(this);
-            playerInterface.setWalkableCellsListener(this);
-            playerInterface.setSelectWorkerListener(this);
-            playerInterface.setBuildingBlocksListener(this);
+            playerInterface.addWorkerListener(this);
+            playerInterface.addBuildableCellsListener(this);
+            playerInterface.addWalkableCellsListener(this);
+            playerInterface.addSelectWorkerListener(this);
+            playerInterface.addBuildingBlocksListener(this);
         });
     }
 

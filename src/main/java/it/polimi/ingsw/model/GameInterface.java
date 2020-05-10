@@ -13,13 +13,13 @@ public interface GameInterface {
 
     GameData buildGameData();
 
-    void setMoveActionListener(MoveActionListener moveActionListener);
+    void addMoveActionListener(MoveActionListener moveActionListener);
 
-    void setEndTurnListener(EndTurnListener endTurnListener);
+    void addEndTurnListener(EndTurnListener endTurnListener);
 
-    void setBuildActionListener(BuildActionListener buildActionListener);
+    void addBuildActionListener(BuildActionListener buildActionListener);
 
-    void setEndGameListener(EndGameListener endGameListener);
+    void addEndGameListener(EndGameListener endGameListener);
 
     void addPlayerLostListener(PlayerLostListener playerLostListener);
 
