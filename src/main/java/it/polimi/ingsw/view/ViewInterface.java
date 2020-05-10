@@ -26,7 +26,13 @@ public interface ViewInterface {
     Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells);
     Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells);
     Block chooseBlockToBuild(List<Block> buildableBlocks);
+    GodData chooseUserGod(List<GodData> possibleGods);
+    List<GodData> chooseGameGods(List<GodData> allGods, int size);
 
+    String chooseStartingPlayer(List<String> players);
+    Cell placeWorker();
+
+    PossibleActions chooseAction(List<PossibleActions> possibleActions);
     void showGameBoard(List<Cell> gameBoard);
     void showErrorMessage(String error);
     void showSuccessMessage(String message);

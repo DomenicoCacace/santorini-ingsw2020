@@ -30,4 +30,4 @@ logs/
 # ignore file json with the match saved
 savedGames/
 # ignore txt files
-*.txt
+out/
