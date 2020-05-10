@@ -4,7 +4,7 @@ import java.util.concurrent.*;
 import java.util.logging.Level;
 
 public class PingFromClient implements Runnable{
-    private NetworkHandler networkHandler;
+    private final NetworkHandler networkHandler;
 
     public PingFromClient(NetworkHandler networkHandler) {
         this.networkHandler = networkHandler;

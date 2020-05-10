@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class Lobby implements PlayerLostListener {
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private boolean gameStarted;
-    private final List<String> forbiddenUsernames;
+    private final List<String> usersInLobby;
     private final MessageManagerParser messageParser;
     private Map<User, Player> playerMap;
     private final Map<GodData, God> godsMap;
@@ -65,7 +65,7 @@ public class Lobby implements PlayerLostListener {
         this.godsMap = new LinkedHashMap<>();
         this.availableGods = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        this.forbiddenUsernames = new LinkedList<>(Collections.singleton(ReservedUsernames.BROADCAST.toString()));
+        this.usersInLobby = new LinkedList<>(Collections.singleton(ReservedUsernames.BROADCAST.toString()));
         try {
             List<God> gods = objectMapper.readerFor(new TypeReference<List<God>>() {
             }).readValue(this.getClass().getResourceAsStream("GodsConfigFile.json"));
@@ -143,14 +143,15 @@ public class Lobby implements PlayerLostListener {
     public void addUser(User user) throws RoomFullException, InvalidUsernameException {
         if (server.getUsersInRoom(this).size() >= maxRoomSize)
             throw new RoomFullException();
-        if (forbiddenUsernames.contains(user.getUsername()))
+        if (usersInLobby.contains(user.getUsername()))
             throw new InvalidUsernameException();
 
         server.moveToRoom(user, this);
         playerMap.put(user, null);
-        forbiddenUsernames.add(user.getUsername());
+        usersInLobby.add(user.getUsername());
         if (server.getUsersInRoom(this).size() == maxRoomSize) {
             gameStarted=true;
+            server.getGameLobbies().remove(this.roomName);
             if(checkSavedGame())
                 messageParser.parseMessageFromServerToClient(new ChooseToReloadMatchRequest(new ArrayList<>(playerMap.keySet()).get(0).getUsername()));
             else
@@ -291,7 +292,18 @@ public class Lobby implements PlayerLostListener {
 
     public void removeUser(User user) {
         playerMap.remove(user);
-        forbiddenUsernames.remove(user.getUsername());
+        usersInLobby.remove(user.getUsername());
+        server.getGameLobbies().put(this.roomName, this);
+    }
+
+    public List<String> lobbyInfo(){
+        List<String> info = new ArrayList<>();
+        info.add(this.roomName);
+        info.add(String.valueOf(usersInLobby.size() - 1));
+        info.add(String.valueOf(this.maxRoomSize - usersInLobby.size() +1));
+        info.addAll(this.usersInLobby);
+        info.remove(ReservedUsernames.BROADCAST.toString());
+        return info;
     }
     public String getRoomName() {
         return this.roomName;

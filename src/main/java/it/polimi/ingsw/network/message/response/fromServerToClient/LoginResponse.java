@@ -7,18 +7,18 @@ import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
+import java.util.Map;
 
 public class LoginResponse extends MessageFromServerToClient {
-
-    private final List<String> lobbies;
+    private final Map<String, List<String>>  lobbies;
 
     @JsonCreator
-    public LoginResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("lobbies") List<String> lobbies) {
+    public LoginResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("lobbies") Map<String, List<String>> lobbies) {
         super(username, type);
         this.lobbies = lobbies;
     }
 
-    public List<String> getLobbies() {
+    public Map<String, List<String>>  getLobbies() {
         return lobbies;
     }
 

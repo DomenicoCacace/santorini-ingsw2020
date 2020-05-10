@@ -16,6 +16,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.util.LinkedList;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 public class MessageManagerParser implements ClientMessageManagerVisitor {
@@ -83,22 +84,29 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * </p>
      * @param lobbiesAvailable the list of available lobbies
      */
-    private void enterLobby(List<String> lobbiesAvailable) {
+    private void enterLobby(Map<String, List<String>> lobbiesAvailable) {
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
-        if (lobbiesAvailable.size() > 0)
+        if (lobbiesAvailable.keySet().size() > 0){
             options.add("Join lobby");
+            }
         String choice = view.lobbyOptions(options);
         if (choice.equals(options.get(0))) {    // Create new
             String lobbyName = view.askLobbyName();
             chosenSize = view.askLobbySize();
             client.sendMessage(new CreateLobbyRequest(client.getUsername(), lobbyName, chosenSize));
-
         }
         else {  // Join existing lobby
             String chosenLobby = view.chooseLobbyToJoin(lobbiesAvailable);
-            client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
-
+            if(chosenLobby!=null) {
+                if(chosenLobby.isBlank())
+                    client.sendMessage(new AvailableLobbiesRequest(client.getUsername(), Type.OK));
+                else
+                    client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
+            }
+            else{
+                enterLobby(lobbiesAvailable);
+            }
         }
     }
 
@@ -332,7 +340,25 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.sendMessage(messageResponse);
     }
 
-  
+    @Override
+    public void onMovedToWaitingRoom(MovedToWaitingRoomResponse message) {
+        view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
+        enterLobby(message.getAvailableLobbies());
+    }
+
+    @Override
+    public void lobbyRefresh(AvailableLobbiesResponse message) { //TODO: duplicate code
+        String chosenLobby = view.chooseLobbyToJoin(message.getLobbies());
+        if(chosenLobby!=null) {
+            if(chosenLobby.isBlank())
+                client.sendMessage(new AvailableLobbiesRequest(client.getUsername(), Type.OK));
+            else
+                client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
+        }
+        else{
+            enterLobby(message.getLobbies());
+        }
+    }
 
     private void beginTurn() {
         client.setCurrentPlayer(true);

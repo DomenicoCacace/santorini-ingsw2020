@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.response.fromServerToClient.LoginResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.MovedToWaitingRoomResponse;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 import jdk.jfr.Timestamp;
@@ -146,7 +147,10 @@ public class Server extends Thread {
             virtualClient.getUser().setUsername(username);
             waitingRoom.add(virtualClient.getUser());
             users.put(virtualClient.getUser(), null);
-            virtualClient.getUser().notify(new LoginResponse(Type.OK, username, new LinkedList<>(gameLobbies.keySet())));
+            //QOL: loginReponse now has the info about the lobbies
+            Map<String, List<String>> lobbies = new LinkedHashMap<>();
+            gameLobbies.values().forEach(lobby -> lobbies.put(lobby.getRoomName(), lobby.lobbyInfo()));
+            virtualClient.getUser().notify(new LoginResponse(Type.OK, username, lobbies));
             logger.log(Level.INFO, "Login completed, added " + virtualClient.getUser().getUsername());
         }
         else
@@ -179,8 +183,8 @@ public class Server extends Thread {
      * @param lobby the lobby to delete
      */
     public void removeRoom(Lobby lobby) {
+        waitingRoom.addAll(getUsersInRoom(lobby));
         getUsersInRoom(lobby).forEach(lobby::removeUser);
-        //waitingRoom.addAll(getUsersInRoom(lobby));    removing all the users before the method call
         gameLobbies.remove(lobby.getRoomName());
     }
 
@@ -191,13 +195,20 @@ public class Server extends Thread {
     public void onDisconnect(User user) {
         Lobby lobby = users.get(user);
         if (lobby != null) {
-            List<User> usersInLobby = getUsersInRoom(lobby);
             if (!lobby.gameStarted() || lobby.hasLost(user)) {
                 lobby.removeUser(user);
+                if(getUsersInRoom(lobby).size()==0)
+                    gameLobbies.remove(lobby.getRoomName());
             }
             else {
-                usersInLobby.forEach(User::closeConnection);
+                List<User> usersInLobby = getUsersInRoom(lobby);
                 removeRoom(lobby);
+                usersInLobby.forEach(user1 -> {
+                    moveToWaitingRoom(user1);
+                    Map<String, List<String>> lobbyNames = new LinkedHashMap<>();
+                    gameLobbies.values().forEach(lobbies -> lobbyNames.put(lobbies.getRoomName(), lobbies.lobbyInfo()));
+                    user1.notify(new MovedToWaitingRoomResponse(user1.getUsername(), Type.OK, lobbyNames, user.getUsername()));
+                });
                 return;
             }
         }
@@ -236,9 +247,6 @@ public class Server extends Thread {
         Lobby oldRoom = users.replace(user, null);
         if (oldRoom != null) {
             logger.log(Level.INFO, user.getUsername() + " moved from " + oldRoom.getRoomName() + " waiting room");
-            Lobby oldLobby = users.replace(user, null);
-            if (getUsersInRoom(oldLobby).size() == 0)
-                removeRoom(oldLobby);
         }
     }
 

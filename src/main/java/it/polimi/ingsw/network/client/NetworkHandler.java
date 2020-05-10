@@ -16,9 +16,9 @@ public class NetworkHandler implements Runnable {
     private BufferedReader inputSocket;
     private OutputStreamWriter outputSocket;
     private Socket serverConnection;    //removed openConnection boolean
-    private JacksonMessageBuilder jacksonParser;
-    private Client client;
-    private MessageManagerParser parser;
+    private final JacksonMessageBuilder jacksonParser;
+    private final Client client;
+    private final MessageManagerParser parser;
 
     public NetworkHandler(Client client) {
         this.jacksonParser = new JacksonMessageBuilder();

@@ -1,39 +1,43 @@
 package it.polimi.ingsw.network.message.response.fromServerToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
 
+
 import java.util.List;
 import java.util.Map;
 
-public class JoinLobbyResponse extends MessageFromServerToClient {
+public class MovedToWaitingRoomResponse extends MessageFromServerToClient {
     private final Map<String, List<String>> availableLobbies;
-    private final int lobbySize;
+    private final String disconnectedUser;
 
+    /**
+     * Message constructor
+     *
+     * @param username the sender's username
+     * @param type     the message type
+     */
     @JsonCreator
-    public JoinLobbyResponse(@JsonProperty("username") String username, @JsonProperty("type") Type type,
-                             @JsonProperty("availableLobbies") Map<String, List<String>> availableLobbies, @JsonProperty("lobbySize") int lobbySize) {
+    public MovedToWaitingRoomResponse(@JsonProperty("username") String username,@JsonProperty("type") Type type,
+                                      @JsonProperty("available") Map<String, List<String>> availableLobbies, @JsonProperty("disconnectedUser") String disconnectedUser ) {
         super(username, type);
         this.availableLobbies = availableLobbies;
-        this.lobbySize = lobbySize;
+        this.disconnectedUser = disconnectedUser;
     }
 
-    @JsonGetter
     public Map<String, List<String>> getAvailableLobbies() {
         return availableLobbies;
     }
 
-    @JsonGetter
-    public int getLobbySize() {
-        return lobbySize;
+    public String getDisconnectedUser() {
+        return disconnectedUser;
     }
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        visitor.joinLobby(this);
+        visitor.onMovedToWaitingRoom(this);
     }
 }

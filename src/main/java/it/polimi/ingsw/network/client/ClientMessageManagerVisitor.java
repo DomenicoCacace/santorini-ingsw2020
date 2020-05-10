@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.network.message.request.fromClientToServer.AvailableLobbiesRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
@@ -27,4 +28,6 @@ public interface ClientMessageManagerVisitor {
     void onQuit(QuitRequest message);
     void chooseToReloadMatch(ChooseToReloadMatchRequest message);
     void onGameBoardUpdate(GameBoardResponse gameBoardResponse);
+    void onMovedToWaitingRoom(MovedToWaitingRoomResponse message);
+    void lobbyRefresh(AvailableLobbiesResponse message);
 }

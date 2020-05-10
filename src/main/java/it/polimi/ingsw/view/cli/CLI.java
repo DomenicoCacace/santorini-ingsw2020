@@ -16,8 +16,11 @@ import java.util.*;
  * Command Line Interface manager
  */
 public class CLI implements ViewInterface {
+    public static final String SHOW_INFO_ALL_LOBBIES = "Show me info about all lobbies";
     public static final String YES = "y";
     public static final String NO = "n";
+    public static final String ASK_TO_VIEW_LOBBY_INFO = "Do you want to view the lobby information? (" + YES + "/" + NO + ")";
+    public static final String REFRESH = "refresh available lobbies";
     private final PrettyPrinter printer;
 
     public CLI() throws IOException {
@@ -105,10 +108,64 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public String chooseLobbyToJoin(List<String> lobbiesAvailable) {
-        return lobbiesAvailable.get(chooseFromList(lobbiesAvailable));
+    public String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) {
+        List<String> lobbies = new LinkedList<>(lobbiesAvailable.keySet());
+        lobbies.add(SHOW_INFO_ALL_LOBBIES);
+        lobbies.add(REFRESH);
+        lobbies.add("Go back");
+        System.out.println("Choose which lobby to join!");
+        int index = chooseFromList(lobbies);
+        if (index == lobbies.size() - 3) {
+            StringBuilder stringBuilder = new StringBuilder();
+            lobbiesAvailable.values().forEach(info -> {
+                stringBuilder.append(showLobbyInfo(info)).append("\n");
+            });
+            System.out.println(stringBuilder.toString() + "\r");
+            return chooseLobbyToJoin(lobbiesAvailable);
+        }
+        else if (index == lobbies.size() - 2)
+            return "";
+        else if (index == lobbies.size() - 1){
+            return null;
+        }
+        else if(askToChoose(ASK_TO_VIEW_LOBBY_INFO)) {
+            System.out.println(showLobbyInfo(lobbiesAvailable.get(lobbies.get(index))));
+            if (!askToChoose("Do you want to join lobby(" + YES + ") or do you want to review the lobbies?(" + NO + ")"))
+                return chooseLobbyToJoin(lobbiesAvailable);
+        }
+        return lobbies.get((index));
     }
 
+    private boolean askToChoose(String question){
+        while (true) {
+            System.out.println(question);
+            SafeScanner scanner = new SafeScanner(System.in);
+            String input = scanner.nextLine();
+            if (input.equals(YES))
+                return true;
+            else if (input.equals(NO))
+                return false;
+        }
+    }
+
+    private String showLobbyInfo(List<String> info) {
+        StringBuilder stringBuilder = new StringBuilder() ;
+        stringBuilder
+                .append("The lobby ")
+                .append(info.get(0))
+                .append(" has ")
+                .append(info.get(1))
+                .append(" players connected and is waiting for ")
+                .append(info.get(2))
+                .append(" players to start.\n");
+        if (info.size() > 3) {
+            stringBuilder.append("The players connected are: ");
+            for (int i = 3; i < info.size(); i++) {
+                stringBuilder.append("\n").append("-").append(info.get(i));
+            }
+        }
+        return stringBuilder.toString();
+    }
 
 
     @Override

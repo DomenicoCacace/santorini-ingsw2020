@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
+import it.polimi.ingsw.network.message.response.fromServerToClient.AvailableLobbiesResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.CreateLobbyResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.JoinLobbyResponse;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
@@ -15,7 +16,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -168,14 +171,14 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             }
             catch (RoomFullException e) {
                 logger.log(Level.INFO, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby full");
-                List<String> availableLobbies = new ArrayList<>();
-                server.getGameLobbies().values().forEach(l -> availableLobbies.add(l.getRoomName()));
+                Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
+                server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
                 notify(new JoinLobbyResponse(message.getUsername(), Type.LOBBY_FULL, availableLobbies, 0));
             }
             catch (InvalidUsernameException e2) {
                 logger.log(Level.INFO, message.getUsername() + " is already taken in lobby " + message.getLobbyName());
-                List<String> availableLobbies = new ArrayList<>();
-                server.getGameLobbies().values().forEach(l -> availableLobbies.add(l.getRoomName()));
+                Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
+                server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
                 notify(new JoinLobbyResponse(message.getUsername(), Type.INVALID_NAME, availableLobbies, 0));
             }
         }
@@ -198,11 +201,17 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
-    private List<String> getAvailableLobbies() {
-        List<Lobby> availableLobbies = server.getGameLobbies().values().stream().filter(l -> server.getUsersInRoom(l).size() < l.getMaxRoomSize()).collect(Collectors.toList());
-        List<String> lobbiesNames = new ArrayList<>();
-        availableLobbies.forEach(l -> lobbiesNames.add(l.getRoomName()));
-        return lobbiesNames;
+    @Override
+    public void lobbyRefresh(AvailableLobbiesRequest message) {
+        Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
+        server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
+        notify(new AvailableLobbiesResponse(Type.OK, user.getUsername(), availableLobbies));
+    }
+
+    private Map<String, List<String>> getAvailableLobbies() {
+        Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
+        server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
+        return availableLobbies;
     }
 
 
