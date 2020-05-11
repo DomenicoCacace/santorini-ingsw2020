@@ -31,13 +31,6 @@ public class MessageManagerParser implements ServerMessageManagerVisitor {
         lobby.sendMessage(message.getUsername(), message);
     }
 
-    public void endGame() {
-        lobby.endGame();
-    }
-
-    //This methods replace the switch with a visitor pattern
-
-
     @Override
     public void onMatchReloadResponse(ChooseToReloadMatchResponse message){
         lobby.reloadMatch(message.wantToReload());

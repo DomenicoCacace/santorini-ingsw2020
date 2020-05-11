@@ -21,11 +21,11 @@ public class Player implements PlayerInterface {
     private final God god;
     private Worker selectedWorker;
 
-    private List<AddWorkerListener> addWorkerListener;
-    private List<BuildableCellsListener> buildableCellsListener;
-    private List<WalkableCellsListener> walkableCellsListener;
-    private List<SelectWorkerListener> selectWorkerListener;
-    private List<BuildingBlocksListener> buildingBlocksListener;
+    private final List<AddWorkerListener> addWorkerListener= new ArrayList<>();
+    private final List<BuildableCellsListener> buildableCellsListener= new ArrayList<>();
+    private final List<WalkableCellsListener> walkableCellsListener= new ArrayList<>();
+    private final List<SelectWorkerListener> selectWorkerListener= new ArrayList<>();
+    private final List<BuildingBlocksListener> buildingBlocksListener= new ArrayList<>();
     @JsonIgnore
     private Game game;
 
@@ -93,11 +93,9 @@ public class Player implements PlayerInterface {
         action.getValidation(game);
         if (game.getCurrentTurn().getCurrentPlayer().equals(this)) {
             List<PossibleActions> possibleActions = god.getStrategy().getPossibleActions(this.selectedWorker);
-            //possibleActions.remove(PossibleActions.SELECT_OTHER_WORKER);
-            if (selectWorkerListener != null)
+            if (game.getWinner()==null)
                 selectWorkerListener.forEach(selectWorkerListener1 -> selectWorkerListener1.onSelectedWorker(name, possibleActions, selectedWorker));
         }
-
     }
 
     @Override

@@ -342,7 +342,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override
     public void onMovedToWaitingRoom(MovedToWaitingRoomResponse message) {
-        view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
+        if(message.getDisconnectedUser()!=null)
+            view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
         enterLobby(message.getAvailableLobbies());
     }
 

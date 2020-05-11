@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
-public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, EndGameListener, BuildingBlocksListener,
+public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, BuildingBlocksListener,
         EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener {
 
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
@@ -40,7 +40,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         this.parser = parser;
         this.file = gameToSave;
         game.addBuildActionListener(this);
-        game.addEndGameListener(this);
         game.addEndTurnListener(this);
         game.addMoveActionListener(this);
         game.addPlayerLostListener(this);
@@ -191,13 +190,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     @Override
     public void onBlocksObtained(String name, List<Block> blocks) {
         parser.parseMessageFromServerToClient(new SelectBuildingCellResponse(Type.NOTIFY, name, blocks));
-    }
-
-    @Override
-    public void onEndGame(String name) {
-        file.delete();
-        parser.parseMessageFromServerToClient(new WinnerDeclaredResponse(name));
-        parser.endGame();
     }
 
     @Override

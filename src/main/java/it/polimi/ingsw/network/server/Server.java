@@ -167,7 +167,7 @@ public class Server extends Thread {
         return users.keySet().stream().filter(u -> users.get(u) != null).filter(u -> users.get(u).equals(lobby)).collect(Collectors.toList());
     }
 
-    /**
+    /**_
      * Provides a list of the users in a lobby
      * @return the list of users in the waiting room
      */
@@ -185,7 +185,7 @@ public class Server extends Thread {
     public void removeRoom(Lobby lobby) {
         waitingRoom.addAll(getUsersInRoom(lobby));
         getUsersInRoom(lobby).forEach(lobby::removeUser);
-        gameLobbies.remove(lobby.getRoomName());
+        gameLobbies.remove(lobby.getRoomName(), lobby);
     }
 
     /**
@@ -204,12 +204,7 @@ public class Server extends Thread {
                 lobby.removeUser(user);
                 List<User> usersInLobby = getUsersInRoom(lobby);
                 removeRoom(lobby);
-                usersInLobby.forEach(user1 -> {
-                    moveToWaitingRoom(user1);
-                    Map<String, List<String>> lobbyNames = new LinkedHashMap<>();
-                    gameLobbies.values().forEach(lobbies -> lobbyNames.put(lobbies.getRoomName(), lobbies.lobbyInfo()));
-                    user1.notify(new MovedToWaitingRoomResponse(user1.getUsername(), Type.OK, lobbyNames, user.getUsername()));
-                });
+                usersInLobby.forEach(this::moveToWaitingRoom);
             }
         }
         else
@@ -245,6 +240,9 @@ public class Server extends Thread {
     public void moveToWaitingRoom(User user) {
         Lobby oldRoom = users.replace(user,null);
         if (oldRoom != null) {
+            Map<String, List<String>> lobbyNames = new LinkedHashMap<>();
+            gameLobbies.values().forEach(lobbies -> lobbyNames.put(lobbies.getRoomName(), lobbies.lobbyInfo()));
+            user.notify(new MovedToWaitingRoomResponse(user.getUsername(), Type.OK, lobbyNames, null));
             logger.log(Level.INFO, user.getUsername() + " moved from " + oldRoom.getRoomName() + " waiting room");
         }
     }

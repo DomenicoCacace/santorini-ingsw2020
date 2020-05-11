@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polimi.ingsw.controller.MessageManagerParser;
 import it.polimi.ingsw.controller.ServerController;
+import it.polimi.ingsw.listeners.EndGameListener;
 import it.polimi.ingsw.listeners.PlayerLostListener;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.dataClass.GodData;
@@ -14,6 +15,7 @@ import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.JoinLobbyResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.WinnerDeclaredResponse;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
  *     start a new game
  * </p>
  */
-public class Lobby implements PlayerLostListener {
+public class Lobby implements PlayerLostListener, EndGameListener {
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private boolean gameStarted;
     private final List<String> usersInLobby;
@@ -196,6 +198,7 @@ public class Lobby implements PlayerLostListener {
                     playerMap.put(server.getUser(p.getName(), this), p);
                 });
                 restoredGame.addPlayerLostListener(this);
+                restoredGame.addEndGameListener(this);
                 controller = new ServerController(restoredGame, playerInterfaces, messageParser, savedGame);
                 this.gameStarted=true;
                 messageParser.setServerController(controller);
@@ -276,14 +279,10 @@ public class Lobby implements PlayerLostListener {
         GameInterface gameInterface = new Game(new GameBoard(), players);
         controller = new ServerController(gameInterface, playerInterfaceMap, messageParser, fileCreation());
         gameInterface.addPlayerLostListener(this);
+        gameInterface.addEndGameListener(this);
         messageParser.setServerController(controller);
         messageParser.parseMessageFromServerToClient(new GameBoardResponse(players.get(0).getName(), gameInterface.buildBoardData()));
         messageParser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), gameInterface.buildBoardData()));
-    }
-
-    public void endGame() {
-        server.getUsersInWaitingRoom().addAll(playerMap.keySet());
-        playerMap.keySet().forEach(u -> server.getUsers().replace(u, null));
     }
 
     public boolean gameStarted() {
@@ -310,10 +309,6 @@ public class Lobby implements PlayerLostListener {
         return this.roomName;
     }
 
-    public int getMaxRoomSize() {
-        return maxRoomSize;
-    }
-
     public MessageManagerParser getRoomParser() {
         return messageParser;
     }
@@ -325,6 +320,16 @@ public class Lobby implements PlayerLostListener {
     @Override
     public void onPlayerLoss(String username, List<Cell> gameboard) {
         playerMap.remove(server.getUser(username, this));
-        controller.setFile(fileCreation());
+        savedGame = fileCreation();
+        controller.setFile(savedGame);
+    }
+
+    @Override
+    public void onEndGame(String name) {
+        Message message = new WinnerDeclaredResponse(name);
+        server.getUsersInRoom(this).forEach(user -> user.notify(message));
+        playerMap.keySet().forEach(server::moveToWaitingRoom);
+        server.removeRoom(this);
+        System.out.println(savedGame.delete());
     }
 }

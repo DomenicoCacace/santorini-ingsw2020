@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.listeners.*;
@@ -15,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class Game implements GameInterface {
 
     private final GameBoard gameBoard;
@@ -24,11 +25,11 @@ public class Game implements GameInterface {
     private Turn currentTurn;
     private Turn nextTurn;
     private Player winner;
-    private List<MoveActionListener> moveActionListener;
-    private List<EndTurnListener> endTurnListener;
-    private List<BuildActionListener> buildActionListener;
-    private List<EndGameListener> endGameListener;
-    private List<PlayerLostListener> playerLostListener = new ArrayList<>();
+    private final List<MoveActionListener> moveActionListener= new ArrayList<>();
+    private final List<EndTurnListener> endTurnListener= new ArrayList<>();
+    private final List<BuildActionListener> buildActionListener= new ArrayList<>();
+    private final List<EndGameListener> endGameListener= new ArrayList<>();
+    private final List<PlayerLostListener> playerLostListener = new ArrayList<>();
 
     public Game(GameBoard gameBoard, List<Player> players) {
         this.gameBoard = gameBoard;
@@ -130,16 +131,13 @@ public class Game implements GameInterface {
 
         if (currentRuleSet.validateMoveAction(moveAction)) {
             moveAction.apply();
-            if (moveActionListener != null)
-                moveActionListener.forEach(moveActionListener1 -> moveActionListener1.onMoveAction(buildBoardData()));
+            moveActionListener.forEach(moveActionListener1 -> moveActionListener1.onMoveAction(buildBoardData()));
             if(currentRuleSet.checkLoseCondition(moveAction))
                 removePlayer(currentTurn.getCurrentPlayer());
             else {
                 if (currentRuleSet.checkWinCondition(moveAction)) {
                     this.winner = currentTurn.getCurrentPlayer();
-                    if (endGameListener != null) {
-                        endGameListener.forEach(endGameListener1 -> endGameListener1.onEndGame(winner.getName()));
-                    }
+                    endGameListener.forEach(endGameListener1 -> endGameListener1.onEndGame(winner.getName()));
                 }
             }
         } else
@@ -157,8 +155,7 @@ public class Game implements GameInterface {
         buildAction = new BuildAction(targetWorker, targetCell, buildAction.getTargetBlock());
         if (currentRuleSet.validateBuildAction(buildAction)) {
             buildAction.apply();
-            if (buildActionListener != null)
-                buildActionListener.forEach(buildActionListener1 -> buildActionListener1.onBuildAction(buildBoardData()));
+            buildActionListener.forEach(buildActionListener1 -> buildActionListener1.onBuildAction(buildBoardData()));
             if(currentRuleSet.checkLoseCondition(buildAction))
                 removePlayer(currentTurn.getCurrentPlayer());
             else endTurnAutomatically();
@@ -180,8 +177,11 @@ public class Game implements GameInterface {
     }
 
     public Player nextPlayer() {
-        if (!players.contains(getCurrentTurn().getCurrentPlayer())) {
-            return players.get(((currentTurn.getTurnNumber() + 1) % players.size()));
+        if (!players.contains(getCurrentTurn().getCurrentPlayer())) { //This happens only in a 3 player match
+            int nextPlayerIndex = ((currentTurn.getTurnNumber()) % 3);
+            if(nextPlayerIndex!=0)
+                nextPlayerIndex--;
+            return players.get(nextPlayerIndex);
         }
         return players.get(((players.indexOf(currentTurn.getCurrentPlayer()) + 1) % players.size()));
     }
@@ -197,8 +197,7 @@ public class Game implements GameInterface {
         if (currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
         }
-        else if (endTurnListener != null)
-            endTurnListener.forEach(endTurnListener1 -> endTurnListener1.onTurnEnd(currentTurn.getCurrentPlayer().getName()));
+        else endTurnListener.forEach(endTurnListener1 -> endTurnListener1.onTurnEnd(currentTurn.getCurrentPlayer().getName()));
     }
 
     @Override
@@ -216,16 +215,15 @@ public class Game implements GameInterface {
             worker.setPosition(null);
         }
         players.remove(player);
-
         if (players.size() == 1) {
             this.winner = players.get(0);
-            if (endGameListener != null)
-                endGameListener.forEach(endGameListener1 -> endGameListener1.onEndGame(this.winner.getName()));
+            endGameListener.forEach(endGameListener1 -> endGameListener1.onEndGame(this.winner.getName()));
+            return;
         }
-        else if (playerLostListener != null)
+        else {
             playerLostListener.forEach(listener -> listener.onPlayerLoss(player.getName(), buildBoardData()));
-
-        generateNextTurn();
+        }
+        generateNextTurn(); //FIXME: we should do this only if there wasn't a winner
     }
 
     /*

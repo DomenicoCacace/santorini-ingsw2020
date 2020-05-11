@@ -145,7 +145,7 @@ import java.util.List;
      * @param cell the cell to draw the building on
      */
     private void drawBlock(Cell cell) {
-        PrintableObject block = buildingBlocks.get(cell.getBlock().getHeight() - 1);
+        //PrintableObject block = buildingBlocks.get(cell.getBlock().getHeight() - 1);
         restoreBuild(cell); //TODO: send specific message from server to client to avoid restoring
         //drawOnCell(block, cachedBoard, cell.getCoordX(), cell.getCoordY());
     }
