@@ -10,6 +10,7 @@ import it.polimi.ingsw.view.cli.utils.SafeScanner;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 
 /**
@@ -317,13 +318,12 @@ public class CLI implements ViewInterface {
         while(true) {
             SafeScanner scanner = new SafeScanner(System.in);
             for (int i = 1; i < list.size() + 1; i++)
-                System.out.println(i + "- " + list.get(i-1));
+                System.out.println(i + "- " + list.get(i - 1));
             choice = scanner.nextInt();
             if (choice > 0 && choice < list.size() + 1)
                 break;
             showErrorMessage("Not valid");
         }
-
         return choice - 1;
     }
 }

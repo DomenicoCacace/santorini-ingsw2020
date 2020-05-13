@@ -1,9 +1,7 @@
 package it.polimi.ingsw.network.client;
 
 
-import it.polimi.ingsw.network.message.JacksonMessageBuilder;
-import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.MessageFromServerToClient;
+import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 
 import java.io.BufferedReader;
@@ -11,14 +9,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class NetworkHandler implements Runnable {
+    private final static String PING = "ping";
     private BufferedReader inputSocket;
     private OutputStreamWriter outputSocket;
     private Socket serverConnection;    //removed openConnection boolean
     private final JacksonMessageBuilder jacksonParser;
     private final Client client;
     private final MessageManagerParser parser;
+    private ScheduledThreadPoolExecutor ex;
+    private final BlockingQueue<MessageFromServerToClient> queue = new ArrayBlockingQueue<>(15);
+
 
     public NetworkHandler(Client client) {
         this.jacksonParser = new JacksonMessageBuilder();
@@ -36,40 +45,36 @@ public class NetworkHandler implements Runnable {
 
     @Override
     public void run() {
-        new Thread(new PingFromClient(this)).start();
+        new Thread(() -> {
+            try {
+                while (true)
+                    queue.take().callVisitor(parser);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
         while (true) {
-            String ioData;
+            String ioData = "";
             try {
                 ioData = inputSocket.readLine();
-            } catch (IOException e) {
-                System.out.println("IOException");
-                break;
-            }
-            if (ioData == null) {
-                client.getView().showErrorMessage("You have been disconnected");
-                break;
-            }
-            Message message;
-            try {
-                message = jacksonParser.fromStringToMessage(ioData);
-                ((MessageFromServerToClient)message).callVisitor(parser);  //TODO: In both server and client we need to cast the input Message in MessageFromServerToclient or MessageFromClientToServer in order to use callVisitor method
-            } catch (IOException e) {
+                if (ioData == null) {
+                    client.getView().showErrorMessage("You have been disconnected");
+                    break;
+                }
+                if (ioData.equals(PING))
+                    new Thread(this::ping).start();
+                else {
+                    Message message;
+                    message = jacksonParser.fromStringToMessage(ioData);
+                    queue.put((MessageFromServerToClient) message);
+                }
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
         closeConnection();
     }
 
-    public void initClient(){
-        Client.initClient(client.getView());
-    }
-
-    public int ping() throws IOException {
-        if( serverConnection.isClosed() || !serverConnection.getInetAddress().isReachable(3000)){
-            throw new IOException();
-        }
-        return 0;
-    }
 
     public void login(String username) {
         try {
@@ -94,12 +99,43 @@ public class NetworkHandler implements Runnable {
 
     public synchronized void sendMessage(Message message) throws IOException {
         String json = jacksonParser.fromMessageToString(message);
-        if(!serverConnection.isClosed()) {
+        if (!serverConnection.isClosed()) {
             outputSocket.write(json + "\n");
             outputSocket.flush();
-            System.out.println(json + "message sent from " + client.getUsername() + " to Server");
+            //System.out.println(json + "message sent from " + client.getUsername() + " to Server");
+        } else throw new IOException();
+    }
+
+    public synchronized void sendMessage(String string) throws IOException {
+        if (!serverConnection.isClosed()) {
+            outputSocket.write(string + "\n");
+            outputSocket.flush();
+            //System.out.println(json + "message sent from " + client.getUsername() + " to Server");
+        } else throw new IOException();
+    }
+
+    public void ping() {
+        if (ex != null)
+            ex.shutdownNow();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        else throw new IOException();
+        try {
+            sendMessage(PING);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Client.initClient(client.getView());
+            return;
+        }
+        ex = new ScheduledThreadPoolExecutor(5);
+        ex.schedule(() -> {
+            System.out.println("Timeout!");
+            Client.initClient(client.getView());
+        }, 5, TimeUnit.SECONDS);
     }
 }
+
+
 

@@ -125,7 +125,7 @@ public class Client {
         } catch (IOException e) {
             networkHandler.closeConnection();
         }
-}
+    }
 
 
     public void stopConnection() {

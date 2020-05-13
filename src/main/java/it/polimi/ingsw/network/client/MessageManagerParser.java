@@ -5,18 +5,18 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.model.dataClass.GodData;
-import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.Type;
+import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromClientToServer.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
-import java.util.LinkedList;
+import java.sql.Time;
+import java.util.*;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class MessageManagerParser implements ClientMessageManagerVisitor {
@@ -27,10 +27,13 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     private Worker selectedWorker;
     private Cell selectedCell;
 
+
     public MessageManagerParser(Client client) {
         this.client = client;
         this.view = client.getView();
     }
+
+
 
     /**
      * Manages the login response
@@ -359,6 +362,11 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         else{
             enterLobby(message.getLobbies());
         }
+    }
+
+    @Override
+    public void cannotHandleMessage(MessageFromServerToClient messageFromServerToClient) {
+
     }
 
     private void beginTurn() {

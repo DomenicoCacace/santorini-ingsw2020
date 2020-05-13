@@ -15,10 +15,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -33,6 +31,7 @@ import java.util.stream.Collectors;
  * </p>
  */
 public class VirtualClient extends Thread implements ServerMessageManagerVisitor {
+    private   final static String PING = "ping";
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private final Server server;
     private final Socket clientConnection;
@@ -40,6 +39,8 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     private final User user;
     private BufferedReader inputSocket;
     private OutputStreamWriter outputSocket;
+    private ScheduledThreadPoolExecutor ex;
+    private final BlockingQueue<MessageFromClientToServer> queue = new ArrayBlockingQueue<>(5);
 
     /**
      * Default constructor
@@ -68,20 +69,38 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
      */
     @Override
     public void run() {
-        new Thread(new PingFromServer(this)).start();
+        notify(PING);
+        String input = null;
+
+        new Thread(() -> {
+            try {
+                while(true)
+                    queue.take().callVisitor(this);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                logger.log(Level.SEVERE, "Cannot retrieve message from queue " + e.getMessage(), e);
+            }
+        }).start();
+
         try {
             while (true) {
                 Message message;
-                String input = inputSocket.readLine();
-                logger.log(Level.FINE, "Message received");
-                message = jsonParser.fromStringToMessage(input);
-                ((MessageFromClientToServer) message).callVisitor(this);
+                input = inputSocket.readLine();
+                if (input.equals(PING))
+                    new Thread(this::ping).start();
+                else {
+                    logger.log(Level.FINE, "Message received");
+                    message = jsonParser.fromStringToMessage(input);
+                    queue.put((MessageFromClientToServer) message);
+                }
             }
-        } catch (IOException | NullPointerException e) {
-            logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()), e);
+        } catch (IOException | NullPointerException | InterruptedException e) {
+            logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()) + "\n" + input, e);
+
             server.onDisconnect(this.user);
         }
     }
+
 
     public User getUser(){
         return user;
@@ -109,6 +128,24 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
+    public void notify(String string){
+        try {
+            outputSocket.write(string + "\n");
+            outputSocket.flush();
+            logger.log(Level.INFO, ("Ping sent to" + user.getUsername()));
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            try {
+                logger.log(Level.SEVERE, "Can't send ping to:  " + user.getUsername());
+                clientConnection.close();
+            } catch (IOException e2) {
+                logger.log(Level.SEVERE, " ");
+                logger.log(Level.SEVERE, e2.getMessage(), e2);
+            }
+            server.onDisconnect(user);
+        }
+    }
+
     public void closeConnection() {
         try {
             clientConnection.close();
@@ -121,12 +158,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         server.onDisconnect(user);
     }
 
-    public int ping() throws IOException {
-        if( clientConnection.isClosed() || !clientConnection.getInetAddress().isReachable(3000)){
-            throw new IOException();
-        }
-        return 0;
-    }
 
     /**
      * Manages the {@linkplain LoginRequest}
@@ -202,7 +233,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     }
 
     @Override
-    public void lobbyRefresh(AvailableLobbiesRequest message) {
+    public synchronized  void lobbyRefresh(AvailableLobbiesRequest message) {
         Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
         server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
         notify(new AvailableLobbiesResponse(Type.OK, user.getUsername(), availableLobbies));
@@ -216,7 +247,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
 
 
     @Override
-    public void cannotHandleMessage(Message message) {
+    public  synchronized void cannotHandleMessage(Message message) {
         Lobby lobby = user.getRoom();
 
         if (lobby != null) {
@@ -226,5 +257,23 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         else {
             logger.log(Level.WARNING, "No lobby associated with user, cannot handle message");
         }
+    }
+
+
+
+    public void ping() {
+        if(ex!=null)
+            ex.shutdownNow();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        notify(PING);
+        ex = new ScheduledThreadPoolExecutor(5);
+        ex.schedule(() -> {
+            System.out.println("Timeout!");
+            disconnectFromServer();
+        }, 5, TimeUnit.SECONDS);
     }
 }

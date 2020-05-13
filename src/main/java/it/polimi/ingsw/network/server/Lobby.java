@@ -142,8 +142,8 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * @param user the user to add
      * @throws RoomFullException if the room is full
      */
-    public void addUser(User user) throws RoomFullException, InvalidUsernameException {
-        if (server.getUsersInRoom(this).size() >= maxRoomSize)
+    public synchronized void addUser(User user) throws RoomFullException, InvalidUsernameException {
+        if (usersInLobby.size() - 1 >= maxRoomSize)
             throw new RoomFullException();
         if (usersInLobby.contains(user.getUsername()))
             throw new InvalidUsernameException();
