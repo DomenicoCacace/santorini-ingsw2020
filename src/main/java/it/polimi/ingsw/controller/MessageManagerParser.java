@@ -32,53 +32,53 @@ public class MessageManagerParser implements ServerMessageManagerVisitor {
     }
 
     @Override
-    public  void onMatchReloadResponse(ChooseToReloadMatchResponse message){
+    public void onMatchReloadResponse(ChooseToReloadMatchResponse message){
         lobby.reloadMatch(message.wantToReload());
     }
 
     @Override
-    public  void chooseInitialGods(ChooseInitialGodsResponse message) {
+    public void chooseInitialGods(ChooseInitialGodsResponse message) {
         lobby.chooseGods(message.getPayload());
     }
 
     @Override
-    public  void chooseGod(ChooseYourGodResponse message) {
+    public void chooseGod(ChooseYourGodResponse message) {
         lobby.assignGod(message.getUsername(), message.getGod());
     }
 
     @Override
-    public  void chooseStartingPlayer(ChooseStartingPlayerResponse message) {
+    public void chooseStartingPlayer(ChooseStartingPlayerResponse message) {
         lobby.selectStartingPlayer(message.getPayload());
     }
 
     @Override
-    public  void selectWorker(SelectWorkerRequest message) {
+    public void selectWorker(SelectWorkerRequest message) {
         serverController.selectWorker(message.getUsername(), message.getTargetWorker());
     }
 
     @Override
-    public  void walkableCells(WalkableCellsRequest message) {
+    public void walkableCells(WalkableCellsRequest message) {
         serverController.obtainWalkableCells(message.getUsername());
     }
 
     @Override
-    public  void buildableCells(BuildableCellsRequest message) {
+    public void buildableCells(BuildableCellsRequest message) {
         serverController.obtainBuildableCells(message.getUsername());
     }
 
     @Override
-    public  void selectCellToBuild(SelectBuildingCellRequest message) {
+    public void selectCellToBuild(SelectBuildingCellRequest message) {
         serverController.selectBuildingCell(message.getUsername(), message.getSelectedCell());
     }
 
     @Override
-    public  void managePlayerMove(PlayerMoveRequest message) {
+    public void managePlayerMove(PlayerMoveRequest message) {
         MoveAction moveAction = new MoveAction(message.getTargetWorker(), message.getTargetCell());
         serverController.handleMoveAction(message.getUsername(), moveAction);
     }
 
     @Override
-    public  void managePlayerBuild(PlayerBuildRequest message) {
+    public void managePlayerBuild(PlayerBuildRequest message) {
         BuildAction buildAction = new BuildAction(message.getTargetWorker(), message.getTargetCell(), message.getTargetBlock());
         serverController.handleBuildAction(message.getUsername(), buildAction);
     }
@@ -89,12 +89,12 @@ public class MessageManagerParser implements ServerMessageManagerVisitor {
     }
 
     @Override
-    public  void endTurn(EndTurnRequest message) {
+    public void endTurn(EndTurnRequest message) {
         serverController.passTurn(message.getUsername());
     }
 
     @Override
-    public  void cannotHandleMessage(Message message) {
+    public void cannotHandleMessage(Message message) {
         //do nothing
     }
 }

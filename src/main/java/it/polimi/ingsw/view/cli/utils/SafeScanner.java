@@ -10,29 +10,42 @@ import java.util.Scanner;
 public class SafeScanner {
     private final Scanner scanner;
 
+
     public SafeScanner(InputStream inputStream) {
         scanner = new Scanner(inputStream);
     }
 
-    public String nextLine() {
-        while (true) {
-            try {
-                return scanner.nextLine();
-            } catch (InputMismatchException e) {
-                scanner.next();
+    public String nextLine() throws IOException, InterruptedException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String input = null;
+        try {
+            while (!br.ready() && !Thread.interrupted()) {
+                Thread.sleep(200);
             }
+            input = br.readLine();
+            return input;
+        } catch (InputMismatchException e) {
+            e.printStackTrace();
+            return nextLine();
         }
     }
 
-    public int nextInt() {
-        while (true) {
-            try {
-                return scanner.nextInt();
-            } catch (InputMismatchException e) {
-                scanner.next();
+    public int nextInt() throws IOException, InterruptedException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int input = -1;
+        try {
+            while (!br.ready()) {
+                Thread.sleep(200);
             }
+            input = Integer.parseInt(br.readLine());
+            return input;
+        }
+        catch(InputMismatchException e) {
+            e.printStackTrace();
+            return nextInt();
         }
     }
-
-
 }
+
+
+

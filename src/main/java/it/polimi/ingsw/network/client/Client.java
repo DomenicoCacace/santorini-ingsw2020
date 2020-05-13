@@ -8,6 +8,8 @@ import it.polimi.ingsw.view.cli.CLI;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.TimeoutException;
 
 public class Client {
     private static final File CONFIG_FILE = new File("../config.txt");
@@ -62,8 +64,10 @@ public class Client {
                 loginData.add(viewInterface.askIP());
                 loginData.add(viewInterface.askUsername());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | CancellationException | TimeoutException | InterruptedException e) {
+            Client.initClient(viewInterface);
+            viewInterface.showErrorMessage("Timeout!!");
+            viewInterface.stopInput();
         }
         new Client(loginData.get(1), loginData.get(0), viewInterface).startConnection();
     }
@@ -125,7 +129,7 @@ public class Client {
         } catch (IOException e) {
             networkHandler.closeConnection();
         }
-    }
+}
 
 
     public void stopConnection() {

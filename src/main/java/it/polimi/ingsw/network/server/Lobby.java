@@ -147,21 +147,18 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             throw new RoomFullException();
         if (usersInLobby.contains(user.getUsername()))
             throw new InvalidUsernameException();
-
+        user.notify(new JoinLobbyResponse(user.getUsername(), Type.OK, null, maxRoomSize));
         server.moveToRoom(user, this);
         playerMap.put(user, null);
         usersInLobby.add(user.getUsername());
         if (server.getUsersInRoom(this).size() == maxRoomSize) {
-            gameStarted=true;
+            gameStarted = true;
             server.getGameLobbies().remove(this.roomName);
-            if(checkSavedGame())
+            if (checkSavedGame())
                 messageParser.parseMessageFromServerToClient(new ChooseToReloadMatchRequest(new ArrayList<>(playerMap.keySet()).get(0).getUsername()));
             else
                 askGods(new ArrayList<>(godsMap.keySet()));
         }
-        else
-            user.notify(new JoinLobbyResponse(user.getUsername(), Type.OK, null, maxRoomSize));
-
     }
 
     private File fileCreation() {

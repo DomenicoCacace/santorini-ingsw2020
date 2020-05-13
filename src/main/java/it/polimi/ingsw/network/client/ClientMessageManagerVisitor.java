@@ -1,35 +1,33 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.message.MessageFromServerToClient;
+import it.polimi.ingsw.network.message.request.fromClientToServer.AvailableLobbiesRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
 public interface ClientMessageManagerVisitor {
 
-    default void onLogin(LoginResponse message) {cannotHandleMessage(message);}
-    default void joinLobby(JoinLobbyResponse message) {cannotHandleMessage(message);}
-    default void createLobby(CreateLobbyResponse message) {cannotHandleMessage(message);}
-    default void onPlayerMove(PlayerMoveResponse message) {cannotHandleMessage(message);}
-    default void onPlayerBuild(PlayerBuildResponse message) {cannotHandleMessage(message);}
-    default void onTurnEnd(EndTurnResponse message) {cannotHandleMessage(message);}
-    default void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {cannotHandleMessage(message);}
-    default void onWorkerAdd(AddWorkerResponse message) {cannotHandleMessage(message);}
-    default void chooseInitialGods(ChooseInitialGodsRequest message) {cannotHandleMessage(message);}
-    default void onWinnerDeclared(WinnerDeclaredResponse message) {cannotHandleMessage(message);}
-    default void onPlayerRemoved(PlayerRemovedResponse message) {cannotHandleMessage(message);}
-    default void chooseYourGod(ChooseYourGodRequest message) {cannotHandleMessage(message);}
-    default void onGodChosen(ChosenGodsResponse message) {cannotHandleMessage(message);}
-    default void chooseStartingPlayer(ChooseStartingPlayerRequest message) {cannotHandleMessage(message);}
-    default void onWorkerSelected(SelectWorkerResponse message) {cannotHandleMessage(message);}
-    default void onWalkableCellsReceived(WalkableCellsResponse message) {cannotHandleMessage(message);}
-    default void onBuildableCellsReceived(BuildableCellsResponse message) {cannotHandleMessage(message);}
-    default void onBuildingCellSelected(SelectBuildingCellResponse message) {cannotHandleMessage(message);}
-    default void onGameStart(GameStartResponse message) {cannotHandleMessage(message);}
-    default void onQuit(QuitRequest message) {cannotHandleMessage(message);}
-    default void chooseToReloadMatch(ChooseToReloadMatchRequest message) {cannotHandleMessage(message);}
-    default void onGameBoardUpdate(GameBoardResponse message) {cannotHandleMessage(message);}
-    default void onMovedToWaitingRoom(MovedToWaitingRoomResponse message) {cannotHandleMessage(message);}
-    default void lobbyRefresh(AvailableLobbiesResponse message) {cannotHandleMessage(message);}
-
-    void cannotHandleMessage(MessageFromServerToClient messageFromServerToClient);
+    void onLogin(LoginResponse message);
+    void joinLobby(JoinLobbyResponse message);
+    void createLobby(CreateLobbyResponse message);
+    void onPlayerMove(PlayerMoveResponse message);
+    void onPlayerBuild(PlayerBuildResponse message);
+    void onTurnEnd(EndTurnResponse message);
+    void chooseYourWorkerPosition(ChooseWorkerPositionRequest message);
+    void onWorkerAdd(AddWorkerResponse message);
+    void chooseInitialGods(ChooseInitialGodsRequest message);
+    void onWinnerDeclared(WinnerDeclaredResponse message);
+    void onPlayerRemoved(PlayerRemovedResponse message);
+    void chooseYourGod(ChooseYourGodRequest message);
+    void onGodChosen(ChosenGodsResponse message);
+    void chooseStartingPlayer(ChooseStartingPlayerRequest message);
+    void onWorkerSelected(SelectWorkerResponse message);
+    void onWalkableCellsReceived(WalkableCellsResponse message);
+    void onBuildableCellsReceived(BuildableCellsResponse message);
+    void onBuildingCellSelected(SelectBuildingCellResponse message);
+    void onGameStart(GameStartResponse message);
+    void onQuit(QuitRequest message);
+    void chooseToReloadMatch(ChooseToReloadMatchRequest message);
+    void onGameBoardUpdate(GameBoardResponse gameBoardResponse);
+    void onMovedToWaitingRoom(MovedToWaitingRoomResponse message);
+    void lobbyRefresh(AvailableLobbiesResponse message);
 }

@@ -113,7 +113,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         try {
             outputSocket.write(stringMessage + "\n");
             outputSocket.flush();
-            logger.log(Level.INFO, ("Message sent from room to: " + message.getUsername()).replace(ReservedUsernames.BROADCAST.toString(), "all players"));
+            logger.log(Level.INFO, ("Message" + message.getClass() + " sent from room to: " + message.getUsername()).replace(ReservedUsernames.BROADCAST.toString(), "all players"));
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             try {
@@ -132,7 +132,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         try {
             outputSocket.write(string + "\n");
             outputSocket.flush();
-            logger.log(Level.INFO, ("Ping sent to" + user.getUsername()));
         } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             try {
@@ -272,7 +271,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         notify(PING);
         ex = new ScheduledThreadPoolExecutor(5);
         ex.schedule(() -> {
-            System.out.println("Timeout!");
+            System.out.println("User " + user.getUsername() + " disconnected!");
             disconnectFromServer();
         }, 5, TimeUnit.SECONDS);
     }

@@ -125,13 +125,12 @@ public class NetworkHandler implements Runnable {
         try {
             sendMessage(PING);
         } catch (IOException e) {
-            e.printStackTrace();
-            Client.initClient(client.getView());
-            return;
+            //
         }
         ex = new ScheduledThreadPoolExecutor(5);
         ex.schedule(() -> {
-            System.out.println("Timeout!");
+            client.getView().stopInput();
+            closeConnection();
             Client.initClient(client.getView());
         }, 5, TimeUnit.SECONDS);
     }
