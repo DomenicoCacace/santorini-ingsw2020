@@ -9,13 +9,13 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class PlayerMoveResponse extends MessageFromServerToClient {
+public class PlayerBuildEvent extends MessageFromServerToClient {
 
     private final List<Cell> payload;
     ;
 
     @JsonCreator
-    public PlayerMoveResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
+    public PlayerBuildEvent(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, type);
         ;
         if (type.equals(Type.OK))
@@ -28,11 +28,13 @@ public class PlayerMoveResponse extends MessageFromServerToClient {
         return payload;
     }
 
-
-
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        visitor.onPlayerMove(this);
+        visitor.onPlayerBuild(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
     }
 }
-

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.response.fromServerToClient.LoginResponse;
@@ -165,6 +166,10 @@ public class Server extends Thread {
      */
     public List<User> getUsersInRoom(Lobby lobby) {
         return users.keySet().stream().filter(u -> users.get(u) != null).filter(u -> users.get(u).equals(lobby)).collect(Collectors.toList());
+    }
+
+    public void sendMessageToWaitingRoom(Message message){
+        waitingRoom.forEach(user -> user.notify(message));
     }
 
     /**_

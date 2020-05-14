@@ -17,4 +17,9 @@ public class ChooseToReloadMatchRequest extends MessageFromServerToClient {
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.chooseToReloadMatch(this);
     }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
 }

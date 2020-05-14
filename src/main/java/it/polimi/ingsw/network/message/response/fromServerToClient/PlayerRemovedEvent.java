@@ -10,13 +10,13 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class PlayerRemovedResponse extends MessageFromServerToClient {
+public class PlayerRemovedEvent extends MessageFromServerToClient {
 
     private final String payload;
     private final List<Cell> gameboard;
 
     @JsonCreator
-    public PlayerRemovedResponse(@JsonProperty("payload") String payload, @JsonProperty("gameboard") List<Cell> gameboard) {
+    public PlayerRemovedEvent(@JsonProperty("payload") String payload, @JsonProperty("gameboard") List<Cell> gameboard) {
         super(ReservedUsernames.BROADCAST.toString(), Type.PLAYER_REMOVED);
         this.payload = payload;
         this.gameboard = gameboard;
@@ -30,9 +30,13 @@ public class PlayerRemovedResponse extends MessageFromServerToClient {
         return gameboard;
     }
 
-
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.onPlayerRemoved(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
     }
 }

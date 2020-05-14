@@ -12,10 +12,10 @@ import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
-import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.JoinLobbyResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.WinnerDeclaredResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsEvent;
+import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardUpdate;
+import it.polimi.ingsw.network.message.response.fromServerToClient.UserJoinedLobbyEvent;
+import it.polimi.ingsw.network.message.response.fromServerToClient.WinnerDeclaredEvent;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 
@@ -147,7 +147,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             throw new RoomFullException();
         if (usersInLobby.contains(user.getUsername()))
             throw new InvalidUsernameException();
-        user.notify(new JoinLobbyResponse(user.getUsername(), Type.OK, null, maxRoomSize));
+        messageParser.parseMessageFromServerToClient(new UserJoinedLobbyEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, null, maxRoomSize, user.getUsername()));
         server.moveToRoom(user, this);
         playerMap.put(user, null);
         usersInLobby.add(user.getUsername());
@@ -213,12 +213,12 @@ public class Lobby implements PlayerLostListener, EndGameListener {
     public void chooseGods(List<GodData> gods) {
         if ((int)gods.stream().distinct().count() == server.getUsersInRoom(this).size() && gods.size() == server.getUsersInRoom(this).size()) {
             availableGods = gods;
-            messageParser.parseMessageFromServerToClient(new ChosenGodsResponse(Type.OK, ReservedUsernames.BROADCAST.toString(), gods));
+            messageParser.parseMessageFromServerToClient(new ChosenGodsEvent(Type.OK, ReservedUsernames.BROADCAST.toString(), gods));
             askToChooseGod(server.getUsersInRoom(this).get(1).getUsername());
         }
         else {
             String firstPlayerName = server.getUsersInRoom(this).get(0).getUsername();
-            messageParser.parseMessageFromServerToClient(new ChosenGodsResponse(Type.INVALID_GOD_CHOICE, firstPlayerName, null));
+            messageParser.parseMessageFromServerToClient(new ChosenGodsEvent(Type.INVALID_GOD_CHOICE, firstPlayerName, null));
             askGods(new ArrayList<>(godsMap.keySet()));
         }
     }
@@ -278,7 +278,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         gameInterface.addPlayerLostListener(this);
         gameInterface.addEndGameListener(this);
         messageParser.setServerController(controller);
-        messageParser.parseMessageFromServerToClient(new GameBoardResponse(players.get(0).getName(), gameInterface.buildBoardData()));
+        messageParser.parseMessageFromServerToClient(new GameBoardUpdate(players.get(0).getName(), gameInterface.buildBoardData()));
         messageParser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), gameInterface.buildBoardData()));
     }
 
@@ -323,7 +323,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
 
     @Override
     public void onEndGame(String name) {
-        Message message = new WinnerDeclaredResponse(name);
+        Message message = new WinnerDeclaredEvent(name);
         server.getUsersInRoom(this).forEach(user -> user.notify(message));
         playerMap.keySet().forEach(server::moveToWaitingRoom);
         server.removeRoom(this);

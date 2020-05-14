@@ -4,9 +4,9 @@ import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.*;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
-import it.polimi.ingsw.network.message.response.fromServerToClient.AvailableLobbiesResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.CreateLobbyResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.JoinLobbyResponse;
+import it.polimi.ingsw.network.message.response.fromServerToClient.LobbyRefreshevent;
+import it.polimi.ingsw.network.message.response.fromServerToClient.LobbyCreatedEvent;
+import it.polimi.ingsw.network.message.response.fromServerToClient.UserJoinedLobbyEvent;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 
@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * Server-side client communication and message handler
@@ -190,7 +189,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     public synchronized void joinLobby(JoinLobbyRequest message) {
         Lobby lobby = server.getGameLobbies().get(message.getLobbyName());
         if (lobby == null) {    // lobby not exists
-            notify(new JoinLobbyResponse(message.getUsername(), Type.NO_LOBBY_AVAILABLE, null, 0));  // TODO define type
+            notify(new UserJoinedLobbyEvent(message.getUsername(), Type.NO_LOBBY_AVAILABLE, null, 0, null));  // TODO define type
             logger.log(Level.WARNING, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby does not exist");
         }
         else {
@@ -203,13 +202,13 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
                 logger.log(Level.INFO, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby full");
                 Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
                 server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
-                notify(new JoinLobbyResponse(message.getUsername(), Type.LOBBY_FULL, availableLobbies, 0));
+                notify(new UserJoinedLobbyEvent(message.getUsername(), Type.LOBBY_FULL, availableLobbies, 0, null));
             }
             catch (InvalidUsernameException e2) {
                 logger.log(Level.INFO, message.getUsername() + " is already taken in lobby " + message.getLobbyName());
                 Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
                 server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
-                notify(new JoinLobbyResponse(message.getUsername(), Type.INVALID_NAME, availableLobbies, 0));
+                notify(new UserJoinedLobbyEvent(message.getUsername(), Type.INVALID_NAME, availableLobbies, 0, null));
             }
         }
     }
@@ -219,13 +218,14 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     @Override
     public synchronized void createLobby(CreateLobbyRequest message) {
         if (server.getGameLobbies().containsKey(message.getLobbyName())) {
-            notify(new CreateLobbyResponse(message.getUsername(), Type.INVALID_NAME, getAvailableLobbies()));
+            notify(new LobbyCreatedEvent(message.getUsername(), Type.INVALID_NAME, getAvailableLobbies()));
             logger.log(Level.INFO, message.getUsername() + " failed to create " + message.getLobbyName() + ": name already taken");
         }
         else {
             Lobby newLobby = new Lobby(server, message.getLobbyName(),user ,message.getLobbySize());
             server.getGameLobbies().put(newLobby.getRoomName(), newLobby);
-            notify(new CreateLobbyResponse(message.getUsername(), Type.OK, null));
+            server.sendMessageToWaitingRoom(new LobbyCreatedEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, getAvailableLobbies()));
+            notify(new LobbyCreatedEvent(message.getUsername(), Type.OK, null));
             logger.log(Level.INFO, message.getUsername() + " successfully created \"" + message.getLobbyName() + "\"");
 
         }
@@ -235,7 +235,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     public synchronized  void lobbyRefresh(AvailableLobbiesRequest message) {
         Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
         server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
-        notify(new AvailableLobbiesResponse(Type.OK, user.getUsername(), availableLobbies));
+        notify(new LobbyRefreshevent(Type.OK, user.getUsername(), availableLobbies));
     }
 
     private Map<String, List<String>> getAvailableLobbies() {

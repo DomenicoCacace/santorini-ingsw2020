@@ -10,13 +10,13 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class ChosenGodsResponse extends MessageFromServerToClient {
+public class ChosenGodsEvent extends MessageFromServerToClient {
 
     private final List<GodData> payload;
     ;
 
     @JsonCreator
-    public ChosenGodsResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<GodData> payload) {
+    public ChosenGodsEvent(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<GodData> payload) {
         super(username, type);
 
         if (type.equals(Type.OK))
@@ -33,6 +33,11 @@ public class ChosenGodsResponse extends MessageFromServerToClient {
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.onGodChosen(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
     }
 }
 

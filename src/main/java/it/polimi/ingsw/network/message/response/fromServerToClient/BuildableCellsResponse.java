@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.message.response.fromServerToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
@@ -32,5 +33,10 @@ public class BuildableCellsResponse extends MessageFromServerToClient {
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.onBuildableCellsReceived(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
     }
 }

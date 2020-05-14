@@ -25,9 +25,13 @@ public class WalkableCellsResponse extends MessageFromServerToClient {
         return payload;
     }
 
-
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.onWalkableCellsReceived(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
     }
 }

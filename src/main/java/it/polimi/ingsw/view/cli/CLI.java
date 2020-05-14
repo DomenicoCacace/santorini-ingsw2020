@@ -33,6 +33,7 @@ public class CLI implements ViewInterface {
     public void stopInput(){
         futureList.forEach(future -> future.cancel(true));
         futureList.clear();
+        ex.shutdown();
         ex = Executors.newSingleThreadScheduledExecutor();
     }
 
@@ -171,11 +172,10 @@ public class CLI implements ViewInterface {
     public String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) throws TimeoutException, InterruptedException, CancellationException{
         List<String> lobbies = new LinkedList<>(lobbiesAvailable.keySet());
         lobbies.add(SHOW_INFO_ALL_LOBBIES);
-        lobbies.add(REFRESH);
         lobbies.add("Go back");
         System.out.println("Choose which lobby to join!");
         int index = chooseFromList(lobbies);
-        if (index == lobbies.size() - 3) {
+        if (index == lobbies.size() - 2) {
             StringBuilder stringBuilder = new StringBuilder();
             lobbiesAvailable.values().forEach(info -> {
                 stringBuilder.append(showLobbyInfo(info)).append("\n");
@@ -183,8 +183,6 @@ public class CLI implements ViewInterface {
             System.out.println(stringBuilder.toString() + "\r");
             return chooseLobbyToJoin(lobbiesAvailable);
         }
-        else if (index == lobbies.size() - 2)
-            return "";
         else if (index == lobbies.size() - 1){
             return null;
         }

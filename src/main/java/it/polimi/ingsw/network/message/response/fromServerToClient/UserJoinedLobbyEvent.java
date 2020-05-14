@@ -10,16 +10,23 @@ import it.polimi.ingsw.network.message.Type;
 import java.util.List;
 import java.util.Map;
 
-public class JoinLobbyResponse extends MessageFromServerToClient {
+public class UserJoinedLobbyEvent extends MessageFromServerToClient {
     private final Map<String, List<String>> availableLobbies;
     private final int lobbySize;
+    private final String joinedUser;
 
     @JsonCreator
-    public JoinLobbyResponse(@JsonProperty("username") String username, @JsonProperty("type") Type type,
-                             @JsonProperty("availableLobbies") Map<String, List<String>> availableLobbies, @JsonProperty("lobbySize") int lobbySize) {
+    public UserJoinedLobbyEvent(@JsonProperty("username") String username, @JsonProperty("type") Type type,
+                                @JsonProperty("availableLobbies") Map<String, List<String>> availableLobbies, @JsonProperty("lobbySize") int lobbySize,
+                                @JsonProperty("joinedUser") String joinedUser) {
         super(username, type);
         this.availableLobbies = availableLobbies;
         this.lobbySize = lobbySize;
+        this.joinedUser = joinedUser;
+    }
+
+    public String getJoinedUser() {
+        return joinedUser;
     }
 
     @JsonGetter
@@ -35,5 +42,10 @@ public class JoinLobbyResponse extends MessageFromServerToClient {
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.joinLobby(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
     }
 }

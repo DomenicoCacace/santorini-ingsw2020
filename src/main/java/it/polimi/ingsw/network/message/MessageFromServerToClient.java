@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 
 /**
@@ -23,6 +24,8 @@ public abstract class MessageFromServerToClient extends Message {
         super(username, type);
     }
 
+    @JsonIgnore
+    public abstract boolean isBlocking();
 
     public abstract void callVisitor(ClientMessageManagerVisitor visitor);
 }

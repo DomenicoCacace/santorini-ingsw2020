@@ -9,19 +9,19 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class PlayerBuildResponse extends MessageFromServerToClient {
+public class WorkerAddedEvent extends MessageFromServerToClient {
 
     private final List<Cell> payload;
-    ;
 
     @JsonCreator
-    public PlayerBuildResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
+    public WorkerAddedEvent(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, type);
-        ;
-        if (type.equals(Type.OK))
+
+        if (type.equals(Type.OK) || type.equals(Type.ADD_WORKER)) {
             this.payload = payload;
-        else
+        } else {
             this.payload = null;
+        }
     }
 
     public List<Cell> getPayload() {
@@ -29,10 +29,13 @@ public class PlayerBuildResponse extends MessageFromServerToClient {
     }
 
 
-
+    @Override
+    public boolean isBlocking() {
+        return false;
+    }
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        visitor.onPlayerBuild(this);
+        visitor.onWorkerAdd(this);
     }
 }

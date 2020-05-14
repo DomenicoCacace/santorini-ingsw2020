@@ -27,4 +27,9 @@ public class ChooseYourGodRequest extends MessageFromServerToClient {
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.chooseYourGod(this);
     }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
 }

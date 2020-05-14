@@ -61,15 +61,20 @@ public class NetworkHandler implements Runnable {
                     client.getView().showErrorMessage("You have been disconnected");
                     break;
                 }
-                if (ioData.equals(PING))
+                else if (ioData.equals(PING))
                     new Thread(this::ping).start();
                 else {
-                    Message message;
-                    message = jacksonParser.fromStringToMessage(ioData);
-                    queue.put((MessageFromServerToClient) message);
+                    MessageFromServerToClient message;
+                    message = (MessageFromServerToClient) jacksonParser.fromStringToMessage(ioData);
+                    if(message.isBlocking())
+                        queue.put(message);
+                    else
+                        message.callVisitor(parser);
                 }
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
+                closeConnection();
+                break;
             }
         }
         closeConnection();

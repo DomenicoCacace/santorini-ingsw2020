@@ -9,12 +9,12 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class GameBoardResponse extends MessageFromServerToClient {
+public class GameBoardUpdate extends MessageFromServerToClient {
 
     private final List<Cell> gameBoard;
 
     @JsonCreator
-    public GameBoardResponse(@JsonProperty("username") String username, @JsonProperty("gameBoard") List<Cell> gameBoard) {
+    public GameBoardUpdate(@JsonProperty("username") String username, @JsonProperty("gameBoard") List<Cell> gameBoard) {
         super(username, Type.NOTIFY);
         this.gameBoard = gameBoard;
     }
@@ -26,5 +26,10 @@ public class GameBoardResponse extends MessageFromServerToClient {
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.onGameBoardUpdate(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
     }
 }

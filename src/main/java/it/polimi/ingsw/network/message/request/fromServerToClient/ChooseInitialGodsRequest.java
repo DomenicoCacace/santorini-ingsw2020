@@ -27,4 +27,9 @@ public class ChooseInitialGodsRequest extends MessageFromServerToClient {
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.chooseInitialGods(this);
     }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
 }

@@ -7,12 +7,12 @@ import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.ReservedUsernames;
 
-public class WinnerDeclaredResponse extends MessageFromServerToClient {
+public class WinnerDeclaredEvent extends MessageFromServerToClient {
 
     private final String payload;
 
     @JsonCreator
-    public WinnerDeclaredResponse(@JsonProperty("username") String payload) {
+    public WinnerDeclaredEvent(@JsonProperty("username") String payload) {
         super(ReservedUsernames.BROADCAST.toString(), Type.NOTIFY);
         this.payload = payload;
     }
@@ -24,6 +24,11 @@ public class WinnerDeclaredResponse extends MessageFromServerToClient {
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.onWinnerDeclared(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
     }
 
 }

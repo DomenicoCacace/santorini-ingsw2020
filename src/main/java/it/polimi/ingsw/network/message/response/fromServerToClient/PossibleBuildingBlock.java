@@ -2,29 +2,34 @@ package it.polimi.ingsw.network.message.response.fromServerToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
-import java.util.Map;
 
-public class CreateLobbyResponse extends MessageFromServerToClient {
+public class PossibleBuildingBlock extends MessageFromServerToClient {
 
-    private final Map<String, List<String>> lobbies;
+    private final List<Block> blocks;
 
     @JsonCreator
-    public CreateLobbyResponse(@JsonProperty("username") String username, @JsonProperty("type") Type type, @JsonProperty("lobbies") Map<String, List<String>> lobbies) {
+    public PossibleBuildingBlock(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("blocks") List<Block> blocks) {
         super(username, type);
-        this.lobbies = lobbies;
+        this.blocks = blocks;
+    }
+
+    public List<Block> getBlocks() {
+        return blocks;
     }
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        visitor.createLobby(this);
+        visitor.onBuildingCellSelected(this);
     }
 
-    public Map<String, List<String>> getLobbies() {
-        return lobbies;
+    @Override
+    public boolean isBlocking() {
+        return true;
     }
 }

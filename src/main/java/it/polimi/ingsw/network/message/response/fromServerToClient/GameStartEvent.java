@@ -1,36 +1,40 @@
 package it.polimi.ingsw.network.message.response.fromServerToClient;
 
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.model.dataClass.GameData;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
+import it.polimi.ingsw.network.ReservedUsernames;
 
-import java.util.List;
 
-public class AddWorkerResponse extends MessageFromServerToClient {
-
-    private final List<Cell> payload;
+public class GameStartEvent extends MessageFromServerToClient {
+    private final GameData payload;
+    ;
 
     @JsonCreator
-    public AddWorkerResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
-        super(username, type);
-
-        if (type.equals(Type.OK) || type.equals(Type.ADD_WORKER)) {
+    public GameStartEvent(@JsonProperty("type") Type type, @JsonProperty("payload") GameData payload) {
+        super(ReservedUsernames.BROADCAST.toString(), type);
+        if (type.equals(Type.OK))
             this.payload = payload;
-        } else {
+        else
             this.payload = null;
-        }
     }
 
-    public List<Cell> getPayload() {
+    public GameData getPayload() {
         return payload;
     }
 
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        visitor.onWorkerAdd(this);
+        visitor.onGameStart(this);
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
     }
 }

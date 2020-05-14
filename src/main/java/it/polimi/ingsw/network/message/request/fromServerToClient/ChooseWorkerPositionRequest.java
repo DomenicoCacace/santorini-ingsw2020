@@ -28,4 +28,9 @@ public class ChooseWorkerPositionRequest extends MessageFromServerToClient {
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.chooseYourWorkerPosition(this);
     }
+
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
 }

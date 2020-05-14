@@ -29,6 +29,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     private Worker selectedWorker;
     private Cell selectedCell;
 
+
+    private boolean isLookingForLobbies = false;
+    private Map<String, List<String>> lobbiesAvailable = null;
+
     public MessageManagerParser(Client client) {
         this.client = client;
         this.view = client.getView();
@@ -97,6 +101,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * @param lobbiesAvailable the list of available lobbies
      */
     private void enterLobby(Map<String, List<String>> lobbiesAvailable) {
+        this.lobbiesAvailable = lobbiesAvailable;
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
         if (lobbiesAvailable.keySet().size() > 0) {
@@ -109,13 +114,16 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 chosenSize = view.askLobbySize();
                 client.sendMessage(new CreateLobbyRequest(client.getUsername(), lobbyName, chosenSize));
             } else {  // Join existing lobby
+                isLookingForLobbies = true;
                 String chosenLobby = view.chooseLobbyToJoin(lobbiesAvailable);
                 if (chosenLobby != null) {
                     if (chosenLobby.isBlank())
                         client.sendMessage(new AvailableLobbiesRequest(client.getUsername(), Type.OK));
                     else
+                        isLookingForLobbies = false;
                         client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
                 } else {
+                    isLookingForLobbies = false;
                     enterLobby(lobbiesAvailable);
                 }
             }
@@ -130,8 +138,30 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
 
     @Override
-    public void createLobby(CreateLobbyResponse message) {
-        if (message.getType().equals(Type.OK)) {
+    public void createLobby(LobbyCreatedEvent message) {
+        if(isLookingForLobbies){
+            view.stopInput();
+            try {
+                String chosenLobby = view.chooseLobbyToJoin(message.getLobbies());
+                if (chosenLobby != null) {
+                    if (chosenLobby.isBlank())
+                        client.sendMessage(new AvailableLobbiesRequest(client.getUsername(), Type.OK));
+                    else
+                        isLookingForLobbies = false;
+                    client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
+                } else {
+                    isLookingForLobbies = false;
+                    enterLobby(lobbiesAvailable);
+                }
+            }catch (TimeoutException e) {
+                view.showErrorMessage("Timeout!!");
+                view.stopInput();
+                Client.initClient(view);
+            } catch (InterruptedException | CancellationException exception) {
+                //
+            }
+        }
+        else if (message.getType().equals(Type.OK)) {
             view.showSuccessMessage("You created lobby");
             view.showSuccessMessage("Waiting for other players to connect");
         } else {
@@ -141,40 +171,45 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void joinLobby(JoinLobbyResponse message) {
-        switch (message.getType()) {
-            case OK:
-                view.showSuccessMessage("You entered lobby");
-                chosenSize = message.getLobbySize();
-                break;
-            case INVALID_NAME:
-                view.showErrorMessage("Username not valid");
-                try {
-                    client.setUsername(view.askUsername());
-                } catch (TimeoutException e) {
-                    view.showErrorMessage("Timeout!!");
-                    view.stopInput();
-                    Client.initClient(view);
-                    return;
-                } catch (InterruptedException | CancellationException exception) {
-                    return;
-                }
-                break;
-            case LOBBY_FULL:
-                view.showErrorMessage("The lobby is full");
-                enterLobby(message.getAvailableLobbies());
-                //TODO: maybe ask if the user wants to change username or lobby
+    public void joinLobby(UserJoinedLobbyEvent message) {
+        if(!message.getUsername().equals(client.getUsername()))
+            view.showSuccessMessage("The user " + message.getJoinedUser() + " joined the lobby!");
+        else {
+            switch (message.getType()) {
+                case OK:
+                    isLookingForLobbies = false;
+                    view.showSuccessMessage("You entered lobby");
+                    chosenSize = message.getLobbySize();
+                    break;
+                case INVALID_NAME:
+                    view.showErrorMessage("Username not valid");
+                    try {
+                        client.setUsername(view.askUsername());
+                    } catch (TimeoutException e) {
+                        view.showErrorMessage("Timeout!!");
+                        view.stopInput();
+                        Client.initClient(view);
+                        return;
+                    } catch (InterruptedException | CancellationException exception) {
+                        return;
+                    }
+                    break;
+                case LOBBY_FULL:
+                    view.showErrorMessage("The lobby is full");
+                    enterLobby(message.getAvailableLobbies());
+                    //TODO: maybe ask if the user wants to change username or lobby
+            }
         }
     }
 
     @Override
-    public void onGameBoardUpdate(GameBoardResponse message) {
+    public void onGameBoardUpdate(GameBoardUpdate message) {
         gameboard = message.getGameBoard();
         view.showGameBoard(message.getGameBoard());
     }
 
     @Override // Move action response
-    public void onPlayerMove(PlayerMoveResponse message) {
+    public void onPlayerMove(PlayerMoveEvent message) {
         if (message.getType().equals(Type.OK))
             gameboard = message.getPayload();
             //payload to be saved internally on the view
@@ -186,7 +221,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override // Build action response
-    public void onPlayerBuild(PlayerBuildResponse message) {
+    public void onPlayerBuild(PlayerBuildEvent message) {
         if (message.getType().equals(Type.OK))
             gameboard = message.getPayload();
             //payload to be saved internally on the view
@@ -198,7 +233,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override // End turn response
-    public void onTurnEnd(EndTurnResponse message) {
+    public void onTurnEnd(EndTurnEvent message) {
         if (message.getType().equals(Type.OK)) {
             //view.displayPlayableInterface
             //view.displayNonPlayableInterface(payload);
@@ -233,7 +268,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override  // Place worker response
-    public void onWorkerAdd(AddWorkerResponse message) {
+    public void onWorkerAdd(WorkerAddedEvent message) {
         if (message.getType().equals(Type.OK)) {
             view.showSuccessMessage("Worker placed!");
             view.showGameBoard(message.getPayload());
@@ -264,7 +299,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override // Winner declaration, received by all users
-    public void onWinnerDeclared(WinnerDeclaredResponse message) {
+    public void onWinnerDeclared(WinnerDeclaredEvent message) {
         if (message.getPayload().equals(client.getUsername()))
             view.showSuccessMessage("You won!!");
         else
@@ -272,7 +307,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override  // Player removed, received by all users
-    public void onPlayerRemoved(PlayerRemovedResponse message) {
+    public void onPlayerRemoved(PlayerRemovedEvent message) {
         gameboard = message.getGameboard();
         if (message.getPayload().equals(client.getUsername()))
             view.showErrorMessage("You lost");
@@ -304,7 +339,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void onGodChosen(ChosenGodsResponse message) {
+    public void onGodChosen(ChosenGodsEvent message) {
         if (message.getType().equals(Type.OK)) {
             view.showSuccessMessage("The chosen gods are: ");
             message.getPayload().forEach(godData -> System.out.println(godData.getName())); //TODO: print better chosen gods (now we print memory address)
@@ -332,7 +367,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void onWorkerSelected(SelectWorkerResponse message) {
+    public void onWorkerSelected(WorkerSelectedEvent message) {
         client.setCurrentPlayer(true);
         if (message.getType().equals(Type.OK)) {
             selectedWorker = message.getSelectedWorker();
@@ -404,7 +439,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void onBuildingCellSelected(SelectBuildingCellResponse message) {
+    public void onBuildingCellSelected(PossibleBuildingBlock message) {
         client.setCurrentPlayer(true);
         Block chosenBlock = null;
         try {
@@ -423,7 +458,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void onGameStart(GameStartResponse message) {
+    public void onGameStart(GameStartEvent message) {
         view.gameStartScreen(message.getPayload().getBoard());
         gameboard = message.getPayload().getBoard();
         if (message.getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())) {
@@ -431,11 +466,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         }
     }
 
-    @Override
-    public void onQuit(QuitRequest message) {
-        //TODO: close connection
-        client.stopConnection();
-    }
+
 
     @Override
     public void chooseToReloadMatch(ChooseToReloadMatchRequest message) {
@@ -462,7 +493,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void lobbyRefresh(AvailableLobbiesResponse message) { //TODO: duplicate code
+    public void lobbyRefresh(LobbyRefreshevent message) { //TODO: duplicate code
         String chosenLobby = null;
         try {
             chosenLobby = view.chooseLobbyToJoin(message.getLobbies());
