@@ -252,7 +252,7 @@ public class Server extends Thread {
 
     public User getUser(String username, Lobby lobby) {
         return users.keySet().stream()
-                .filter(u -> (u.getUsername().equals(username) && u.getRoom().equals(lobby))).collect(Collectors.toList()).get(0);
+                .filter(u -> (username.equals(u.getUsername()) && lobby.equals(u.getRoom()))).collect(Collectors.toList()).get(0);
     }
 
     public Map<String, Lobby> getGameLobbies() {

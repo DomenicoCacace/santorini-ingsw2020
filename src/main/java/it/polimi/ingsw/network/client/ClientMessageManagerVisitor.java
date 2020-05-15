@@ -19,10 +19,10 @@ public interface ClientMessageManagerVisitor {
     void chooseYourGod(ChooseYourGodRequest message);
     void onGodChosen(ChosenGodsEvent message);
     void chooseStartingPlayer(ChooseStartingPlayerRequest message);
-    void onWorkerSelected(WorkerSelectedEvent message);
+    void onWorkerSelected(WorkerSelectedResponse message);
     void onWalkableCellsReceived(WalkableCellsResponse message);
     void onBuildableCellsReceived(BuildableCellsResponse message);
-    void onBuildingCellSelected(PossibleBuildingBlock message);
+    void onBuildingCellSelected(PossibleBuildingBlockResponse message);
     void onGameStart(GameStartEvent message);
     void chooseToReloadMatch(ChooseToReloadMatchRequest message);
     void onGameBoardUpdate(GameBoardUpdate gameBoardUpdate);

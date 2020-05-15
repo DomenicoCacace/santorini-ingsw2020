@@ -9,12 +9,12 @@ import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 
-public class PossibleBuildingBlock extends MessageFromServerToClient {
+public class PossibleBuildingBlockResponse extends MessageFromServerToClient {
 
     private final List<Block> blocks;
 
     @JsonCreator
-    public PossibleBuildingBlock(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("blocks") List<Block> blocks) {
+    public PossibleBuildingBlockResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("blocks") List<Block> blocks) {
         super(username, type);
         this.blocks = blocks;
     }

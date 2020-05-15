@@ -374,7 +374,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void onWorkerSelected(WorkerSelectedEvent message) {
+    public void onWorkerSelected(WorkerSelectedResponse message) {
         client.setCurrentPlayer(true);
         if (message.getType().equals(Type.OK)) {
             selectedWorker = message.getSelectedWorker();
@@ -446,7 +446,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     @Override
-    public void onBuildingCellSelected(PossibleBuildingBlock message) {
+    public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
         client.setCurrentPlayer(true);
         Block chosenBlock = null;
         try {

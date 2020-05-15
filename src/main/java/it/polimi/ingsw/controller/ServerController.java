@@ -101,7 +101,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
             playerMap.get(username).setSelectedWorker(worker);
             //parser.parseMessageFromServerToClient(new SelectWorkerResponse(Type.OK, username));
         } catch (NotYourWorkerException e) {
-            parser.parseMessageFromServerToClient(new WorkerSelectedEvent(Type.NOT_YOUR_WORKER, username, null, null));
+            parser.parseMessageFromServerToClient(new WorkerSelectedResponse(Type.NOT_YOUR_WORKER, username, null, null));
         }
     }
 
@@ -192,7 +192,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
 
     @Override
     public void onBlocksObtained(String name, List<Block> blocks) {
-        parser.parseMessageFromServerToClient(new PossibleBuildingBlock(Type.NOTIFY, name, blocks));
+        parser.parseMessageFromServerToClient(new PossibleBuildingBlockResponse(Type.NOTIFY, name, blocks));
     }
 
     @Override
@@ -218,6 +218,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
     @Override
     public void onSelectedWorker(String username, List<PossibleActions> possibleActions, Worker selectedWorker) {
         saveState();
-        parser.parseMessageFromServerToClient(new WorkerSelectedEvent(Type.OK, username, possibleActions, selectedWorker));
+        parser.parseMessageFromServerToClient(new WorkerSelectedResponse(Type.OK, username, possibleActions, selectedWorker));
     }
 }
