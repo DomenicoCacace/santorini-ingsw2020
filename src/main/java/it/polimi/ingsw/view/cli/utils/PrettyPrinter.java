@@ -109,6 +109,15 @@ import java.util.List;
     }
 
     /**
+     * Sets the first version of a board, useful in case of a restoration from a saved game
+     * @param gameBoard the new gameBoard to set
+     */
+    public void setCachedBoard(List<Cell> gameBoard) {
+        this.lastGameBoardPrinted = gameBoard;
+        overrideCachedBoard(gameBoard);
+    }
+
+    /**
      * Updates the cached board
      * <p>
      *     Assuming that both the cached and new board are ordered in the same way (see {@linkplain GameBoard#getAllCells()}),
@@ -125,6 +134,13 @@ import java.util.List;
                 drawWorker(board.get(i));
         }
         lastGameBoardPrinted = board;   //TODO: check if safe
+    }
+
+    private void overrideCachedBoard(List<Cell> board) {
+        board.forEach(c -> {
+            restoreBuild(c);
+            drawWorker(c);
+        });
     }
 
     /**
@@ -145,9 +161,11 @@ import java.util.List;
      * @param cell the cell to draw the building on
      */
     private void drawBlock(Cell cell) {
-        //PrintableObject block = buildingBlocks.get(cell.getBlock().getHeight() - 1);
-        restoreBuild(cell); //TODO: send specific message from server to client to avoid restoring
-        //drawOnCell(block, cachedBoard, cell.getCoordX(), cell.getCoordY());
+        if (cell.getBlock().getHeight() > 0) {
+            PrintableObject block = buildingBlocks.get(cell.getBlock().getHeight() - 1);
+            //restoreBuild(cell); //TODO: send specific message from server to client to avoid restoring
+            drawOnCell(block, cachedBoard, cell.getCoordX(), cell.getCoordY());
+        }
     }
 
     /**

@@ -121,7 +121,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * @param message the message to send
      */
     public void sendMessage(String username, Message message) {
-        User recipient = server.getUsersInRoom(this).stream().filter(user -> user.getUsername().equals(username)).findFirst().orElse(null);
+        User recipient = playerMap.keySet().stream().filter(u -> username.equals(u.getUsername())).findFirst().orElse(null);
         if (username.equals(ReservedUsernames.BROADCAST.toString()))
             broadcastMessage(message);
         else if (recipient != null)
@@ -134,7 +134,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * @param message the message to send
      */
     public void broadcastMessage(Message message) {
-        server.getUsersInRoom(this).forEach(user -> user.notify(message));
+        playerMap.keySet().forEach(user -> user.notify(message));
     }
 
     /**
@@ -151,7 +151,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         playerMap.put(user, null);
         usersInLobby.add(user.getUsername());
         messageParser.parseMessageFromServerToClient(new UserJoinedLobbyEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, null, maxRoomSize, user.getUsername()));
-        if (server.getUsersInRoom(this).size() == maxRoomSize) {
+        if (playerMap.keySet().size() == maxRoomSize) {
             gameStarted = true;
             server.getGameLobbies().remove(this.roomName);
             if (checkSavedGame())
@@ -211,13 +211,13 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * @param gods
      */
     public void chooseGods(List<GodData> gods) {
-        if ((int)gods.stream().distinct().count() == server.getUsersInRoom(this).size() && gods.size() == server.getUsersInRoom(this).size()) {
+        if ((int)gods.stream().distinct().count() == maxRoomSize && gods.size() == maxRoomSize) {
             availableGods = gods;
             messageParser.parseMessageFromServerToClient(new ChosenGodsEvent(Type.OK, ReservedUsernames.BROADCAST.toString(), gods));
-            askToChooseGod(server.getUsersInRoom(this).get(1).getUsername());
+            askToChooseGod(usersInLobby.get(2));
         }
         else {
-            String firstPlayerName = server.getUsersInRoom(this).get(0).getUsername();
+            String firstPlayerName = usersInLobby.get(1);
             messageParser.parseMessageFromServerToClient(new ChosenGodsEvent(Type.INVALID_GOD_CHOICE, firstPlayerName, null));
             askGods(new ArrayList<>(godsMap.keySet()));
         }
@@ -228,7 +228,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * @param godData the list of all the available gods
      */
     public void askGods(List<GodData> godData) {
-        String firstPlayerName = server.getUsersInRoom(this).get(0).getUsername();
+        String firstPlayerName = /*new LinkedList<>(playerMap.keySet()).get(0).getUsername()*/usersInLobby.get(1);
         this.gameStarted = true;
 
         messageParser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(firstPlayerName, godData));
@@ -245,11 +245,11 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      */
     public void assignGod(String username, GodData godData) {
         List<String> usernames = new ArrayList<>();
-        server.getUsersInRoom(this).forEach(u -> usernames.add(u.getUsername()));
-        User user = server.getUsersInRoom(this).get(((int)playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count() + 1) % usernames.size());
+        usersInLobby.stream().filter(u -> !u.equals(ReservedUsernames.BROADCAST.toString())).forEach(usernames::add);
+        User user = server.getUser(usersInLobby.get((((int)playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count() + 1) % usernames.size()) + 1), this);
         playerMap.replace(user, new Player(username, godsMap.get(godData), Color.values()[(int)playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count()]));
         availableGods.remove(godData);
-        if ((int)playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count() == server.getUsersInRoom(this).size()) {
+        if ((int)playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count() == maxRoomSize) {
             messageParser.parseMessageFromServerToClient(new ChooseStartingPlayerRequest(usernames.get(0), usernames));
         }
         else {
@@ -260,7 +260,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
 
     public void selectStartingPlayer(String username) {
         List<String> usernames = new LinkedList<>();
-        server.getUsersInRoom(this).forEach(u -> usernames.add(u.getUsername()));
+        usersInLobby.stream().filter(u -> !u.equals(ReservedUsernames.BROADCAST.toString())).forEach(usernames::add);
         int index = usernames.indexOf(username);
         Collections.rotate(usernames, (usernames.size() - index) % usernames.size());
         Map<User, Player> tmpMap = new LinkedHashMap<>();
@@ -324,7 +324,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
     @Override
     public void onEndGame(String name) {
         Message message = new WinnerDeclaredEvent(name);
-        server.getUsersInRoom(this).forEach(user -> user.notify(message));
+        playerMap.keySet().forEach(user -> user.notify(message));
         playerMap.keySet().forEach(server::moveToWaitingRoom);
         server.removeRoom(this);
         System.out.println(savedGame.delete());

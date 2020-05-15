@@ -24,6 +24,7 @@ public class Client {
         this.view = viewInterface;
         this.username = username;
         this.ipAddress = ipAddress;
+        this.currentPlayer = true;
     }
 
     public static void main(String[] args) {
@@ -134,10 +135,12 @@ public class Client {
     }
 
     public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
-        try {
-            networkHandler.sendMessage(message);
-        } catch (IOException e) {
-            networkHandler.closeConnection();
+        if (currentPlayer) {
+            try {
+                networkHandler.sendMessage(message);
+            } catch (IOException e) {
+                networkHandler.closeConnection();
+            }
         }
 }
 

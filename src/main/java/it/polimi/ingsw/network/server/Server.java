@@ -39,9 +39,8 @@ public class Server extends Thread {
      *     Creates a new server instance
      * </p>
      */
-    public Server() throws IOException {   //FIXME: implement singleton pattern for the Server
+    public Server() throws IOException {
         socketGreeterPort = 4321; // TODO: get from file
-        //FIXME: define additional type for this lobby
         this.gameLobbies = new LinkedHashMap<>();
         this.users = new LinkedHashMap<>();
         this.waitingRoom = new LinkedList<>();

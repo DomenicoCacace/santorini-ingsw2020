@@ -105,6 +105,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * @param lobbiesAvailable the list of available lobbies
      */
     private void enterLobby(Map<String, List<String>> lobbiesAvailable) {
+        client.setCurrentPlayer(true);
         this.lobbiesAvailable = lobbiesAvailable;
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
@@ -139,6 +140,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         } catch (InterruptedException | CancellationException exception) {
             //
         }
+        client.setCurrentPlayer(false);
     }
 
 
@@ -164,6 +166,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     //
                 }
             } else if (message.getType().equals(Type.OK)) {
+                client.setCurrentPlayer(false);
                 view.showSuccessMessage("You created lobby");
                 view.showSuccessMessage("Waiting for other players to connect");
             } else {
@@ -183,6 +186,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     isLookingForLobbies = false;
                     view.showSuccessMessage("You entered lobby");
                     chosenSize = message.getLobbySize();
+                    client.setCurrentPlayer(false);
                     break;
                 case NO_LOBBY_AVAILABLE:
                     view.showErrorMessage("The lobby isn't available anymore, it was deleted or the game started");
@@ -212,7 +216,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void onGameBoardUpdate(GameBoardUpdate message) {
         gameboard = message.getGameBoard();
-        view.showGameBoard(message.getGameBoard());
+        view.initGameBoard(message.getGameBoard());
     }
 
     @Override // Move action response
@@ -256,7 +260,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override // Place worker request
     public void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {
         client.setCurrentPlayer(true);
-        Cell workerCell = null;
+        Cell workerCell;
         try {
             workerCell = view.placeWorker();
         } catch (TimeoutException e) {
@@ -289,7 +293,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void chooseInitialGods(ChooseInitialGodsRequest message) {
         client.setCurrentPlayer(true);
 
-        List<GodData> chosenGods = null;
+        List<GodData> chosenGods;
         try {
             chosenGods = view.chooseGameGods(message.getGods(), chosenSize);
         } catch (TimeoutException e) {
@@ -477,7 +481,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override
     public void chooseToReloadMatch(ChooseToReloadMatchRequest message) {
-        Message messageResponse = null;
+        client.setCurrentPlayer(true);
+        Message messageResponse;
         try {
             messageResponse = new ChooseToReloadMatchResponse(client.getUsername(), view.chooseMatchReload());
         } catch (TimeoutException e) {
@@ -489,6 +494,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             return;
         }
         client.sendMessage(messageResponse);
+        client.setCurrentPlayer(false);
     }
 
     @Override
@@ -501,7 +507,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     private void beginTurn() {
         client.setCurrentPlayer(true);
-        Cell workerCell = null;
+        Cell workerCell;
         try {
             workerCell = view.chooseWorker();
         } catch (TimeoutException e) {

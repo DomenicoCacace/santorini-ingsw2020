@@ -37,6 +37,7 @@ public interface ViewInterface {
 
     PossibleActions chooseAction(List<PossibleActions> possibleActions) throws TimeoutException, InterruptedException;
     void showGameBoard(List<Cell> gameBoard);
+    void initGameBoard(List<Cell> gameboard);
     void showErrorMessage(String error);
     void showSuccessMessage(String message);
 

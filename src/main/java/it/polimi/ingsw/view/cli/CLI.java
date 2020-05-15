@@ -240,6 +240,12 @@ public class CLI implements ViewInterface {
     }
 
     @Override
+    public void initGameBoard(List<Cell> gameboard) {
+        printer.setCachedBoard(gameboard);
+        showGameBoard(gameboard);
+    }
+
+    @Override
     public Cell chooseWorker() throws TimeoutException, CancellationException{
         while (true) {
             System.out.println("Choose your worker: ");
