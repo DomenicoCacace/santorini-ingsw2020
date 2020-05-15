@@ -151,7 +151,6 @@ class GameTest {
 
         assertEquals(game.getPlayers().size(), 1);
         assertEquals(game.getPlayers().get(0), players.get(0));
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(0));
         assertEquals(players.get(0).getName(), "P3" );
         assertNull(game.getGameBoard().getCell(2,2).getOccupiedBy());
         assertNull(game.getGameBoard().getCell(3,2).getOccupiedBy());
@@ -175,7 +174,6 @@ class GameTest {
 
         assertEquals(game.getPlayers().size(), 1);
         assertEquals(game.getPlayers().get(0), players.get(0));
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(0));
         assertEquals(players.get(0).getName(), "P1" );
         assertNull(game.getGameBoard().getCell(1,2).getOccupiedBy());
         assertNull(game.getGameBoard().getCell(2,4).getOccupiedBy());

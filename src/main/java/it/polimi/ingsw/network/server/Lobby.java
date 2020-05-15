@@ -8,9 +8,9 @@ import it.polimi.ingsw.listeners.EndGameListener;
 import it.polimi.ingsw.listeners.PlayerLostListener;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsEvent;
 import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardUpdate;
@@ -147,10 +147,10 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             throw new RoomFullException();
         if (usersInLobby.contains(user.getUsername()))
             throw new InvalidUsernameException();
-        messageParser.parseMessageFromServerToClient(new UserJoinedLobbyEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, null, maxRoomSize, user.getUsername()));
         server.moveToRoom(user, this);
         playerMap.put(user, null);
         usersInLobby.add(user.getUsername());
+        messageParser.parseMessageFromServerToClient(new UserJoinedLobbyEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, null, maxRoomSize, user.getUsername()));
         if (server.getUsersInRoom(this).size() == maxRoomSize) {
             gameStarted = true;
             server.getGameLobbies().remove(this.roomName);

@@ -13,7 +13,6 @@ import java.util.List;
 public class ChosenGodsEvent extends MessageFromServerToClient {
 
     private final List<GodData> payload;
-    ;
 
     @JsonCreator
     public ChosenGodsEvent(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<GodData> payload) {

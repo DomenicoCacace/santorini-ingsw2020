@@ -2,7 +2,10 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
-import it.polimi.ingsw.network.message.response.fromClientToServer.*;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 
 public interface ServerMessageManagerVisitor {
 
@@ -10,7 +13,6 @@ public interface ServerMessageManagerVisitor {
     default void login(LoginRequest message) {cannotHandleMessage(message);}
     default void joinLobby(JoinLobbyRequest message) {cannotHandleMessage(message);}
     default void createLobby(CreateLobbyRequest message) {cannotHandleMessage(message);}
-    default void lobbyRefresh(AvailableLobbiesRequest message){cannotHandleMessage(message);}
 
     // game setup related, handled by the MessageManagerParser
     default void chooseInitialGods(ChooseInitialGodsResponse message) {cannotHandleMessage(message);}

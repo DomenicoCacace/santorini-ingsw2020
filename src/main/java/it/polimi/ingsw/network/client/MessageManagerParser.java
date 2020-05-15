@@ -9,12 +9,15 @@ import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.request.fromClientToServer.*;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
-import it.polimi.ingsw.network.message.response.fromClientToServer.*;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
+import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
 
-import java.util.LinkedList;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -31,6 +34,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
 
     private boolean isLookingForLobbies = false;
+    private boolean isCreatingLobby = false;
     private Map<String, List<String>> lobbiesAvailable = null;
 
     public MessageManagerParser(Client client) {
@@ -108,20 +112,21 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             options.add("Join lobby");
         }
         try {
+            isLookingForLobbies = true;
             String choice = view.lobbyOptions(options);
             if (choice.equals(options.get(0))) {    // Create new
+                isLookingForLobbies = false;
+                isCreatingLobby = true;
                 String lobbyName = view.askLobbyName();
                 chosenSize = view.askLobbySize();
                 client.sendMessage(new CreateLobbyRequest(client.getUsername(), lobbyName, chosenSize));
+                isCreatingLobby = false;
             } else {  // Join existing lobby
                 isLookingForLobbies = true;
                 String chosenLobby = view.chooseLobbyToJoin(lobbiesAvailable);
                 if (chosenLobby != null) {
-                    if (chosenLobby.isBlank())
-                        client.sendMessage(new AvailableLobbiesRequest(client.getUsername(), Type.OK));
-                    else
-                        isLookingForLobbies = false;
-                        client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
+                    isLookingForLobbies = false;
+                    client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
                 } else {
                     isLookingForLobbies = false;
                     enterLobby(lobbiesAvailable);
@@ -139,40 +144,38 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override
     public void createLobby(LobbyCreatedEvent message) {
-        if(isLookingForLobbies){
-            view.stopInput();
-            try {
-                String chosenLobby = view.chooseLobbyToJoin(message.getLobbies());
-                if (chosenLobby != null) {
-                    if (chosenLobby.isBlank())
-                        client.sendMessage(new AvailableLobbiesRequest(client.getUsername(), Type.OK));
-                    else
-                        isLookingForLobbies = false;
-                    client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
-                } else {
-                    isLookingForLobbies = false;
-                    enterLobby(lobbiesAvailable);
-                }
-            }catch (TimeoutException e) {
-                view.showErrorMessage("Timeout!!");
+        if(!isCreatingLobby) {
+            if (isLookingForLobbies) {
                 view.stopInput();
-                Client.initClient(view);
-            } catch (InterruptedException | CancellationException exception) {
-                //
+                try {
+                    String chosenLobby = view.chooseLobbyToJoin(message.getLobbies());
+                    if (chosenLobby != null) {
+                        isLookingForLobbies = false;
+                        client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
+                    } else {
+                        isLookingForLobbies = false;
+                        enterLobby(lobbiesAvailable);
+                    }
+                } catch (TimeoutException e) {
+                    view.showErrorMessage("Timeout!!");
+                    view.stopInput();
+                    Client.initClient(view);
+                } catch (InterruptedException | CancellationException exception) {
+                    //
+                }
+            } else if (message.getType().equals(Type.OK)) {
+                view.showSuccessMessage("You created lobby");
+                view.showSuccessMessage("Waiting for other players to connect");
+            } else {
+                view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+                enterLobby(message.getLobbies());
             }
-        }
-        else if (message.getType().equals(Type.OK)) {
-            view.showSuccessMessage("You created lobby");
-            view.showSuccessMessage("Waiting for other players to connect");
-        } else {
-            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
-            enterLobby(message.getLobbies());
         }
     }
 
     @Override
     public void joinLobby(UserJoinedLobbyEvent message) {
-        if(!message.getUsername().equals(client.getUsername()))
+        if(!client.getUsername().equals(message.getJoinedUser()) && message.getJoinedUser()!=null)
             view.showSuccessMessage("The user " + message.getJoinedUser() + " joined the lobby!");
         else {
             switch (message.getType()) {
@@ -180,6 +183,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     isLookingForLobbies = false;
                     view.showSuccessMessage("You entered lobby");
                     chosenSize = message.getLobbySize();
+                    break;
+                case NO_LOBBY_AVAILABLE:
+                    view.showErrorMessage("The lobby isn't available anymore, it was deleted or the game started");
+                    enterLobby(message.getAvailableLobbies());
                     break;
                 case INVALID_NAME:
                     view.showErrorMessage("Username not valid");
@@ -490,29 +497,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
         view.stopInput();
         enterLobby(message.getAvailableLobbies());
-    }
-
-    @Override
-    public void lobbyRefresh(LobbyRefreshevent message) { //TODO: duplicate code
-        String chosenLobby = null;
-        try {
-            chosenLobby = view.chooseLobbyToJoin(message.getLobbies());
-        } catch (TimeoutException e) {
-            view.showErrorMessage("Timeout!!");
-            view.stopInput();
-            Client.initClient(view);
-            return;
-        } catch (InterruptedException | CancellationException exception) {
-            return;
-        }
-        if (chosenLobby != null) {
-            if (chosenLobby.isBlank())
-                client.sendMessage(new AvailableLobbiesRequest(client.getUsername(), Type.OK));
-            else
-                client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
-        } else {
-            enterLobby(message.getLobbies());
-        }
     }
 
     private void beginTurn() {

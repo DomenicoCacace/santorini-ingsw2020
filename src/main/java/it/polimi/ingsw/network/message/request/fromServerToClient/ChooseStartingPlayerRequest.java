@@ -3,8 +3,8 @@ package it.polimi.ingsw.network.message.request.fromServerToClient;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
-import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
+import it.polimi.ingsw.network.message.Type;
 
 import java.util.List;
 

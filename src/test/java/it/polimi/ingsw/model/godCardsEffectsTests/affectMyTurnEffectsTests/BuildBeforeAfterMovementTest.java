@@ -21,7 +21,7 @@ class BuildBeforeAfterMovementTest {
     private Game game;
     private Worker currentWorker;
     private Cell toMoveCell;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
 
     @BeforeEach

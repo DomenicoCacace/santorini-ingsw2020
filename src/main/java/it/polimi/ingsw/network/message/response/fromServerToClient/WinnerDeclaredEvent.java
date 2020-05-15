@@ -2,10 +2,10 @@ package it.polimi.ingsw.network.message.response.fromServerToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.ReservedUsernames;
 
 public class WinnerDeclaredEvent extends MessageFromServerToClient {
 

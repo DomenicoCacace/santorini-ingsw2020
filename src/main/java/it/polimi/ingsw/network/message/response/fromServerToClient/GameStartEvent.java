@@ -4,15 +4,14 @@ package it.polimi.ingsw.network.message.response.fromServerToClient;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polimi.ingsw.model.dataClass.GameData;
+import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.ReservedUsernames;
 
 
 public class GameStartEvent extends MessageFromServerToClient {
     private final GameData payload;
-    ;
 
     @JsonCreator
     public GameStartEvent(@JsonProperty("type") Type type, @JsonProperty("payload") GameData payload) {

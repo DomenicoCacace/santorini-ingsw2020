@@ -23,7 +23,7 @@ class BuildDomeTest {
     private BuildAction buildAction;
     private Cell targetCell;
     private Block block;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
 
     @BeforeEach

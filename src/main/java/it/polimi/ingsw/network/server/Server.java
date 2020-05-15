@@ -2,12 +2,9 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.response.fromServerToClient.LoginResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.MovedToWaitingRoomResponse;
-import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
-import jdk.jfr.Timestamp;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +31,7 @@ public class Server extends Thread {
     private final int socketGreeterPort;
     private ServerSocket serverSocket;
     private Socket newClientSocket;
-    private File logFile;
+    private final File logFile;
 
     /**
      * Default constructor

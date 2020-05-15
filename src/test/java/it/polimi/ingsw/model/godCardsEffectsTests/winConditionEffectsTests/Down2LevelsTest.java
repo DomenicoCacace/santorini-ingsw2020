@@ -21,7 +21,7 @@ class Down2LevelsTest {
     private Game game;
     private Worker currentWorker;
     private MoveAction moveAction;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
     @BeforeEach
     void SetUp () throws IOException, AddingFailedException {

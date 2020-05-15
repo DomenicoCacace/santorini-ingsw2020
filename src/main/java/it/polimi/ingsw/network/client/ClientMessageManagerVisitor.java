@@ -27,5 +27,4 @@ public interface ClientMessageManagerVisitor {
     void chooseToReloadMatch(ChooseToReloadMatchRequest message);
     void onGameBoardUpdate(GameBoardUpdate gameBoardUpdate);
     void onMovedToWaitingRoom(MovedToWaitingRoomResponse message);
-    void lobbyRefresh(LobbyRefreshevent message);
 }

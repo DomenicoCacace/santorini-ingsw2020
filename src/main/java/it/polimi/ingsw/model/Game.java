@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.exceptions.IllegalEndingTurnException;
 import it.polimi.ingsw.listeners.*;

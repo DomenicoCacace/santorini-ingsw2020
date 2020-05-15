@@ -6,7 +6,6 @@ import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
 import it.polimi.ingsw.network.message.Type;
 
-
 import java.util.List;
 import java.util.Map;
 

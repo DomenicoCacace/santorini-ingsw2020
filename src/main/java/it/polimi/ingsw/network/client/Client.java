@@ -4,7 +4,6 @@ import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
 
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ public class Client {
     private final ViewInterface view;
     private String username;
     private String ipAddress;
-    private NetworkHandler networkHandler;
+    private static NetworkHandler networkHandler;
     private boolean currentPlayer;
 
 
@@ -42,8 +41,10 @@ public class Client {
         //TODO: Here I ask the user if he wants to use the Cli/Gui
     }
 
-    public static void initClient(ViewInterface viewInterface){
+    public static synchronized void initClient(ViewInterface viewInterface){
         List<String> loginData = new ArrayList<>();
+        if (networkHandler !=null)
+            networkHandler.closeConnection();
         viewInterface.printLogo();
         try {
             if (!CONFIG_FILE.createNewFile()) {
@@ -64,16 +65,20 @@ public class Client {
                 loginData.add(viewInterface.askIP());
                 loginData.add(viewInterface.askUsername());
             }
-        } catch (IOException | CancellationException | TimeoutException | InterruptedException e) {
-            Client.initClient(viewInterface);
+        } catch (IOException | TimeoutException | InterruptedException e) {
             viewInterface.showErrorMessage("Timeout!!");
             viewInterface.stopInput();
+            Client.initClient(viewInterface);
+            e.printStackTrace();
+            return;
+        } catch (CancellationException e){
+            return;
         }
         new Client(loginData.get(1), loginData.get(0), viewInterface).startConnection();
     }
 
     public void writeSettingsToFile(String ip, String username) throws IOException {
-        StringBuilder otherUsers = new StringBuilder("");
+        StringBuilder otherUsers = new StringBuilder();
         String ipLine;
         String nameLine;
         int storedSetting=0;
@@ -118,9 +123,14 @@ public class Client {
         The view asks the user for his Username and IpAddress (we need this because of quarantine), then it'll call this method to start the connection
          */
     public void startConnection() {
-        networkHandler = new NetworkHandler(this);
-        networkHandler.login(this.username);
-        new Thread(networkHandler).start();
+        try{
+            networkHandler = new NetworkHandler(this);
+            networkHandler.login(this.username);
+            new Thread(networkHandler).start();
+        }catch (IOException e) {
+            view.showErrorMessage("Couldn't connect to ip address: " + ipAddress);
+            initClient(view);
+        }
     }
 
     public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server

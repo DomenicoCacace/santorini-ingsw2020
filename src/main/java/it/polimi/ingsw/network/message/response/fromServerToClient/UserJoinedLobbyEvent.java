@@ -41,7 +41,7 @@ public class UserJoinedLobbyEvent extends MessageFromServerToClient {
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        visitor.joinLobby(this);
+        new Thread(() -> visitor.joinLobby(this)).start();
     }
 
     @Override

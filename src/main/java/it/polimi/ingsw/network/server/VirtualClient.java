@@ -2,9 +2,13 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.ServerMessageManagerVisitor;
 import it.polimi.ingsw.network.ReservedUsernames;
-import it.polimi.ingsw.network.message.*;
-import it.polimi.ingsw.network.message.request.fromClientToServer.*;
-import it.polimi.ingsw.network.message.response.fromServerToClient.LobbyRefreshevent;
+import it.polimi.ingsw.network.message.JacksonMessageBuilder;
+import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.MessageFromClientToServer;
+import it.polimi.ingsw.network.message.Type;
+import it.polimi.ingsw.network.message.request.fromClientToServer.CreateLobbyRequest;
+import it.polimi.ingsw.network.message.request.fromClientToServer.JoinLobbyRequest;
+import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 import it.polimi.ingsw.network.message.response.fromServerToClient.LobbyCreatedEvent;
 import it.polimi.ingsw.network.message.response.fromServerToClient.UserJoinedLobbyEvent;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
@@ -15,8 +19,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -132,7 +141,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             outputSocket.write(string + "\n");
             outputSocket.flush();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.log(Level.SEVERE, "Connection closed", e);
             try {
                 logger.log(Level.SEVERE, "Can't send ping to:  " + user.getUsername());
                 clientConnection.close();
@@ -189,8 +198,10 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     public synchronized void joinLobby(JoinLobbyRequest message) {
         Lobby lobby = server.getGameLobbies().get(message.getLobbyName());
         if (lobby == null) {    // lobby not exists
-            notify(new UserJoinedLobbyEvent(message.getUsername(), Type.NO_LOBBY_AVAILABLE, null, 0, null));  // TODO define type
-            logger.log(Level.WARNING, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby does not exist");
+            Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
+            server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
+            notify(new UserJoinedLobbyEvent(message.getUsername(), Type.NO_LOBBY_AVAILABLE, availableLobbies, 0, null));
+            logger.log(Level.WARNING, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby isn't available");
         }
         else {
             try {
@@ -229,13 +240,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             logger.log(Level.INFO, message.getUsername() + " successfully created \"" + message.getLobbyName() + "\"");
 
         }
-    }
-
-    @Override
-    public synchronized  void lobbyRefresh(AvailableLobbiesRequest message) {
-        Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
-        server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
-        notify(new LobbyRefreshevent(Type.OK, user.getUsername(), availableLobbies));
     }
 
     private Map<String, List<String>> getAvailableLobbies() {

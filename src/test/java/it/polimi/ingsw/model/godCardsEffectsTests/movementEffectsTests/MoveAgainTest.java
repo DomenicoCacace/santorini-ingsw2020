@@ -22,7 +22,7 @@ class MoveAgainTest {
     private Action moveAction;
     private Worker worker1, worker2;
     private Cell targetCell;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
 
     @BeforeEach

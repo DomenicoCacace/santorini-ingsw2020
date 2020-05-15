@@ -12,12 +12,10 @@ import java.util.List;
 public class PlayerBuildEvent extends MessageFromServerToClient {
 
     private final List<Cell> payload;
-    ;
 
     @JsonCreator
     public PlayerBuildEvent(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("payload") List<Cell> payload) {
         super(username, type);
-        ;
         if (type.equals(Type.OK))
             this.payload = payload;
         else

@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
@@ -13,7 +12,7 @@ public class God {
     private final String name;
     private final int workersNumber;
     private RuleSetStrategy strategy;
-    private String descriptionStrategy;
+    private final String descriptionStrategy;
 
     private God(God god, Game game) {
         this.name = god.name;

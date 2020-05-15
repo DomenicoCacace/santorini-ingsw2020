@@ -24,7 +24,7 @@ class BuildAgainSameCellTest {
     private BuildAction buildAction;
     private Cell firstCell, secondCell;
     private Block firstBlock, secondBlock;
-    private List<Player> players = new ArrayList<>();
+    private final List<Player> players = new ArrayList<>();
 
 
     @BeforeEach

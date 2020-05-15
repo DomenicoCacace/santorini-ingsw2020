@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Worker;

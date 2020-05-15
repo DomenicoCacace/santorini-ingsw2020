@@ -21,5 +21,5 @@ public enum Type {
     SERVER_FULL,
     LOBBY_FULL,
     INVALID_GOD_CHOICE,
-    NO_LOBBY_AVAILABLE;
+    NO_LOBBY_AVAILABLE
 }
