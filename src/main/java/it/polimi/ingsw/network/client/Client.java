@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
+import it.polimi.ingsw.view.gui.GUI;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -30,11 +31,12 @@ public class Client {
     public static void main(String[] args) {
         ViewInterface viewInterface;
         try {
-        if (args.length == 0 || !args[0].equals("--GUI"))
-            viewInterface = new CLI();
-        else
-            viewInterface = new CLI(); //FIXME: implement gui
-            initClient(viewInterface);
+            if (args.length == 0 || !args[0].equals("--GUI")) {
+                viewInterface = new CLI();
+                initClient(viewInterface);
+            }
+            else
+                GUI.launchGui(); //FIXME
         } catch (IOException e) {
             System.out.println("Error: resources not found");
             System.exit(1);

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import it.polimi.ingsw.view.gui.ResizableImageView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.LoginController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="364.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
+         <children>
+            <StackPane style="-fx-background-color: blue;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ResizableImageView>
+                     <image>
+                        <Image url="@initialBackground.png" />
+                     </image>
+                  </ResizableImageView>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <TextField fx:id="ipID" alignment="CENTER" layoutX="213.0" layoutY="313.0" prefHeight="29.0" prefWidth="214.0" promptText="ip address:" />
+                        <TextField fx:id="usernameID" alignment="CENTER" layoutX="213.0" layoutY="284.0" prefHeight="29.0" prefWidth="214.0" promptText="username:" />
+                        <Button layoutX="213.0" layoutY="342.0" mnemonicParsing="false" onMouseClicked="#onLogin" prefHeight="27.0" prefWidth="214.0" text="LOGIN" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </StackPane>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>

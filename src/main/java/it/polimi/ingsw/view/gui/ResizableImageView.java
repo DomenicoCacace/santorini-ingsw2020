@@ -20,13 +20,15 @@ public class ResizableImageView extends ImageView {
         return 40;
     }
 
-    @Override
+    /*@Override
     public double prefWidth(double height)
     {
         Image I=getImage();
         if (I==null) return minWidth(height);
         return I.getWidth();
     }
+
+     */
 
     @Override
     public double maxWidth(double height)
@@ -40,13 +42,15 @@ public class ResizableImageView extends ImageView {
         return 40;
     }
 
-    @Override
+    /*@Override
     public double prefHeight(double width)
     {
         Image I=getImage();
         if (I==null) return minHeight(width);
         return I.getHeight();
     }
+
+     */
 
     @Override
     public double maxHeight(double width)
