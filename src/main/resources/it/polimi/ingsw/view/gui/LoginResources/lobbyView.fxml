@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import it.polimi.ingsw.view.gui.ResizableImageView?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="541.0" prefWidth="868.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.viewController.LobbyController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="364.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
+         <children>
+            <StackPane style="-fx-background-color: blue;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ResizableImageView>
+                     <image>
+                        <Image url="@initialBackground.png" />
+                     </image>
+                  </ResizableImageView>
+                  <VBox>
+                     <children>
+                        <HBox fillHeight="false" prefHeight="279.0" prefWidth="868.0" VBox.vgrow="ALWAYS" />
+                        <AnchorPane prefHeight="210.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <HBox layoutX="250.0" layoutY="79.0" prefHeight="257.0" prefWidth="868.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox prefHeight="194.0" prefWidth="280.0" HBox.hgrow="ALWAYS" />
+                                    <VBox fillWidth="false" prefHeight="304.0" prefWidth="400.0" HBox.hgrow="NEVER">
+                                       <children>
+                                          <BorderPane prefHeight="308.0" prefWidth="400.0">
+                                             <top>
+                                                <Region prefHeight="25.0" prefWidth="308.0" BorderPane.alignment="CENTER" />
+                                             </top>
+                                             <left>
+                                                <Region prefHeight="98.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
+                                             </left>
+                                             <right>
+                                                <Region prefHeight="98.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
+                                             </right>
+                                             <bottom>
+                                                <Region prefHeight="57.0" prefWidth="400.0" BorderPane.alignment="CENTER" />
+                                             </bottom>
+                                             <center>
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                   <children>
+                                                      <HBox layoutY="35.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                         <children>
+                                                            <Button fx:id="createBtn" mnemonicParsing="false" onMouseClicked="#onCreate" prefHeight="26.0" prefWidth="123.0" text="Create Lobby" HBox.hgrow="NEVER" />
+                                                            <Region prefHeight="29.0" prefWidth="123.0" HBox.hgrow="ALWAYS" />
+                                                            <Button fx:id="joinBtn" mnemonicParsing="false" onMouseClicked="#onJoin" prefHeight="26.0" prefWidth="123.0" text="Join Lobby" HBox.hgrow="NEVER" />
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                </AnchorPane>
+                                             </center>
+                                          </BorderPane>
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="194.0" prefWidth="280.0" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>

@@ -6,6 +6,7 @@ import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
 
 import java.io.*;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -35,8 +36,9 @@ public class Client {
                 viewInterface = new CLI();
                 initClient(viewInterface);
             }
-            else
+            else {
                 GUI.launchGui(); //FIXME
+            }
         } catch (IOException e) {
             System.out.println("Error: resources not found");
             System.exit(1);

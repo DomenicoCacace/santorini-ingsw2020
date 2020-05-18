@@ -153,7 +153,9 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     String chosenLobby = view.chooseLobbyToJoin(message.getLobbies());
                     if (chosenLobby != null) {
                         isLookingForLobbies = false;
+                        client.setCurrentPlayer(true);
                         client.sendMessage(new JoinLobbyRequest(client.getUsername(), chosenLobby));
+                        client.setCurrentPlayer(false);
                     } else {
                         isLookingForLobbies = false;
                         enterLobby(lobbiesAvailable);

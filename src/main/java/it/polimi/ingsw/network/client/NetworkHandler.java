@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.*;
 
 public class NetworkHandler implements Runnable {
@@ -30,7 +31,12 @@ public class NetworkHandler implements Runnable {
         this.jacksonParser = new JacksonMessageBuilder();
         this.client = client;
         this.parser = new MessageManagerParser(client);
-        this.serverConnection = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
+        try {
+            //TODO: add timeout
+            this.serverConnection = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
+        } catch (UnknownHostException e){
+            throw new UnknownHostException();
+        }
         this.inputSocket = new BufferedReader(new InputStreamReader(serverConnection.getInputStream()));
         this.outputSocket = new OutputStreamWriter(serverConnection.getOutputStream());
         this.outputSocket.flush();
@@ -87,7 +93,7 @@ public class NetworkHandler implements Runnable {
             outputSocket.close();
             inputSocket.close();
             serverConnection.close();
-            ex.shutdownNow();
+            ex.shutdown();
             pingTask.cancel(true);
 
             queue.clear();
@@ -137,7 +143,7 @@ public class NetworkHandler implements Runnable {
                 client.getView().stopInput();
                 closeConnection();
                 client.getView().showErrorMessage("The Server crashed!!");
-                Client.initClient(client.getView());
+                new Thread(() -> Client.initClient(client.getView())).start();
             }, 5, TimeUnit.SECONDS);
         }
     }

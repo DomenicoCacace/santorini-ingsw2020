@@ -6,66 +6,87 @@ import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.gui.viewController.LobbyController;
+import it.polimi.ingsw.view.gui.viewController.LoginController;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class GUI extends Application implements ViewInterface {
 
+    private static Scene scene;
+    private ViewsType currentView;
     private String inputString = "";
-    private int inputInteger = 0;
-    boolean updated = false;
+    private int inputInteger = -1;
+    private boolean inputReceived = false;
     private final Lock lock = new ReentrantLock();
     private final Condition unlockCondition = lock.newCondition();
 
 
     @Override
-    public void start(Stage primarystage) throws IOException {
-        Parent panel;
-        FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("LoginResources/santorini.fxml"));
-        System.out.println(GUI.class.getResource("LoginResources/santorini.fxml"));
-        panel = fxmlLoader.load();
-        LoginController loginController = fxmlLoader.getController();
-        loginController.setGUI(this);
-        Scene scene = new Scene(panel);
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.show();
+    public void start(Stage primarystage) {
+        Parent empty = new Pane() ;
+        scene = new Scene(empty, 1280, 720);
+        primarystage.setScene(scene);
+        primarystage.show();
+        primarystage.setOnCloseRequest((WindowEvent t) -> {
+            Platform.exit();
+            System.exit(0);
+        });
         new Thread(() -> Client.initClient(this)).start();
+    }
+
+    public static void setRoot(String fxml) {
+        FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource(fxml + ".fxml"));
+        scene.setUserData(fxmlLoader);
+        try {
+            scene.setRoot(fxmlLoader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
     }
 
     public static void launchGui(){
         launch();
     }
 
-
-
     public void setInputString(String inputString) {
-        if (!inputString.equals("")) {
-            lock.lock();
-            try {
-                this.inputString = inputString;
-                updated = true;
-                unlockCondition.signalAll();
-            } finally {
-                lock.unlock();
-            }
+        lock.lock();
+        try {
+            this.inputString = inputString;
+            inputReceived = true;
+            unlockCondition.signalAll();
+        } finally {
+            lock.unlock();
         }
     }
 
     public void setInputInteger(int inputInteger) {
-        this.inputInteger = inputInteger;
+        lock.lock();
+        try {
+            this.inputInteger = inputInteger;
+            inputReceived = true;
+            unlockCondition.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
@@ -74,30 +95,84 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public List<String> askToReloadLastSettings(List<String> savedUsers) throws TimeoutException, InterruptedException {
-        return new ArrayList<>();
+    public List<String> askToReloadLastSettings(List<String> savedUsers) {
+        List<String> chosenConfig = new ArrayList<>();
+        inputReceived=false;
+        lock.lock();
+        try {
+            LoginController loginController = ((FXMLLoader) scene.getUserData()).getController();
+            if(savedUsers.size()>0) {
+                for (int i = 1; i <= savedUsers.size(); i += 2) {
+                    loginController.getOldConfigs().getItems().add(savedUsers.get(i) + " -- " + savedUsers.get(i - 1)); //This convert
+                }
+                loginController.getOldConfigs().setOpacity(1);
+                loginController.getOldConfigs().setDisable(false);
+            }
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getIpID().setOpacity(1);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getIpID().setDisable(false);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getUsernameID().setOpacity(1);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getUsernameID().setDisable(false);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getLoginBtn().setOpacity(1);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getLoginBtn().setDisable(false);
+            LoginController.requestIP();
+            while (chosenConfig.size()<2) {
+                while (!inputReceived)
+                    unlockCondition.await();
+                inputReceived=false;
+                chosenConfig.add(inputString);
+                if(chosenConfig.size()== 1)
+                    LoginController.requestUsername();
+            }
+        }catch (InterruptedException e) {
+            printLogo();
+            return askToReloadLastSettings(savedUsers);
+        } finally {
+            lock.unlock();
+        }
+        return chosenConfig;
     }
 
     @Override
-    public boolean chooseMatchReload() throws TimeoutException, InterruptedException {
+    public boolean chooseMatchReload() {
         return false;
     }
 
     @Override
     public void printLogo() {
+        try {
+            Parent panel;
+            FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("LoginResources/santorini.fxml"));
+            panel = fxmlLoader.load();
+            LoginController loginController = fxmlLoader.getController();
+            loginController.setGUI(this);
+            scene.setUserData(fxmlLoader);
+            currentView = ViewsType.LOGIN;
+            scene.setRoot(panel);
+        } catch (IOException e){
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
     }
 
     @Override
     public String askIP() {
-        updated = false;
+        inputReceived = false;
         lock.lock();
         try {
-            while (!updated)
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getIpID().setOpacity(1);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getIpID().setDisable(false);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getUsernameID().setOpacity(1);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getUsernameID().setDisable(false);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getLoginBtn().setOpacity(1);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getLoginBtn().setDisable(false);
+            LoginController.requestIP();
+            while (!inputReceived)
                 unlockCondition.await();
         }catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock();
         }
-        lock.unlock();
         String tmp = inputString;
         inputString = "";
         return tmp;
@@ -105,15 +180,28 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public String askUsername() {
-        updated=false;
+        inputReceived=false;
         lock.lock();
         try {
-            while (!updated)
+            LoginController loginController = ((FXMLLoader) scene.getUserData()).getController();
+            if(currentView!=ViewsType.LOGIN) {
+                printLogo();
+                loginController.setIpIsSet(true);
+            }
+            loginController.getUsernameID().setOpacity(1);
+            loginController.getUsernameID().setDisable(false);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getLoginBtn().setOpacity(1);
+            ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getLoginBtn().setDisable(false);
+            LoginController.requestUsername();
+            while (!inputReceived)
                 unlockCondition.await();
         }catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            Platform.exit();
+            System.exit(0);
+        } finally {
+            lock.unlock();
         }
-        lock.unlock();
         String tmp = inputString;
         inputString = "";
         return tmp;
@@ -125,67 +213,121 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public String lobbyOptions(List<String> options) throws TimeoutException, InterruptedException {
+    public String lobbyOptions(List<String> options) {
+        lock.lock();
+        inputReceived=false;
+        try {
+            Parent panel;
+            FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("LoginResources/lobbyView.fxml"));
+            panel = fxmlLoader.load();
+            LobbyController lobbyController = fxmlLoader.getController();
+            lobbyController.setGUI(this);
+            if(options.size()==1){
+                lobbyController.getJoinBtn().setDisable(true);
+            }
+            scene.setUserData(fxmlLoader);
+            currentView = ViewsType.LOBBY;
+            scene.setRoot(panel);
+        } catch (IOException e){
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
+        try {
+            LobbyController.setInputRequested(true);
+            while (!inputReceived)
+                unlockCondition.await();
+        }catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock();
+        }
+        String tmp = inputString;
+        inputString = "";
+        return tmp;
+    }
+
+    @Override
+    public String askLobbyName() {
+        return "null";
+    }
+
+    @Override
+    public int askLobbySize() {
+        return 2;
+    }
+
+    @Override
+    public String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) {
+        currentView = ViewsType.LOBBY;
+        setRoot("LoginResources/chooseLobby");
+        LobbyController controller =((FXMLLoader) scene.getUserData()).getController();
+        controller.lobbyList.getItems().addAll(lobbiesAvailable.keySet());
+        controller.setGUI(this);
+        inputReceived=false;
+        /*
+        System.out.println(lobbiesAvailable.keySet());
+        LobbyController controller = ((FXMLLoader) scene.getUserData()).getController();
+        controller.getJoinBtn().setDisable(false);
+        controller.getJoinBtn().getItems().addAll(lobbiesAvailable.keySet());
+        */
+        lock.lock();
+        try {
+            LobbyController.setInputRequested(true);
+            while (!inputReceived)
+                unlockCondition.await();
+        }catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock();
+        }
+        String tmp = inputString;
+        inputString = "";
+        return tmp;
+
+    }
+
+    @Override
+    public Cell chooseWorker() {
         return null;
     }
 
     @Override
-    public String askLobbyName() throws TimeoutException, InterruptedException {
+    public Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
         return null;
     }
 
     @Override
-    public int askLobbySize() throws TimeoutException, InterruptedException {
-        return 0;
-    }
-
-    @Override
-    public String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) throws TimeoutException, InterruptedException {
+    public Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
         return null;
     }
 
     @Override
-    public Cell chooseWorker() throws TimeoutException, InterruptedException {
+    public Block chooseBlockToBuild(List<Block> buildableBlocks) {
         return null;
     }
 
     @Override
-    public Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells) throws TimeoutException, InterruptedException {
+    public GodData chooseUserGod(List<GodData> possibleGods) {
         return null;
     }
 
     @Override
-    public Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws TimeoutException, InterruptedException {
+    public List<GodData> chooseGameGods(List<GodData> allGods, int size) {
         return null;
     }
 
     @Override
-    public Block chooseBlockToBuild(List<Block> buildableBlocks) throws TimeoutException, InterruptedException {
+    public String chooseStartingPlayer(List<String> players) {
         return null;
     }
 
     @Override
-    public GodData chooseUserGod(List<GodData> possibleGods) throws TimeoutException, InterruptedException {
+    public Cell placeWorker() {
         return null;
     }
 
     @Override
-    public List<GodData> chooseGameGods(List<GodData> allGods, int size) throws TimeoutException, InterruptedException {
-        return null;
-    }
-
-    @Override
-    public String chooseStartingPlayer(List<String> players) throws TimeoutException, InterruptedException {
-        return null;
-    }
-
-    @Override
-    public Cell placeWorker() throws TimeoutException, InterruptedException {
-        return null;
-    }
-
-    @Override
-    public PossibleActions chooseAction(List<PossibleActions> possibleActions) throws TimeoutException, InterruptedException {
+    public PossibleActions chooseAction(List<PossibleActions> possibleActions) {
         return null;
     }
 
