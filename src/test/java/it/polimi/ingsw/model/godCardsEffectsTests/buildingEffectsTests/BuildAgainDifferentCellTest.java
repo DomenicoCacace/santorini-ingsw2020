@@ -70,7 +70,7 @@ class BuildAgainDifferentCellTest {
         buildAction.getValidation(game);
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
-        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertTrue(possibleActions.contains(PossibleActions.PASS_TURN));
         assertEquals(possibleActions.size(), 2);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
@@ -128,7 +128,7 @@ class BuildAgainDifferentCellTest {
         buildAction.getValidation(game);
 
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
-        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertTrue(possibleActions.contains(PossibleActions.PASS_TURN));
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
         assertEquals(possibleActions.size(), 2);
 
@@ -179,7 +179,7 @@ class BuildAgainDifferentCellTest {
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
-        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertTrue(possibleActions.contains(PossibleActions.PASS_TURN));
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
         assertEquals(possibleActions.size(), 2);
 

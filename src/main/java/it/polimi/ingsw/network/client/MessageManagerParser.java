@@ -536,7 +536,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             case MOVE:
                 nextAction = new WalkableCellsRequest(client.getUsername());
                 break;
-            case PASSTURN:
+            case PASS_TURN:
                 nextAction = new EndTurnRequest(client.getUsername());
                 break;
             case SELECT_OTHER_WORKER:

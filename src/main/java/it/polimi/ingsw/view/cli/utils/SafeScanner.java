@@ -39,8 +39,7 @@ public class SafeScanner {
             }
             input = Integer.parseInt(br.readLine());
             return input;
-        }
-        catch(InputMismatchException e) {
+        } catch (InputMismatchException e) {
             e.printStackTrace();
             return nextInt();
         }

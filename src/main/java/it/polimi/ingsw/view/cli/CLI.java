@@ -26,14 +26,14 @@ public class CLI implements ViewInterface {
     public static final String ASK_TO_VIEW_LOBBY_INFO = "Do you want to view the lobby information? (" + YES + "/" + NO + ")";
     public static final String REFRESH = "refresh available lobbies";
     private final PrettyPrinter printer;
-    private ExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     private final List<Future> futureList = new ArrayList<>();
+    private ExecutorService ex = Executors.newSingleThreadScheduledExecutor();
 
     public CLI() throws IOException {
         printer = new PrettyPrinter();
     }
 
-    public void stopInput(){
+    public void stopInput() {
         futureList.forEach(future -> future.cancel(true));
         futureList.clear();
         ex.shutdown();
@@ -71,9 +71,9 @@ public class CLI implements ViewInterface {
                 }
                 if (index != 0) { //If index == 0 the player chose to manually input user/Ip
                     index--;
-                    index = index*2;
+                    index = index * 2;
                     chosenConfig.add(savedUsers.get(index));
-                    chosenConfig.add(savedUsers.get(index+1));
+                    chosenConfig.add(savedUsers.get(index + 1));
                 }
                 return chosenConfig;
             } else if (input.equals(NO))
@@ -83,7 +83,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void printLogo(){
+    public void printLogo() {
         printer.printLogin();
     }
 
@@ -93,10 +93,10 @@ public class CLI implements ViewInterface {
         Future<String> future = ex.submit(safeScanner::nextLine);
         futureList.add(future);
         try {
-            input= future.get(timeout, TimeUnit.SECONDS);
+            input = future.get(timeout, TimeUnit.SECONDS);
         } catch (ExecutionException e) {
             System.out.println("Something's wrong!");
-        } catch (InterruptedException e){ //TODO: check if doing this doesn't break ping management
+        } catch (InterruptedException e) { //TODO: check if doing this doesn't break ping management
             stopInput(); //It should work because when the client doesn't receive a pong it Cancel an operation already, we just need to catch that.
             return askInputString(timeout);
         }
@@ -110,17 +110,17 @@ public class CLI implements ViewInterface {
         Future<Integer> future = ex.submit(safeScanner::nextInt);
         futureList.add(future);
         try {
-            input= future.get(timeout, TimeUnit.SECONDS);
+            input = future.get(timeout, TimeUnit.SECONDS);
         } catch (ExecutionException e) {
             showErrorMessage("Something's wrong!");
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             return askInputInt(timeout);
         }
         return input;
     }
 
     @Override
-    public String askIP() throws CancellationException{
+    public String askIP() throws CancellationException {
 
         System.out.print("\t\tInsert the server address: ");
         try {
@@ -132,7 +132,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public String askUsername() throws CancellationException{
+    public String askUsername() throws CancellationException {
         //TODO: make the user choose if it wants the default one
         System.out.print("\t\tInsert your username: ");
         try {
@@ -152,7 +152,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public String lobbyOptions(List<String> options) throws TimeoutException, CancellationException{
+    public String lobbyOptions(List<String> options) throws TimeoutException, CancellationException {
         return options.get(chooseFromList(options, 1000));
     }
 
@@ -165,8 +165,8 @@ public class CLI implements ViewInterface {
 
 
     @Override
-    public int askLobbySize()  throws TimeoutException, CancellationException{
-        while(true) {
+    public int askLobbySize() throws TimeoutException, CancellationException {
+        while (true) {
             System.out.print("Choose the room size:\n");
 
             int size = askInputInt(1000);
@@ -177,7 +177,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) throws TimeoutException, CancellationException{
+    public String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) throws TimeoutException, CancellationException {
         List<String> lobbies = new LinkedList<>(lobbiesAvailable.keySet());
         lobbies.add(SHOW_INFO_ALL_LOBBIES);
         lobbies.add("Go back");
@@ -190,11 +190,9 @@ public class CLI implements ViewInterface {
             });
             System.out.println(stringBuilder.toString() + "\r");
             return chooseLobbyToJoin(lobbiesAvailable);
-        }
-        else if (index == lobbies.size() - 1){
+        } else if (index == lobbies.size() - 1) {
             return null;
-        }
-        else if(askToChoose(ASK_TO_VIEW_LOBBY_INFO)) {
+        } else if (askToChoose(ASK_TO_VIEW_LOBBY_INFO)) {
             System.out.println(showLobbyInfo(lobbiesAvailable.get(lobbies.get(index))));
             if (!askToChoose("Do you want to join lobby(" + YES + ") or do you want to review the lobbies?(" + NO + ")"))
                 return chooseLobbyToJoin(lobbiesAvailable);
@@ -202,7 +200,7 @@ public class CLI implements ViewInterface {
         return lobbies.get((index));
     }
 
-    private boolean askToChoose(String question) throws TimeoutException, CancellationException{
+    private boolean askToChoose(String question) throws TimeoutException, CancellationException {
         while (true) {
             System.out.println(question);
 
@@ -215,7 +213,7 @@ public class CLI implements ViewInterface {
     }
 
     private String showLobbyInfo(List<String> info) {
-        StringBuilder stringBuilder = new StringBuilder() ;
+        StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append("The lobby ")
                 .append(info.get(0))
@@ -246,7 +244,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public Cell chooseWorker() throws TimeoutException, CancellationException{
+    public Cell chooseWorker() throws TimeoutException, CancellationException {
         while (true) {
             System.out.println("Choose your worker: ");
             Cell chosenWorker = chooseCell();
@@ -258,7 +256,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public boolean chooseMatchReload() throws TimeoutException, CancellationException{
+    public boolean chooseMatchReload() throws TimeoutException, CancellationException {
         while (true) {
             System.out.println("I found a match to reload! do you want to reload? (" + YES + "/" + NO + ")");
 
@@ -271,7 +269,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells) throws TimeoutException, CancellationException{
+    public Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells) throws TimeoutException, CancellationException {
         printer.printBoard(gameBoard, walkableCells);   //TODO: enhance
         while (true) {
             System.out.println("Choose a cell to step on:");
@@ -286,7 +284,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws TimeoutException, CancellationException{
+    public Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws TimeoutException, CancellationException {
         printer.printBoard(gameBoard, buildableCells);   //TODO: enhance
         while (true) {  //TODO: might extract private method for move/buildAction
             System.out.println("Choose a cell to build on:");
@@ -301,7 +299,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public Block chooseBlockToBuild(List<Block> buildableBlocks) throws TimeoutException, CancellationException{
+    public Block chooseBlockToBuild(List<Block> buildableBlocks) throws TimeoutException, CancellationException {
         //buildableBlocks.size always > 1, see player in model
         System.out.println("Choose the block to build: ");
         List<String> blocks = new ArrayList<>();
@@ -321,13 +319,13 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public Cell placeWorker() throws TimeoutException, CancellationException{
+    public Cell placeWorker() throws TimeoutException, CancellationException {
         System.out.println("Place your Worker!");
         return chooseCell();
     }
 
     @Override
-    public GodData chooseUserGod(List<GodData> possibleGods) throws TimeoutException, CancellationException{
+    public GodData chooseUserGod(List<GodData> possibleGods) throws TimeoutException, CancellationException {
         if (possibleGods.size() == 1) {
             showSuccessMessage("\nYour god is " + possibleGods.get(0).getName() + "\n");
             return possibleGods.get(0);
@@ -335,18 +333,18 @@ public class CLI implements ViewInterface {
         System.out.println("Choose your god:");
         List<String> gods = new ArrayList<>();
         possibleGods.forEach(g -> gods.add(g.getName()));
-        return possibleGods.get(chooseFromList(gods,60));
+        return possibleGods.get(chooseFromList(gods, 60));
     }
 
     @Override
-    public List<GodData> chooseGameGods(List<GodData> allGods, int size) throws TimeoutException, CancellationException{
+    public List<GodData> chooseGameGods(List<GodData> allGods, int size) throws TimeoutException, CancellationException {
         List<GodData> chosenGods = new ArrayList<>();
         System.out.println("Choose " + (size) + " gods:");
         List<String> gods = new LinkedList<>();
         allGods.forEach(g -> gods.add(g.getName()));
 
         for (int i = 0; i < size; i++) {
-            int choice = chooseFromList(gods,60);
+            int choice = chooseFromList(gods, 60);
             chosenGods.add(allGods.get(choice));
             gods.remove(choice);
             allGods.remove(choice);
@@ -355,13 +353,13 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public String chooseStartingPlayer(List<String> players) throws TimeoutException, CancellationException{
+    public String chooseStartingPlayer(List<String> players) throws TimeoutException, CancellationException {
         System.out.println("Choose the first player:");
         return players.get(chooseFromList(players, 60));
     }
 
     @Override
-    public PossibleActions chooseAction(List<PossibleActions> possibleActions) throws TimeoutException, CancellationException{
+    public PossibleActions chooseAction(List<PossibleActions> possibleActions) throws TimeoutException, CancellationException {
         if (possibleActions.size() == 1)
             return possibleActions.get(0);
         System.out.println("Select an action: ");
@@ -370,7 +368,7 @@ public class CLI implements ViewInterface {
         return possibleActions.get(chooseFromList(actions, 60));
     }
 
-    private Cell chooseCell()  throws TimeoutException, CancellationException{
+    private Cell chooseCell() throws TimeoutException, CancellationException {
         while (true) {
             System.out.println("Insert the cell coordinates (1-5):");
             System.out.print("row: ");
@@ -384,11 +382,11 @@ public class CLI implements ViewInterface {
         }
     }
 
-    private int chooseFromList(List<String> list, int timeout)  throws TimeoutException, CancellationException{
+    private int chooseFromList(List<String> list, int timeout) throws TimeoutException, CancellationException {
         int choice;
-        while(true) {
+        while (true) {
             for (int i = 1; i < list.size() + 1; i++)
-                System.out.println(i + "- " + list.get(i-1));
+                System.out.println(i + "- " + list.get(i - 1));
             choice = askInputInt(timeout);
             if (choice > 0 && choice < list.size() + 1)
                 break;

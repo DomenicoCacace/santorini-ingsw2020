@@ -15,8 +15,7 @@ public class ResizableImageView extends ImageView {
     }
 
     @Override
-    public double minWidth(double height)
-    {
+    public double minWidth(double height) {
         return 40;
     }
 
@@ -31,14 +30,12 @@ public class ResizableImageView extends ImageView {
      */
 
     @Override
-    public double maxWidth(double height)
-    {
+    public double maxWidth(double height) {
         return 16384;
     }
 
     @Override
-    public double minHeight(double width)
-    {
+    public double minHeight(double width) {
         return 40;
     }
 
@@ -53,20 +50,17 @@ public class ResizableImageView extends ImageView {
      */
 
     @Override
-    public double maxHeight(double width)
-    {
+    public double maxHeight(double width) {
         return 16384;
     }
 
     @Override
-    public boolean isResizable()
-    {
+    public boolean isResizable() {
         return true;
     }
 
     @Override
-    public void resize(double width, double height)
-    {
+    public void resize(double width, double height) {
         setFitWidth(width);
         setFitHeight(height);
     }

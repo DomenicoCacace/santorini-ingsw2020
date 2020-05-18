@@ -9,10 +9,10 @@ import java.util.List;
 
 /**
  * Console Printing Utilities
-
+ *
  * </p>
  */
- public class PrettyPrinter {
+public class PrettyPrinter {
     private final int verticalWallWidth;
     private final int horizontalWallWidth;
     private final int cellWidth;
@@ -22,22 +22,22 @@ import java.util.List;
     private final PrintableObject cellFrame;
     private final String[][] emptyBoard;
     private final String[][] logo;
-    private List<Cell> lastGameBoardPrinted;
     private final String[][] cachedBoard;
+    private List<Cell> lastGameBoardPrinted;
 
     /**
      * Default constructor
      * <p>
      * Loads the <i>graphics</i> from file into PrintableObjects
      * </p>
-  */
+     */
     public PrettyPrinter() throws IOException {
         // FIXME: Load from configuration file
         int tableWidth = 120 + 1;  // includes the ansi reset sequence as last element
         int tableHeight = 61;
         this.verticalWallWidth = 2;
         this.horizontalWallWidth = 1;
-        this.cellWidth = 21+1;
+        this.cellWidth = 21 + 1;
         this.cellHeight = 11;
 
         buildingBlocks = new ArrayList<>();
@@ -79,6 +79,7 @@ import java.util.List;
 
     /**
      * Prints an error message
+     *
      * @param error the error message to print
      */
     public void printError(String error) {
@@ -87,6 +88,7 @@ import java.util.List;
 
     /**
      * Prints the gameBoard
+     *
      * @param board the board to print
      */
     public void printBoard(List<Cell> board) {
@@ -96,7 +98,8 @@ import java.util.List;
 
     /**
      * Prints the gameBoard, highlighting
-     * @param board the board to print
+     *
+     * @param board       the board to print
      * @param toHighlight the cells to highlight
      */
     public void printBoard(List<Cell> board, List<Cell> toHighlight) {
@@ -110,6 +113,7 @@ import java.util.List;
 
     /**
      * Sets the first version of a board, useful in case of a restoration from a saved game
+     *
      * @param gameBoard the new gameBoard to set
      */
     public void setCachedBoard(List<Cell> gameBoard) {
@@ -120,8 +124,8 @@ import java.util.List;
     /**
      * Updates the cached board
      * <p>
-     *     Assuming that both the cached and new board are ordered in the same way (see {@linkplain GameBoard#getAllCells()}),
-     *     this method updates the cached board to a new provided version, ready to be printed.
+     * Assuming that both the cached and new board are ordered in the same way (see {@linkplain GameBoard#getAllCells()}),
+     * this method updates the cached board to a new provided version, ready to be printed.
      * </p>
      *
      * @param board the updated board
@@ -146,10 +150,11 @@ import java.util.List;
     /**
      * Draws a frame around some given cells
      * <p>
-     *     Since the frame should not be saved on the <i>original</i> board, the {@linkplain #drawOnCell} method requires
-     *     a String[][] parameter on which the frame will be printed.
+     * Since the frame should not be saved on the <i>original</i> board, the {@linkplain #drawOnCell} method requires
+     * a String[][] parameter on which the frame will be printed.
      * </p>
-     * @param cell the cell to highlight
+     *
+     * @param cell  the cell to highlight
      * @param board the board to print the frame on
      */
     private void highlight(Cell cell, String[][] board) {
@@ -158,6 +163,7 @@ import java.util.List;
 
     /**
      * Draws a building block on a cell
+     *
      * @param cell the cell to draw the building on
      */
     private void drawBlock(Cell cell) {
@@ -170,6 +176,7 @@ import java.util.List;
 
     /**
      * Reloads all the building sprites on a cell
+     *
      * @param cell the cell to restore
      */
     private void restoreBuild(Cell cell) {
@@ -182,10 +189,11 @@ import java.util.List;
     /**
      * Draws a Worker on a cell
      * <p>
-     *     In case the given {@linkplain Cell#getOccupiedBy()} is not null, calls the {@link #drawOnCell} method, passing
-     *     the <i>sprite</i> corresponding to the worker's color; if the cell contains no worker, the original board
-     *     texture is reloaded, then the building, if existing, has to be restored.
+     * In case the given {@linkplain Cell#getOccupiedBy()} is not null, calls the {@link #drawOnCell} method, passing
+     * the <i>sprite</i> corresponding to the worker's color; if the cell contains no worker, the original board
+     * texture is reloaded, then the building, if existing, has to be restored.
      * </p>
+     *
      * @param cell the cell containing
      */
     private void drawWorker(Cell cell) {
@@ -205,8 +213,7 @@ import java.util.List;
                     worker = null;  // never gets here
             }
             drawOnCell(worker, cachedBoard, cell.getCoordX(), cell.getCoordY());
-        }
-        else {
+        } else {
             int rowOffset = (horizontalWallWidth + cell.getCoordX() * (horizontalWallWidth + cellHeight));
             int colOffset = (verticalWallWidth + cell.getCoordY() * (verticalWallWidth + cellWidth));
             for (int row = rowOffset; row < cellHeight + rowOffset; row++) {
@@ -230,8 +237,8 @@ import java.util.List;
      * @param coordY the Y coordinate of the cell to print
      */
     private void drawOnCell(PrintableObject object, String[][] board, int coordX, int coordY) {
-        int rowOffset = (horizontalWallWidth + coordX*(horizontalWallWidth + cellHeight));
-        int colOffset = (verticalWallWidth + coordY*(verticalWallWidth + cellWidth));
+        int rowOffset = (horizontalWallWidth + coordX * (horizontalWallWidth + cellHeight));
+        int colOffset = (verticalWallWidth + coordY * (verticalWallWidth + cellWidth));
 
         for (int row = 0; row < cellHeight; row++) {
             for (int col = 0; col < cellWidth; col++) {
@@ -244,6 +251,7 @@ import java.util.List;
 
     /**
      * Prints a given String matrix
+     *
      * @param matrix the Matrix to print
      */
     private void showMatrix(String[][] matrix) {
@@ -261,6 +269,7 @@ import java.util.List;
 
     /**
      * Clones a String matrix
+     *
      * @param input the matrix to clone
      * @return a copy of the input
      */
@@ -273,5 +282,5 @@ import java.util.List;
         }
         return clone;
     }
-    
+
 }

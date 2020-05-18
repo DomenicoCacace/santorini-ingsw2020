@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+/**
+ * The possible actions a player can perform
+ */
 public enum PossibleActions {
     MOVE {
         public String toString() {
@@ -11,7 +14,7 @@ public enum PossibleActions {
             return "Build";
         }
     },
-    PASSTURN {
+    PASS_TURN {
         public String toString() {
             return "Pass turn";
         }

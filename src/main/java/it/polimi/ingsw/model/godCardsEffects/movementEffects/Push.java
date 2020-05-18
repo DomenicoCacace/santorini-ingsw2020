@@ -10,12 +10,28 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Kick opponent workers when moving
+ * <p>
+ *     This effect alters the workers' walkable cells: workers can push opponent an opponent worker in the cell behind
+ *     them (see {@linkplain it.polimi.ingsw.model.GameBoard#getCellBehind(Cell, Cell)})
+ * </p>
+ */
 public class Push extends MovementStrategy {
 
+    /**
+     * Default constructor
+     * @see #initialize()
+     */
     public Push() {
         super();
     }
 
+    /**
+     * Copy constructor
+     * @param push the strategy to clone
+     * @param game the game in which the effect is used
+     */
     private Push(Push push, Game game) {
         this.game = game;
         this.movesAvailable = push.getMovesAvailable();
@@ -27,13 +43,26 @@ public class Push extends MovementStrategy {
         else this.movedWorker = null;
     }
 
+    /**
+     * Determines if an opponent worker can be pushed
+     * <p>
+     *     This method checks if the <i>cell behind</i> the opponent worker exists and is not occupied by another worker
+     *     nor a dome
+     * </p>
+     * @param myCell the worker's starting position
+     * @param targetCell the cell containing the worker to push
+     * @return true if the the opponent's worker can be pushed
+     */
     boolean canPush(Cell myCell, Cell targetCell) {
-        // Cell pushedCell= game.getGameBoard().getCellBehind(myCell, targetCell); debugging purpose
         return game.getGameBoard().getCellBehind(myCell, targetCell) != null &&
                 game.getGameBoard().getCellBehind(myCell, targetCell).getOccupiedBy() == null &&
                 !game.getGameBoard().getCellBehind(myCell, targetCell).hasDome();
     }
 
+    /**
+     * Forces the opponent worker to be moved on the cell behind it
+     * @param action the action performed by the current player's worker
+     */
     void opponentAction(MoveAction action) {
         if (action.getTargetCell().getOccupiedBy() != null) {
             Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that's "behind" the opponent
@@ -42,6 +71,18 @@ public class Push extends MovementStrategy {
         }
     }
 
+    /**
+     * Determines if a moveAction is legal and applies it
+     * <p>
+     *     Using this ruleSet, a movement action is considered valid if the following conditions are all true:
+     *     <ul>
+     *         <li>no worker has been moved yet during the turn</li>
+     *         <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
+     *     </ul>
+     * </p>
+     * @param action the movement action to validate
+     * @return true if the action has been applied, false otherwise
+     */
     @Override
     public boolean isMoveActionValid(MoveAction action) {
         if (super.isMoveActionValid(action)) {
@@ -52,6 +93,16 @@ public class Push extends MovementStrategy {
         return false;
     }
 
+    /**
+     * Provides a list of cells on which the worker can walk on
+     * <p>
+     *     Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
+     *     at most one compared to the starting cell (domes do not count) and has no dome built on it; a worker can walk
+     *     on a cell occupied by another worker if it can be pushed (see {@linkplain #canPush(Cell, Cell)})
+     * </p>
+     * @param worker the worker to be moved
+     * @return a list of <i>walkable</i> cells
+     */
     @Override
     public List<Cell> getWalkableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
@@ -73,6 +124,11 @@ public class Push extends MovementStrategy {
         return cells;
     }
 
+    /**
+     * Creates a clone of this object
+     * @param game the current game
+     * @return a clone of this object
+     */
     @Override
     public RuleSetStrategy cloneStrategy(Game game) {
         return new Push(this, game);

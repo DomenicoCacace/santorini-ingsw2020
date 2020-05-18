@@ -18,6 +18,19 @@ public class GuiInit extends Application {
     private static Scene scene;
     private static LoginController loginController;
 
+    public static void setRoot(String fxml) throws IOException {
+        scene.setRoot(loadFXML(fxml));
+    }
+
+    private static Parent loadFXML(String fxml) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(GuiInit.class.getResource(fxml + ".fxml"));
+        return fxmlLoader.load();
+    }
+
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage primarystage) throws IOException {
         Parent panel;
@@ -34,19 +47,6 @@ public class GuiInit extends Application {
 
     public static LoginController getLoginController(){
         return loginController;
-    }
-
-    public static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(GuiInit.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 
 }

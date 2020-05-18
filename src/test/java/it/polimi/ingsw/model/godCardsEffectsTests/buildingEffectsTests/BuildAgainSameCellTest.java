@@ -70,7 +70,7 @@ class BuildAgainSameCellTest {
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
         buildAction.getValidation(game);
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
-        assertTrue(possibleActions.contains(PossibleActions.PASSTURN));
+        assertTrue(possibleActions.contains(PossibleActions.PASS_TURN));
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
         assertEquals(possibleActions.size(), 2);
 
