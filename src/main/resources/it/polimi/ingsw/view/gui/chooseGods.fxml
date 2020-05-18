@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import it.polimi.ingsw.view.gui.ResizableImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="576.0" prefWidth="910.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.viewController.ChooseGodsController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+         <children>
+            <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <center>
+                  <HBox prefHeight="576.0" prefWidth="910.0">
+                     <children>
+                        <VBox prefHeight="200.0" prefWidth="182.0">
+                           <children>
+                              <ResizableImageView fx:id="Apollo" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/apollo.png" />
+                                 </image>
+                              </ResizableImageView>
+                              <Region prefHeight="66.0" prefWidth="165.0" />
+                              <ResizableImageView fx:id="Artemis" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/artemis.png" />
+                                 </image>
+                              </ResizableImageView>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="182.0">
+                           <children>
+                              <ResizableImageView fx:id="Athena" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/athena.png" />
+                                 </image>
+                              </ResizableImageView>
+                              <Region prefHeight="66.0" prefWidth="165.0" />
+                              <ResizableImageView fx:id="Atlas" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/atlas.png" />
+                                 </image>
+                              </ResizableImageView>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="182.0">
+                           <children>
+                              <ResizableImageView fx:id="Base" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/base.png" />
+                                 </image>
+                              </ResizableImageView>
+                              <Region prefHeight="66.0" prefWidth="165.0" />
+                              <ResizableImageView fx:id="Demeter" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/demeter.png" />
+                                 </image>
+                              </ResizableImageView>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="182.0">
+                           <children>
+                              <ResizableImageView fx:id="Hephaestus" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/hephaestus.png" />
+                                 </image>
+                              </ResizableImageView>
+                              <Region prefHeight="66.0" prefWidth="165.0" />
+                              <ResizableImageView fx:id="Minotaur" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/minotaur.png" />
+                                 </image>
+                              </ResizableImageView>
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="182.0">
+                           <children>
+                              <ResizableImageView fx:id="Pan" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/pan.png" />
+                                 </image>
+                              </ResizableImageView>
+                              <Region prefHeight="66.0" prefWidth="165.0" />
+                              <ResizableImageView fx:id="Prometheus" fitHeight="198.0" onMouseClicked="#cardClicked" preserveRatio="true">
+                                 <image>
+                                    <Image url="@GodCards/prometheus.png" />
+                                 </image>
+                              </ResizableImageView>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </center>
+               <top>
+                  <Region prefHeight="43.0" prefWidth="910.0" BorderPane.alignment="CENTER" />
+               </top>
+               <left>
+                  <Region prefHeight="333.0" prefWidth="43.0" BorderPane.alignment="CENTER" />
+               </left>
+               <bottom>
+                  <Region prefHeight="43.0" prefWidth="910.0" BorderPane.alignment="CENTER" />
+               </bottom>
+               <right>
+                  <Region prefHeight="464.0" prefWidth="43.0" BorderPane.alignment="CENTER" />
+               </right>
+            </BorderPane>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>

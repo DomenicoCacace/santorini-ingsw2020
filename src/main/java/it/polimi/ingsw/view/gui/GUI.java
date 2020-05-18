@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.gui.viewController.ChooseGodsController;
 import it.polimi.ingsw.view.gui.viewController.LobbyController;
 import it.polimi.ingsw.view.gui.viewController.LoginController;
 import javafx.application.Application;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 public class GUI extends Application implements ViewInterface {
 
@@ -183,11 +185,12 @@ public class GUI extends Application implements ViewInterface {
         inputReceived=false;
         lock.lock();
         try {
-            LoginController loginController = ((FXMLLoader) scene.getUserData()).getController();
             if(currentView!=ViewsType.LOGIN) {
                 printLogo();
+                LoginController loginController = ((FXMLLoader) scene.getUserData()).getController();
                 loginController.setIpIsSet(true);
             }
+            LoginController loginController = ((FXMLLoader) scene.getUserData()).getController();
             loginController.getUsernameID().setOpacity(1);
             loginController.getUsernameID().setDisable(false);
             ((LoginController)((FXMLLoader) scene.getUserData()).getController()).getLoginBtn().setOpacity(1);
@@ -264,12 +267,6 @@ public class GUI extends Application implements ViewInterface {
         controller.lobbyList.getItems().addAll(lobbiesAvailable.keySet());
         controller.setGUI(this);
         inputReceived=false;
-        /*
-        System.out.println(lobbiesAvailable.keySet());
-        LobbyController controller = ((FXMLLoader) scene.getUserData()).getController();
-        controller.getJoinBtn().setDisable(false);
-        controller.getJoinBtn().getItems().addAll(lobbiesAvailable.keySet());
-        */
         lock.lock();
         try {
             LobbyController.setInputRequested(true);
@@ -313,7 +310,26 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public List<GodData> chooseGameGods(List<GodData> allGods, int size) {
-        return null;
+        inputReceived = false;
+        setRoot("chooseGods");
+        lock.lock();
+        List<GodData> chosenGods = new ArrayList<>();
+        ChooseGodsController controller = ((FXMLLoader) scene.getUserData()).getController();
+        controller.setGUI(this);
+        try {
+            for (int i = 0; i < size; i++) {
+                controller.setInputRequested(true);
+                while (!inputReceived)
+                    unlockCondition.await();
+                chosenGods.add(allGods.stream().filter(godData -> godData.getName().equals(inputString)).collect(Collectors.toList()).get(0));
+                inputReceived=false;
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock();
+        }
+        return chosenGods;
     }
 
     @Override
