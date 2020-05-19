@@ -12,8 +12,7 @@ import java.util.List;
  *     It can be useful to send game information over the network, without any reference to the actual game object.
  *     <br>
  *         Its attributes are data classes too.
- * </p>
- */
+*/
 public class GameData {
     private final List<Cell> board;
     private final List<PlayerData> players;

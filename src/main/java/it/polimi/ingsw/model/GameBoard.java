@@ -20,8 +20,7 @@ import java.util.Arrays;
  * This class uses the {@link JsonCreator}, {@link JsonProperty} and {@link JsonIdentityInfo} in order to
  * serialize and save the board on a file (as a part of the {@link Game} class), to be able to restore the game
  * status upon a server failure.
- * </p>
- */
+*/
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id", scope = GameBoard.class)
 public class GameBoard {
     private static final int DIMENSION = 5;
@@ -72,8 +71,7 @@ public class GameBoard {
      * Returns a cell by its coordinates
      * <p>
      * If the indexes are out of bounds, returns <i>null</i>
-     * </p>
-     *
+    *
      * @param x the X coordinate of the cell to return
      * @param y the Y coordinate of the cell to return
      * @return the cell corresponding to the coordinates if exists, <i>null</i> otherwise
@@ -89,8 +87,7 @@ public class GameBoard {
      * <p>
      * Given a generic Cell object, returns the corresponding Cell object contained in the game board, based on its
      * coordinates
-     * </p>
-     *
+    *
      * @param cell the cell to get the coordinates from
      * @return the corresponding cell from the game board
      */
@@ -105,8 +102,7 @@ public class GameBoard {
      * <p>
      * The cell coordinates are considered legal if both of them are
      * between 0 and the board {@linkplain #DIMENSION}, minus one
-     * </p>
-     *
+    *
      * @param x the X coordinate of the cell to check
      * @param y the Y coordinate of the cell to check
      * @return true if the coordinates are legal, false otherwise
@@ -120,8 +116,7 @@ public class GameBoard {
      * <p>
      * This method creates an {@linkplain ArrayList} of {@linkplain Cell}s, containing all the
      * cells in the {@linkplain GameBoard}, sorted by row, low to high
-     * </p>
-     *
+    *
      * @return an {@linkplain ArrayList} containing all the cells of the board
      */
     public ArrayList<Cell> getAllCells() {
@@ -159,8 +154,7 @@ public class GameBoard {
      * Y coordinates of the two Cells. In any other case, for the sake of the project at
      * this state, the behavior of the method is not granted.
      *
-     * </p>
-     *
+    *
      * @param src  the first point of the line
      * @param dest the second point of the line
      * @return the cell behind the dest Cell if exists, <i>null</i> otherwise
@@ -229,8 +223,7 @@ public class GameBoard {
      * to preserve the references. To do so, we create a new GameBoard instance with the special constructor
      * ({@linkplain #GameBoard(GameBoard)}), which creates an exact replica of the cells of the current game board
      * in the new board.
-     * </p>
-     *
+    *
      * @return a <i>clone</i> of the game board
      */
     public GameBoard cloneGameBoard() {

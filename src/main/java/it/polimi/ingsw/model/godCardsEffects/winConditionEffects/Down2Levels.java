@@ -11,8 +11,7 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
  *     an additional one is added: if a worker performs a movement action between two cells which height difference is
  *     at least 2 (only going from a taller building to a lower one), the player immediately wins. The movement must be
  *     performed by the worker (<i>forced is not moved</i>)
- * </p>
- */
+*/
 public class Down2Levels extends WinConditionStrategy {
 
     /**
@@ -45,8 +44,7 @@ public class Down2Levels extends WinConditionStrategy {
      *     Using this ruleSet, a player can win upon moving (following the rules already defined in
      *     {@linkplain #isMoveActionValid(MoveAction)}) on a level 3 building OR upon jumping to a cell at least two
      *     levels shorter than the starting block
-     * </p>
-     * @param action the action to analyze
+    * @param action the action to analyze
      * @return true if the action led to victory, false otherwise
      */
     @Override

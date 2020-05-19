@@ -13,8 +13,7 @@ import java.util.stream.Collectors;
  * A container for a player turn
  * <p>
  *     During each turn, the currentPlayer performs its actions based on the loaded strategy
- * </p>
- */
+*/
 public class Turn {
     private final int turnNumber;
     private final Player currentPlayer;

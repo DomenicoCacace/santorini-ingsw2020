@@ -9,9 +9,8 @@ import it.polimi.ingsw.network.client.ClientMessageManagerVisitor;
  *     Generalizes all the messages travelling from the server to the clients;
  *     <br>
  *         Defines the abstract method <i>callVisitor</i>, to implement the
- *         <a href url=https://archive.org/details/designpatternsel00gamm/page/351>Visitor pattern</a>.
- * </p>
- * @see it.polimi.ingsw.network.client.NetworkHandler
+ *         <a href="https://archive.org/details/designpatternsel00gamm/page/351">Visitor pattern</a>.
+* @see it.polimi.ingsw.network.client.NetworkHandler
  */
 public abstract class MessageFromServerToClient extends Message {
 

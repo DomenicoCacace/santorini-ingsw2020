@@ -8,8 +8,7 @@ import it.polimi.ingsw.model.action.Action;
  * Player interface
  * <p>
  *     Offers a series of methods to change the player state
- * </p>
- */
+*/
 public interface PlayerInterface {
 
     /**
@@ -41,7 +40,7 @@ public interface PlayerInterface {
     /**
      * Provides a list of blocks which the selected worker can build on the given cell
      * @param selectedCell the cell to perform the build action on
-     * @throws WrongSelectionException if no worker has been selected
+     * @throws IllegalActionException if no worker has been selected
      */
     void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException;
 

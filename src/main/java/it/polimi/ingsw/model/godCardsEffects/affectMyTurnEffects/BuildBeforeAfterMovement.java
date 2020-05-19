@@ -64,8 +64,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      *         The attribute {@link #stuckWorkers} is needed because, using this effect, it is possible to lose after
      *         performing a build action; this counter keeps track of the number of the controlled workers that can perform
      *         no action during the turn
-     * </p>
-     */
+    */
     @Override
     public void initialize() {
         this.movesAvailable = 1;
@@ -82,8 +81,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      * Applies end turn effects
      * <p>
      *     Using this ruleSet, the end turn effects simply resets the attributes changed during the turn
-     * </p>
-     */
+    */
     @Override
     public void doEffect() {
         initialize();
@@ -101,8 +99,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      *     </ul>
      *     Note that in the rare case that all the possible actions lead the player to a loss, it must
      *     perform a move anyway, since the game board has to be altered before removing its workers from the board
-     * </p>
-     * @param worker the worker to perform an action with
+    * @param worker the worker to perform an action with
      * @return a list of possible performable actions
      */
     @Override
@@ -143,8 +140,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      *         <li>no worker has been moved yet during the turn OR the worker has built but has not been moved</li>
      *         <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
      *     </ul>
-     * </p>
-     * @param action the movement action to validate
+    * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -165,8 +161,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      *         <li>no worker has been moved yet OR the worker to perform the action has already been moved</li>
      *         <li>the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker</li>
      *     </ul>
-     * </p>
-     * @param action the build action to validate
+    * @param action the build action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -188,8 +183,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      * <p>
      *     Using this ruleSet, a player's turn can start if at least one of the player's workers can perform a movement
      *     action
-     * </p>
-     * @return true if there is at least one action to perform, false otherwise
+    * @return true if there is at least one action to perform, false otherwise
      */
     @Override
     public boolean checkLoseCondition() {
@@ -210,8 +204,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      *     Using this ruleSet, the player can lose after performing a build action: since the worker cannot be moved
      *     upwards if the player decides to build first, it can lose if, after placing the building block, all the
      *     cells around him become inaccessible
-     * </p>
-     * @param buildAction the action to analyze
+    * @param buildAction the action to analyze
      * @return true if the action led to a loss, false otherwise
      */
     @Override
@@ -224,8 +217,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      * <p>
      *     Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
      *     at most one compared to the starting cell (domes do not count), is not occupied by another worker and has no dome built on it
-     * </p>
-     * @param worker the worker to be moved
+    * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
     @Override
@@ -247,8 +239,7 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
      * Provides a list of cells on which the worker can build on
      * <p>
      *     Using this ruleSet, a worker can build on any cell adjacent to its cell, in both the cases mentioned above
-     * </p>
-     * @param worker the worker to build with
+    * @param worker the worker to build with
      * @return a list of <i>buildable</i> cells
      */
     @Override

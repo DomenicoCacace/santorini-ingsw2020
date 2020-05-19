@@ -11,8 +11,7 @@ import java.util.Objects;
  * A data class for {@linkplain it.polimi.ingsw.model.God}
  * <p>
  *     It can be useful to send game information over the network, without any reference to the actual game object.
- * </p>
- */
+*/
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "GodId", scope = it.polimi.ingsw.model.dataClass.GodData.class)
 public class GodData {
 

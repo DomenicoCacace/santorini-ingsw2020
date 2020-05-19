@@ -18,6 +18,8 @@ public class MovedToWaitingRoomResponse extends MessageFromServerToClient {
      *
      * @param username the sender's username
      * @param type     the message type
+     * @param availableLobbies a list containing the lobbies available
+     * @param disconnectedUser the user which has been disconnected
      */
     @JsonCreator
     public MovedToWaitingRoomResponse(@JsonProperty("username") String username,@JsonProperty("type") Type type,

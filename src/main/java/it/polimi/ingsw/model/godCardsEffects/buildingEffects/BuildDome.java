@@ -41,8 +41,7 @@ public class BuildDome extends BuildingStrategy {
      *         <li>the worker to perform the action is the same which has been moved</li>
      *         <li>the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker</li>
      *     </ul>
-     * </p>
-     * @param action the build action to validate
+    * @param action the build action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -74,7 +73,6 @@ public class BuildDome extends BuildingStrategy {
      *         <li>a dome</li>
      *     </ul>
      *     Note that the standard rules about building on domes still apply
-     * </p>
      * @param selectedCell the cell to get the buildable blocks for
      * @return a list of blocks that can be built on the given cell
      */

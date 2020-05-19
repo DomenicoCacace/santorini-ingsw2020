@@ -8,8 +8,7 @@ import it.polimi.ingsw.model.rules.RuleSetBase;
  * Effects subclass
  * <p>
  *     Generalizes all the gods effects that affect player's movement actions
- * </p>
- */
+*/
 public class MovementStrategy extends RuleSetBase {
 
     /**
@@ -17,8 +16,7 @@ public class MovementStrategy extends RuleSetBase {
      * <p>
      *     By reachable we mean that the worker's cell and the target cell are adjacent and there is no dome on the
      *     target cell
-     * </p>
-     * @param worker the worker to be moved
+    * @param worker the worker to be moved
      * @param cell the target cell
      * @return true if the worker can reach the cell, false otherwise
      */

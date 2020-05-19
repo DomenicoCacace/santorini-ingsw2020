@@ -37,7 +37,7 @@ public class Server extends Thread {
      * Default constructor
      * <p>
      *     Creates a new server instance
-     * </p>
+    * @throws IOException if an I/O error occurs while creating the log file
      */
     public Server() throws IOException {
         socketGreeterPort = 4321; // TODO: get from file
@@ -74,6 +74,7 @@ public class Server extends Thread {
     /**
      * Creates and runs the server
      * @param args currently none
+     * @throws IOException if an I/O error occurs
      */
     public static void main(String[] args) throws IOException {
         Server server = new Server();
@@ -100,12 +101,11 @@ public class Server extends Thread {
     /**
      * Client greeter
      * <p>
-     *     Every time the server receives a Socket connection, this method creates and runs a new {
-     *     @linkplain VirtualClient} object, which handles all the messages.
+     *     Every time the server receives a Socket connection, this method creates and runs a new {@linkplain VirtualClient}
+     *     object, which handles all the messages.
      *     <br>
      *         In the case of a Socket-thrown exception, the connection with the client is closed.
-     * </p>
-     */
+    */
     @Override
     public void run() {
         while (true) {
@@ -135,8 +135,8 @@ public class Server extends Thread {
      *     Upon receiving a login request (in the {@linkplain VirtualClient}), this method checks if the username is
      *     valid (usernames have to be unique and non-reserved keywords, such as ReservedUsernames.BROADCAST) and if there is
      *     "enough space" on the server
-     * </p>
-     * @param virtualClient the user to add
+    * @param virtualClient the user to add
+     * @throws RoomFullException if the room the user is trying to join is full
      */
     public synchronized void addClient(VirtualClient virtualClient) throws RoomFullException {        // Login of the player
         String username = virtualClient.getUser().getUsername();
@@ -180,8 +180,7 @@ public class Server extends Thread {
      * Removes a lobby
      * <p>
      *     If there are players in the lobby, those are moved to the waiting room
-     * </p>
-     * @param lobby the lobby to delete
+    * @param lobby the lobby to delete
      */
     public void removeRoom(Lobby lobby) {
         waitingRoom.addAll(getUsersInRoom(lobby));

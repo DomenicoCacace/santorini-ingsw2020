@@ -15,8 +15,7 @@ import java.util.List;
  * <p>
  *     This effect alters the workers' walkable cells: workers can swap their position with an opponent worker if it is
  *     in an adjacent cell
- * </p>
- */
+*/
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Swap extends MovementStrategy {
 
@@ -78,8 +77,7 @@ public class Swap extends MovementStrategy {
      *         <li>no worker has been moved yet during the turn</li>
      *         <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
      *     </ul>
-     * </p>
-     * @param action the movement action to validate
+    * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -105,8 +103,7 @@ public class Swap extends MovementStrategy {
      *     If moving in a cell determines an immediate loss, the cell causing this behavior is not considered walkable;
      *     if all the cells lead to an immediate loss, the rule above is no longer applied and the player is free to choose
      *     which move to make before losing (see {@linkplain #canBuildOnAtLeastOneCell(Cell)})
-     * </p>
-     * @param worker the worker to be moved
+    * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
     @Override
@@ -136,8 +133,7 @@ public class Swap extends MovementStrategy {
      * Checks if, after moving in a given cell, the worker can perform a build action
      * <p>
      *     This method is needed to avoid the player to make a move that would lead it to an immediate loss
-     * </p>
-     * @param targetCell
+    * @param targetCell
      * @return
      */
     private boolean canBuildOnAtLeastOneCell(Cell targetCell) {

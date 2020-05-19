@@ -8,7 +8,6 @@ import it.polimi.ingsw.model.rules.RuleSetStrategy;
 /**
  * If a worker of a player using this effects moves on an higher level, all the other players cannot move on an higher
  * level during their next turn. If an opponent can only move up and this effect is active, it automatically loses.
- * <p>
  */
 public class CannotMoveUp extends AffectOpponentTurnStrategy {
 
@@ -41,8 +40,7 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
      * <p>
      *     Using this ruleSet, the end turn effects reset the attributes changed during the turn and, if a worker has
      *     moved up during the turn, all of the other workers cannot move on a taller building during their next turn
-     * </p>
-     */
+    */
     @Override
     public void doEffect() {
         if (hasMovedUp) {

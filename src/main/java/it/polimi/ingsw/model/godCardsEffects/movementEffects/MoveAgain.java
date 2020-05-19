@@ -17,8 +17,7 @@ import java.util.List;
  *     This effect alters the player's movement actions; the player must perform a movement action, then it can choose
  *     to perform another movement action (it cannot move on the same cell its worker started the turn on); after that,
  *     it must perform a build action to end its turn
- * </p>
- */
+*/
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MoveAgain extends MovementStrategy {
 
@@ -54,8 +53,7 @@ public class MoveAgain extends MovementStrategy {
      * <p>
      *     Using this ruleSet, a player is granted two movement and one building action, to be performed by the same worker
      *     following the rules mentioned in the class documentation.
-     * </p>
-     */
+    */
     @Override
     public void initialize() {
         this.movesAvailable = 2;
@@ -70,8 +68,7 @@ public class MoveAgain extends MovementStrategy {
      * Applies end turn effects
      * <p>
      *     Using this ruleSet, the end turn effects simply resets the attributes changed during the turn
-     * </p>
-     */
+    */
     @Override
     public void doEffect() {
         initialize();
@@ -86,7 +83,7 @@ public class MoveAgain extends MovementStrategy {
      *         <li>Move, Build, if the worker has been moved once</li>
      *         <li>Build, if the worker has been moved once</li>
      *         <li>None, in any other case</li>
-     * </p>
+     *     </ul>
      * @param worker the worker to perform an action with
      * @return a list of possible performable actions
      */
@@ -111,7 +108,6 @@ public class MoveAgain extends MovementStrategy {
      *         <li>in case of the second movement, the target cell must not be the same as the cell from which the worker
      *         started its turn</li>
      *     </ul>
-     * </p>
      * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
@@ -134,8 +130,7 @@ public class MoveAgain extends MovementStrategy {
      *     Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
      *     at most one compared to the starting cell; in case the player decides to move a second time, the worker can move
      *     into a cell adjacent to its current position, except for the cell it started its turnn from
-     * </p>
-     * @param worker the worker to be moved
+    * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
     @Override
@@ -151,8 +146,7 @@ public class MoveAgain extends MovementStrategy {
      * <p>
      *     Using this ruleSet, a player can lose upon a movement action if the worker which has been moved cannot build
      *     any block around it and it already used all of its movement actions
-     * </p>
-     * @param moveAction the action to analyze
+    * @param moveAction the action to analyze
      * @return true if the action led to a loss, false otherwise
      */
     @Override

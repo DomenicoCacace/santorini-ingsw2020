@@ -54,8 +54,7 @@ public interface RuleSetStrategy {
      * <i>movesUpAvailable</i> setter
      * <p>
      *     Used when an effect has a malus on other players' available moves
-     * </p>
-     * @param num the number of moves up to be made available
+    * @param num the number of moves up to be made available
      */
     void setMovesUpAvailable(int num);
 
@@ -168,8 +167,7 @@ public interface RuleSetStrategy {
      * Determines whether a player can end its turn
      * <p>
      *     This method should never be invoked directly from the player
-     * </p>
-     * @return true if the player can end its turn, false otherwise
+    * @return true if the player can end its turn, false otherwise
      */
     boolean canEndTurnAutomatically();
 

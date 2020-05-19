@@ -62,8 +62,7 @@ public class Player implements PlayerInterface {
      * <br>
      * Regarding the game attribute, it is not assigned in the constructor, since the {@link Game}
      * is created after the creation of the players.
-     * </p>
-     *
+    *
      * @param name  the player's username
      * @param god   the player's God card, chosen before the game is created
      * @param color the player's workers color, automatically determined before the game is created
@@ -220,7 +219,7 @@ public class Player implements PlayerInterface {
     /**
      * Provides a list of blocks which the selected worker can build on the given cell
      * @param selectedCell the cell to perform the build action on
-     * @throws WrongSelectionException if no worker has been selected
+     * @throws IllegalActionException if the build action cannot be performed
      */
     @Override
     public void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException {

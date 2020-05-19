@@ -9,9 +9,7 @@ import java.util.List;
 
 /**
  * Console Printing Utilities
- *
- * </p>
- */
+*/
 public class PrettyPrinter {
     private final int verticalWallWidth;
     private final int horizontalWallWidth;
@@ -29,11 +27,12 @@ public class PrettyPrinter {
      * Default constructor
      * <p>
      * Loads the <i>graphics</i> from file into PrintableObjects
-     * </p>
-     */
+     * @throws IOException if an I/O error occurs
+    */
     public PrettyPrinter() throws IOException {
         // FIXME: Load from configuration file
         int tableWidth = 120 + 1;  // includes the ansi reset sequence as last element
+
         int tableHeight = 61;
         this.verticalWallWidth = 2;
         this.horizontalWallWidth = 1;
@@ -126,8 +125,7 @@ public class PrettyPrinter {
      * <p>
      * Assuming that both the cached and new board are ordered in the same way (see {@linkplain GameBoard#getAllCells()}),
      * this method updates the cached board to a new provided version, ready to be printed.
-     * </p>
-     *
+    *
      * @param board the updated board
      */
     private void updateCachedBoard(List<Cell> board) {
@@ -152,8 +150,7 @@ public class PrettyPrinter {
      * <p>
      * Since the frame should not be saved on the <i>original</i> board, the {@linkplain #drawOnCell} method requires
      * a String[][] parameter on which the frame will be printed.
-     * </p>
-     *
+    *
      * @param cell  the cell to highlight
      * @param board the board to print the frame on
      */
@@ -192,8 +189,7 @@ public class PrettyPrinter {
      * In case the given {@linkplain Cell#getOccupiedBy()} is not null, calls the {@link #drawOnCell} method, passing
      * the <i>sprite</i> corresponding to the worker's color; if the cell contains no worker, the original board
      * texture is reloaded, then the building, if existing, has to be restored.
-     * </p>
-     *
+    *
      * @param cell the cell containing
      */
     private void drawWorker(Cell cell) {
@@ -256,10 +252,10 @@ public class PrettyPrinter {
      */
     private void showMatrix(String[][] matrix) {
         System.out.println();
-        for (int row = 0; row < matrix.length; row++) {
+        for (String[] strings : matrix) {
             System.out.print("\t");
             for (int col = 0; col < matrix[0].length; col++) {
-                System.out.print(matrix[row][col]);
+                System.out.print(strings[col]);
             }
             System.out.println();
         }
@@ -276,11 +272,17 @@ public class PrettyPrinter {
     private String[][] cloneMatrix(String[][] input) {
         String[][] clone = new String[input.length][input[0].length];
         for (int row = 0; row < input.length; row++) {
-            for (int col = 0; col < input[0].length; col++) {
-                clone[row][col] = input[row][col];
-            }
+            System.arraycopy(input[row], 0, clone[row], 0, input[0].length);
         }
         return clone;
+    }
+
+    /**
+     * Clears the screen by creating several new lines
+     */
+    private void clearScreen() {
+        for (int i = 0; i < 100; i++)
+            System.out.println();
     }
 
 }

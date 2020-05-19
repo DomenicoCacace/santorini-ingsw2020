@@ -28,12 +28,10 @@ import java.util.stream.Collectors;
  *         <li>Notifies the Controller about the outcome of the operations, using the various listeners;
  *         <li>Saves and restores a previous state from file, in case of a server failure (persistence)</li>
  *     </ul>
- * </p>
  * <p>
  *    This is perhaps the most dense class of the entire project, but after some discussion it has been decided not to
  *    "tear it apart".
- * </p>
- */
+*/
 //TODO: create general interface Listener
 public class Game implements GameInterface {
 
@@ -56,8 +54,7 @@ public class Game implements GameInterface {
      * Creates a new Game instance with the given parameters; the game board can be empty, since Workers can be added
      * later; the Players list must not be empty and contain 2 or 3 elements (the official Santorini game allows
      * 4 players, but since it messes up with some stuff we do not implement this mode).
-     * </p>
-     *
+    *
      * @param gameBoard the game field; can be empty
      * @param players   the list of players
      */
@@ -79,8 +76,7 @@ public class Game implements GameInterface {
      * <p>
      * Used when restoring a previously saved state from a file; creates a new Game object having the given
      * attribute values.
-     * </p>
-     *
+    *
      * @param gameBoard      the gameboard to restore
      * @param players        the players to restore
      * @param currentTurn    the turn to resume from
@@ -104,8 +100,7 @@ public class Game implements GameInterface {
      * <p>
      * Creates a clone of the given game; used to save the game state in {@link #saveStateToVariable()}, to
      * implement the undo functionality.
-     * </p>
-     *
+    *
      * @param game the object to clone
      */
     private Game(Game game) {
@@ -135,7 +130,7 @@ public class Game implements GameInterface {
 
 
     /**
-     * <i>currentTurn</i>> getter
+     * <i>currentTurn</i> getter
      *
      * @return the current turn
      */
@@ -153,7 +148,7 @@ public class Game implements GameInterface {
     }
 
     /**
-     * <i>players</i>> getter
+     * <i>players</i> getter
      *
      * @return a list containing the players currently playing
      */
@@ -183,8 +178,7 @@ public class Game implements GameInterface {
      * Provides the cells the given worker can walk to
      * <p>
      * May change during the turn due to other actions.
-     * </p>
-     *
+    *
      * @param worker the worker to be moved
      * @return a list of cells the given worker can move to
      */
@@ -196,8 +190,7 @@ public class Game implements GameInterface {
      * Provides the cell the given worker can build on
      * <p>
      * May change during the turn due to other actions
-     * </p>
-     *
+    *
      * @param worker the worker willing to build
      * @return a list of cells the given worker can build on
      */
@@ -242,8 +235,7 @@ public class Game implements GameInterface {
      * At the end of those operations, the game state is saved, to allow a possible undo.
      * <br>
      * If the action is not valid, an exception is thrown.
-     * </p>
-     *
+    *
      * @param moveAction the movement action to validate
      * @throws IllegalActionException if the action is not valid
      */
@@ -283,8 +275,7 @@ public class Game implements GameInterface {
      * cells, via listener. The game state is then saved, to allow a possible undo.
      * <br>
      * If the action is not valid, an exception is thrown.
-     * </p>
-     *
+    *
      * @param buildAction the movement action to validate
      * @throws IllegalActionException if the action is not valid
      */
@@ -315,8 +306,7 @@ public class Game implements GameInterface {
      * current ruleSet method to check if the player can end the turn. If all the conditions for the turn to end are
      * verified, the next turn is generated (see {@linkplain #generateNextTurn()});
      * otherwise, an exception is thrown.
-     * </p>
-     *
+    *
      * @throws IllegalEndingTurnException if the player cannot end their turn
      */
     public void endTurn() throws IllegalEndingTurnException {
@@ -334,8 +324,7 @@ public class Game implements GameInterface {
      * The conditions to end the turn may vary based on the player's chosen god; generally, those conditions
      * require the player to have spent all the available actions for its current turn, so the turn is
      * automatically ended.
-     * </p>
-     */
+    */
     /*
      * TODO: when implementing the undo function, verify that the player is allowed to undo its last action before the
      *  next turn is generated, as it might cause severe problems
@@ -355,8 +344,7 @@ public class Game implements GameInterface {
      * When the new turn begins, the listeners are notified; the lose conditions are then verified, before the player
      * can make any actions; if verified, the player is removed.
      *
-     * </p>
-     */
+    */
     public void generateNextTurn() {
         nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
         //FIXME: line below seems to be redundant
@@ -393,8 +381,7 @@ public class Game implements GameInterface {
      * <br>
      * This formula stops working in case a player is removed
      * from the game; in this case, we use the turn number to calculate the next player.
-     * </p>
-     *
+    *
      * @return the next player
      */
     public Player nextPlayer() {
@@ -414,8 +401,7 @@ public class Game implements GameInterface {
      * <br>
      * If, after the deletion only one player is left it is declared winner, and the relative listener is
      * notified.
-     * </p>
-     *
+    *
      * @param player the player to remove from the game
      */
     private void removePlayer(Player player) {
@@ -471,8 +457,7 @@ public class Game implements GameInterface {
      * Restores the game to a previously saved state
      * <p>
      *     To work, the file containing the saved game must be already set
-     * </p>
-     * @see it.polimi.ingsw.network.server.Lobby#reloadMatch(boolean)
+    * @see it.polimi.ingsw.network.server.Lobby#reloadMatch(boolean)
      */
     @Override
     public void restoreState() {

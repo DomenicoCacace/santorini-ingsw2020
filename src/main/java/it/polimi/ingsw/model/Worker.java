@@ -9,8 +9,7 @@ import java.util.Objects;
  * <p>
  * The Workers are the pawns of this game. By default, each player gets at the beginning of the game two workers,
  * which are placed on an empty {@link Cell} of the board, at the beginning of the game.
- * </p>
- */
+*/
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "workerId", scope = Worker.class)
 public class Worker {
 
@@ -33,8 +32,7 @@ public class Worker {
      * the newly created worker.
      * <br>
      * This constructor is also used to restore a previous state in case of a server failure.
-     * </p>
-     *
+    *
      * @param position the cell to place the new worker on
      * @param color    the color of the worker
      */
@@ -68,8 +66,7 @@ public class Worker {
      * <p>
      * Used to move a Worker around on the map; this method does not refresh the <i>occupiedBy</i> attribute in
      * the corresponding {@link Cell}.
-     * </p>
-     *
+    *
      * @param position the Cell to move the Worker to
      */
     @JsonAnySetter

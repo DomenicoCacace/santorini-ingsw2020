@@ -17,7 +17,7 @@ public class SafeScanner {
 
     public String nextLine() throws IOException, InterruptedException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String input = null;
+        String input;
         try {
             while (!br.ready() && !Thread.interrupted()) {
                 Thread.sleep(200);

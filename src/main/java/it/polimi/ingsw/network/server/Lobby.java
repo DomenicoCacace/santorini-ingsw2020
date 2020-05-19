@@ -33,8 +33,7 @@ import java.util.stream.Collectors;
  * <p>
  *     A Lobby object is a container for a group of players: once created, the owner can select the size and, when full,
  *     start a new game
- * </p>
- */
+*/
 public class Lobby implements PlayerLostListener, EndGameListener {
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private boolean gameStarted;
@@ -116,8 +115,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * Sends a message to a given user
      * <p>
      *     The message is sent only if the recipient is in the same room of the sender.
-     * </p>
-     * @param username the message recipient, as a string
+    * @param username the message recipient, as a string
      * @param message the message to send
      */
     public void sendMessage(String username, Message message) {
@@ -141,6 +139,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * Adds a user to the room
      * @param user the user to add
      * @throws RoomFullException if the room is full
+     * @throws InvalidUsernameException if the username is already taken in the lobby
      */
     public synchronized void addUser(User user) throws RoomFullException, InvalidUsernameException {
         if (usersInLobby.size() - 1 >= maxRoomSize)
@@ -206,10 +205,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             askGods(new ArrayList<>(godsMap.keySet()));
     }
 
-    /**
-     * handles message from client containing the initial gods
-     * @param gods
-     */
+
     public void chooseGods(List<GodData> gods) {
         if ((int)gods.stream().distinct().count() == maxRoomSize && gods.size() == maxRoomSize) {
             availableGods = gods;

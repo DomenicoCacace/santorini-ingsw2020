@@ -22,8 +22,7 @@ import java.util.List;
  * <br>
  * It also provides the only contact point between the game controller and the <i>outside world</i>, via the
  * {@link #parseMessageFromServerToClient(Message)} method.
- * </p>
- */
+*/
 public class MessageManagerParser implements ServerMessageManagerVisitor {
 
     private final Lobby lobby;
@@ -35,8 +34,7 @@ public class MessageManagerParser implements ServerMessageManagerVisitor {
      * <p>
      * Every {@link Lobby} is linked to a parser, which manages the incoming messages from the lobby's users;
      * The serverController has to be set separately, since it can be set up in different moments
-     * </p>
-     *
+    *
      * @param lobby the lobby associated to this parser
      */
     public MessageManagerParser(Lobby lobby) {
@@ -60,8 +58,7 @@ public class MessageManagerParser implements ServerMessageManagerVisitor {
      * <p>
      * Since the parser has no reference to the network interface, the message has to be sent to the lobby, which will take
      * care of sending the message, using the {@linkplain Lobby#sendMessage(String, Message)} method.
-     * </p>
-     *
+    *
      * @param message the message to send
      */
     public void parseMessageFromServerToClient(Message message) {

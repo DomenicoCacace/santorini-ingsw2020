@@ -11,8 +11,7 @@ import java.util.List;
  * A data class for {@linkplain it.polimi.ingsw.model.Player}
  * <p>
  *     It can be useful to send game information over the network, without any reference to the actual game object.
- * </p>
- */
+*/
 public class PlayerData {
     private final String name;
     private final Color color;

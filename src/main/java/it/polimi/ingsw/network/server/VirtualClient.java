@@ -36,8 +36,7 @@ import java.util.logging.Logger;
  *     from/to the socket connected to the client.
  *     <br>
  *     Note that <i>connecting</i> means establishing a connection with the server, even without choosing an username.
- * </p>
- */
+*/
 public class VirtualClient extends Thread implements ServerMessageManagerVisitor {
     private   final static String PING = "ping";
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
@@ -54,8 +53,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
      * Default constructor
      * <p>
      *     Given a socket, the constructor tries to open i/o streams; if it fails, the connection is closed.
-     * </p>
-     * @param server the server object
+    * @param server the server object
      * @param clientConnection the socket connection to/from the client
      */
     public VirtualClient(Server server, Socket clientConnection) {
@@ -172,8 +170,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
      *     This method tries to add the user to the server; if the username is invalid
      *     or already taken, it sends a response asking for a new username; if the server waiting room is full,
      *     sends a message and disconnects the client;
-     * </p>
-     * @param message the message to manage
+    * @param message the message to manage
      */
     @Override
     public void login(LoginRequest message) {
@@ -189,9 +186,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
 
     /**
      * Manages the {@link JoinLobbyRequest}
-     * <p>
-     *     
-     * </p>
      * @param message the message to manage
      */
     @Override

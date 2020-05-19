@@ -13,8 +13,7 @@ import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGod
  * Since in the server the messages can be handled in more than one point, the Visitors are declared as default methods
  * running the {@linkplain #cannotHandleMessage(Message)} method, which implementation differs based on the class
  * which has to handle the messages
- * </p>
- */
+*/
 public interface ServerMessageManagerVisitor {
 
     /**

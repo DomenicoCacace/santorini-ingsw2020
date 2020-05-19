@@ -9,8 +9,7 @@ import java.util.List;
  * Game interface
  * <p>
  *     Offers a series of methods to change the game state
- * </p>
- */
+*/
 public interface GameInterface {
 
     /**

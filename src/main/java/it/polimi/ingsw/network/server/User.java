@@ -14,8 +14,8 @@ public class User {
      * Default constructor
      * <p>
      *     When created, a user is associated to a virtualClient, which handles all its requests
-     * </p>
-     * @param virtualClient the virtualClient associated to the user
+    * @param virtualClient the virtualClient associated to the user
+     * @param server the server reference
      */
     public User(VirtualClient virtualClient, Server server) {
         this.virtualClient = virtualClient;

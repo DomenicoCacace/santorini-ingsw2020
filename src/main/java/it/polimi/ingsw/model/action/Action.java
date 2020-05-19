@@ -9,8 +9,7 @@ import it.polimi.ingsw.model.Worker;
  * Abstraction for Workers' actions
  * <p>
  *     Each action
- * </p>
- */
+*/
 public abstract class Action {
 
     protected final Cell targetCell;

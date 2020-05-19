@@ -15,8 +15,7 @@ import java.util.List;
  * <p>
  *     This effect alters the workers' walkable cells: workers can push opponent an opponent worker in the cell behind
  *     them (see {@linkplain it.polimi.ingsw.model.GameBoard#getCellBehind(Cell, Cell)})
- * </p>
- */
+*/
 public class Push extends MovementStrategy {
 
     /**
@@ -48,8 +47,7 @@ public class Push extends MovementStrategy {
      * <p>
      *     This method checks if the <i>cell behind</i> the opponent worker exists and is not occupied by another worker
      *     nor a dome
-     * </p>
-     * @param myCell the worker's starting position
+    * @param myCell the worker's starting position
      * @param targetCell the cell containing the worker to push
      * @return true if the the opponent's worker can be pushed
      */
@@ -79,8 +77,7 @@ public class Push extends MovementStrategy {
      *         <li>no worker has been moved yet during the turn</li>
      *         <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
      *     </ul>
-     * </p>
-     * @param action the movement action to validate
+    * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -99,8 +96,7 @@ public class Push extends MovementStrategy {
      *     Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
      *     at most one compared to the starting cell (domes do not count) and has no dome built on it; a worker can walk
      *     on a cell occupied by another worker if it can be pushed (see {@linkplain #canPush(Cell, Cell)})
-     * </p>
-     * @param worker the worker to be moved
+    * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
     @Override

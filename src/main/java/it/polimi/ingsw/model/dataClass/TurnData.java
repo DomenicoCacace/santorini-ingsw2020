@@ -8,8 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * A data class for {@linkplain it.polimi.ingsw.model.Turn}
  * <p>
  *     It can be useful to send game information over the network, without any reference to the actual game object.
- * </p>
- */
+*/
 public class TurnData {
     private final int turnNumber;
     private final PlayerData currentPlayer;

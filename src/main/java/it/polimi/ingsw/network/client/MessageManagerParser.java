@@ -53,8 +53,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      *    </ul>
      *    At this stage, the method also tries to save the address+username combo in a file, for quick access on the
      *    next login.
-     * </p>
-     *
+    *
      * @param message the login response
      */
     @Override
@@ -100,8 +99,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      *         Creation: asks lobby name and size, sends a {@linkplain CreateLobbyRequest}
      *         Join; asks the lobby name from a list of existing lobbies, sends a {@linkplain JoinLobbyRequest}
      *     </ul>
-     * </p>
-     *
+    *
      * @param lobbiesAvailable the list of available lobbies
      */
     private void enterLobby(Map<String, List<String>> lobbiesAvailable) {

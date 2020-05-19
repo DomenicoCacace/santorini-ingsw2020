@@ -23,17 +23,17 @@ public class PrintableObject {
      * backslashes are transcribed as '\003', and the "003" in the file is dumped, because it is not possible to
      * <i>read</i> an escape code; 'm' characters are also forbidden, as they mark that the end of the color sequence.
      * Note that the reset sequence is also stored in the matrix, so the caller has to take this into account.
-     * <br
+     * <br>
      * In case those conditions are not satisfied, the method will not behave properly, but could end without
      * throwing exceptions: in case the object size is bigger than the provided size, all chars outside the matrix
      * will be ignored; if smaller, the elements of the matrix will be left to null.
-     * </p>
-     *
+     * <br>
+     *     For further information see <a href="https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences">ANSI colors</a>
+    *
      * @param file   the object file path
      * @param height the expected matrix height
      * @param width  the expected matrix width
      * @throws IOException if an I/O error occurs
-     * @see <a href url="https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences">ANSI colors</a>
      */
     public PrintableObject(InputStream file, int width, int height) throws IOException {
 
@@ -73,8 +73,7 @@ public class PrintableObject {
      * <i>width</i> getter
      * <p>
      * Takes in account the ANSI reset code
-     * </p>>
-     *
+    *
      * @return the number of columns in the matrix
      */
     public int getWidth() {
@@ -83,6 +82,7 @@ public class PrintableObject {
 
     /**
      * <i>height</i> getter
+     * @return the object height
      */
     public int getHeight() {
         return height;

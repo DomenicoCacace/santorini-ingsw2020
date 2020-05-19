@@ -18,8 +18,7 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
  *         <li>username: a String, containing the sender's username</li>
  *         <li>type: an Enum value, which indicates what kind of payload to expect</li>
  *     </ul>
- * </p>
- */
+*/
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LoginResponse.class, name = "Login"),
