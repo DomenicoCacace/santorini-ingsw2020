@@ -9,6 +9,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ChooseGodsController {
+    /*
     private GUI gui;
     private boolean inputRequested = false;
 
@@ -27,4 +28,6 @@ public class ChooseGodsController {
             inputRequested=false;
         }
     }
+
+     */
 }

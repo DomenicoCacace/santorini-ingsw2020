@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.view.inputManager.InputManager;
 
 import java.util.List;
 import java.util.Map;
@@ -13,49 +14,55 @@ public interface ViewInterface {
 
     void stopInput();
 
-    List<String> askToReloadLastSettings(List<String> savedUsers) throws TimeoutException, InterruptedException;
+    void askToReloadLastSettings(List<String> savedUsers);
 
-    boolean chooseMatchReload() throws TimeoutException, InterruptedException;
+    void chooseMatchReload();
+
+    void setInputManager(InputManager manager);
 
     void printLogo();
 
-    String askIP() throws TimeoutException, InterruptedException;
+    void askIP();
 
-    String askUsername() throws TimeoutException, InterruptedException;
+    void askUsername();
 
     void gameStartScreen(List<Cell> gameBoard);
 
-    String lobbyOptions(List<String> options) throws TimeoutException, InterruptedException;  //FIXME: write decent code
+    void lobbyOptions(List<String> options);  //FIXME: write decent code
 
-    String askLobbyName() throws TimeoutException, InterruptedException;
+    void askLobbyName();
 
-    int askLobbySize() throws TimeoutException, InterruptedException;
+    void askLobbySize();
 
-    String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) throws TimeoutException, InterruptedException;
+    void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable);
 
-    Cell chooseWorker() throws TimeoutException, InterruptedException;
+    void chooseWorker();
 
-    Cell moveAction(List<Cell> gameBoard, List<Cell> walkableCells) throws TimeoutException, InterruptedException;
+    void moveAction(List<Cell> gameBoard, List<Cell> walkableCells);
 
-    Cell buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws TimeoutException, InterruptedException;
+    void buildAction(List<Cell> gameBoard, List<Cell> buildableCells);
 
-    Block chooseBlockToBuild(List<Block> buildableBlocks) throws TimeoutException, InterruptedException;
+    void chooseBlockToBuild(List<Block> buildableBlocks);
 
-    GodData chooseUserGod(List<GodData> possibleGods) throws TimeoutException, InterruptedException;
+    void chooseUserGod(List<GodData> possibleGods);
 
-    List<GodData> chooseGameGods(List<GodData> allGods, int size) throws TimeoutException, InterruptedException;
+    void chooseGameGods(List<GodData> allGods, int size);
 
-    String chooseStartingPlayer(List<String> players) throws TimeoutException, InterruptedException;
+    void chooseStartingPlayer(List<String> players);
 
-    Cell placeWorker() throws TimeoutException, InterruptedException;
+    void showLobbyInfo(List<String> info);
 
-    PossibleActions chooseAction(List<PossibleActions> possibleActions) throws TimeoutException, InterruptedException;
+    void placeWorker();
+
+    void chooseAction(List<PossibleActions> possibleActions);
 
     void showGameBoard(List<Cell> gameBoard);
 
     void initGameBoard(List<Cell> gameboard);
 
     void showErrorMessage(String error);
+
+    void printOptions(List<String> options);
 
     void showSuccessMessage(String message);
 

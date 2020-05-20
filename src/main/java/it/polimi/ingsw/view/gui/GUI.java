@@ -9,6 +9,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.gui.viewController.ChooseGodsController;
 import it.polimi.ingsw.view.gui.viewController.LobbyController;
 import it.polimi.ingsw.view.gui.viewController.LoginController;
+import it.polimi.ingsw.view.inputManager.InputManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -31,7 +32,146 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class GUI extends Application implements ViewInterface {
+    @Override
+    public void stopInput() {
 
+    }
+
+    @Override
+    public void askToReloadLastSettings(List<String> savedUsers) {
+
+    }
+
+    @Override
+    public void chooseMatchReload() {
+
+    }
+
+    @Override
+    public void setInputManager(InputManager manager) {
+
+    }
+
+    @Override
+    public void printLogo() {
+
+    }
+
+    @Override
+    public void askIP() {
+
+    }
+
+    @Override
+    public void askUsername() {
+
+    }
+
+    @Override
+    public void gameStartScreen(List<Cell> gameBoard) {
+
+    }
+
+    @Override
+    public void lobbyOptions(List<String> options) {
+
+    }
+
+    @Override
+    public void askLobbyName() {
+
+    }
+
+    @Override
+    public void askLobbySize() {
+
+    }
+
+    @Override
+    public void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) {
+
+    }
+
+    @Override
+    public void chooseWorker() {
+
+    }
+
+    @Override
+    public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
+
+    }
+
+    @Override
+    public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
+
+    }
+
+    @Override
+    public void chooseBlockToBuild(List<Block> buildableBlocks) {
+
+    }
+
+    @Override
+    public void chooseUserGod(List<GodData> possibleGods) {
+
+    }
+
+    @Override
+    public void chooseGameGods(List<GodData> allGods, int size) {
+
+    }
+
+    @Override
+    public void chooseStartingPlayer(List<String> players) {
+
+    }
+
+    @Override
+    public void showLobbyInfo(List<String> info) {
+
+    }
+
+    @Override
+    public void placeWorker() {
+
+    }
+
+    @Override
+    public void chooseAction(List<PossibleActions> possibleActions) {
+
+    }
+
+    @Override
+    public void showGameBoard(List<Cell> gameBoard) {
+
+    }
+
+    @Override
+    public void initGameBoard(List<Cell> gameboard) {
+
+    }
+
+    @Override
+    public void showErrorMessage(String error) {
+
+    }
+
+    @Override
+    public void printOptions(List<String> options) {
+
+    }
+
+    @Override
+    public void showSuccessMessage(String message) {
+
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+
+    }
+/*
     private static Scene scene;
     private ViewsType currentView;
     private String inputString = "";
@@ -366,4 +506,6 @@ public class GUI extends Application implements ViewInterface {
     public void showSuccessMessage(String message) {
 
     }
+
+ */
 }

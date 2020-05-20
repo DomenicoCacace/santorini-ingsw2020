@@ -15,7 +15,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LoginController {
-
+/*
 
     private GUI gui;
     private String username = "";
@@ -122,6 +122,8 @@ public class LoginController {
             e.printStackTrace();
         }
     }
+
+ */
 
 
 }

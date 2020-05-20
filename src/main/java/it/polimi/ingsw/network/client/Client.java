@@ -4,6 +4,7 @@ import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
+import it.polimi.ingsw.view.inputManager.LoginManager;
 
 import java.io.*;
 import java.net.UnknownHostException;
@@ -18,9 +19,13 @@ public class Client {
     private final ViewInterface view;
     private String username;
     private String ipAddress;
-    private static NetworkHandler networkHandler;
+    private NetworkHandler networkHandler;
     private boolean currentPlayer;
 
+
+    public Client(ViewInterface viewInterface){
+        this.view = viewInterface;
+    }
 
     public Client(String username, String ipAddress, ViewInterface viewInterface) {
         this.view = viewInterface;
@@ -37,7 +42,7 @@ public class Client {
                 initClient(viewInterface);
             }
             else {
-                GUI.launchGui(); //FIXME
+               // GUI.launchGui(); //FIXME
             }
         } catch (IOException e) {
             System.out.println("Error: resources not found");
@@ -46,40 +51,35 @@ public class Client {
         //TODO: Here I ask the user if he wants to use the Cli/Gui
     }
 
-    public static synchronized void initClient(ViewInterface viewInterface){
-        List<String> loginData = new ArrayList<>();
-        if (networkHandler !=null)
-            networkHandler.closeConnection();
+    public static void initClient(ViewInterface viewInterface){
+        Client client = new Client(viewInterface);
         viewInterface.printLogo();
+        List<String> savedUsers = new ArrayList<>();
         try {
             if (!CONFIG_FILE.createNewFile()) {
                 FileReader fileReader = new FileReader(CONFIG_FILE);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
                 String line;
-                List<String> savedUsers = new ArrayList<>();
                 while ((line = bufferedReader.readLine()) != null) {
                     savedUsers.add(line);
                     savedUsers.add(bufferedReader.readLine());
                 }
                 bufferedReader.close();
-                if ((loginData = viewInterface.askToReloadLastSettings(savedUsers)).size()==0) {
-                    loginData.add(viewInterface.askIP());
-                    loginData.add(viewInterface.askUsername());
-                }
+                viewInterface.setInputManager(new LoginManager(viewInterface, client, savedUsers));
+                viewInterface.askToReloadLastSettings(savedUsers);
             } else { //If the file is empty
-                loginData.add(viewInterface.askIP());
-                loginData.add(viewInterface.askUsername());
+                viewInterface.setInputManager(new LoginManager(viewInterface, client, savedUsers));
+                viewInterface.askIP();
+                //loginData.add(viewInterface.askUsername());
             }
-        } catch (IOException | TimeoutException | InterruptedException e) {
+        } catch (IOException e) {
             viewInterface.showErrorMessage("Timeout!!");
             viewInterface.stopInput();
             Client.initClient(viewInterface);
             e.printStackTrace();
-            return;
         } catch (CancellationException e){
-            return;
+
         }
-        new Client(loginData.get(1), loginData.get(0), viewInterface).startConnection();
     }
 
     public void writeSettingsToFile(String ip, String username) throws IOException {
@@ -109,12 +109,23 @@ public class Client {
 
     public void setUsername(String username) {
         this.username = username;
-        networkHandler.login(username);
+        if(networkHandler== null)
+            startConnection();
+        else
+            networkHandler.login(username);
     }
 
     public String getIpAddress() {
         return ipAddress;
     }
+
+  /*  public void setLoginData(String ipAddress, String username){
+        this.ipAddress = ipAddress;
+        this.username = username;
+        startConnection();
+    }
+
+   */
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
@@ -146,7 +157,7 @@ public class Client {
                 networkHandler.closeConnection();
             }
         }
-}
+    }
 
 
     public void stopConnection() {

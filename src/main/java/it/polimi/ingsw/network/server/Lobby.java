@@ -226,7 +226,6 @@ public class Lobby implements PlayerLostListener, EndGameListener {
     public void askGods(List<GodData> godData) {
         String firstPlayerName = /*new LinkedList<>(playerMap.keySet()).get(0).getUsername()*/usersInLobby.get(1);
         this.gameStarted = true;
-
         messageParser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(firstPlayerName, godData));
     }
 

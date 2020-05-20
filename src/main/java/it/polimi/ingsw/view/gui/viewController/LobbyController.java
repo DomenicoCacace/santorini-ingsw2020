@@ -9,7 +9,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
 public class LobbyController {
-
+/*
     private static boolean inputRequested = false;
     public ListView<String> lobbyList;
     public Button backButton;
@@ -61,4 +61,6 @@ public class LobbyController {
             lobbyList.setDisable(true);
         }
     }
+
+ */
 }
