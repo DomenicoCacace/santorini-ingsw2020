@@ -3,15 +3,12 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
-import it.polimi.ingsw.view.gui.GUI;
-import it.polimi.ingsw.view.inputManager.LoginManager;
+import it.polimi.ingsw.view.inputManagers.LoginManager;
 
 import java.io.*;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.TimeoutException;
 
 public class Client {
     private static final File CONFIG_FILE = new File("../config.txt");
@@ -65,10 +62,10 @@ public class Client {
                     savedUsers.add(bufferedReader.readLine());
                 }
                 bufferedReader.close();
-                viewInterface.setInputManager(new LoginManager(viewInterface, client, savedUsers));
+                viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askToReloadLastSettings(savedUsers);
             } else { //If the file is empty
-                viewInterface.setInputManager(new LoginManager(viewInterface, client, savedUsers));
+                viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askIP();
                 //loginData.add(viewInterface.askUsername());
             }

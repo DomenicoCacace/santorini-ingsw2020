@@ -1,17 +1,19 @@
-package it.polimi.ingsw.view.inputManager;
+package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
 import it.polimi.ingsw.network.message.request.fromClientToServer.CreateLobbyRequest;
 import it.polimi.ingsw.network.message.request.fromClientToServer.JoinLobbyRequest;
-import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.cli.CLI;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Handles inputs regarding logging onto the server and managing lobbies
+ */
 public class LobbyInputManager extends InputManager {
+
     private enum State {
         CREATE_OR_JOIN, CREATE, JOIN,
     }
@@ -19,17 +21,14 @@ public class LobbyInputManager extends InputManager {
     public static final String CREATE_LOBBY = "1";
     public static final String JOIN_LOBBY = "2";
     private State state;
-    private final ViewInterface view;
-    private final Client client;
     private String lobbyName;
     private final MessageManagerParser messageManagerParser;
     private final Map<String, List<String>> lobbiesAvailable;
 
-    public LobbyInputManager(ViewInterface view, Client client, Map<String, List<String>> lobbiesAvailable, MessageManagerParser messageManagerParser, boolean isJoining) {
-        this.view = view;
-        this.client = client;
+    public LobbyInputManager(Client client, Map<String, List<String>> lobbiesAvailable, MessageManagerParser messageParser, boolean isJoining) {
+        super(client);
         this.lobbiesAvailable = lobbiesAvailable;
-        this.messageManagerParser = messageManagerParser;
+        this.messageManagerParser = messageParser;
         if(isJoining)
             this.state=State.JOIN;
         else
@@ -37,19 +36,19 @@ public class LobbyInputManager extends InputManager {
     }
 
     @Override
-    public void manageInput(String string) {
+    public void manageInput(String input) {
         if(isWaitingForInput) {
             switch (state) {
                 case CREATE_OR_JOIN:
-                    string = cleanInput(string);
-                    manageLobbyOption(string);
+                    input = cleanInput(input);
+                    manageLobbyOption(input);
                     break;
                 case CREATE:
                     if (lobbyName == null)
-                        onLobbyNameChosen(string);
+                        onLobbyNameChosen(input);
                     else {
                         try {
-                            int chosenSize = Integer.parseInt(cleanInput(string));
+                            int chosenSize = Integer.parseInt(cleanInput(input));
                             if (chosenSize != 2 && chosenSize != 3) {
                                 view.showErrorMessage("Please insert a number between 2 and 3");
                                 view.askLobbySize();
@@ -63,7 +62,7 @@ public class LobbyInputManager extends InputManager {
                     break;
                 case JOIN:
                     try {
-                        int lobbiesOptionIndex = Integer.parseInt(cleanInput(string));
+                        int lobbiesOptionIndex = Integer.parseInt(cleanInput(input));
                         chosenIndexEvaluator(new LinkedList<>(this.lobbiesAvailable.keySet()), lobbiesOptionIndex - 1);
                     } catch (NumberFormatException e) {
                         view.showErrorMessage("Please insert a correct option");

@@ -4,11 +4,10 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
-import it.polimi.ingsw.view.inputManager.InputManager;
+import it.polimi.ingsw.view.inputManagers.InputManager;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 public interface ViewInterface {
 

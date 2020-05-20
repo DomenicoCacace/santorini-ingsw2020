@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.utils.PrettyPrinter;
 import it.polimi.ingsw.view.cli.utils.SafeScanner;
-import it.polimi.ingsw.view.inputManager.InputManager;
+import it.polimi.ingsw.view.inputManagers.InputManager;
 
 import java.io.IOException;
 import java.util.*;
@@ -112,12 +112,14 @@ public class CLI implements ViewInterface {
 
     @Override
     public void chooseUserGod(List<GodData> possibleGods) {
-
+        System.out.println("Choose your god: ");
+        possibleGods.forEach(g -> System.out.println(possibleGods.indexOf(g)+1 + "-" + g.getName()));
     }
 
     @Override
     public void chooseGameGods(List<GodData> allGods, int size) {
-
+        System.out.println("Choose the game gods:");
+        allGods.forEach(g -> System.out.println(allGods.indexOf(g)+1 + "-" + g.getName()));
     }
 
     @Override

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.inputManager;
+package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
@@ -9,21 +9,17 @@ import java.util.List;
 
 public class LoginManager extends InputManager {
 
-    private final ViewInterface view;
-    private final Client client;
     private boolean wantsToLoadSetting;
     private boolean isIpAlreadySet = false;
     private final List<String> savedConfigs = new ArrayList<>();
 
-    public LoginManager(ViewInterface view, Client client, List<String> savedConfigs) {
-        this.view = view;
-        this.client = client;
+    public LoginManager(Client client, List<String> savedConfigs) {
+        super(client);
         this.savedConfigs.addAll(savedConfigs);
     }
 
-    public LoginManager(ViewInterface view, Client client, boolean isIpAlreadySet) {
-        this.view = view;
-        this.client = client;
+    public LoginManager(Client client, boolean isIpAlreadySet) {
+        super(client);
         this.isIpAlreadySet = isIpAlreadySet;
     }
 

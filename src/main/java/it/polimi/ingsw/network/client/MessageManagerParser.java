@@ -1,32 +1,21 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
-import it.polimi.ingsw.model.dataClass.GodData;
-import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.message.request.fromClientToServer.*;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.inputManager.GodChoiceInputManager;
-import it.polimi.ingsw.view.inputManager.InputManager;
-import it.polimi.ingsw.view.inputManager.LobbyInputManager;
-import it.polimi.ingsw.view.inputManager.LoginManager;
+import it.polimi.ingsw.view.inputManagers.GodChoiceInputManager;
+import it.polimi.ingsw.view.inputManagers.LobbyInputManager;
+import it.polimi.ingsw.view.inputManagers.LoginManager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.TimeoutException;
 
 
 public class MessageManagerParser implements ClientMessageManagerVisitor {
@@ -44,84 +33,22 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         this.chosenSize = chosenSize;
     }
 
+    public void setCreatingLobby(boolean creatingLobby) {
+        isCreatingLobby = creatingLobby;
+    }
+
+    public void setLookingForLobbies(boolean lookingForLobbies) {
+        isLookingForLobbies = lookingForLobbies;
+    }
+
+    /**
+     * Default constructor
+     * @param client the client to parse messages for
+     */
     public MessageManagerParser(Client client) {
         this.client = client;
         this.view = client.getView();
     }
-
-    @Override
-    public void onPlayerMove(PlayerMoveEvent message) {
-
-    }
-
-    @Override
-    public void onPlayerBuild(PlayerBuildEvent message) {
-
-    }
-
-    @Override
-    public void onTurnEnd(EndTurnEvent message) {
-
-    }
-
-    @Override
-    public void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {
-
-    }
-
-    @Override
-    public void onWorkerAdd(WorkerAddedEvent message) {
-
-    }
-
-
-
-    @Override
-    public void onWinnerDeclared(WinnerDeclaredEvent message) {
-
-    }
-
-    @Override
-    public void onPlayerRemoved(PlayerRemovedEvent message) {
-
-    }
-
-
-    @Override
-    public void chooseStartingPlayer(ChooseStartingPlayerRequest message) {
-
-    }
-
-    @Override
-    public void onWorkerSelected(WorkerSelectedResponse message) {
-
-    }
-
-    @Override
-    public void onWalkableCellsReceived(WalkableCellsResponse message) {
-
-    }
-
-    @Override
-    public void onBuildableCellsReceived(BuildableCellsResponse message) {
-
-    }
-
-    @Override
-    public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
-
-    }
-
-    @Override
-    public void onGameStart(GameStartEvent message) {
-
-    }
-
-    @Override
-    public void onGameBoardUpdate(GameBoardUpdate gameBoardUpdate) {
-
-    }
-
 
     /**
      * Manages the login response
@@ -135,7 +62,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      *    At this stage, the method also tries to save the address+username combo in a file, for quick access on the
      *    next login.
     *
-     * @param message the login response
+     * @param message the message to handle
      */
     @Override
     public void onLogin(LoginResponse message) {
@@ -152,44 +79,24 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 break;
             case SERVER_FULL:
                 view.showErrorMessage("Error " + message.getType());
-                if (!message.getType().equals(Type.SERVER_FULL)) {
+                if (!message.getType().equals(Type.SERVER_FULL))
                     view.showErrorMessage("Login error, please retry");
-                  /*  try {
-                        client.setUsername(view.askUsername());
-                    }  catch (TimeoutException e) {
-                        view.showErrorMessage("Timeout!!");
-                        view.stopInput();
-                        Client.initClient(view);
-                        return;
-                    } catch (InterruptedException | CancellationException exception) {
-                        return;
-                    }
-                } else {
-                    view.showErrorMessage(message.getType().toString());
-                    client.stopConnection();
-                }
+                client.stopConnection();
                 break;
-                */
-                }
         }
 
 
     }
 
     /**
-     * Lets the user join or create a lobby
-     * <p>
-     *     <ul>
-     *         Creation: asks lobby name and size, sends a {@linkplain CreateLobbyRequest}
-     *         Join; asks the lobby name from a list of existing lobbies, sends a {@linkplain JoinLobbyRequest}
-     *     </ul>
-    *
+     * Lets the user decide to join or create a lobby
      * @param lobbiesAvailable the list of available lobbies
+     * @see LoginManager
      */
     public void enterLobby(Map<String, List<String>> lobbiesAvailable) {
         client.setCurrentPlayer(true);
         isLookingForLobbies = true;
-        view.setInputManager(new LobbyInputManager(view, client, lobbiesAvailable, this, false));
+        view.setInputManager(new LobbyInputManager(client, lobbiesAvailable, this, false));
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
         if (lobbiesAvailable.keySet().size() > 0) {
@@ -198,25 +105,23 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         view.lobbyOptions(options);
     }
 
-    public void setCreatingLobby(boolean creatingLobby) {
-        isCreatingLobby = creatingLobby;
-    }
-
-    public void setLookingForLobbies(boolean lookingForLobbies) {
-        isLookingForLobbies = lookingForLobbies;
-    }
-
+    /**
+     * Notifies the user about the creation of a new lobby
+     * <p>
+     *     If the user is looking for a lobby to join, the list of available lobbies is automatically refreshed and showed
+     * @param message the message to handle
+     */
     @Override
     public void createLobby(LobbyCreatedEvent message) {
         if(!isCreatingLobby) {
             if (isLookingForLobbies) {
                 try {
-                    view.setInputManager(new LobbyInputManager(view,client,message.getLobbies(), this, true));
+                    view.setInputManager(new LobbyInputManager(client,message.getLobbies(), this, true));
                     view.chooseLobbyToJoin(message.getLobbies());
                 } catch (CancellationException exception) {
                     //
                 }
-            } else if (message.getType().equals(Type.OK)) {
+            } else if (message.getType().equals(Type.OK)) { //TODO: check lobby name
                 client.setCurrentPlayer(false);
                 view.showSuccessMessage("You created lobby");
                 view.showSuccessMessage("Waiting for other players to connect");
@@ -227,6 +132,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         }
     }
 
+    /**
+     * Notifies the user about a new user joining the lobby
+     * @param message the message to handle
+     */
     @Override
     public void joinLobby(UserJoinedLobbyEvent message) {
         if(!client.getUsername().equals(message.getJoinedUser()) && message.getJoinedUser()!=null)
@@ -235,7 +144,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             switch (message.getType()) {
                 case OK:
                     isLookingForLobbies = false;
-                    view.showSuccessMessage("You entered lobby");
+                    view.showSuccessMessage("You entered lobby");   //TODO: do not show when creating a lobby
                     chosenSize = message.getLobbySize();
                     client.setCurrentPlayer(false);
                     break;
@@ -246,7 +155,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 case INVALID_NAME:
                     view.showErrorMessage("Username not valid");
                     try {
-                        view.setInputManager(new LoginManager(view, client,true));
+                        view.setInputManager(new LoginManager(client,true));
                         view.askUsername();
                     } catch (CancellationException exception) {
                         return;
@@ -259,6 +168,78 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             }
         }
     }
+
+    /**
+     * Asks the user if it wants to restore a previously saved game
+     * @param message the message to handle
+     */
+    @Override
+    public void chooseToReloadMatch(ChooseToReloadMatchRequest message) {
+        view.setInputManager(new GodChoiceInputManager(client));
+        view.chooseMatchReload();
+    }
+
+    /**
+     * Asks the lobby owner to choose the gods for the match
+     * @param message the message to handle
+     */
+    @Override // Select gods for the match, request
+    public void chooseInitialGods(ChooseInitialGodsRequest message) {
+        view.setInputManager(new GodChoiceInputManager(client, message.getGods(), chosenSize));
+        view.chooseGameGods(message.getGods(), chosenSize);
+    }
+
+    /**
+     * Notifies the user about the gods chosen for the game
+     * @param message the message to handled
+     */
+    @Override
+    public void onGodChosen(ChosenGodsEvent message) {
+        if (message.getType().equals(Type.OK)) {
+            view.showSuccessMessage("The chosen gods are: ");
+
+            message.getPayload().forEach(godData -> view.showSuccessMessage(godData.getName())); //TODO: print better chosen gods (now we print memory address)
+        } else
+            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+    }
+
+    /**
+     * Asks the user to choose its god
+     * <br>
+     *     If there's only one god left to be chosen, it is automatically assigned to the player
+     * @param message the god request to handle
+     */
+    @Override  // choosing the player's unique god
+    public void chooseYourGod(ChooseYourGodRequest message) {
+        client.setCurrentPlayer(true);
+        try {
+            if(message.getGods().size()==1) {
+                client.sendMessage(new ChooseYourGodResponse(client.getUsername(), message.getGods().get(0)));
+                view.showSuccessMessage("Your God is: " + message.getGods().get(0).getName());
+                return;
+            }
+            view.setInputManager(new GodChoiceInputManager(client, message.getGods(), 1));
+            view.chooseUserGod(message.getGods());
+        } catch (CancellationException exception) {
+            return;
+        }
+        client.setCurrentPlayer(false);
+    }
+
+
+
+    /**
+     * Notifies the user that it's been moved to the waiting room upon an opponent's disconnection
+     * @param message the message to handle
+     */
+    @Override
+    public void onMovedToWaitingRoom(MovedToWaitingRoomResponse message) {
+        if (message.getDisconnectedUser() != null)
+            view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
+        enterLobby(message.getAvailableLobbies());
+    }
+
+
     /*
 
     @Override
@@ -338,11 +319,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         }
     }
 */
-    @Override // Select gods for the match, request
-    public void chooseInitialGods(ChooseInitialGodsRequest message) {
-        view.setInputManager(new GodChoiceInputManager(view, client, message.getGods(), chosenSize));
-        view.chooseGameGods(message.getGods(), chosenSize);
-    }
+
 /*
     @Override // Winner declaration, received by all users
     public void onWinnerDeclared(WinnerDeclaredEvent message) {
@@ -365,45 +342,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         //view.displayGameboard(payload)
     }
 */
-    @Override  // choosing the player's unique god
-    public void chooseYourGod(ChooseYourGodRequest message) {
-        client.setCurrentPlayer(true);
-        try {
-            if(message.getGods().size()==1) {
-                client.sendMessage(new ChooseYourGodResponse(client.getUsername(), message.getGods().get(0)));
-                view.showSuccessMessage("Your God is: " + message.getGods().get(0).getName());
-                return;
-            }
-            view.setInputManager(new GodChoiceInputManager(view, client, message.getGods(), 1));
-            view.chooseUserGod(message.getGods());
-        } catch (CancellationException exception) {
-            return;
-        }
-        client.setCurrentPlayer(false);
-    }
 
-    @Override
-    public void onGodChosen(ChosenGodsEvent message) {
-        if (message.getType().equals(Type.OK)) {
-            view.showSuccessMessage("The chosen gods are: ");
 
-            message.getPayload().forEach(godData -> view.showSuccessMessage(godData.getName())); //TODO: print better chosen gods (now we print memory address)
-        } else
-            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
-    }
 
-    @Override
-    public void chooseToReloadMatch(ChooseToReloadMatchRequest message) {
-        view.setInputManager(new GodChoiceInputManager(client, view));
-        view.chooseMatchReload();
-    }
 
-    @Override
-    public void onMovedToWaitingRoom(MovedToWaitingRoomResponse message) {
-        if (message.getDisconnectedUser() != null)
-            view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
-        enterLobby(message.getAvailableLobbies());
-    }
+
+
 
 /*
     @Override
@@ -570,5 +514,78 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
 */
+@Override
+public void onPlayerMove(PlayerMoveEvent message) {
+
+}
+
+    @Override
+    public void onPlayerBuild(PlayerBuildEvent message) {
+
+    }
+
+    @Override
+    public void onTurnEnd(EndTurnEvent message) {
+
+    }
+
+    @Override
+    public void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {
+
+    }
+
+    @Override
+    public void onWorkerAdd(WorkerAddedEvent message) {
+
+    }
+
+
+
+    @Override
+    public void onWinnerDeclared(WinnerDeclaredEvent message) {
+
+    }
+
+    @Override
+    public void onPlayerRemoved(PlayerRemovedEvent message) {
+
+    }
+
+
+    @Override
+    public void chooseStartingPlayer(ChooseStartingPlayerRequest message) {
+
+    }
+
+    @Override
+    public void onWorkerSelected(WorkerSelectedResponse message) {
+
+    }
+
+    @Override
+    public void onWalkableCellsReceived(WalkableCellsResponse message) {
+
+    }
+
+    @Override
+    public void onBuildableCellsReceived(BuildableCellsResponse message) {
+
+    }
+
+    @Override
+    public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
+
+    }
+
+    @Override
+    public void onGameStart(GameStartEvent message) {
+
+    }
+
+    @Override
+    public void onGameBoardUpdate(GameBoardUpdate gameBoardUpdate) {
+
+    }
+
 }
 

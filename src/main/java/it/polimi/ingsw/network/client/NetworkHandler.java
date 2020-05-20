@@ -87,7 +87,6 @@ public class NetworkHandler implements Runnable {
 
     }
 
-
     public void closeConnection() {
         try {
             outputSocket.close();
