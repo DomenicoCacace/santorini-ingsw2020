@@ -4,38 +4,15 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
-import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.gui.viewController.ChooseGodsController;
-import it.polimi.ingsw.view.gui.viewController.LobbyController;
-import it.polimi.ingsw.view.gui.viewController.LoginController;
-import it.polimi.ingsw.view.inputManager.InputManager;
+import it.polimi.ingsw.view.inputManagers.InputManager;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
+
 
 public class GUI extends Application implements ViewInterface {
-    @Override
-    public void stopInput() {
-
-    }
 
     @Override
     public void askToReloadLastSettings(List<String> savedUsers) {
@@ -124,11 +101,6 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void chooseStartingPlayer(List<String> players) {
-
-    }
-
-    @Override
-    public void showLobbyInfo(List<String> info) {
 
     }
 

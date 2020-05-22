@@ -11,8 +11,6 @@ import java.util.Map;
 
 public interface ViewInterface {
 
-    void stopInput();
-
     void askToReloadLastSettings(List<String> savedUsers);
 
     void chooseMatchReload();
@@ -49,7 +47,7 @@ public interface ViewInterface {
 
     void chooseStartingPlayer(List<String> players);
 
-    void showLobbyInfo(List<String> info);
+    //void showLobbyInfo(List<String> info);
 
     void placeWorker();
 

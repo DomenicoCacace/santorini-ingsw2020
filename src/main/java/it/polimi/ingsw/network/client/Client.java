@@ -71,7 +71,6 @@ public class Client {
             }
         } catch (IOException e) {
             viewInterface.showErrorMessage("Timeout!!");
-            viewInterface.stopInput();
             Client.initClient(viewInterface);
             e.printStackTrace();
         } catch (CancellationException e){

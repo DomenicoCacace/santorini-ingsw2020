@@ -204,12 +204,14 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
                 //server.moveToRoom(this.getUser(), lobby);
             }
             catch (RoomFullException e) {
+                server.getUsersInWaitingRoom().remove(user);
                 logger.log(Level.INFO, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby full");
                 Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
                 server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
                 notify(new UserJoinedLobbyEvent(message.getUsername(), Type.LOBBY_FULL, availableLobbies, 0, null));
             }
             catch (InvalidUsernameException e2) {
+                server.getUsersInWaitingRoom().remove(user);
                 logger.log(Level.INFO, message.getUsername() + " is already taken in lobby " + message.getLobbyName());
                 Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
                 server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));

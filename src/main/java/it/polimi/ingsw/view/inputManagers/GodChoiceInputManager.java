@@ -15,11 +15,11 @@ import java.util.List;
 public class GodChoiceInputManager extends InputManager {
 
     private enum State {
-        RELOADING, CHOOSE_INITIAL_GODS, CHOOSE_PERSONAL_GOD,
+        CHOOSE_INITIAL_GODS, CHOOSE_PERSONAL_GOD,
     }
 
     private State state;
-    private int godsToChoose;
+    private final int godsToChoose;
     private final List<GodData> availableGods;
     private final List<GodData> userChoice;
 
@@ -41,17 +41,6 @@ public class GodChoiceInputManager extends InputManager {
     }
 
     /**
-     * Constructor to be called to handle an eventual game restore
-     * @param client the client to parse the
-     */
-    public GodChoiceInputManager(Client client) {
-        super(client);
-        state=State.RELOADING;
-        availableGods = new ArrayList<>(0);
-        userChoice = new ArrayList<>(0);
-    }
-
-    /**
      * Determines how to handle the received input based on the internal state
      * <p>
      *     <ul>
@@ -68,23 +57,14 @@ public class GodChoiceInputManager extends InputManager {
         client.setCurrentPlayer(true);
         if (isWaitingForInput) {
             switch (state) {
-                case RELOADING:
-                    if (input.equals("y")) {    //TODO: use static constant
-                        reloadMatch(true);
-                        isWaitingForInput = false;
-                    }
-                    else {
-                        reloadMatch(false);
-                        state = State.CHOOSE_INITIAL_GODS;
-                    }
-                    break;
-
                 case CHOOSE_INITIAL_GODS:
                     chosenGod = askGod(input);
                     if (chosenGod != null) {
                         userChoice.add(chosenGod);
                         if (userChoice.size() == godsToChoose) {
+                            client.setCurrentPlayer(true);
                             client.sendMessage(new ChooseInitialGodsResponse(client.getUsername(), userChoice));
+                            client.setCurrentPlayer(false);
                             isWaitingForInput = false;
                         }
                     }
@@ -93,13 +73,13 @@ public class GodChoiceInputManager extends InputManager {
 
                     if (isWaitingForInput)
                         view.chooseGameGods(availableGods, godsToChoose - userChoice.size());
-
                     break;
-
                 case CHOOSE_PERSONAL_GOD:
                     chosenGod = askGod(input);
                     if (chosenGod != null) {
+                        client.setCurrentPlayer(true);
                         client.sendMessage(new ChooseYourGodResponse(client.getUsername(), chosenGod));
+                        client.setCurrentPlayer(false);
                         isWaitingForInput = false;
                     }
                     else {
@@ -112,25 +92,23 @@ public class GodChoiceInputManager extends InputManager {
     }
 
     /**
-     * Sends a {@linkplain ChooseToReloadMatchResponse} based on the user input
-     * @param choice true if the owner wants to reload the saved game, false otherwise
-     */
-    private void reloadMatch(boolean choice) {
-        client.sendMessage(new ChooseToReloadMatchResponse(client.getUsername(), choice));
-    }
-
-    /**
      * Retrieves the god chosen by parsing the user input
      * @param input the input string
      * @return the chosen god
      */
     private GodData askGod(String input) {
-
-        int godIndex = Integer.parseInt(cleanInput(input));
-        if (godIndex > 0 && godIndex <= availableGods.size())
-            return availableGods.remove(godIndex - 1);
-        else
+        input = cleanInput(input);
+        try {
+            int godIndex = Integer.parseInt(cleanInput(input));
+            if (godIndex > 0 && godIndex <= availableGods.size())
+                return availableGods.remove(godIndex - 1);
+            else
+                return null;
+        } catch (NumberFormatException e){
             return null;
+        }
     }
+
+
 
 }

@@ -52,4 +52,8 @@ public abstract class InputManager {
         return input.replace(" ", "").replace("\t", "");
     }
 
+
+    public void setWaitingForInput(boolean waitingForInput) {
+        isWaitingForInput = waitingForInput;
+    }
 }

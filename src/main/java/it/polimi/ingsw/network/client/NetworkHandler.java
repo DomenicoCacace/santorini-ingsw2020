@@ -139,7 +139,6 @@ public class NetworkHandler implements Runnable {
             ex.setRemoveOnCancelPolicy(true);
             pingTask = ex.schedule(() -> {
                 queue.clear();
-                client.getView().stopInput();
                 closeConnection();
                 client.getView().showErrorMessage("The Server crashed!!");
                 new Thread(() -> Client.initClient(client.getView())).start();
