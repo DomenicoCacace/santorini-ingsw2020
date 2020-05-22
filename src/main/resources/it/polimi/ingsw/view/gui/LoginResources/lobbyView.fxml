@@ -2,6 +2,8 @@
 
 <?import it.polimi.ingsw.view.gui.ResizableImageView?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -14,7 +16,7 @@
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="364.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
          <children>
-            <StackPane style="-fx-background-color: blue;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <ResizableImageView>
                      <image>
@@ -23,17 +25,17 @@
                   </ResizableImageView>
                   <VBox>
                      <children>
-                        <HBox fillHeight="false" prefHeight="279.0" prefWidth="868.0" VBox.vgrow="ALWAYS" />
-                        <AnchorPane prefHeight="210.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
+                        <HBox fillHeight="false" prefHeight="286.0" prefWidth="868.0" VBox.vgrow="ALWAYS" />
+                        <AnchorPane prefHeight="415.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
                            <children>
                               <HBox layoutX="250.0" layoutY="79.0" prefHeight="257.0" prefWidth="868.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <VBox prefHeight="194.0" prefWidth="280.0" HBox.hgrow="ALWAYS" />
-                                    <VBox fillWidth="false" prefHeight="304.0" prefWidth="400.0" HBox.hgrow="NEVER">
+                                    <VBox prefHeight="194.0" prefWidth="250.0" HBox.hgrow="ALWAYS" />
+                                    <VBox fillWidth="false" prefHeight="335.0" prefWidth="403.0" HBox.hgrow="NEVER">
                                        <children>
-                                          <BorderPane prefHeight="308.0" prefWidth="400.0">
+                                          <BorderPane prefHeight="301.0" prefWidth="402.0">
                                              <top>
-                                                <Region prefHeight="25.0" prefWidth="308.0" BorderPane.alignment="CENTER" />
+                                                <Region prefHeight="15.0" prefWidth="369.0" BorderPane.alignment="CENTER" />
                                              </top>
                                              <left>
                                                 <Region prefHeight="98.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
@@ -42,16 +44,42 @@
                                                 <Region prefHeight="98.0" prefWidth="0.0" BorderPane.alignment="CENTER" />
                                              </right>
                                              <bottom>
-                                                <Region prefHeight="57.0" prefWidth="400.0" BorderPane.alignment="CENTER" />
+                                                <Region prefHeight="28.0" prefWidth="369.0" BorderPane.alignment="CENTER" />
                                              </bottom>
                                              <center>
-                                                <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                                <AnchorPane prefHeight="386.0" prefWidth="369.0" BorderPane.alignment="CENTER">
                                                    <children>
-                                                      <HBox layoutY="35.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                      <HBox prefHeight="259.0" prefWidth="391.0">
                                                          <children>
-                                                            <Button fx:id="createBtn" mnemonicParsing="false" onMouseClicked="#onCreate" prefHeight="26.0" prefWidth="123.0" text="Create Lobby" HBox.hgrow="NEVER" />
-                                                            <Region prefHeight="29.0" prefWidth="123.0" HBox.hgrow="ALWAYS" />
-                                                            <Button fx:id="joinBtn" mnemonicParsing="false" onMouseClicked="#onJoin" prefHeight="26.0" prefWidth="123.0" text="Join Lobby" HBox.hgrow="NEVER" />
+                                                            <VBox prefHeight="259.0" prefWidth="194.0">
+                                                               <children>
+                                                                  <HBox prefHeight="35.0">
+                                                                     <children>
+                                                                        <Region prefHeight="35.0" prefWidth="67.0" HBox.hgrow="ALWAYS" />
+                                                                        <Label prefHeight="35.0" prefWidth="123.0" text="Create Lobby" />
+                                                                        <Region prefHeight="35.0" prefWidth="67.0" HBox.hgrow="ALWAYS" />
+                                                                     </children>
+                                                                  </HBox>
+                                                                  <TextField fx:id="nameTextField" promptText="Insert lobby name" />
+                                                                  <TextField fx:id="sizeTextField" promptText="Insert lobby size" />
+                                                                  <HBox>
+                                                                     <children>
+                                                                        <Button fx:id="createBtn" mnemonicParsing="false" onMouseClicked="#onCreate" prefHeight="26.0" prefWidth="195.0" text="Create!" />
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                            </VBox>
+                                                            <VBox prefHeight="259.0" prefWidth="205.0">
+                                                               <children>
+                                                                  <HBox prefHeight="115.0" prefWidth="201.0">
+                                                                     <children>
+                                                                        <Region prefHeight="35.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
+                                                                        <Button fx:id="joinBtn" onMouseClicked="#onJoin" mnemonicParsing="false" prefHeight="35.0" text="Join Lobby" />
+                                                                        <Region prefHeight="200.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                            </VBox>
                                                          </children>
                                                       </HBox>
                                                    </children>
@@ -60,7 +88,7 @@
                                           </BorderPane>
                                        </children>
                                     </VBox>
-                                    <VBox prefHeight="194.0" prefWidth="280.0" HBox.hgrow="ALWAYS" />
+                                    <VBox prefHeight="194.0" prefWidth="250.0" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                            </children>

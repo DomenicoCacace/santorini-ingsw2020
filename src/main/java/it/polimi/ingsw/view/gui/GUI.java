@@ -13,12 +13,15 @@ import it.polimi.ingsw.view.inputManagers.InputManager;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -160,6 +163,7 @@ public class GUI extends Application implements ViewInterface {
         });
     }
 
+//TODO: Ask tutor about this
     @Override
     public void askLobbyName() {
 
@@ -177,7 +181,7 @@ public class GUI extends Application implements ViewInterface {
             currentView = ViewsType.LOBBY;
             setRoot("LoginResources/chooseLobby");
             LobbyController controller = ((FXMLLoader) scene.getUserData()).getController();
-            controller.lobbyList.getItems().addAll(lobbiesAvailable.keySet());
+            controller.getLobbyList().getItems().addAll(lobbiesAvailable.keySet());
             controller.setGUI(this);
             LobbyController.setInputRequested(true);
         });
@@ -213,6 +217,17 @@ public class GUI extends Application implements ViewInterface {
         Platform.runLater(() -> {
             setRoot("chooseGods");
             ChooseGodsController controller = ((FXMLLoader) scene.getUserData()).getController();
+            List<VBox> vBoxes = new ArrayList<>();
+            controller.getGodImageContainer().getChildren().forEach(vBox -> vBoxes.add((VBox)vBox));
+            List<Node> vboxChildren = new ArrayList<>();
+            vBoxes.forEach(vBox -> vboxChildren.addAll(vBox.getChildren()));
+            for(Node node: vboxChildren){
+                for(GodData godData: allGods){
+                    if(godData.getName().equals(node.getId())){
+                        ((ResizableImageView)node).setIndex(allGods.indexOf(godData));
+                    }
+                }
+            }
             controller.setGUI(this);
         });
     }

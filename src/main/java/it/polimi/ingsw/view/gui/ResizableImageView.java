@@ -5,6 +5,27 @@ import javafx.scene.image.ImageView;
 
 public class ResizableImageView extends ImageView {
 
+    //TODO: move this in a dedicated class
+    private int index;
+    private String name;
+
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public ResizableImageView(Image image) {
         super(image);
         setPreserveRatio(false);

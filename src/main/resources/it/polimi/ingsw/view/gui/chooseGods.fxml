@@ -14,7 +14,7 @@
          <children>
             <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <center>
-                  <HBox prefHeight="576.0" prefWidth="910.0">
+                  <HBox fx:id="godImageContainer" prefHeight="576.0" prefWidth="910.0">
                      <children>
                         <VBox prefHeight="200.0" prefWidth="182.0">
                            <children>

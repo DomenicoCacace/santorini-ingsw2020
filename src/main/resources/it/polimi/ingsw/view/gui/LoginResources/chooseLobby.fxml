@@ -26,7 +26,7 @@
                         <HBox fillHeight="false" prefHeight="176.0" prefWidth="868.0" VBox.vgrow="ALWAYS" />
                         <AnchorPane prefHeight="210.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <HBox layoutX="250.0" layoutY="79.0" prefHeight="257.0" prefWidth="868.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <HBox fx:id="godImageContainer" layoutX="250.0" layoutY="79.0" prefHeight="257.0" prefWidth="868.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <VBox prefHeight="257.0" prefWidth="350.0" HBox.hgrow="ALWAYS" />
                                     <VBox fillWidth="false" prefHeight="195.0" prefWidth="204.0" HBox.hgrow="NEVER">
@@ -36,7 +36,7 @@
                                              <children>
                                                 <HBox layoutX="54.0" prefHeight="26.0" prefWidth="84.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="54.0" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="0.0">
                                                    <children>
-                                                      <Button fx:id="backButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Go Back" HBox.hgrow="NEVER" />
+                                                      <Button fx:id="backButton" onMouseClicked="#backButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Go Back" HBox.hgrow="NEVER" />
                                                    </children>
                                                 </HBox>
                                              </children>
