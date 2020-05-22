@@ -101,7 +101,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * @see LoginManager
      */
     public void enterLobby(Map<String, List<String>> lobbiesAvailable) {
-        client.setCurrentPlayer(true);
+
         isLookingForLobbies = true;
         inputManager = new LobbyInputManager(client, lobbiesAvailable, this, false);
         view.setInputManager(inputManager);
@@ -131,7 +131,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     //
                 }
             } else if (message.getType().equals(Type.OK)) { //TODO: check lobby name
-                client.setCurrentPlayer(false);
                 view.showSuccessMessage("You created lobby");
                 view.showSuccessMessage("Waiting for other players to connect");
             } else {
@@ -187,6 +186,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      */
     @Override
     public void chooseToReloadMatch(ChooseToReloadMatchRequest message) {
+        client.setCurrentPlayer(true);
         inputManager = new ReloadGameInputManager(client);
         view.setInputManager(inputManager);
         view.chooseMatchReload();
@@ -198,6 +198,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      */
     @Override // Select gods for the match, request
     public void chooseInitialGods(ChooseInitialGodsRequest message) {
+        client.setCurrentPlayer(true);
         inputManager = new GodChoiceInputManager(client, message.getGods(), chosenSize);
         view.setInputManager(inputManager);
         view.chooseGameGods(message.getGods(), chosenSize);
@@ -234,14 +235,13 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             inputManager = new GodChoiceInputManager(client, message.getGods(), 1);
             view.setInputManager(inputManager);
             view.chooseUserGod(message.getGods());
-        } catch (CancellationException exception) {
-            return;
+        } catch (CancellationException ignored) {
         }
-        client.setCurrentPlayer(false);
     }
 
     @Override
     public void chooseStartingPlayer(ChooseStartingPlayerRequest message) {
+        client.setCurrentPlayer(true);
         inputManager = new ChooseStartingPlayerInputManager(client, message.getPayload());
         view.setInputManager(inputManager);
         view.chooseStartingPlayer(message.getPayload());
@@ -253,6 +253,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      */
     @Override
     public void onMovedToWaitingRoom(MovedToWaitingRoomResponse message) {
+        client.setCurrentPlayer(true);
         isLookingForLobbies = false;
         isCreatingLobby = false;
         if (message.getDisconnectedUser() != null)
@@ -261,7 +262,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     public void addWorker(int row, int col){
-        client.setCurrentPlayer(true);
         client.sendMessage(new AddWorkerRequest(client.getUsername(), gameboard.get(5 * row + col)));
         client.setCurrentPlayer(false);
     }
@@ -296,10 +296,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getType().equals(Type.OK)) {
             client.setCurrentPlayer(message.getPayload().equals(client.getUsername()));
             if (client.getUsername().equals(message.getPayload())) { //if currentPlayer
-               //TODO: client.setCurrentPlayer(true);
+                client.setCurrentPlayer(true);
                 inputManager = new SelectWorkerInputManager(client, this);
                 view.setInputManager(inputManager);
                 view.chooseWorker();
+            } else {
+                client.setCurrentPlayer(false);
             }
         } else {
             view.showErrorMessage("You can't end your turn now.");
@@ -308,6 +310,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override // Place worker request
     public void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {
+        client.setCurrentPlayer(true);
         inputManager = new AddWorkersInputManager(client,this);
         view.setInputManager(inputManager);
         view.placeWorker();
@@ -330,14 +333,16 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         view.gameStartScreen(message.getPayload().getBoard());
         gameboard = message.getPayload().getBoard();
         if (message.getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())) {
+            client.setCurrentPlayer(true);
             view.setInputManager(inputManager);
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
+        } else{
+            client.setCurrentPlayer(false);
         }
     }
 
     public void chooseWorker(int row, int col){
-        client.setCurrentPlayer(true);
         if (gameboard.get(5 * row + col).getOccupiedBy() != null){
             selectedWorker = gameboard.get(5 * row + col).getOccupiedBy();
             Message selectWorkerRequest = new SelectWorkerRequest(client.getUsername(), selectedWorker);
@@ -347,17 +352,14 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
         }
-        client.setCurrentPlayer(false);
     }
 
     public void sendMove(Cell selectedCell){
-        client.setCurrentPlayer(true);
         client.sendMessage(new PlayerMoveRequest(client.getUsername(), selectedCell, selectedWorker));
         client.setCurrentPlayer(false);
     }
 
     public void sendBuild(Block selectedBlock){
-        client.setCurrentPlayer(true);
         client.sendMessage(new PlayerBuildRequest(client.getUsername(), selectedCell, selectedBlock, selectedWorker));
         client.setCurrentPlayer(false);
     }
@@ -373,9 +375,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override  // Player removed, received by all users
     public void onPlayerRemoved(PlayerRemovedEvent message) {
         gameboard = message.getGameboard();
-        if (message.getPayload().equals(client.getUsername()))
+        if (message.getPayload().equals(client.getUsername())) {
             view.showErrorMessage("You lost");
-
+            client.setCurrentPlayer(false);
+        }
         else {
             view.showGameBoard(message.getGameboard());
             view.showSuccessMessage(message.getPayload() + " lost");
@@ -386,6 +389,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     @Override
     public void onWorkerSelected(WorkerSelectedResponse message) {
+        client.setCurrentPlayer(true);
         if (message.getType().equals(Type.OK)) {
             if(message.getPossibleActions().size() == 1){
                 selectedWorker = message.getSelectedWorker();
@@ -421,7 +425,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), false, this);
             view.setInputManager(inputManager);
             view.buildAction(gameboard, message.getPayload());
-            client.setCurrentPlayer(false);
         } else {
             //we should never enter here
             //view.displayError(outcome)
@@ -454,9 +457,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 break;
         }
         if (nextAction != null) {
-            client.setCurrentPlayer(true);
             client.sendMessage(nextAction);
-            client.setCurrentPlayer(false);
         }
     }
 

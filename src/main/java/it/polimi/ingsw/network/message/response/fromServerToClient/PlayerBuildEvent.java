@@ -31,8 +31,4 @@ public class PlayerBuildEvent extends MessageFromServerToClient {
         visitor.onPlayerBuild(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
 }

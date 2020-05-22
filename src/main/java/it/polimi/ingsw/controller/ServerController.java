@@ -104,6 +104,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * @param file the file to store the game state
      */
     public void setFile(File file) {
+        this.file.delete();
         this.file = file;
         saveState();
     }

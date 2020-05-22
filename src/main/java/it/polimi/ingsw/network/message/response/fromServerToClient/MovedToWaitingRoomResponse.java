@@ -39,11 +39,7 @@ public class MovedToWaitingRoomResponse extends MessageFromServerToClient {
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        new Thread(() -> visitor.onMovedToWaitingRoom(this)).start();
+        visitor.onMovedToWaitingRoom(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
 }

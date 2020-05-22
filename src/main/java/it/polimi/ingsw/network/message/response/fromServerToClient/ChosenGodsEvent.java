@@ -34,9 +34,5 @@ public class ChosenGodsEvent extends MessageFromServerToClient {
         visitor.onGodChosen(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
 }
 

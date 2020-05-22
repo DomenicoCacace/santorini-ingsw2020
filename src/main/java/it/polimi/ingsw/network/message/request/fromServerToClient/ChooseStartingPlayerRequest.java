@@ -26,9 +26,4 @@ public class ChooseStartingPlayerRequest extends MessageFromServerToClient {
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.chooseStartingPlayer(this);
     }
-
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

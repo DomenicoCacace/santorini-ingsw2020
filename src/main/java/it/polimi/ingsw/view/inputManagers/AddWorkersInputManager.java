@@ -2,10 +2,6 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AddWorkersInputManager extends InputManager {
 

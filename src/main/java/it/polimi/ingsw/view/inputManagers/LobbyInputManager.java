@@ -105,19 +105,15 @@ public class LobbyInputManager extends InputManager {
     }
 
     private void onLobbySize(int chosenSize) {
-        client.setCurrentPlayer(true);
         messageManagerParser.setChosenSize(chosenSize);
         isWaitingForInput=false;
         client.sendMessage(new CreateLobbyRequest(client.getUsername(), lobbyName, chosenSize));
-        client.setCurrentPlayer(false);
         messageManagerParser.setCreatingLobby(false);
     }
 
     private void onLobbyChosen(String input) {
-        client.setCurrentPlayer(true);
         messageManagerParser.setLookingForLobbies(false);
         isWaitingForInput = false;
         client.sendMessage(new JoinLobbyRequest(client.getUsername(), input));
-        client.setCurrentPlayer(false);
     }
 }

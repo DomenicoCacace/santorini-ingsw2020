@@ -23,8 +23,5 @@ public abstract class MessageFromServerToClient extends Message {
         super(username, type);
     }
 
-    @JsonIgnore
-    public abstract boolean isBlocking();
-
     public abstract void callVisitor(ClientMessageManagerVisitor visitor);
 }

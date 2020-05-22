@@ -33,9 +33,5 @@ public class PlayerMoveEvent extends MessageFromServerToClient {
         visitor.onPlayerMove(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
 }
 

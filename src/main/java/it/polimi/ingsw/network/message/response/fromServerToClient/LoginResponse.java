@@ -28,9 +28,4 @@ public class LoginResponse extends MessageFromServerToClient {
         visitor.onLogin(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
-
 }

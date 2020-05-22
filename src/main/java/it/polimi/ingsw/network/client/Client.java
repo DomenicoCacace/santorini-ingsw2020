@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
+import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.inputManagers.LoginManager;
 
 import java.io.*;
@@ -39,7 +40,7 @@ public class Client {
                 initClient(viewInterface);
             }
             else {
-               // GUI.launchGui(); //FIXME
+                GUI.launchGui(); //FIXME
             }
         } catch (IOException e) {
             System.out.println("Error: resources not found");
@@ -137,6 +138,7 @@ public class Client {
     public void startConnection() {
         try{
             networkHandler = new NetworkHandler(this);
+            setCurrentPlayer(true);
             networkHandler.login(this.username);
             new Thread(networkHandler).start();
         }catch (IOException e) {

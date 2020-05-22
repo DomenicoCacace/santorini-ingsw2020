@@ -18,8 +18,4 @@ public class ChooseToReloadMatchRequest extends MessageFromServerToClient {
         visitor.chooseToReloadMatch(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

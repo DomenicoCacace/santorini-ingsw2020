@@ -28,8 +28,4 @@ public class PossibleBuildingBlockResponse extends MessageFromServerToClient {
         visitor.onBuildingCellSelected(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

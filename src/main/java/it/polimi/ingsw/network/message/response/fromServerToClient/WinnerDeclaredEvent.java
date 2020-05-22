@@ -26,9 +26,4 @@ public class WinnerDeclaredEvent extends MessageFromServerToClient {
         visitor.onWinnerDeclared(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
-
 }

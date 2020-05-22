@@ -4,12 +4,8 @@ import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.gui.ResizableImageView;
 import javafx.scene.input.MouseEvent;
 
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 public class ChooseGodsController {
-    /*
+
     private GUI gui;
     private boolean inputRequested = false;
 
@@ -29,5 +25,5 @@ public class ChooseGodsController {
         }
     }
 
-     */
+
 }

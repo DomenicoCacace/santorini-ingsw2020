@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.gui.viewController;
 
+import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
+import it.polimi.ingsw.view.inputManagers.LoginManager;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -15,14 +17,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LoginController {
-/*
 
     private GUI gui;
     private String username = "";
     private String ipAddress = "";
     private boolean ipIsSet = false;
-    private static boolean ipRequested;
-    private static boolean usernameRequested;
+    private boolean isReloading;
     private static final Lock lock = new ReentrantLock();
     private static final Condition condition = lock.newCondition();
     @FXML
@@ -34,6 +34,10 @@ public class LoginController {
     @FXML
     public Button loginBtn;
 
+    public void setReloading(boolean reloading) {
+        isReloading = reloading;
+    }
+
     public void setIpIsSet(boolean ipIsSet) {
         this.ipIsSet = ipIsSet;
     }
@@ -42,10 +46,28 @@ public class LoginController {
         this.gui = gui;
         usernameID.focusedProperty().addListener((observable, oldValue, newValue) -> {
             this.username = usernameID.getText();
+            if(!this.username.isBlank()) {
+                if (isReloading) {
+                    gui.setInputString(CLI.NO);
+                    isReloading = false;
+                    oldConfigs.setDisable(true);
+                    oldConfigs.setOpacity(0.2);
+                }
+            }
+
+
             //oldConfigs.setDisable(!(this.username.isBlank() && this.ipAddress.isBlank()));
         });
         ipID.focusedProperty().addListener((observable, oldValue, newValue) -> {
             this.ipAddress = ipID.getText();
+            if(!this.ipAddress.isBlank()) {
+                if (isReloading) {
+                    gui.setInputString(CLI.NO);
+                    isReloading = false;
+                    oldConfigs.setDisable(true);
+                    oldConfigs.setOpacity(0.2);
+                }
+            }
             //oldConfigs.setDisable(!(this.username.isBlank() && this.ipAddress.isBlank()));
         });
     }
@@ -68,62 +90,29 @@ public class LoginController {
 
     @FXML
     public void onLogin() {
+        lock.lock();
+        if (isReloading)
+            gui.setInputString(CLI.NO);
         if ((!ipAddress.isBlank() || ipIsSet) && !username.isBlank()) {
-            lock.lock();
-            try {
-                if (!ipIsSet) {
-                    while (!ipRequested)
-                        condition.await();
-                    gui.setInputString(ipAddress);
-                    ipAddress = "";
-                    ipRequested = false;
-                }
-                while (!usernameRequested)
-                    condition.await();
-                gui.setInputString(username);
-                username = "";
-                usernameRequested = false;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                lock.unlock();
+            if (!ipIsSet) {
+                gui.setInputString(ipAddress);
+                ipAddress = "";
             }
+            gui.setInputString(username);
+            username = "";
             loginBtn.setDisable(true);
+            lock.unlock();
         }
-    }
-
-    public static void requestIP() {
-        lock.lock();
-        ipRequested = true;
-        condition.signalAll();
-        lock.unlock();
-    }
-
-    public static void requestUsername() {
-        lock.lock();
-        usernameRequested = true;
-        condition.signalAll();
-        lock.unlock();
     }
 
     public void onOldConfigSelected() {
         lock.lock();
-        try {
-            while (!ipRequested)
-                condition.await();
-            String input = oldConfigs.getSelectionModel().getSelectedItem();
-            username = input.substring(0, input.indexOf(" -- "));
-            username = username.trim();
-            ipAddress = input.substring(input.indexOf(" -- ") + 4);
-            ipAddress = ipAddress.trim();
-            oldConfigs.setDisable(true);
-            onLogin();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(isReloading) {
+            gui.setInputString(CLI.YES);
+            gui.setInputString(String.valueOf(oldConfigs.getSelectionModel().getSelectedIndex()+2));
         }
+        lock.unlock();
     }
-
- */
 
 
 }

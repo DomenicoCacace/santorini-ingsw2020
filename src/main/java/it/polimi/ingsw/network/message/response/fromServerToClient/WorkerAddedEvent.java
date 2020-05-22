@@ -30,11 +30,6 @@ public class WorkerAddedEvent extends MessageFromServerToClient {
 
 
     @Override
-    public boolean isBlocking() {
-        return false;
-    }
-
-    @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
         visitor.onWorkerAdd(this);
     }

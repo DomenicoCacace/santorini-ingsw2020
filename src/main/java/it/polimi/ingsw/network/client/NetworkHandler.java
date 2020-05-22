@@ -24,7 +24,6 @@ public class NetworkHandler implements Runnable {
     private final MessageManagerParser parser;
     private ScheduledThreadPoolExecutor ex;
     private ScheduledFuture<?> pingTask;
-    private final BlockingQueue<MessageFromServerToClient> queue = new ArrayBlockingQueue<>(15);
 
 
     public NetworkHandler(Client client) throws IOException {
@@ -44,14 +43,6 @@ public class NetworkHandler implements Runnable {
 
     @Override
     public void run() {
-        new Thread(() -> {
-            try {
-                while (true)
-                    queue.take().callVisitor(parser);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
         while (true) {
             String ioData = "";
             try {
@@ -65,12 +56,9 @@ public class NetworkHandler implements Runnable {
                 else {
                     MessageFromServerToClient message;
                     message = (MessageFromServerToClient) jacksonParser.fromStringToMessage(ioData);
-                    if(message.isBlocking())
-                        queue.put(message);
-                    else
-                        message.callVisitor(parser);
+                    message.callVisitor(parser);
                 }
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 return;
             }
         }
@@ -79,6 +67,7 @@ public class NetworkHandler implements Runnable {
 
     public void login(String username) {
         try {
+
             sendMessage(new LoginRequest(username));
             client.getView().showSuccessMessage("Login request sent, waiting for a response...");
         } catch (IOException e) {
@@ -94,8 +83,6 @@ public class NetworkHandler implements Runnable {
             serverConnection.close();
             ex.shutdown();
             pingTask.cancel(true);
-
-            queue.clear();
         } catch (Exception e) {
             //
         }
@@ -138,7 +125,6 @@ public class NetworkHandler implements Runnable {
             ex.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
             ex.setRemoveOnCancelPolicy(true);
             pingTask = ex.schedule(() -> {
-                queue.clear();
                 closeConnection();
                 client.getView().showErrorMessage("The Server crashed!!");
                 new Thread(() -> Client.initClient(client.getView())).start();

@@ -41,11 +41,6 @@ public class UserJoinedLobbyEvent extends MessageFromServerToClient {
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        new Thread(() -> visitor.joinLobby(this)).start();
-    }
-
-    @Override
-    public boolean isBlocking() {
-        return false;
+        visitor.joinLobby(this);
     }
 }

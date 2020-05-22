@@ -31,8 +31,8 @@ public class SelectWorkerInputManager extends InputManager{
                 }
                 else if (col == -1) {
                     col = coord - 1;
-                    parser.chooseWorker(row, col);
                     isWaitingForInput = false;
+                    parser.chooseWorker(row, col);
                     row = -1;
                     col = -1;
                 }

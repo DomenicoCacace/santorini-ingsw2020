@@ -85,9 +85,8 @@ public class SelectActionCellInputManager extends InputManager {
                             if (selectedCell.size() == 1) {
                                 isWaitingForInput = false;
                                 parser.setSelectedCell(selectedCell.get(0));
-                                client.setCurrentPlayer(true);
+
                                 client.sendMessage(new SelectBuildingCellRequest(client.getUsername(), selectedCell.get(0)));
-                                client.setCurrentPlayer(false);
                             } else {
                                 view.showErrorMessage("Please select a valid cell!!");
                                 parser.printOnBuild(validCells);

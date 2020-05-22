@@ -30,8 +30,4 @@ public class WalkableCellsResponse extends MessageFromServerToClient {
         visitor.onWalkableCellsReceived(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

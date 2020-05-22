@@ -1,15 +1,12 @@
 package it.polimi.ingsw.view.gui.viewController;
 
 import it.polimi.ingsw.view.gui.GUI;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 
 public class LobbyController {
-/*
+
     private static boolean inputRequested = false;
     public ListView<String> lobbyList;
     public Button backButton;
@@ -55,12 +52,12 @@ public class LobbyController {
         this.gui = gui;
     }
 
-    public void onLobbySelected(MouseEvent mouseEvent) {
+    public void onLobbySelected() {
         if (inputRequested) {
-            gui.setInputString(lobbyList.getSelectionModel().getSelectedItem());
+            gui.setInputString(String.valueOf(lobbyList.getSelectionModel().getSelectedIndex()- 1));
             lobbyList.setDisable(true);
         }
     }
 
- */
+
 }

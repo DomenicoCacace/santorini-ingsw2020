@@ -21,15 +21,11 @@ public class LobbyCreatedEvent extends MessageFromServerToClient {
 
     @Override
     public void callVisitor(ClientMessageManagerVisitor visitor) {
-        new Thread(() -> visitor.createLobby(this)).start();
+        visitor.createLobby(this);
     }
 
     public Map<String, List<String>> getLobbies() {
         return lobbies;
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
 }

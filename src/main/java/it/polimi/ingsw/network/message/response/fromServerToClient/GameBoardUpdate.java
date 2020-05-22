@@ -28,8 +28,4 @@ public class GameBoardUpdate extends MessageFromServerToClient {
         visitor.onGameBoardUpdate(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
 }

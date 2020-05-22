@@ -28,8 +28,4 @@ public class ChooseYourGodRequest extends MessageFromServerToClient {
         visitor.chooseYourGod(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

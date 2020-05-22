@@ -41,8 +41,4 @@ public class WorkerSelectedResponse extends MessageFromServerToClient {
         visitor.onWorkerSelected(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

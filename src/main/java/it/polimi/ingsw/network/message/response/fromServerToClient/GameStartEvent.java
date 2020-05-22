@@ -32,8 +32,4 @@ public class GameStartEvent extends MessageFromServerToClient {
         visitor.onGameStart(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

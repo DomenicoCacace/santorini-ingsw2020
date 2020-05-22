@@ -32,8 +32,4 @@ public class BuildableCellsResponse extends MessageFromServerToClient {
         visitor.onBuildableCellsReceived(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

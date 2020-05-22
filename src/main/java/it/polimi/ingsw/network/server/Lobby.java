@@ -319,9 +319,9 @@ public class Lobby implements PlayerLostListener, EndGameListener {
     @Override
     public void onEndGame(String name) {
         Message message = new WinnerDeclaredEvent(name);
+        savedGame.delete();
         playerMap.keySet().forEach(user -> user.notify(message));
         playerMap.keySet().forEach(server::moveToWaitingRoom);
         server.removeRoom(this);
-        System.out.println(savedGame.delete());
     }
 }

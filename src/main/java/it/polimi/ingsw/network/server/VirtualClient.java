@@ -47,7 +47,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     private BufferedReader inputSocket;
     private OutputStreamWriter outputSocket;
     private ScheduledThreadPoolExecutor ex;
-    private final BlockingQueue<MessageFromClientToServer> queue = new ArrayBlockingQueue<>(5);
 
     /**
      * Default constructor
@@ -77,17 +76,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     public void run() {
         notify(PING);
         String input = null;
-
-        new Thread(() -> {
-            try {
-                while(true)
-                    queue.take().callVisitor(this);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                logger.log(Level.SEVERE, "Cannot retrieve message from queue " + e.getMessage(), e);
-            }
-        }).start();
-
         try {
             while (true) {
                 Message message;
@@ -97,10 +85,10 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
                 else {
                     logger.log(Level.FINE, "Message received");
                     message = jsonParser.fromStringToMessage(input);
-                    queue.put((MessageFromClientToServer) message);
+                    ((MessageFromClientToServer) message).callVisitor(this);
                 }
             }
-        } catch (IOException | NullPointerException | InterruptedException e) {
+        } catch (IOException | NullPointerException e) {
             logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()) + "\n" + input, e);
 
             server.onDisconnect(this.user);
@@ -201,6 +189,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             try {
                 logger.log(Level.INFO, message.getUsername() + " joined " + message.getLobbyName());
                 lobby.addUser(this.user);
+                server.getUsersInWaitingRoom().remove(user);
                 //server.moveToRoom(this.getUser(), lobby);
             }
             catch (RoomFullException e) {

@@ -29,7 +29,7 @@ public class ChooseStartingPlayerInputManager extends InputManager {
             try{
                 int index = Integer.parseInt(input) -1;
                 if(index>=0 && index < usernames.size()) {
-                    client.setCurrentPlayer(true); //FIXME: We can change where we set the currentPlayer
+                     //FIXME: We can change where we set the currentPlayer
                     client.sendMessage(new ChooseStartingPlayerResponse(client.getUsername(), usernames.get(index)));
                     client.setCurrentPlayer(false);
                 }

@@ -240,6 +240,7 @@ public class Server extends Thread {
     public void moveToWaitingRoom(User user) {
         Lobby oldRoom = users.replace(user,null);
         if (oldRoom != null) {
+            waitingRoom.add(user);
             Map<String, List<String>> lobbyNames = new LinkedHashMap<>();
             gameLobbies.values().forEach(lobbies -> lobbyNames.put(lobbies.getRoomName(), lobbies.lobbyInfo()));
             user.notify(new MovedToWaitingRoomResponse(user.getUsername(), Type.OK, lobbyNames, null));

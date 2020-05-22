@@ -18,7 +18,7 @@ public class GodChoiceInputManager extends InputManager {
         CHOOSE_INITIAL_GODS, CHOOSE_PERSONAL_GOD,
     }
 
-    private State state;
+    private final State state;
     private final int godsToChoose;
     private final List<GodData> availableGods;
     private final List<GodData> userChoice;
@@ -54,7 +54,6 @@ public class GodChoiceInputManager extends InputManager {
     @Override
     public void manageInput(String input) {
         GodData chosenGod;
-        client.setCurrentPlayer(true);
         if (isWaitingForInput) {
             switch (state) {
                 case CHOOSE_INITIAL_GODS:
@@ -62,7 +61,7 @@ public class GodChoiceInputManager extends InputManager {
                     if (chosenGod != null) {
                         userChoice.add(chosenGod);
                         if (userChoice.size() == godsToChoose) {
-                            client.setCurrentPlayer(true);
+
                             client.sendMessage(new ChooseInitialGodsResponse(client.getUsername(), userChoice));
                             client.setCurrentPlayer(false);
                             isWaitingForInput = false;
@@ -77,7 +76,7 @@ public class GodChoiceInputManager extends InputManager {
                 case CHOOSE_PERSONAL_GOD:
                     chosenGod = askGod(input);
                     if (chosenGod != null) {
-                        client.setCurrentPlayer(true);
+
                         client.sendMessage(new ChooseYourGodResponse(client.getUsername(), chosenGod));
                         client.setCurrentPlayer(false);
                         isWaitingForInput = false;
@@ -88,7 +87,6 @@ public class GodChoiceInputManager extends InputManager {
                     }
             }
         }
-        client.setCurrentPlayer(false);
     }
 
     /**

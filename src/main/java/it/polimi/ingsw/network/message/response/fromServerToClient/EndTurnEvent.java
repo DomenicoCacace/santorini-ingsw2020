@@ -25,8 +25,4 @@ public class EndTurnEvent extends MessageFromServerToClient {
         visitor.onTurnEnd(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

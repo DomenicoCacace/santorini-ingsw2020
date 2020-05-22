@@ -32,7 +32,7 @@ public class ReloadGameInputManager extends InputManager {
      * @param choice true if the owner wants to reload the saved game, false otherwise
      */
     private void reloadMatch(boolean choice) {
-        client.setCurrentPlayer(true);
+
         client.sendMessage(new ChooseToReloadMatchResponse(client.getUsername(), choice));
         client.setCurrentPlayer(false);
     }

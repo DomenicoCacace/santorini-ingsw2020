@@ -35,8 +35,4 @@ public class PlayerRemovedEvent extends MessageFromServerToClient {
         visitor.onPlayerRemoved(this);
     }
 
-    @Override
-    public boolean isBlocking() {
-        return false;
-    }
 }
