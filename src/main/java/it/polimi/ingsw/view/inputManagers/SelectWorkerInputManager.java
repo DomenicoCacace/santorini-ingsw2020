@@ -4,6 +4,9 @@ import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
 
 public class SelectWorkerInputManager extends InputManager{
+
+    private static final int MIN_COORD = 1;
+    private static final int MAX_COORD = 5;
     private final MessageManagerParser parser;
     private int row = -1;
     private int col = -1;
@@ -19,11 +22,11 @@ public class SelectWorkerInputManager extends InputManager{
             input = cleanInput(input);
             try {
                 int coord = Integer.parseInt(input);
-                if (coord < 1 || coord > 5) {
+                if (coord < MIN_COORD || coord > MAX_COORD) {
                     if (row == -1)
-                        view.showErrorMessage("Please insert a valid number between 1 and 5 \nrow: ");
+                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
                     else
-                        view.showErrorMessage("Please insert a valid number between 1 and 5, the row selected is: " + (row +1) + "\ncol: ");
+                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row +1) + "\ncol: ");
                 }
                 else if (row == -1) {
                     row = coord - 1;
@@ -37,7 +40,7 @@ public class SelectWorkerInputManager extends InputManager{
                     col = -1;
                 }
             } catch (NumberFormatException e) {
-                view.showErrorMessage("Please insert a valid number between 1 and 5");
+                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD);
             }
         }
     }

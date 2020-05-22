@@ -6,12 +6,13 @@ import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.utils.PrettyPrinter;
-import it.polimi.ingsw.view.cli.utils.SafeScanner;
 import it.polimi.ingsw.view.inputManagers.InputManager;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -49,13 +50,14 @@ public class CLI implements ViewInterface {
             stringBuilder
                     .append(" has ")
                     .append(info.get(1))
-                    .append(" players connected and is waiting for ")
+                    .append(" players connected,\n")
+                    .append("   is waiting for ")
                     .append(info.get(2))
-                    .append(" players to start. ");
+                    .append(" players to start.\n");
             if (info.size() > 3) {
-                stringBuilder.append("The players connected are: ");
+                stringBuilder.append("   The players connected are:\n");
                 for (int i = 3; i < info.size(); i++) {
-                    stringBuilder.append(" ").append("-").append(info.get(i));
+                    stringBuilder.append("   -").append(info.get(i)).append("\n");
                 }
             }
             lobbiesWithInfos.add(lobby + stringBuilder);
@@ -146,7 +148,7 @@ public class CLI implements ViewInterface {
     @Override
     public void askUsername() throws CancellationException {
         //TODO: make the user choose if it wants the default one
-        System.out.print("Insert your username: ");
+        System.out.print("\t\tInsert your username: ");
     }
 
     @Override
@@ -206,25 +208,6 @@ public class CLI implements ViewInterface {
                 return false;
         }
     } */
-
-    public void showLobbyInfo(List<String> info) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder
-                .append("The lobby ")
-                .append(info.get(0))
-                .append(" has ")
-                .append(info.get(1))
-                .append(" players connected and is waiting for ")
-                .append(info.get(2))
-                .append(" players to start.\n");
-        if (info.size() > 3) {
-            stringBuilder.append("The players connected are: ");
-            for (int i = 3; i < info.size(); i++) {
-                stringBuilder.append("\n").append("-").append(info.get(i));
-            }
-        }
-        System.out.println(stringBuilder.toString());
-    }
 
     @Override
     public void showGameBoard(List<Cell> gameBoard) {

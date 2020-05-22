@@ -1,12 +1,9 @@
 package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
-import it.polimi.ingsw.network.message.request.fromClientToServer.PlayerMoveRequest;
 import it.polimi.ingsw.network.message.request.fromClientToServer.SelectBuildingCellRequest;
-import it.polimi.ingsw.network.message.response.fromServerToClient.PlayerMoveEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +15,8 @@ public class SelectActionCellInputManager extends InputManager {
         MOVE, BUILD
     }
 
+    private static final int MIN_COORD = 1;
+    private static final int MAX_COORD = 5;
     private final State state;
     private final List<Cell> validCells = new ArrayList<>();
     private final MessageManagerParser parser;
@@ -43,15 +42,17 @@ public class SelectActionCellInputManager extends InputManager {
                 case MOVE:
                     try {
                         int coord = Integer.parseInt(input);
-                        if (coord < 1 || coord > 5) {
+                        if (coord < MIN_COORD || coord > MAX_COORD) {
                             if (row == -1)
-                                view.showErrorMessage("Please insert a valid number between 1 and 5 \nrow: ");
+                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
                             else
-                                view.showErrorMessage("Please insert a valid number between 1 and 5, the row selected is: " + (row + 1) + "\ncol: ");
-                        } else if (row == -1) {
+                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row +1) + "\ncol: ");
+                        }
+                        else if (row == -1) {
                             row = coord - 1;
                             view.showSuccessMessage("col: ");
-                        } else if (col == -1) {
+                        }
+                        else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
                             if (selectedCell.size() == 1) {
@@ -65,21 +66,23 @@ public class SelectActionCellInputManager extends InputManager {
                             }
                         }
                     } catch (NumberFormatException e) {
-                        view.showErrorMessage("Please insert a valid number between 1 and 5");
+                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD);
                     }
                     break;
                 case BUILD: //BuildAction
                     try {
                         int coord = Integer.parseInt(input);
-                        if (coord < 1 || coord > 5) {
+                        if (coord < MIN_COORD || coord > MAX_COORD) {
                             if (row == -1)
-                                view.showErrorMessage("Please insert a valid number between 1 and 5 \nrow: ");
+                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
                             else
-                                view.showErrorMessage("Please insert a valid number between 1 and 5, the row selected is: " + (row + 1) + "\ncol: ");
-                        } else if (row == -1) {
+                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row +1) + "\ncol: ");
+                        }
+                        else if (row == -1) {
                             row = coord - 1;
                             view.showSuccessMessage("col: ");
-                        } else if (col == -1) {
+                        }
+                        else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
                             if (selectedCell.size() == 1) {
@@ -95,7 +98,7 @@ public class SelectActionCellInputManager extends InputManager {
                             }
                         }
                     } catch (NumberFormatException e) {
-                        view.showErrorMessage("Please insert a valid number between 1 and 5");
+                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD);
                     }
                     break;
             }
