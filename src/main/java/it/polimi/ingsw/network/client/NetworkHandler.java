@@ -14,6 +14,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.*;
 
+/**
+ * Client-side client communication and message handler
+ */
 public class NetworkHandler implements Runnable {
     private final static String PING = "ping";
     private final BufferedReader inputSocket;
@@ -26,6 +29,13 @@ public class NetworkHandler implements Runnable {
     private ScheduledFuture<?> pingTask;
 
 
+    /**
+     * Default constructor
+     * <p>
+     * Tries to open a socket channel with the server
+     * @param client the client to connect
+     * @throws IOException if an I/O error occurs while opening the socket streams
+     */
     public NetworkHandler(Client client) throws IOException {
         this.jacksonParser = new JacksonMessageBuilder();
         this.client = client;
@@ -41,6 +51,13 @@ public class NetworkHandler implements Runnable {
         this.outputSocket.flush();
     }
 
+    /**
+     * Keeps listening on the network for messages
+     * <p>
+     *     In case of a ping message, see {@linkplain #ping()}; for any other message, the relative visitor method is
+     *     called
+     * @see ClientMessageManagerVisitor
+     */
     @Override
     public void run() {
         while (true) {
@@ -64,10 +81,12 @@ public class NetworkHandler implements Runnable {
         }
     }
 
-
+    /**
+     * Sends a login request to the server
+     * @param username the username to log the user in
+     */
     public void login(String username) {
         try {
-
             sendMessage(new LoginRequest(username));
             client.getView().showSuccessMessage("Login request sent, waiting for a response...");
         } catch (IOException e) {
@@ -76,6 +95,11 @@ public class NetworkHandler implements Runnable {
 
     }
 
+    /**
+     * Terminates the current socket connection
+     * <p>
+     *     This method causes also the input and output socket streams to be closed
+     */
     public void closeConnection() {
         try {
             outputSocket.close();
@@ -88,6 +112,11 @@ public class NetworkHandler implements Runnable {
         }
     }
 
+    /**
+     * Sends a message to the server
+     * @param message the {@linkplain Message} to be sent
+     * @throws IOException if an I/O error occurs
+     */
     public synchronized void sendMessage(Message message) throws IOException {
         String json = jacksonParser.fromMessageToString(message);
         if (!serverConnection.isClosed()) {
@@ -97,6 +126,12 @@ public class NetworkHandler implements Runnable {
         } else throw new IOException();
     }
 
+    /**
+     * Sends a string to the server
+     * @param string the string to send
+     * @throws IOException if an I/O error occurs
+     * @see #ping()
+     */
     public synchronized void sendMessage(String string) throws IOException {
         if (!serverConnection.isClosed()) {
             outputSocket.write(string + "\n");
@@ -105,6 +140,14 @@ public class NetworkHandler implements Runnable {
         } else throw new IOException();
     }
 
+    /**
+     * Handles the client-server ping messages to check for connectivity
+     * <p>
+     *      Every 5 seconds, this methods schedules a {@linkplain #closeConnection()} to be run; when a ping message
+     *      is received, the timer is defused and the thread is put to sleep for a second.
+     *      <br>
+     *          At every call, a ping message is also sent to the server
+     */
     public void ping() {
         if (ex != null) {
             ex.shutdownNow();

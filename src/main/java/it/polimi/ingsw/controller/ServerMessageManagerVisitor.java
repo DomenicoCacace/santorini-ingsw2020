@@ -18,7 +18,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain LoginRequest}
-     *
      * @param message the message to visit
      */
     default void login(LoginRequest message) {
@@ -27,7 +26,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain JoinLobbyRequest}
-     *
      * @param message the message to visit
      */
     default void joinLobby(JoinLobbyRequest message) {
@@ -36,18 +34,15 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain CreateLobbyRequest}
-     *
      * @param message the message to visit
      */
     default void createLobby(CreateLobbyRequest message) {
         cannotHandleMessage(message);
     }
 
-    // game setup related, handled by the MessageManagerParser
 
     /**
      * Visitor for {@linkplain ChooseInitialGodsResponse}
-     *
      * @param message the message to visit
      */
     default void chooseInitialGods(ChooseInitialGodsResponse message) {
@@ -56,25 +51,19 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain ChooseYourGodResponse}
-     *
      * @param message the message to visit
      */
     default void chooseGod(ChooseYourGodResponse message) {
         cannotHandleMessage(message);
     }
 
-    /**
-     * Visitor for {@linkplain ChooseStartingPlayerResponse}
-     *
-     * @param message the message to visit
-     */
+
     default void chooseStartingPlayer(ChooseStartingPlayerResponse message) {
         cannotHandleMessage(message);
     }
 
     /**
      * Visitor for {@linkplain ChooseToReloadMatchResponse}
-     *
      * @param message the message to visit
      */
     default void onMatchReloadResponse(ChooseToReloadMatchResponse message) {
@@ -85,7 +74,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain AddWorkerRequest}
-     *
      * @param message the message to visit
      */
     default void addWorkerOnBoard(AddWorkerRequest message) {
@@ -94,7 +82,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain SelectWorkerRequest}
-     *
      * @param message the message to visit
      */
     default void selectWorker(SelectWorkerRequest message) {
@@ -103,7 +90,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain WalkableCellsRequest}
-     *
      * @param message the message to visit
      */
     default void walkableCells(WalkableCellsRequest message) {
@@ -112,7 +98,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain BuildableCellsRequest}
-     *
      * @param message the message to visit
      */
     default void buildableCells(BuildableCellsRequest message) {
@@ -121,7 +106,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain PlayerMoveRequest}
-     *
      * @param message the message to visit
      */
     default void managePlayerMove(PlayerMoveRequest message) {
@@ -130,7 +114,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain SelectBuildingCellRequest}
-     *
      * @param message the message to visit
      */
     default void selectCellToBuild(SelectBuildingCellRequest message) {
@@ -139,7 +122,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain PlayerBuildRequest}
-     *
      * @param message the message to visit
      */
     default void managePlayerBuild(PlayerBuildRequest message) {
@@ -148,7 +130,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Visitor for {@linkplain EndTurnRequest}
-     *
      * @param message the message to visit
      */
     default void endTurn(EndTurnRequest message) {
@@ -157,7 +138,6 @@ public interface ServerMessageManagerVisitor {
 
     /**
      * Handles messages not supposed to be visited in the class it is implemented to
-     *
      * @param message the message to handle
      */
     void cannotHandleMessage(Message message);

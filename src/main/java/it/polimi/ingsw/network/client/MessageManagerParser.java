@@ -19,34 +19,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 
-
+/**
+ * Handles incoming messages from the server and their respective responses
+ */
 public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     private final Client client;
     private final ViewInterface view;
     private int chosenSize;
-    private List<Cell> gameboard;
+    private List<Cell> gameBoard;
     private Worker selectedWorker;
     private Cell selectedCell;
     private InputManager inputManager;
     private boolean isCreatingLobby = false;
     private boolean isLookingForLobbies = false;
-
-    public void setSelectedCell(Cell selectedCell) {
-        this.selectedCell = selectedCell;
-    }
-
-    public void setChosenSize(int chosenSize) {
-        this.chosenSize = chosenSize;
-    }
-
-    public void setCreatingLobby(boolean creatingLobby) {
-        isCreatingLobby = creatingLobby;
-    }
-
-    public void setLookingForLobbies(boolean lookingForLobbies) {
-        isLookingForLobbies = lookingForLobbies;
-    }
 
     /**
      * Default constructor
@@ -58,13 +44,53 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     }
 
     /**
+     * <i>selectedCell</i> setter
+     * @param selectedCell the cell to be used for the next action
+     */
+    public void setSelectedCell(Cell selectedCell) {
+        this.selectedCell = selectedCell;
+    }
+
+    /**
+     * <i>chosenSize</i> setter
+     * <p>
+     *     This is crucial to correctly manage the
+     * </p>
+     * @param chosenSize the lobby size
+     */
+    public void setChosenSize(int chosenSize) {
+        this.chosenSize = chosenSize;
+    }
+
+    /**
+     * <i>creatingLobby</i> setter
+     * <p>
+     *     Used to determine if the user is creating a lobby
+     * @param creatingLobby a boolean value
+     */
+    public void setCreatingLobby(boolean creatingLobby) {
+        isCreatingLobby = creatingLobby;
+    }
+
+    /**
+     * <i>lookingForLobbies</i> setter
+     * <p>
+     *     Used to determine if the user is looking for a lobby
+     * @param lookingForLobbies a boolean value
+     */
+    public void setLookingForLobbies(boolean lookingForLobbies) {
+        isLookingForLobbies = lookingForLobbies;
+    }
+
+
+    /**
      * Manages the login response
      * <p>
      * Based on the {@linkplain LoginResponse} outcome
      *    <ul>
-     *        <li>OK: login successful, the user is in the waiting room and asked to create/join a lobby</li>
-     *        <li>SERVER_FULL: the server has exceeded its maximum capacity, won't accept new connections</li>
-     *        <li>INVALID_NAME: the username is already taken or forbidden</li>
+     *        <li>{@linkplain Type#OK}: login successful, the user is in the waiting room and asked to create/join a lobby</li>
+     *        <li>{@linkplain Type#SERVER_FULL}: the server has exceeded its maximum capacity, won't accept new connections</li>
+     *        <li>{@linkplain Type#INVALID_NAME}: the username is already taken or forbidden</li>
      *    </ul>
      *    At this stage, the method also tries to save the address+username combo in a file, for quick access on the
      *    next login.
@@ -91,8 +117,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 client.stopConnection();
                 break;
         }
-
-
     }
 
     /**
@@ -221,7 +245,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * Asks the user to choose its god
      * <br>
      *     If there's only one god left to be chosen, it is automatically assigned to the player
-     * @param message the god request to handle
+     * @param message the message to handle
      */
     @Override  // choosing the player's unique god
     public void chooseYourGod(ChooseYourGodRequest message) {
@@ -239,6 +263,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         }
     }
 
+    /**
+     * Asks the user to select the player which plays first
+     * @param message the message to handle
+     */
     @Override
     public void chooseStartingPlayer(ChooseStartingPlayerRequest message) {
         client.setCurrentPlayer(true);
@@ -261,53 +289,98 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         enterLobby(message.getAvailableLobbies());
     }
 
+    /**
+     * Sends a {@linkplain AddWorkerRequest} to the server to add a new Worker
+     * @param row the worker cell row index
+     * @param col the worker cell column index
+     */
     public void addWorker(int row, int col){
-        client.sendMessage(new AddWorkerRequest(client.getUsername(), gameboard.get(5 * row + col)));
+        client.sendMessage(new AddWorkerRequest(client.getUsername(), gameBoard.get(5 * row + col)));
         client.setCurrentPlayer(false);
     }
 
+    /**
+     * Refreshes the game board
+     * @param message the message to handle
+     */
     @Override
     public void onGameBoardUpdate(GameBoardUpdate message) {
-        gameboard = message.getGameBoard();
+        gameBoard = message.getGameBoard();
         view.initGameBoard(message.getGameBoard());
     }
 
+    /**
+     * Manages a PlayerMoveEvent
+     * <p>
+     *     Based on the {@linkplain PlayerMoveEvent} outcome:
+     *     <ul>
+     *         <li>{@linkplain Type#OK}: updates the saved game board</li>
+     *         <li>Any other case: shows an error message</li>
+     *     </ul>
+     * </p>
+     * @param message the message to handle
+     */
     @Override // Move action response
     public void onPlayerMove(PlayerMoveEvent message) {
         if (message.getType().equals(Type.OK))
-            gameboard = message.getPayload();
+            gameBoard = message.getPayload();
             //payload to be saved internally on the view
         else
             view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
-        view.showGameBoard(gameboard);
+        view.showGameBoard(gameBoard);
     }
 
+    /**
+     * Manages a PlayerBuildEvent
+     * <p>
+     *     Based on the {@linkplain PlayerBuildEvent} outcome:
+     *     <ul>
+     *         <li>{@linkplain Type#OK}: updates the saved game board</li>
+     *         <li>Any other case: shows an error message</li>
+     *     </ul>
+     * </p>
+     * @param message the message to handle
+     */
     @Override // Build action response
     public void onPlayerBuild(PlayerBuildEvent message) {
         if (message.getType().equals(Type.OK))
-            gameboard = message.getPayload();
+            gameBoard = message.getPayload();
         else
             view.showErrorMessage(message.getType().toString());
-        view.showGameBoard(gameboard);
+        view.showGameBoard(gameBoard);
     }
 
+    /**
+     * Manages an EndTurnEvent
+     * <p>
+     *     If the outcome is {@linkplain Type#OK}, the previous turn has been ended and a new one begun; if the user's
+     *     username is the same contained in the message, its {@linkplain Client#setCurrentPlayer(boolean)} token is
+     *     set to {@code true} and its turn begins
+     * </p>
+     * @param message the message to handle
+     */
     @Override // End turn response
     public void onTurnEnd(EndTurnEvent message) {
         if (message.getType().equals(Type.OK)) {
             client.setCurrentPlayer(message.getPayload().equals(client.getUsername()));
+
             if (client.getUsername().equals(message.getPayload())) { //if currentPlayer
                 client.setCurrentPlayer(true);
                 inputManager = new SelectWorkerInputManager(client, this);
                 view.setInputManager(inputManager);
                 view.chooseWorker();
-            } else {
-                client.setCurrentPlayer(false);
             }
-        } else {
-            view.showErrorMessage("You can't end your turn now.");
+            else
+                client.setCurrentPlayer(false);
         }
+        else
+            view.showErrorMessage("You can't end your turn now.");
     }
 
+    /**
+     * Asks the user to choose where to place its worker
+     * @param message the message to handle
+     */
     @Override // Place worker request
     public void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {
         client.setCurrentPlayer(true);
@@ -316,54 +389,91 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         view.placeWorker();
     }
 
+    /**
+     * Manages a WorkerAddedEvent
+     * <p>
+     *     Based on the {@linkplain WorkerAddedEvent} outcome:
+     *     <ul>
+     *         <li>{@linkplain Type#OK}: updates the saved game board</li>
+     *         <li>Any other case: shows an error message</li>
+     *     </ul>
+     * </p>
+     * @param message the message to handle
+     */
     @Override  // Place worker response
     public void onWorkerAdd(WorkerAddedEvent message) {
         if (message.getType().equals(Type.OK)) {
-            gameboard = message.getPayload();
+            gameBoard = message.getPayload();
             view.showSuccessMessage("Worker placed!");
             view.showGameBoard(message.getPayload());
-        } else {
-            view.showErrorMessage("Can't place a worker in that cell :(");
         }
+        else
+            view.showErrorMessage("Can't place a worker in that cell :(");
     }
 
+    /**
+     * Manages a GameStartEvent
+     * <p>
+     *     Signals the users the game started; the player designated as <i>first player</i>
+     *     (see {@linkplain ChooseStartingPlayerRequest}) is asked to perform an action
+     * </p>
+     * @param message the message to handle
+     */
     @Override
     public void onGameStart(GameStartEvent message) {
         inputManager = new SelectWorkerInputManager(client, this);
         view.gameStartScreen(message.getPayload().getBoard());
-        gameboard = message.getPayload().getBoard();
+        gameBoard = message.getPayload().getBoard();
         if (message.getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())) {
             client.setCurrentPlayer(true);
             view.setInputManager(inputManager);
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
-        } else{
-            client.setCurrentPlayer(false);
         }
+        else
+            client.setCurrentPlayer(false);
     }
 
+    /**
+     * Asks the user to choose a worker
+     * @param row the cell row index
+     * @param col the cell column index
+     */
     public void chooseWorker(int row, int col){
-        if (gameboard.get(5 * row + col).getOccupiedBy() != null){
-            selectedWorker = gameboard.get(5 * row + col).getOccupiedBy();
+        if (gameBoard.get(5 * row + col).getOccupiedBy() != null){
+            selectedWorker = gameBoard.get(5 * row + col).getOccupiedBy();
             Message selectWorkerRequest = new SelectWorkerRequest(client.getUsername(), selectedWorker);
             client.sendMessage(selectWorkerRequest);
-        }else{
+        }
+        else {
             view.showErrorMessage("There's no worker in that cell!");
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
         }
     }
 
+    /**
+     * Sends a {@linkplain PlayerMoveRequest} to the server
+     * @param selectedCell the cell to move the selected worker to
+     */
     public void sendMove(Cell selectedCell){
         client.sendMessage(new PlayerMoveRequest(client.getUsername(), selectedCell, selectedWorker));
         client.setCurrentPlayer(false);
     }
 
+    /**
+     * Sends a {@linkplain PlayerBuildRequest} to the server
+     * @param selectedBlock block to be built on the target cell
+     */
     public void sendBuild(Block selectedBlock){
         client.sendMessage(new PlayerBuildRequest(client.getUsername(), selectedCell, selectedBlock, selectedWorker));
         client.setCurrentPlayer(false);
     }
 
+    /**
+     * Manages a WinnerDeclaredEvent, showing the winner
+     * @param message the message to handle
+     */
     @Override // Winner declaration, received by all users
     public void onWinnerDeclared(WinnerDeclaredEvent message) {
         if (message.getPayload().equals(client.getUsername()))
@@ -372,9 +482,13 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             view.showSuccessMessage(message.getPayload() + " WON!");//view.displayWinner
     }
 
+    /**
+     * Manages a PlayerRemovedEvent, showing the winner
+     * @param message the message to handle
+     */
     @Override  // Player removed, received by all users
     public void onPlayerRemoved(PlayerRemovedEvent message) {
-        gameboard = message.getGameboard();
+        gameBoard = message.getGameboard();
         if (message.getPayload().equals(client.getUsername())) {
             view.showErrorMessage("You lost");
             client.setCurrentPlayer(false);
@@ -382,11 +496,16 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         else {
             view.showGameBoard(message.getGameboard());
             view.showSuccessMessage(message.getPayload() + " lost");
-            // board without the loser's workers sent somewhere else
         }
-        //view.displayGameboard(payload)
     }
 
+    /**
+     * Manages a WorkerSelectedResponse
+     * <p>
+     *     If the response type is {@linkplain Type#OK}, the user is asked to choose the action to perform; otherwise, a
+     *     error message is shown
+     * @param message the message to handle
+     */
     @Override
     public void onWorkerSelected(WorkerSelectedResponse message) {
         client.setCurrentPlayer(true);
@@ -401,36 +520,63 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 view.setInputManager(inputManager);
                 view.chooseAction(message.getPossibleActions());
             }
-        } else {
+        }
+        else {
             view.showErrorMessage("Wrong worker selected");
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
         }
     }
 
+    /**
+     * Manages a WalkableCellsResponse
+     * <p>
+     *     If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
+     *     its chosen worker can be moved; otherwise, an error message is shown
+     *
+     * @param message the message to visit
+     */
     @Override
     public void onWalkableCellsReceived(WalkableCellsResponse message) {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), true, this);
             view.setInputManager(inputManager);
-            view.moveAction(gameboard, message.getPayload());
-        } else;
+            view.moveAction(gameBoard, message.getPayload());
+        }
+        else {
             //we should never enter here
-            //view.displayError(outcome)
+            view.showErrorMessage(message.getType().toString());
+        }
     }
 
+    /**
+     * Manages a BuildableCellsResponse
+     * <p>
+     *     If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
+     *     its chosen worker can build on; otherwise, an error message is shown
+     *
+     * @param message the message to visit
+     */
     @Override
     public void onBuildableCellsReceived(BuildableCellsResponse message) {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), false, this);
             view.setInputManager(inputManager);
-            view.buildAction(gameboard, message.getPayload());
+            view.buildAction(gameBoard, message.getPayload());
         } else {
             //we should never enter here
-            //view.displayError(outcome)
+            view.showErrorMessage(message.getType().toString());
         }
     }
 
+    /**
+     * Manages a PossibleBuildingBlockResponse
+     * <p>
+     *     If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
+     *     its chosen worker can be moved; otherwise, an error message is shown
+     *
+     * @param message the message to visit
+     */
     @Override
     public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
         inputManager=new SelectBlockInputManager(client, this, message.getBlocks());
@@ -438,6 +584,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         view.chooseBlockToBuild(message.getBlocks());
     }
 
+    /**
+     * Determines what message to send based on the action chosen by the user
+     * @param chosenAction the chosen action
+     */
     public void messageToSend(PossibleActions chosenAction) {
         Message nextAction = null;
         switch (chosenAction) {
@@ -456,18 +606,26 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 view.chooseWorker();
                 break;
         }
-        if (nextAction != null) {
+
+        if (nextAction != null)
             client.sendMessage(nextAction);
-        }
     }
 
+    /**
+     * Shows the walkable cells and asks the user where to move its chosen worker
+     * @param walkableCells a list of walkable cells
+     */
     //FIXME: in case the player selects the wrong cell we need to reprint the question
     public void printOnMove(List<Cell> walkableCells){
-        view.moveAction(gameboard, walkableCells);
+        view.moveAction(gameBoard, walkableCells);
     }
 
+    /**
+     * Shows the buildable cells and asks the user where to build with its chosen worker
+     * @param buildableCells a list of buildable cells
+     */
     public void printOnBuild(List<Cell> buildableCells){
-        view.buildAction(gameboard, buildableCells);
+        view.buildAction(gameBoard, buildableCells);
     }
 
 

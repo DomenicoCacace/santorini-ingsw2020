@@ -1,30 +1,147 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
 import it.polimi.ingsw.network.message.request.fromServerToClient.*;
 import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 
+/**
+ * Visitor interface for messages travelling from the server to the client
+ */
 public interface ClientMessageManagerVisitor {
 
+    /**
+     * Visitor for {@linkplain LoginResponse}
+     * @param message the message to visit
+     */
     void onLogin(LoginResponse message);
+
+    /**
+     * Visitor for {@linkplain UserJoinedLobbyEvent}
+     * @param message the message to visit
+     */
     void joinLobby(UserJoinedLobbyEvent message);
+
+    /**
+     * Visitor for {@linkplain LobbyCreatedEvent}
+     * @param message the message to visit
+     */
     void createLobby(LobbyCreatedEvent message);
-    void onPlayerMove(PlayerMoveEvent message);
-    void onPlayerBuild(PlayerBuildEvent message);
-    void onTurnEnd(EndTurnEvent message);
-    void chooseYourWorkerPosition(ChooseWorkerPositionRequest message);
-    void onWorkerAdd(WorkerAddedEvent message);
-    void chooseInitialGods(ChooseInitialGodsRequest message);
-    void onWinnerDeclared(WinnerDeclaredEvent message);
-    void onPlayerRemoved(PlayerRemovedEvent message);
-    void chooseYourGod(ChooseYourGodRequest message);
-    void onGodChosen(ChosenGodsEvent message);
-    void chooseStartingPlayer(ChooseStartingPlayerRequest message);
-    void onWorkerSelected(WorkerSelectedResponse message);
-    void onWalkableCellsReceived(WalkableCellsResponse message);
-    void onBuildableCellsReceived(BuildableCellsResponse message);
-    void onBuildingCellSelected(PossibleBuildingBlockResponse message);
-    void onGameStart(GameStartEvent message);
+
+    /**
+     * Visitor for {@linkplain ChooseToReloadMatchRequest}
+     * @param message the message to visit
+     */
     void chooseToReloadMatch(ChooseToReloadMatchRequest message);
-    void onGameBoardUpdate(GameBoardUpdate gameBoardUpdate);
+
+    /**
+     * Visitor for {@linkplain ChooseInitialGodsRequest}
+     * @param message the message to visit
+     */
+    void chooseInitialGods(ChooseInitialGodsRequest message);
+
+    /**
+     * Visitor for {@linkplain ChosenGodsEvent}
+     * @param message the message to visit
+     */
+    void onGodChosen(ChosenGodsEvent message);
+
+    /**
+     * Visitor for {@linkplain ChooseYourGodRequest}
+     * @param message the message to visit
+     */
+    void chooseYourGod(ChooseYourGodRequest message);
+
+    /**
+     * Visitor for {@linkplain ChooseStartingPlayerRequest}
+     * @param message the message to visit
+     */
+    void chooseStartingPlayer(ChooseStartingPlayerRequest message);
+
+    /**
+     * Visitor for {@linkplain GameStartEvent}
+     * @param message the message to visit
+     */
+    void onGameStart(GameStartEvent message);
+
+    /**
+     * Visitor for {@linkplain GameBoardUpdate}
+     * @param message the message to visit
+     */
+    void onGameBoardUpdate(GameBoardUpdate message);
+
+    /**
+     * Visitor for {@linkplain WorkerSelectedResponse}
+     * @param message the message to visit
+     */
+    void onWorkerSelected(WorkerSelectedResponse message);
+
+    /**
+     * Visitor for {@linkplain WorkerSelectedResponse}
+     * @param message the message to visit
+     */
+    void onWalkableCellsReceived(WalkableCellsResponse message);
+
+    /**
+     * Visitor for {@linkplain BuildableCellsResponse}
+     * @param message the message to visit
+     */
+    void onBuildableCellsReceived(BuildableCellsResponse message);
+
+    /**
+     * Visitor for {@linkplain PossibleBuildingBlockResponse}
+     * @param message the message to visit
+     */
+    void onBuildingCellSelected(PossibleBuildingBlockResponse message);
+
+    /**
+     * Visitor for {@linkplain PlayerMoveEvent}
+     * @param message the message to visit
+     */
+    void onPlayerMove(PlayerMoveEvent message);
+
+    /**
+     * Visitor for {@linkplain PlayerBuildEvent}
+     * @param message the message to visit
+     */
+    void onPlayerBuild(PlayerBuildEvent message);
+
+
+    /**
+     * Visitor for {@linkplain EndTurnEvent}
+     * @param message the message to visit
+     */
+    void onTurnEnd(EndTurnEvent message);
+
+    /**
+     * Visitor for {@linkplain ChooseWorkerPositionRequest}
+     * @param message the message to visit
+     */
+    void chooseYourWorkerPosition(ChooseWorkerPositionRequest message);
+
+    /**
+     * Visitor for {@linkplain WorkerAddedEvent}
+     * @param message the message to visit
+     */
+    void onWorkerAdd(WorkerAddedEvent message);
+
+
+
+    /**
+     * Visitor for {@linkplain WinnerDeclaredEvent}
+     * @param message the message to visit
+     */
+    void onWinnerDeclared(WinnerDeclaredEvent message);
+
+    /**
+     * Visitor for {@linkplain PlayerRemovedEvent}
+     * @param message the message to visit
+     */
+    void onPlayerRemoved(PlayerRemovedEvent message);
+
+    /**
+     * Visitor for {@linkplain MovedToWaitingRoomResponse}
+     * @param message the message to visit
+     */
     void onMovedToWaitingRoom(MovedToWaitingRoomResponse message);
 }

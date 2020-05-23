@@ -115,7 +115,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * Sends a message to a given user
      * <p>
      *     The message is sent only if the recipient is in the same room of the sender.
-    * @param username the message recipient, as a string
+     * @param username the message recipient, as a string
      * @param message the message to send
      */
     public void sendMessage(String username, Message message) {

@@ -9,8 +9,10 @@ import it.polimi.ingsw.view.inputManagers.LoginManager;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CancellationException;
 
+/**
+ * Representation of a client,
+ */
 public class Client {
     private static final File CONFIG_FILE = new File("../config.txt");
     private static final int MAX_SETTINGS_STORED = 5;
@@ -20,11 +22,20 @@ public class Client {
     private NetworkHandler networkHandler;
     private boolean currentPlayer;
 
-
+    /**
+     * First constructor
+     * @param viewInterface the UI to use
+     */
     public Client(ViewInterface viewInterface){
         this.view = viewInterface;
     }
 
+    /**
+     * Default constructor
+     * @param username the client's username
+     * @param ipAddress the server address
+     * @param viewInterface the UI to use
+     */
     public Client(String username, String ipAddress, ViewInterface viewInterface) {
         this.view = viewInterface;
         this.username = username;
@@ -32,6 +43,12 @@ public class Client {
         this.currentPlayer = true;
     }
 
+    /**
+     * Launches the client
+     * <p>
+     *     To determine which UI to use, this method uses command line arguments
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         ViewInterface viewInterface;
         try {
@@ -49,6 +66,10 @@ public class Client {
         //TODO: Here I ask the user if he wants to use the Cli/Gui
     }
 
+    /**
+     * Creates a new client instance
+     * @param viewInterface the UI to use
+     */
     public static void initClient(ViewInterface viewInterface){
         Client client = new Client(viewInterface);
         viewInterface.printLogo();
@@ -65,20 +86,23 @@ public class Client {
                 bufferedReader.close();
                 viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askToReloadLastSettings(savedUsers);
-            } else { //If the file is empty
+            }
+            else { //the file is empty
                 viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askIP();
-                //loginData.add(viewInterface.askUsername());
             }
         } catch (IOException e) {
-            viewInterface.showErrorMessage("Timeout!!");
             Client.initClient(viewInterface);
             e.printStackTrace();
-        } catch (CancellationException e){
-
         }
     }
 
+    /**
+     * Saves a new login configuration to a file
+     * @param ip the server address
+     * @param username the username
+     * @throws IOException if an I/O error occurs
+     */
     public void writeSettingsToFile(String ip, String username) throws IOException {
         StringBuilder otherUsers = new StringBuilder();
         String ipLine;
@@ -100,42 +124,47 @@ public class Client {
         bufferedWriter.close();
     }
 
+    /**
+     * <i>username</i> getter
+     * @return the user's username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * <i>ipAddress</i> getter
+     * @return the server address
+     */
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    /**
+     * Sets the username and, if possible, starts a connection
+     * @param username the chosen username
+     * @see #startConnection()
+     */
     public void setUsername(String username) {
         this.username = username;
-        if(networkHandler== null)
+        if(networkHandler == null)
             startConnection();
         else
             networkHandler.login(username);
     }
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-  /*  public void setLoginData(String ipAddress, String username){
-        this.ipAddress = ipAddress;
-        this.username = username;
-        startConnection();
-    }
-
-   */
-
+    /**
+     * <i>ipAddress</i> setter
+     * @param ipAddress the server address
+     */
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
-    public void setCurrentPlayer(boolean currentPlayer) {
-        this.currentPlayer = currentPlayer;
-    }
-
-    /*
-        The view asks the user for his Username and IpAddress (we need this because of quarantine), then it'll call this method to start the connection
-         */
-    public void startConnection() {
+    /**
+     * Opens a connection to the server
+     */
+    private void startConnection() {
         try{
             networkHandler = new NetworkHandler(this);
             setCurrentPlayer(true);
@@ -147,6 +176,18 @@ public class Client {
         }
     }
 
+    /**
+     * Sets a flag allowing the user to send messages
+     * @param currentPlayer a boolean value
+     */
+    public void setCurrentPlayer(boolean currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    /**
+     * Sends a message to the server
+     * @param message the message to be sent
+     */
     public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
         if (currentPlayer) {
             try {
@@ -157,11 +198,17 @@ public class Client {
         }
     }
 
-
+    /**
+     * Terminates the connection with the server, closing the socket streams
+     */
     public void stopConnection() {
         networkHandler.closeConnection();
     }
 
+    /**
+     * <i>view</i> getter
+     * @return the UI in use
+     */
     public ViewInterface getView() {
         return this.view;
     }
