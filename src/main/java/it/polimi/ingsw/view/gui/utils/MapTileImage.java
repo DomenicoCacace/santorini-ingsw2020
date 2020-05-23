@@ -1,6 +1,10 @@
 package it.polimi.ingsw.view.gui.utils;
 import it.polimi.ingsw.model.Color;
+import it.polimi.ingsw.view.gui.viewController.GameScreenController;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
 public class MapTileImage extends ResizableImageView {
@@ -18,21 +22,33 @@ public class MapTileImage extends ResizableImageView {
     private boolean isOccupied;
     private boolean isCellTile;
     private MapTileImage printedWorker;
+    private GameScreenController controller;
+
 
     public MapTileImage() {
         super();
+        this.setDisable(true);
+    }
+
+    public MapTileImage(Image image) {
+        super(image);
+        this.setDisable(true);
+    }
+
+    public boolean isCellTile() {
+        return isCellTile;
     }
 
     public void setCellTile(boolean cellTile) {
         isCellTile = cellTile;
     }
 
-    public MapTileImage(Image image) {
-        super(image);
-    }
-
-    public boolean isCellTile() {
-        return isCellTile;
+    public void setController(GameScreenController controller) {
+        this.controller = controller;
+        ((StackPane) this.getParent()).getChildren().forEach(node ->
+                node.setOnMouseClicked(event -> {
+                    controller.handleCellCLicked(GridPane.getRowIndex(this.getParent()), GridPane.getColumnIndex(this.getParent()));
+                }));
     }
 
     public int getHeight() {
@@ -88,17 +104,16 @@ public class MapTileImage extends ResizableImageView {
     public void printWorker(Color color){
         if(isOccupied)
             removeWorker();
-        else{
-            StackPane stackPane = ((StackPane) this.getParent());
-            printedWorker = new MapTileImage(chooseWorker(color));
-            printedWorker.isCellTile=false;
-            printedWorker.setFitHeight(this.getFitHeight() - 0.5);
-            printedWorker.setFitWidth(this.getFitWidth() - 0.5);
-            stackPane.getChildren().add(printedWorker);
-            isOccupied = true;
-        }
+        StackPane stackPane = ((StackPane) this.getParent());
+        printedWorker = new MapTileImage(chooseWorker(color));
+        printedWorker.isCellTile=false;
+        printedWorker.setFitHeight(this.getFitHeight() - 0.5);
+        printedWorker.setFitWidth(this.getFitWidth() - 0.5);
+        stackPane.getChildren().add(printedWorker);
+        isOccupied = true;
+
     }
-    
+
     public void removeWorker(){
         StackPane stackPane = ((StackPane) this.getParent());
         stackPane.getChildren().removeAll(printedWorker);

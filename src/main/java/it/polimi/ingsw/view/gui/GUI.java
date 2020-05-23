@@ -217,22 +217,34 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void chooseWorker() {
-
+        Platform.runLater(() -> {
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.setGui(this);
+            controller.allCellsClickable();
+        });
     }
 
     @Override
     public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
-
+        Platform.runLater(() -> {
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.setGui(this);
+            controller.makeCellsClickable(walkableCells);
+        });
     }
 
     @Override
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
-
+        Platform.runLater(() -> {
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.setGui(this);
+            controller.makeCellsClickable(buildableCells);
+        });
     }
 
     @Override
     public void chooseBlockToBuild(List<Block> buildableBlocks) {
-
+        setInputString("2"); //TODO don't hardcode
     }
 
     @Override
@@ -286,12 +298,16 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void placeWorker() {
-
+        Platform.runLater(() -> {
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.setGui(this);
+            controller.allCellsClickable();
+        });
     }
 
     @Override
     public void chooseAction(List<PossibleActions> possibleActions) {
-
+        setInputString("1");
     }
 
 
