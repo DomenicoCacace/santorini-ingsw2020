@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LoginResponse extends MessageFromServerToClient {
-    private final Map<String, List<String>>  lobbies;
+    private final Map<String, List<String>> lobbies;
 
     @JsonCreator
     public LoginResponse(@JsonProperty("type") Type type, @JsonProperty("username") String username, @JsonProperty("lobbies") Map<String, List<String>> lobbies) {
@@ -18,7 +18,7 @@ public class LoginResponse extends MessageFromServerToClient {
         this.lobbies = lobbies;
     }
 
-    public Map<String, List<String>>  getLobbies() {
+    public Map<String, List<String>> getLobbies() {
         return lobbies;
     }
 

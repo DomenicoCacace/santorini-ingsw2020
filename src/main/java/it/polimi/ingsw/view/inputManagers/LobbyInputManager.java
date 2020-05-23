@@ -14,30 +14,26 @@ import java.util.Map;
  */
 public class LobbyInputManager extends InputManager {
 
-    private enum State {
-        CREATE_OR_JOIN, CREATE, JOIN,
-    }
-
     public static final String CREATE_LOBBY = "1";
     public static final String JOIN_LOBBY = "2";
-    private State state;
-    private String lobbyName;
     private final MessageManagerParser messageManagerParser;
     private final Map<String, List<String>> lobbiesAvailable;
+    private State state;
+    private String lobbyName;
 
     public LobbyInputManager(Client client, Map<String, List<String>> lobbiesAvailable, MessageManagerParser messageParser, boolean isJoining) {
         super(client);
         this.lobbiesAvailable = lobbiesAvailable;
         this.messageManagerParser = messageParser;
-        if(isJoining)
-            this.state=State.JOIN;
+        if (isJoining)
+            this.state = State.JOIN;
         else
-            this.state=State.CREATE_OR_JOIN;
+            this.state = State.CREATE_OR_JOIN;
     }
 
     @Override
     public void manageInput(String input) {
-        if(isWaitingForInput) {
+        if (isWaitingForInput) {
             switch (state) {
                 case CREATE_OR_JOIN:
                     input = cleanInput(input);
@@ -89,7 +85,7 @@ public class LobbyInputManager extends InputManager {
             messageManagerParser.setCreatingLobby(true);
             messageManagerParser.setLookingForLobbies(false);
             view.askLobbyName();
-        } else if (input.equals(JOIN_LOBBY) && lobbiesAvailable.keySet().size()>0) {  // Join existing lobby
+        } else if (input.equals(JOIN_LOBBY) && lobbiesAvailable.keySet().size() > 0) {  // Join existing lobby
             this.state = State.JOIN;
             messageManagerParser.setLookingForLobbies(true);
             view.chooseLobbyToJoin(lobbiesAvailable);
@@ -106,7 +102,7 @@ public class LobbyInputManager extends InputManager {
 
     private void onLobbySize(int chosenSize) {
         messageManagerParser.setChosenSize(chosenSize);
-        isWaitingForInput=false;
+        isWaitingForInput = false;
         client.sendMessage(new CreateLobbyRequest(client.getUsername(), lobbyName, chosenSize));
         messageManagerParser.setCreatingLobby(false);
     }
@@ -115,5 +111,9 @@ public class LobbyInputManager extends InputManager {
         messageManagerParser.setLookingForLobbies(false);
         isWaitingForInput = false;
         client.sendMessage(new JoinLobbyRequest(client.getUsername(), input));
+    }
+
+    private enum State {
+        CREATE_OR_JOIN, CREATE, JOIN,
     }
 }

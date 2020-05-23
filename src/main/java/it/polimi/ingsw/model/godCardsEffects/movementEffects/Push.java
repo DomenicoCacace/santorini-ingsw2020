@@ -13,13 +13,14 @@ import java.util.List;
 /**
  * Kick opponent workers when moving
  * <p>
- *     This effect alters the workers' walkable cells: workers can push opponent an opponent worker in the cell behind
- *     them (see {@linkplain it.polimi.ingsw.model.GameBoard#getCellBehind(Cell, Cell)})
-*/
+ * This effect alters the workers' walkable cells: workers can push opponent an opponent worker in the cell behind
+ * them (see {@linkplain it.polimi.ingsw.model.GameBoard#getCellBehind(Cell, Cell)})
+ */
 public class Push extends MovementStrategy {
 
     /**
      * Default constructor
+     *
      * @see #initialize()
      */
     public Push() {
@@ -28,6 +29,7 @@ public class Push extends MovementStrategy {
 
     /**
      * Copy constructor
+     *
      * @param push the strategy to clone
      * @param game the game in which the effect is used
      */
@@ -45,9 +47,10 @@ public class Push extends MovementStrategy {
     /**
      * Determines if an opponent worker can be pushed
      * <p>
-     *     This method checks if the <i>cell behind</i> the opponent worker exists and is not occupied by another worker
-     *     nor a dome
-    * @param myCell the worker's starting position
+     * This method checks if the <i>cell behind</i> the opponent worker exists and is not occupied by another worker
+     * nor a dome
+     *
+     * @param myCell     the worker's starting position
      * @param targetCell the cell containing the worker to push
      * @return true if the the opponent's worker can be pushed
      */
@@ -59,6 +62,7 @@ public class Push extends MovementStrategy {
 
     /**
      * Forces the opponent worker to be moved on the cell behind it
+     *
      * @param action the action performed by the current player's worker
      */
     void opponentAction(MoveAction action) {
@@ -72,12 +76,13 @@ public class Push extends MovementStrategy {
     /**
      * Determines if a moveAction is legal and applies it
      * <p>
-     *     Using this ruleSet, a movement action is considered valid if the following conditions are all true:
-     *     <ul>
-     *         <li>no worker has been moved yet during the turn</li>
-     *         <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
-     *     </ul>
-    * @param action the movement action to validate
+     * g this ruleSet, a movement action is considered valid if the following conditions are all true:
+     * <ul>
+     *     <li>no worker has been moved yet during the turn</li>
+     *     <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
+     * </ul>
+     *
+     * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -93,10 +98,11 @@ public class Push extends MovementStrategy {
     /**
      * Provides a list of cells on which the worker can walk on
      * <p>
-     *     Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
-     *     at most one compared to the starting cell (domes do not count) and has no dome built on it; a worker can walk
-     *     on a cell occupied by another worker if it can be pushed (see {@linkplain #canPush(Cell, Cell)})
-    * @param worker the worker to be moved
+     * Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
+     * at most one compared to the starting cell (domes do not count) and has no dome built on it; a worker can walk
+     * on a cell occupied by another worker if it can be pushed (see {@linkplain #canPush(Cell, Cell)})
+     *
+     * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
     @Override
@@ -122,6 +128,7 @@ public class Push extends MovementStrategy {
 
     /**
      * Creates a clone of this object
+     *
      * @param game the current game
      * @return a clone of this object
      */

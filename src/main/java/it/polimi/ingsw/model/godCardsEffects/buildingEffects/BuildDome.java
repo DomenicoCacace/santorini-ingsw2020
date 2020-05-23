@@ -18,8 +18,9 @@ public class BuildDome extends BuildingStrategy {
 
     /**
      * Copy constructor
+     *
      * @param buildDome the strategy to clone
-     * @param game the game in which the effect is used
+     * @param game      the game in which the effect is used
      */
     private BuildDome(BuildDome buildDome, Game game) {
         this.game = game;
@@ -35,13 +36,14 @@ public class BuildDome extends BuildingStrategy {
     /**
      * Determines if a buildAction is legal and applies it
      * <p>
-     *     Using this ruleSet, a build action is considered valid if the following conditions are all true:
-     *     <ul>
-     *         <li>a worker has already been moved</li>
-     *         <li>the worker to perform the action is the same which has been moved</li>
-     *         <li>the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker</li>
-     *     </ul>
-    * @param action the build action to validate
+     * g this ruleSet, a build action is considered valid if the following conditions are all true:
+     * <ul>
+     *     <li>a worker has already been moved</li>
+     *     <li>the worker to perform the action is the same which has been moved</li>
+     *     <li>the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker</li>
+     * </ul>
+     *
+     * @param action the build action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -56,6 +58,7 @@ public class BuildDome extends BuildingStrategy {
 
     /**
      * Creates a clone of this object
+     *
      * @param game the current game
      * @return a clone of this object
      */
@@ -67,12 +70,13 @@ public class BuildDome extends BuildingStrategy {
     /**
      * Provides the possible blocks buildable on a given cell
      * <p>
-     *     Using this ruleSet, a worker can build
-     *     <ul>
-     *         <li>a block which level is immediately taller than the cell to build on</li>
-     *         <li>a dome</li>
-     *     </ul>
-     *     Note that the standard rules about building on domes still apply
+     * g this ruleSet, a worker can build
+     * <ul>
+     *     <li>a block which level is immediately taller than the cell to build on</li>
+     *     <li>a dome</li>
+     * </ul>
+     * Note that the standard rules about building on domes still apply
+     *
      * @param selectedCell the cell to get the buildable blocks for
      * @return a list of blocks that can be built on the given cell
      */

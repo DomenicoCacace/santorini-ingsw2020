@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * A data class for {@linkplain it.polimi.ingsw.model.Player}
  * <p>
- *     It can be useful to send game information over the network, without any reference to the actual game object.
-*/
+ * It can be useful to send game information over the network, without any reference to the actual game object.
+ */
 public class PlayerData {
     private final String name;
     private final Color color;
@@ -21,10 +21,11 @@ public class PlayerData {
 
     /**
      * Default constructor
-     * @param name the player's username
-     * @param color the player's workers' color
-     * @param workers the player0s workers
-     * @param god the player's god
+     *
+     * @param name           the player's username
+     * @param color          the player's workers' color
+     * @param workers        the player0s workers
+     * @param god            the player's god
      * @param selectedWorker the last worker selected to perform an action
      */
     @JsonCreator
@@ -40,6 +41,7 @@ public class PlayerData {
 
     /**
      * <i>selectedWorker</i> getter
+     *
      * @return the last worker selected to perform an action
      */
     public Worker getSelectedWorker() {
@@ -48,6 +50,7 @@ public class PlayerData {
 
     /**
      * <i>name</i> getter
+     *
      * @return the player's username
      */
     public String getName() {
@@ -56,6 +59,7 @@ public class PlayerData {
 
     /**
      * <i>color</i> getter
+     *
      * @return the player's workers' color
      */
     public Color getColor() {
@@ -64,6 +68,7 @@ public class PlayerData {
 
     /**
      * <i>workers</i> getter
+     *
      * @return the player's workers
      */
     public List<Worker> getWorkers() {
@@ -72,6 +77,7 @@ public class PlayerData {
 
     /**
      * <i>god</i> gettter
+     *
      * @return the player's god
      */
     public GodData getGod() {

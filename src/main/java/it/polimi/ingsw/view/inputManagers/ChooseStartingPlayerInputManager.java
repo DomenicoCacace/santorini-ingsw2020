@@ -11,7 +11,6 @@ public class ChooseStartingPlayerInputManager extends InputManager {
     private final List<String> usernames = new ArrayList<>();
 
 
-
     /**
      * Default constructor
      *
@@ -26,18 +25,17 @@ public class ChooseStartingPlayerInputManager extends InputManager {
     public void manageInput(String input) {
         if (isWaitingForInput) {
             input = cleanInput(input);
-            try{
-                int index = Integer.parseInt(input) -1;
-                if(index>=0 && index < usernames.size()) {
-                     //FIXME: We can change where we set the currentPlayer
+            try {
+                int index = Integer.parseInt(input) - 1;
+                if (index >= 0 && index < usernames.size()) {
+                    //FIXME: We can change where we set the currentPlayer
                     client.sendMessage(new ChooseStartingPlayerResponse(client.getUsername(), usernames.get(index)));
                     client.setCurrentPlayer(false);
-                }
-                else {
+                } else {
                     view.showErrorMessage("Please insert a valid name");
                     view.chooseStartingPlayer(usernames);
                 }
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 view.chooseStartingPlayer(usernames);
             }
         }

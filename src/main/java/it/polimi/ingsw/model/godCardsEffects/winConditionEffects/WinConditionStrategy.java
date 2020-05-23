@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.rules.RuleSetBase;
 /**
  * Effects subclass
  * <p>
- *     Generalizes all the gods effects that affect the condition to be satisfied to win
-*/
+ * Generalizes all the gods effects that affect the condition to be satisfied to win
+ */
 public class WinConditionStrategy extends RuleSetBase {
 }

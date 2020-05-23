@@ -11,7 +11,6 @@ import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.model.dataClass.TurnData;
 import it.polimi.ingsw.model.rules.RuleSetContext;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
  * <p>
  *    This is perhaps the most dense class of the entire project, but after some discussion it has been decided not to
  *    "tear it apart".
-*/
+ */
 //TODO: create general interface Listener
 public class Game implements GameInterface {
 
@@ -43,7 +42,6 @@ public class Game implements GameInterface {
     private final List<BuildActionListener> buildActionListener = new ArrayList<>();
     private final List<EndGameListener> endGameListener = new ArrayList<>();
     private final List<PlayerLostListener> playerLostListener = new ArrayList<>();
-    private final File file = new File("../SavedGame.json");
     private Turn currentTurn;
     private Turn nextTurn;
     private Player winner;
@@ -54,7 +52,7 @@ public class Game implements GameInterface {
      * Creates a new Game instance with the given parameters; the game board can be empty, since Workers can be added
      * later; the Players list must not be empty and contain 2 or 3 elements (the official Santorini game allows
      * 4 players, but since it messes up with some stuff we do not implement this mode).
-    *
+     *
      * @param gameBoard the game field; can be empty
      * @param players   the list of players
      */
@@ -76,8 +74,8 @@ public class Game implements GameInterface {
      * <p>
      * Used when restoring a previously saved state from a file; creates a new Game object having the given
      * attribute values.
-    *
-     * @param gameBoard      the gameboard to restore
+     *
+     * @param gameBoard      the gameBoard to restore
      * @param players        the players to restore
      * @param currentTurn    the turn to resume from
      * @param nextTurn       the next turn to be played
@@ -100,7 +98,7 @@ public class Game implements GameInterface {
      * <p>
      * Creates a clone of the given game; used to save the game state in {@link #saveStateToVariable()}, to
      * implement the undo functionality.
-    *
+     *
      * @param game the object to clone
      */
     private Game(Game game) {
@@ -178,7 +176,7 @@ public class Game implements GameInterface {
      * Provides the cells the given worker can walk to
      * <p>
      * May change during the turn due to other actions.
-    *
+     *
      * @param worker the worker to be moved
      * @return a list of cells the given worker can move to
      */
@@ -190,7 +188,7 @@ public class Game implements GameInterface {
      * Provides the cell the given worker can build on
      * <p>
      * May change during the turn due to other actions
-    *
+     *
      * @param worker the worker willing to build
      * @return a list of cells the given worker can build on
      */
@@ -235,7 +233,7 @@ public class Game implements GameInterface {
      * At the end of those operations, the game state is saved, to allow a possible undo.
      * <br>
      * If the action is not valid, an exception is thrown.
-    *
+     *
      * @param moveAction the movement action to validate
      * @throws IllegalActionException if the action is not valid
      */
@@ -275,7 +273,7 @@ public class Game implements GameInterface {
      * cells, via listener. The game state is then saved, to allow a possible undo.
      * <br>
      * If the action is not valid, an exception is thrown.
-    *
+     *
      * @param buildAction the movement action to validate
      * @throws IllegalActionException if the action is not valid
      */
@@ -306,7 +304,7 @@ public class Game implements GameInterface {
      * current ruleSet method to check if the player can end the turn. If all the conditions for the turn to end are
      * verified, the next turn is generated (see {@linkplain #generateNextTurn()});
      * otherwise, an exception is thrown.
-    *
+     *
      * @throws IllegalEndingTurnException if the player cannot end their turn
      */
     public void endTurn() throws IllegalEndingTurnException {
@@ -324,7 +322,7 @@ public class Game implements GameInterface {
      * The conditions to end the turn may vary based on the player's chosen god; generally, those conditions
      * require the player to have spent all the available actions for its current turn, so the turn is
      * automatically ended.
-    */
+     */
     /*
      * TODO: when implementing the undo function, verify that the player is allowed to undo its last action before the
      *  next turn is generated, as it might cause severe problems
@@ -343,8 +341,7 @@ public class Game implements GameInterface {
      * <br>
      * When the new turn begins, the listeners are notified; the lose conditions are then verified, before the player
      * can make any actions; if verified, the player is removed.
-     *
-    */
+     */
     public void generateNextTurn() {
         nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
         //FIXME: line below seems to be redundant
@@ -362,6 +359,7 @@ public class Game implements GameInterface {
 
     /**
      * Checks if the current player can start their turn
+     *
      * @return true if the player can start the turn, false otherwise
      */
     @Override
@@ -381,7 +379,7 @@ public class Game implements GameInterface {
      * <br>
      * This formula stops working in case a player is removed
      * from the game; in this case, we use the turn number to calculate the next player.
-    *
+     *
      * @return the next player
      */
     public Player nextPlayer() {
@@ -401,7 +399,7 @@ public class Game implements GameInterface {
      * <br>
      * If, after the deletion only one player is left it is declared winner, and the relative listener is
      * notified.
-    *
+     *
      * @param player the player to remove from the game
      */
     private void removePlayer(Player player) {
@@ -423,6 +421,7 @@ public class Game implements GameInterface {
 
     /**
      * Creates a {@linkplain GameData} object using this object's information
+     *
      * @return this object's data class
      */
     @Override
@@ -436,6 +435,7 @@ public class Game implements GameInterface {
 
     /**
      * Clones the game's gameBoard as a list of cells
+     *
      * @return a clone of the gameBoard
      */
     @Override
@@ -446,6 +446,7 @@ public class Game implements GameInterface {
 
     /**
      * Creates a clone of this object
+     *
      * @return a clone of this
      */
     public Game saveStateToVariable() {
@@ -456,8 +457,9 @@ public class Game implements GameInterface {
     /**
      * Restores the game to a previously saved state
      * <p>
-     *     To work, the file containing the saved game must be already set
-    * @see it.polimi.ingsw.network.server.Lobby#reloadMatch(boolean)
+     * To work, the file containing the saved game must be already set
+     *
+     * @see it.polimi.ingsw.network.server.Lobby#reloadMatch(boolean)
      */
     @Override
     public void restoreState() {
@@ -476,6 +478,7 @@ public class Game implements GameInterface {
 
     /**
      * Adds a new {@linkplain MoveActionListener} to the corresponding list
+     *
      * @param moveActionListener the listener to add
      */
     @Override
@@ -485,6 +488,7 @@ public class Game implements GameInterface {
 
     /**
      * Adds a new {@linkplain EndTurnListener} to the corresponding list
+     *
      * @param endTurnListener the listener to add
      */
     @Override
@@ -494,6 +498,7 @@ public class Game implements GameInterface {
 
     /**
      * Adds a new {@linkplain BuildActionListener} to the corresponding list
+     *
      * @param buildActionListener the listener to add
      */
     @Override
@@ -503,6 +508,7 @@ public class Game implements GameInterface {
 
     /**
      * Adds a new {@linkplain EndGameListener} to the corresponding list
+     *
      * @param endGameListener the listener to add
      */
     @Override
@@ -512,6 +518,7 @@ public class Game implements GameInterface {
 
     /**
      * Adds a new {@linkplain PlayerLostListener} to the corresponding list
+     *
      * @param playerLostListener the listener to add
      */
     @Override

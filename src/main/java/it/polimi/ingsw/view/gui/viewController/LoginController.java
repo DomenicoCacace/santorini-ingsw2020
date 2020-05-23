@@ -2,15 +2,10 @@ package it.polimi.ingsw.view.gui.viewController;
 
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
-import it.polimi.ingsw.view.inputManagers.LoginManager;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -18,21 +13,21 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class LoginController {
 
+    private static final Lock lock = new ReentrantLock();
+    private static final Condition condition = lock.newCondition();
+    @FXML
+    public Button loginBtn;
     private GUI gui;
     private String username = "";
     private String ipAddress = "";
     private boolean ipIsSet = false;
     private boolean isReloading;
-    private static final Lock lock = new ReentrantLock();
-    private static final Condition condition = lock.newCondition();
     @FXML
     private TextField usernameID;
     @FXML
     private TextField ipID;
     @FXML
     private ListView<String> oldConfigs;
-    @FXML
-    public Button loginBtn;
 
     public void setReloading(boolean reloading) {
         isReloading = reloading;
@@ -46,7 +41,7 @@ public class LoginController {
         this.gui = gui;
         usernameID.focusedProperty().addListener((observable, oldValue, newValue) -> {
             this.username = usernameID.getText();
-            if(!this.username.isBlank()) {
+            if (!this.username.isBlank()) {
                 if (isReloading) {
                     gui.setInputString(CLI.NO);
                     isReloading = false;
@@ -60,7 +55,7 @@ public class LoginController {
         });
         ipID.focusedProperty().addListener((observable, oldValue, newValue) -> {
             this.ipAddress = ipID.getText();
-            if(!this.ipAddress.isBlank()) {
+            if (!this.ipAddress.isBlank()) {
                 if (isReloading) {
                     gui.setInputString(CLI.NO);
                     isReloading = false;
@@ -107,9 +102,9 @@ public class LoginController {
 
     public void onOldConfigSelected() {
         lock.lock();
-        if(isReloading) {
+        if (isReloading) {
             gui.setInputString(CLI.YES);
-            gui.setInputString(String.valueOf(oldConfigs.getSelectionModel().getSelectedIndex()+2));
+            gui.setInputString(String.valueOf(oldConfigs.getSelectionModel().getSelectedIndex() + 2));
         }
         lock.unlock();
     }

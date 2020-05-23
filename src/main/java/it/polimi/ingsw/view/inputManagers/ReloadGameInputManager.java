@@ -8,6 +8,7 @@ public class ReloadGameInputManager extends InputManager {
 
     /**
      * Constructor to be called to handle an eventual game restore
+     *
      * @param client the client to parse the
      */
     public ReloadGameInputManager(Client client) {

@@ -11,10 +11,6 @@ import java.util.stream.Collectors;
 
 public class SelectActionCellInputManager extends InputManager {
 
-    private enum State {
-        MOVE, BUILD
-    }
-
     private static final int MIN_COORD = 1;
     private static final int MAX_COORD = 5;
     private final State state;
@@ -46,13 +42,11 @@ public class SelectActionCellInputManager extends InputManager {
                             if (row == -1)
                                 view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
                             else
-                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row +1) + "\ncol: ");
-                        }
-                        else if (row == -1) {
+                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
+                        } else if (row == -1) {
                             row = coord - 1;
                             view.showSuccessMessage("col: ");
-                        }
-                        else if (col == -1) {
+                        } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
                             if (selectedCell.size() == 1) {
@@ -76,13 +70,11 @@ public class SelectActionCellInputManager extends InputManager {
                             if (row == -1)
                                 view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
                             else
-                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row +1) + "\ncol: ");
-                        }
-                        else if (row == -1) {
+                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
+                        } else if (row == -1) {
                             row = coord - 1;
                             view.showSuccessMessage("col: ");
-                        }
-                        else if (col == -1) {
+                        } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
                             if (selectedCell.size() == 1) {
@@ -103,6 +95,10 @@ public class SelectActionCellInputManager extends InputManager {
                     break;
             }
         }
+    }
+
+    private enum State {
+        MOVE, BUILD
     }
 }
 

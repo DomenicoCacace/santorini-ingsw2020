@@ -55,7 +55,7 @@ public interface ViewInterface {
 
     void showGameBoard(List<Cell> gameBoard);
 
-    void initGameBoard(List<Cell> gameboard);
+    void initGameBoard(List<Cell> gameBoard);
 
     void showErrorMessage(String error);
 

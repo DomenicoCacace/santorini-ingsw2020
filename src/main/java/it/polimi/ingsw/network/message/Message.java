@@ -13,12 +13,12 @@ import it.polimi.ingsw.network.message.response.fromServerToClient.*;
 /**
  * Abstract message
  * <p>
- *     Each message has, in any case, two attributes:
- *     <ul>
- *         <li>username: a String, containing the sender's username</li>
- *         <li>type: an Enum value, which indicates what kind of payload to expect</li>
- *     </ul>
-*/
+ * message has, in any case, two attributes:
+ * <ul>
+ *     <li>username: a String, containing the sender's username</li>
+ *     <li>type: an Enum value, which indicates what kind of payload to expect</li>
+ * </ul>
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LoginResponse.class, name = "Login"),
@@ -59,8 +59,9 @@ public abstract class Message {
 
     /**
      * Message constructor
+     *
      * @param username the sender's username
-     * @param type the message type
+     * @param type     the message type
      */
     @JsonCreator
     public Message(@JsonProperty("username") String username, @JsonProperty("type") Type type) {
@@ -70,6 +71,7 @@ public abstract class Message {
 
     /**
      * <i>username</i> getter
+     *
      * @return the sender's username
      */
     public String getUsername() {
@@ -78,6 +80,7 @@ public abstract class Message {
 
     /**
      * <i>type</i> getter
+     *
      * @return the message type
      */
     public Type getType() {

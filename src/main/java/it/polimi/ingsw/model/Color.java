@@ -4,7 +4,7 @@ package it.polimi.ingsw.model;
  * Worker color
  * <p>
  * The workers' pawn color.
-*/
+ */
 public enum Color {
     BLUE(0),
     RED(1),

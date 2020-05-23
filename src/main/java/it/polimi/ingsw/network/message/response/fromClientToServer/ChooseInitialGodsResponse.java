@@ -24,7 +24,7 @@ public class ChooseInitialGodsResponse extends MessageFromClientToServer {
     }
 
     @Override
-    public void callVisitor(ServerMessageManagerVisitor visitor){
+    public void callVisitor(ServerMessageManagerVisitor visitor) {
         visitor.chooseInitialGods(this);
     }
 

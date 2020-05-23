@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.gui.viewController;
 
-import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.inputManagers.LobbyInputManager;
 import javafx.fxml.FXML;
@@ -40,17 +39,17 @@ public class LobbyController {
     }
 
     public void onCreate() {
-        if(inputRequested) {
+        if (inputRequested) {
             createBtn.setDisable(true);
             joinBtn.setDisable(true);
-            inputRequested=false;
+            inputRequested = false;
             gui.setInputString(LobbyInputManager.CREATE_LOBBY);
             gui.setInputString(lobbyName);
             gui.setInputString(lobbySize);
         }
     }
 
-    public void onLobbyCreated(){
+    public void onLobbyCreated() {
 
     }
 
@@ -63,13 +62,13 @@ public class LobbyController {
         }
     }
 
-    public void backButton(){
+    public void backButton() {
         gui.setInputString(String.valueOf(lobbyList.getItems().size()));
     }
 
     public void setGUI(GUI gui) {
         this.gui = gui;
-        if(nameTextField!= null && sizeTextField!= null) {
+        if (nameTextField != null && sizeTextField != null) {
             nameTextField.focusedProperty().addListener((observable, oldValue, newValue) -> this.lobbyName = nameTextField.getText());
             sizeTextField.focusedProperty().addListener((observable, oldValue, newValue) -> this.lobbySize = sizeTextField.getText());
         }
@@ -78,7 +77,7 @@ public class LobbyController {
     public void onLobbySelected() {
         if (inputRequested) {
 
-            gui.setInputString(String.valueOf(lobbyList.getSelectionModel().getSelectedIndex()+ 1));
+            gui.setInputString(String.valueOf(lobbyList.getSelectionModel().getSelectedIndex() + 1));
             lobbyList.setDisable(true);
         }
     }

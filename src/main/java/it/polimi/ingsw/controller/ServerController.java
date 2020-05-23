@@ -27,13 +27,13 @@ import java.util.logging.Logger;
 /**
  * Actual game controller
  * <p>
- * This class is responsible for changes in the game state: it
- *     <ul>
- *         <li>makes actions to alter the game (model), based on the users' inputs received in the {@linkplain #parser}</li>
- *         <li>notifies the clients about the changes, propagated from the model using listeners</li>
- *     </ul>
-*/
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY)
+ * class is responsible for changes in the game state: it
+ * <ul>
+ *     <li>makes actions to alter the game (model), based on the users' inputs received in the {@linkplain #parser}</li>
+ *     <li>notifies the clients about the changes, propagated from the model using listeners</li>
+ * </ul>
+ */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, BuildingBlocksListener,
         EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener {
 
@@ -48,7 +48,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * Default constructor
      * <p>
      * Sets the class attributes and the various listeners in Game and Player
-    *
+     *
      * @param game       the {@linkplain Game} to manage
      * @param players    the {@linkplain Player}s playing the game
      * @param parser     the {@linkplain MessageManagerParser}
@@ -80,7 +80,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * <p>
      * Before calling this method, the caller has to make sure to reload an already existing game; this method just
      * sends the correct message based on the saved game state to resume the game, performing no check at all.
-    *
+     *
      * @see it.polimi.ingsw.network.server.Lobby#reloadMatch(boolean)
      */
     public void handleGameRestore() {
@@ -88,7 +88,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         PlayerInterface currPlayerInterface = playerMap.get(currPlayerData.getName());
         if (currPlayerData.getSelectedWorker() != null) { //Now i have selectedWorker inside the playerDataClass
             try {
-                parser.parseMessageFromServerToClient(new GameBoardUpdate(currPlayerData.getName(), game.buildBoardData())); //need this otherwise client doesn't have gameboard saved locally!
+                parser.parseMessageFromServerToClient(new GameBoardUpdate(currPlayerData.getName(), game.buildBoardData())); //need this otherwise client doesn't have gameBoard saved locally!
                 currPlayerInterface.setSelectedWorker(currPlayerData.getSelectedWorker());//simulate a setWorker, in this way the player will call the SelectWorkerlistener.
             } catch (NotYourWorkerException e) {
                 logger.log(Level.SEVERE, "Entered a forbidden catch clause while restoring a saved game");
@@ -113,20 +113,20 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * Adds a worker for the player
      * <p>
      * Tries to add a new worker for the player requesting it. This action can end with one and one only of the following
-     * outcomes:
-     *     <ul>
-     *         <li>the worker is added successfully on the board, but the player still has workers to place: a new
-     *         {@linkplain ChooseWorkerPositionRequest} is sent to the same player;</li>
-     *         <li>the worker is added successfully on the board, the current player has placed all of his workers, but
-     *         there still are players which have to place their workers: a new {@linkplain ChooseWorkerPositionRequest}
-     *         is sent to the following player;</li>
-     *         <li>the worker is added successfully on the board, all the players have placed their workers: the game can
-     *         start, so a {@linkplain GameStartEvent} is sent to the first player;</li>
-     *         <li>the worker could not be added to the board, because the cell the player wants to place the worker on
-     *         is already taken: a {@linkplain WorkerAddedEvent} is sent with {@linkplain Type#ADDING_FAILED} as outcome,
-     *         followed by a {@linkplain ChooseWorkerPositionRequest}.</li>
-     *     </ul>
-    *
+     * omes:
+     * <ul>
+     *     <li>the worker is added successfully on the board, but the player still has workers to place: a new
+     *     {@linkplain ChooseWorkerPositionRequest} is sent to the same player;</li>
+     *     <li>the worker is added successfully on the board, the current player has placed all of his workers, but
+     *     there still are players which have to place their workers: a new {@linkplain ChooseWorkerPositionRequest}
+     *     is sent to the following player;</li>
+     *     <li>the worker is added successfully on the board, all the players have placed their workers: the game can
+     *     start, so a {@linkplain GameStartEvent} is sent to the first player;</li>
+     *     <li>the worker could not be added to the board, because the cell the player wants to place the worker on
+     *     is already taken: a {@linkplain WorkerAddedEvent} is sent with {@linkplain Type#ADDING_FAILED} as outcome,
+     *     followed by a {@linkplain ChooseWorkerPositionRequest}.</li>
+     * </ul>
+     *
      * @param username the user's username
      * @param cell     the cell to add the worker on
      */
@@ -156,7 +156,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * If the chosen worker is not owned by the user which sent the message, a {@linkplain WorkerSelectedResponse} is
      * sent with {@linkplain Type#NOT_YOUR_WORKER} as outcome; if the player owns the given worker, the model will
      * notify the {@linkplain SelectWorkerListener}s.
-    *
+     *
      * @param username the user's username
      * @param worker   the worker to set as current
      * @see PlayerInterface#setSelectedWorker(Worker)
@@ -175,7 +175,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * If the player has selected no worker, a {@linkplain WalkableCellsResponse} is
      * sent with {@linkplain Type#NO_WORKER_SELECTED} as outcome; if the player owns the given worker, the model will
      * notify the {@linkplain WalkableCellsListener}s.
-    *
+     *
      * @param username the user's username
      * @see PlayerInterface#obtainWalkableCells()
      */
@@ -193,7 +193,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * If the player has selected no worker, a {@linkplain BuildableCellsResponse} is
      * sent with {@linkplain Type#NO_WORKER_SELECTED} as outcome; if the player owns the given worker, the model will
      * notify the {@linkplain BuildableCellsListener}s.
-    *
+     *
      * @param username the user's username
      * @see PlayerInterface#obtainBuildableCells()
      */
@@ -211,7 +211,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * If the player cannot make a build action, a {@linkplain PlayerBuildEvent} is
      * sent with {@linkplain Type#ILLEGAL_BUILD} as outcome; if the player can perform a build action, the model will
      * notify the {@linkplain BuildingBlocksListener}s.
-    *
+     *
      * @param username     the user's username
      * @param selectedCell the cell on which the player wants to build
      * @see PlayerInterface#obtainBuildingBlocks(Cell)
@@ -230,7 +230,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * If the player cannot perform a movement action, a {@linkplain PlayerMoveEvent} is
      * sent with {@linkplain Type#ILLEGAL_MOVEMENT} as outcome; if the player can perform a movement action,
      * the model will notify the {@linkplain MoveActionListener}s.
-    *
+     *
      * @param username   the user's username
      * @param moveAction the action to handle
      * @see PlayerInterface#useAction(Action)
@@ -250,7 +250,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * If the player cannot perform a build action, a {@linkplain PlayerBuildEvent} is
      * sent with {@linkplain Type#ILLEGAL_BUILD} as outcome; if the player can perform a build action,
      * the model will notify the {@linkplain BuildActionListener}s.
-    *
+     *
      * @param username    the user's username
      * @param buildAction the action to handle
      * @see PlayerInterface#useAction(Action)
@@ -269,7 +269,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * If the player cannot pass its turn, a {@linkplain EndTurnEvent} is
      * sent with {@linkplain Type#CANNOT_END_TURN} as outcome; if the player can end its turn,
      * the model will notify the {@linkplain EndTurnListener}s.
-    *
+     *
      * @param username the user's username
      * @see PlayerInterface#askPassTurn()
      */
@@ -386,13 +386,13 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * <p>
      * The file containing the saved game is also deleted, to be replaced with a new one
      * FIXME: check if the file is replaced or just deleted
-    *
+     *
      * @param username  the player which lost
-     * @param gameboard the changed gameboard without the loser's workers
+     * @param gameBoard the changed gameBoard without the loser's workers
      */
     @Override
-    public void onPlayerLoss(String username, List<Cell> gameboard) {
-        parser.parseMessageFromServerToClient(new PlayerRemovedEvent(username, gameboard));
+    public void onPlayerLoss(String username, List<Cell> gameBoard) {
+        parser.parseMessageFromServerToClient(new PlayerRemovedEvent(username, gameBoard));
         playerMap.remove(username);
         file.delete();
     }

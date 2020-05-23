@@ -14,10 +14,10 @@ import java.util.List;
 /**
  * Move, build, build again (optional)
  * <p>
- *     This effect alters the player's build action; the player can play the turn as usual, but after it builds, it can
- *     choose if it wants to build again on top of the previously built cell (no dome can be built on the second build
- *     action) or pass the turn
-*/
+ * This effect alters the player's build action; the player can play the turn as usual, but after it builds, it can
+ * choose if it wants to build again on top of the previously built cell (no dome can be built on the second build
+ * action) or pass the turn
+ */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class BuildAgainSameCell extends BuildingStrategy {
 
@@ -25,8 +25,9 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     /**
      * Copy constructor
+     *
      * @param buildAgainSameCell the strategy to clone
-     * @param game the game in which the effect is used
+     * @param game               the game in which the effect is used
      */
     private BuildAgainSameCell(BuildAgainSameCell buildAgainSameCell, Game game) {
         this.game = game;
@@ -43,6 +44,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     /**
      * Default constructor
+     *
      * @see #initialize()
      */
     public BuildAgainSameCell() {
@@ -52,9 +54,9 @@ public class BuildAgainSameCell extends BuildingStrategy {
     /**
      * Sets the parameters for a new turn
      * <p>
-     *     Using this ruleSet, a player is granted one movement and two building action, to be performed by the same worker
-     *     following the rules mentioned in the class documentation.
-    */
+     * Using this ruleSet, a player is granted one movement and two building action, to be performed by the same worker
+     * following the rules mentioned in the class documentation.
+     */
     @Override
     public void initialize() {
         this.movesAvailable = 1;
@@ -68,8 +70,8 @@ public class BuildAgainSameCell extends BuildingStrategy {
     /**
      * Applies end turn effects
      * <p>
-     *     Using this ruleSet, the end turn effects simply resets the attributes changed during the turn
-    */
+     * Using this ruleSet, the end turn effects simply resets the attributes changed during the turn
+     */
     @Override
     public void doEffect() {
         initialize();
@@ -78,14 +80,15 @@ public class BuildAgainSameCell extends BuildingStrategy {
     /**
      * Provides a list of possible actions for a player to perform, based on the chosen worker
      * <p>
-     *     Using this ruleSet, the possible actions for a worker are:
-     *     <ul>
-     *         <li>Change Worker/Move, if the worker  has not been moved yet</li>
-     *         <li>Build, if the worker has been moved</li>
-     *         <li>Build, Pass turn, if the worker has built once</li>
-     *         <li>None, in any other case</li>
-     *     </ul>
-    * @param worker the worker to perform an action with
+     * g this ruleSet, the possible actions for a worker are:
+     * <ul>
+     *     <li>Change Worker/Move, if the worker  has not been moved yet</li>
+     *     <li>Build, if the worker has been moved</li>
+     *     <li>Build, Pass turn, if the worker has built once</li>
+     *     <li>None, in any other case</li>
+     * </ul>
+     *
+     * @param worker the worker to perform an action with
      * @return a list of possible performable actions
      */
     @Override
@@ -99,13 +102,14 @@ public class BuildAgainSameCell extends BuildingStrategy {
     /**
      * Determines if a buildAction is legal and applies it
      * <p>
-     *     Using this ruleSet, a build action is considered valid if the following conditions are all true:
-     *     <ul>
-     *         <li>the worker to perform the action has already been moved</li>
-     *         <li>the worker to perform the action has already built once, the target cell is the same the worker
-     *         already built on and the block to be built is not a dome</li>
-     *     </ul>
-    * @param action the build action to validate
+     * g this ruleSet, a build action is considered valid if the following conditions are all true:
+     * <ul>
+     *     <li>the worker to perform the action has already been moved</li>
+     *     <li>the worker to perform the action has already built once, the target cell is the same the worker
+     *     already built on and the block to be built is not a dome</li>
+     * </ul>
+     *
+     * @param action the build action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -124,9 +128,10 @@ public class BuildAgainSameCell extends BuildingStrategy {
     /**
      * Provides a list of cells on which the worker can build on
      * <p>
-     *     Using this ruleSet, a worker can build on any cell adjacent to its cell for the first action, and on any cell
-     *     adjacent to its cell minus the cell it already built on if it already built once during the turn.
-    * @param worker the worker to build with
+     * Using this ruleSet, a worker can build on any cell adjacent to its cell for the first action, and on any cell
+     * adjacent to its cell minus the cell it already built on if it already built once during the turn.
+     *
+     * @param worker the worker to build with
      * @return a list of <i>buildable</i> cells
      */
     @Override
@@ -144,8 +149,9 @@ public class BuildAgainSameCell extends BuildingStrategy {
     /**
      * Determines whether a player can end its turn
      * <p>
-     *     Using this ruleSet, a player can end its turn after it performs the first build action correctly
-    * @return true if the player can end its turn, false otherwise
+     * Using this ruleSet, a player can end its turn after it performs the first build action correctly
+     *
+     * @return true if the player can end its turn, false otherwise
      */
     @Override
     public boolean canEndTurn() {
@@ -154,6 +160,7 @@ public class BuildAgainSameCell extends BuildingStrategy {
 
     /**
      * Creates a clone of this object
+     *
      * @param game the current game
      * @return a clone of this object
      */

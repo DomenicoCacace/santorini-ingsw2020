@@ -21,7 +21,7 @@ public enum Block {
      * Default constructor
      * <p>
      * Creates a block by its height.
-    *
+     *
      * @param height the height (int value, 0 to 4) of the block to create
      */
     Block(int height) {

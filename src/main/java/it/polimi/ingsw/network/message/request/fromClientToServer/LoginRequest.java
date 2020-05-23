@@ -8,8 +8,8 @@ import it.polimi.ingsw.network.message.Type;
 /**
  * Login Request, from client to server
  * <p>
- *     Sends the username chosen by the user to be validated from the server.
-*/
+ * Sends the username chosen by the user to be validated from the server.
+ */
 public class LoginRequest extends MessageFromClientToServer {
 
 

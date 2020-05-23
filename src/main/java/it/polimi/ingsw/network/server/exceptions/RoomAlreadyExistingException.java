@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server.exceptions;
 
-public class RoomAlreadyExistingException extends Exception{
+public class RoomAlreadyExistingException extends Exception {
 
     @Override
     public String getMessage() {

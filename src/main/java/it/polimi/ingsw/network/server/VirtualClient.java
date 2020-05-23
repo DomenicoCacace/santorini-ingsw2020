@@ -22,8 +22,6 @@ import java.net.Socket;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -32,13 +30,13 @@ import java.util.logging.Logger;
 /**
  * Server-side client communication and message handler
  * <p>
- *     For each new user connecting to the server, a VirtualClient object is created; its purpose is to receive, send and route the messages
- *     from/to the socket connected to the client.
- *     <br>
- *     Note that <i>connecting</i> means establishing a connection with the server, even without choosing an username.
-*/
+ * For each new user connecting to the server, a VirtualClient object is created; its purpose is to receive, send and route the messages
+ * from/to the socket connected to the client.
+ * <br>
+ * Note that <i>connecting</i> means establishing a connection with the server, even without choosing an username.
+ */
 public class VirtualClient extends Thread implements ServerMessageManagerVisitor {
-    private   final static String PING = "ping";
+    private final static String PING = "ping";
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
     private final Server server;
     private final Socket clientConnection;
@@ -51,8 +49,9 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     /**
      * Default constructor
      * <p>
-     *     Given a socket, the constructor tries to open i/o streams; if it fails, the connection is closed.
-    * @param server the server object
+     * Given a socket, the constructor tries to open i/o streams; if it fails, the connection is closed.
+     *
+     * @param server           the server object
      * @param clientConnection the socket connection to/from the client
      */
     public VirtualClient(Server server, Socket clientConnection) {
@@ -96,10 +95,9 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     }
 
 
-    public User getUser(){
+    public User getUser() {
         return user;
     }
-
 
 
     public void notify(Message message) {
@@ -122,7 +120,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
-    public void notify(String string){
+    public void notify(String string) {
         try {
             outputSocket.write(string + "\n");
             outputSocket.flush();
@@ -147,7 +145,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
-    public void disconnectFromServer(){
+    public void disconnectFromServer() {
         server.onDisconnect(user);
     }
 
@@ -155,18 +153,18 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     /**
      * Manages the {@linkplain LoginRequest}
      * <p>
-     *     This method tries to add the user to the server; if the username is invalid
-     *     or already taken, it sends a response asking for a new username; if the server waiting room is full,
-     *     sends a message and disconnects the client;
-    * @param message the message to manage
+     * This method tries to add the user to the server; if the username is invalid
+     * or already taken, it sends a response asking for a new username; if the server waiting room is full,
+     * sends a message and disconnects the client;
+     *
+     * @param message the message to manage
      */
     @Override
     public void login(LoginRequest message) {
         try {
             this.user.setUsername(message.getUsername());
             server.addClient(this);
-        }
-        catch (RoomFullException roomFullException) {
+        } catch (RoomFullException roomFullException) {
             logger.log(Level.WARNING, "Server full, won't accept new clients");
             server.onDisconnect(this.getUser());
         }
@@ -174,6 +172,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
 
     /**
      * Manages the {@link JoinLobbyRequest}
+     *
      * @param message the message to manage
      */
     @Override
@@ -183,23 +182,20 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
             server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
             notify(new UserJoinedLobbyEvent(message.getUsername(), Type.NO_LOBBY_AVAILABLE, availableLobbies, 0, null));
-            logger.log(Level.WARNING, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby isn't available");
-        }
-        else {
+            logger.log(Level.WARNING, message.getUsername() + " failed to join " + message.getLobbyName() + ": lobby isn't available");
+        } else {
             try {
                 logger.log(Level.INFO, message.getUsername() + " joined " + message.getLobbyName());
                 lobby.addUser(this.user);
                 server.getUsersInWaitingRoom().remove(user);
                 //server.moveToRoom(this.getUser(), lobby);
-            }
-            catch (RoomFullException e) {
+            } catch (RoomFullException e) {
                 server.getUsersInWaitingRoom().remove(user);
-                logger.log(Level.INFO, message.getUsername() + " failed to join " + message.getLobbyName() +": lobby full");
+                logger.log(Level.INFO, message.getUsername() + " failed to join " + message.getLobbyName() + ": lobby full");
                 Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
                 server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
                 notify(new UserJoinedLobbyEvent(message.getUsername(), Type.LOBBY_FULL, availableLobbies, 0, null));
-            }
-            catch (InvalidUsernameException e2) {
+            } catch (InvalidUsernameException e2) {
                 server.getUsersInWaitingRoom().remove(user);
                 logger.log(Level.INFO, message.getUsername() + " is already taken in lobby " + message.getLobbyName());
                 Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
@@ -210,15 +206,13 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
     }
 
 
-
     @Override
     public synchronized void createLobby(CreateLobbyRequest message) {
         if (server.getGameLobbies().containsKey(message.getLobbyName())) {
             notify(new LobbyCreatedEvent(message.getUsername(), Type.INVALID_NAME, getAvailableLobbies()));
             logger.log(Level.INFO, message.getUsername() + " failed to create " + message.getLobbyName() + ": name already taken");
-        }
-        else {
-            Lobby newLobby = new Lobby(server, message.getLobbyName(),user ,message.getLobbySize());
+        } else {
+            Lobby newLobby = new Lobby(server, message.getLobbyName(), user, message.getLobbySize());
             server.getGameLobbies().put(newLobby.getRoomName(), newLobby);
             server.sendMessageToWaitingRoom(new LobbyCreatedEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, getAvailableLobbies()));
             notify(new LobbyCreatedEvent(message.getUsername(), Type.OK, null));
@@ -235,22 +229,20 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
 
 
     @Override
-    public  synchronized void cannotHandleMessage(Message message) {
+    public synchronized void cannotHandleMessage(Message message) {
         Lobby lobby = user.getRoom();
 
         if (lobby != null) {
             ((MessageFromClientToServer) message).callVisitor(lobby.getRoomParser());
             logger.log(Level.INFO, "Forwarding message: " + message.getClass().toGenericString() + " to lobby: " + lobby.getRoomName());
-        }
-        else {
+        } else {
             logger.log(Level.WARNING, "No lobby associated with user, cannot handle message");
         }
     }
 
 
-
     public void ping() {
-        if(ex!=null)
+        if (ex != null)
             ex.shutdownNow();
         try {
             Thread.sleep(1000);

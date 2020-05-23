@@ -12,9 +12,9 @@ public class ChooseToReloadMatchResponse extends MessageFromClientToServer {
     private final boolean reload;
 
     @JsonCreator
-    public ChooseToReloadMatchResponse(@JsonProperty("username") String username,@JsonProperty("reload") boolean reload) {
+    public ChooseToReloadMatchResponse(@JsonProperty("username") String username, @JsonProperty("reload") boolean reload) {
         super(username, Type.NOTIFY);
-        this.reload=reload;
+        this.reload = reload;
     }
 
     @JsonGetter("reload")

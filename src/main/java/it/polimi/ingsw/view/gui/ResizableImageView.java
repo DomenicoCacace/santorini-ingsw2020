@@ -10,6 +10,15 @@ public class ResizableImageView extends ImageView {
     private String name;
 
 
+    public ResizableImageView(Image image) {
+        super(image);
+        setPreserveRatio(false);
+    }
+
+    public ResizableImageView() {
+        setPreserveRatio(false);
+    }
+
     public int getIndex() {
         return index;
     }
@@ -24,15 +33,6 @@ public class ResizableImageView extends ImageView {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public ResizableImageView(Image image) {
-        super(image);
-        setPreserveRatio(false);
-    }
-
-    public ResizableImageView() {
-        setPreserveRatio(false);
     }
 
     @Override

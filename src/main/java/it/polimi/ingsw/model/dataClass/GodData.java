@@ -10,8 +10,8 @@ import java.util.Objects;
 /**
  * A data class for {@linkplain it.polimi.ingsw.model.God}
  * <p>
- *     It can be useful to send game information over the network, without any reference to the actual game object.
-*/
+ * It can be useful to send game information over the network, without any reference to the actual game object.
+ */
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "GodId", scope = it.polimi.ingsw.model.dataClass.GodData.class)
 public class GodData {
 
@@ -21,8 +21,9 @@ public class GodData {
 
     /**
      * Default constructor
-     * @param name the god name
-     * @param workersNumber the number of workers granted from the god power
+     *
+     * @param name                the god name
+     * @param workersNumber       the number of workers granted from the god power
      * @param descriptionStrategy a description of the god power
      */
     @JsonCreator
@@ -34,6 +35,7 @@ public class GodData {
 
     /**
      * <i>name</i> getter
+     *
      * @return the god's name
      */
     public String getName() {
@@ -42,6 +44,7 @@ public class GodData {
 
     /**
      * <i>workersNumber</i> getter
+     *
      * @return the number of workers granted from the god power
      */
     public int getWorkersNumber() {
@@ -50,6 +53,7 @@ public class GodData {
 
     /**
      * <i>descriptionStrategy</i> getter
+     *
      * @return a description of the go power
      */
     public String getDescriptionStrategy() {
@@ -59,6 +63,7 @@ public class GodData {
 
     /**
      * Compares the argument to the receiver, and answers true if their names, number of workers and description are equals
+     *
      * @param o the object to be
      * @return true if the object is the same as the cell, false otherwise
      */

@@ -13,8 +13,9 @@ public class MoveAction extends Action {
 
     /**
      * Default constructor
+     *
      * @param targetWorker the worker to be moved
-     * @param targetCell the cell to move the worker to
+     * @param targetCell   the cell to move the worker to
      */
     public MoveAction(@JsonProperty("targetWorker") Worker targetWorker, @JsonProperty("targetCell") Cell targetCell) {
         super(targetWorker, targetCell);
@@ -31,6 +32,7 @@ public class MoveAction extends Action {
 
     /**
      * Checks if the action can be performed, based on the game status
+     *
      * @param game the game object which validates the action
      * @throws IllegalActionException if the action cannot be performed
      */

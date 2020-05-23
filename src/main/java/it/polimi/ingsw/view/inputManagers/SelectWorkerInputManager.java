@@ -3,7 +3,7 @@ package it.polimi.ingsw.view.inputManagers;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
 
-public class SelectWorkerInputManager extends InputManager{
+public class SelectWorkerInputManager extends InputManager {
 
     private static final int MIN_COORD = 1;
     private static final int MAX_COORD = 5;
@@ -18,7 +18,7 @@ public class SelectWorkerInputManager extends InputManager{
 
     @Override
     public void manageInput(String input) {
-        if(isWaitingForInput){
+        if (isWaitingForInput) {
             input = cleanInput(input);
             try {
                 int coord = Integer.parseInt(input);
@@ -26,13 +26,11 @@ public class SelectWorkerInputManager extends InputManager{
                     if (row == -1)
                         view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
                     else
-                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row +1) + "\ncol: ");
-                }
-                else if (row == -1) {
+                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
+                } else if (row == -1) {
                     row = coord - 1;
                     view.showSuccessMessage("col: ");
-                }
-                else if (col == -1) {
+                } else if (col == -1) {
                     col = coord - 1;
                     isWaitingForInput = false;
                     parser.chooseWorker(row, col);

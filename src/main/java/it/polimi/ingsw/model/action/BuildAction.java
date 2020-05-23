@@ -17,9 +17,10 @@ public class BuildAction extends Action {
 
     /**
      * Default constructor
+     *
      * @param targetWorker the worker performing the action
-     * @param targetCell the cell to build on
-     * @param targetBlock the block to build on the target cell
+     * @param targetCell   the cell to build on
+     * @param targetBlock  the block to build on the target cell
      */
     @JsonCreator
     public BuildAction(@JsonProperty("targetWorker") Worker targetWorker, @JsonProperty("targetCell") Cell targetCell, @JsonProperty("targetBlock") Block targetBlock) {
@@ -29,6 +30,7 @@ public class BuildAction extends Action {
 
     /**
      * <i>targetBlock</i> getter
+     *
      * @return the block to build
      */
     public Block getTargetBlock() {
@@ -44,6 +46,7 @@ public class BuildAction extends Action {
 
     /**
      * Checks if the action can be performed, based on the game status
+     *
      * @param game the game object which validates the action
      * @throws IllegalActionException if the action cannot be performed
      */

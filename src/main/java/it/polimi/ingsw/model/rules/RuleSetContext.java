@@ -18,6 +18,7 @@ public class RuleSetContext {
 
     /**
      * <i>game</i> setter
+     *
      * @param game the game in which the effect is used
      */
     public void setGame(Game game) {
@@ -26,6 +27,7 @@ public class RuleSetContext {
 
     /**
      * Determines if a moveAction is legal and applies it
+     *
      * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
@@ -35,6 +37,7 @@ public class RuleSetContext {
 
     /**
      * Determines if a buildAction is legal and applies it
+     *
      * @param action the build action to validate
      * @return true if the action has been applied, false otherwise
      */
@@ -44,6 +47,7 @@ public class RuleSetContext {
 
     /**
      * <i>strategy</i> getter
+     *
      * @return the current strategy
      */
     public RuleSetStrategy getStrategy() {
@@ -52,6 +56,7 @@ public class RuleSetContext {
 
     /**
      * <i>strategy</i> setter
+     *
      * @param strategy the strategy to set
      */
     public void setStrategy(RuleSetStrategy strategy) {
@@ -60,6 +65,7 @@ public class RuleSetContext {
 
     /**
      * Determines whether a player can end its turn
+     *
      * @return true if the player can end its turn, false otherwise
      */
     public boolean canEndTurn() {
@@ -68,6 +74,7 @@ public class RuleSetContext {
 
     /**
      * Determines whether a player can end its turn
+     *
      * @return true if the player can end its turn, false otherwise
      */
     public boolean canEndTurnAutomatically() {
@@ -83,6 +90,7 @@ public class RuleSetContext {
 
     /**
      * Determines if the win conditions are satisfied upon a movement action
+     *
      * @param action the action to analyze
      * @return true if the action led to victory, false otherwise
      */
@@ -92,6 +100,7 @@ public class RuleSetContext {
 
     /**
      * Determines if the lose conditions are satisfied upon a movement action
+     *
      * @param action the action to analyze
      * @return true if the action led to a loss, false otherwise
      */
@@ -101,6 +110,7 @@ public class RuleSetContext {
 
     /**
      * Determines if the lose conditions are satisfied upon a movement action
+     *
      * @param action the action to analyze
      * @return true if the action led to a loss, false otherwise
      */
@@ -110,6 +120,7 @@ public class RuleSetContext {
 
     /**
      * Checks if the turn can begin, checking for both players to be <i>free</i>
+     *
      * @return true if there is at least one action to perform, false otherwise
      */
     public boolean checkLoseCondition() {
@@ -118,6 +129,7 @@ public class RuleSetContext {
 
     /**
      * Provides a list of cells on which the worker can walk on
+     *
      * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
@@ -127,6 +139,7 @@ public class RuleSetContext {
 
     /**
      * Provides a list of cells on which the worker can build on
+     *
      * @param worker the worker to build with
      * @return a list of <i>buildable</i> cells
      */

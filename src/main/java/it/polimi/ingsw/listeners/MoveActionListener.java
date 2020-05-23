@@ -12,8 +12,8 @@ public interface MoveActionListener {
     /**
      * Notifies that a successful move action happened
      *
-     * @param gameboard the changed gameBoard as a list of cells
+     * @param gameBoard the changed gameBoard as a list of cells
      */
-    void onMoveAction(List<Cell> gameboard);
+    void onMoveAction(List<Cell> gameBoard);
 
 }

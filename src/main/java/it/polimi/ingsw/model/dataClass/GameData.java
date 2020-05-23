@@ -9,10 +9,10 @@ import java.util.List;
 /**
  * A data class for {@linkplain it.polimi.ingsw.model.Game}
  * <p>
- *     It can be useful to send game information over the network, without any reference to the actual game object.
- *     <br>
- *         Its attributes are data classes too.
-*/
+ * It can be useful to send game information over the network, without any reference to the actual game object.
+ * <br>
+ * Its attributes are data classes too.
+ */
 public class GameData {
     private final List<Cell> board;
     private final List<PlayerData> players;
@@ -20,8 +20,9 @@ public class GameData {
 
     /**
      * Default constructor
-     * @param board the gameBoard
-     * @param players the list of players
+     *
+     * @param board       the gameBoard
+     * @param players     the list of players
      * @param currentTurn the current turn information
      */
     @JsonCreator
@@ -33,6 +34,7 @@ public class GameData {
 
     /**
      * <i>board</i> getter
+     *
      * @return the gameBoard
      */
     public List<Cell> getBoard() {
@@ -41,6 +43,7 @@ public class GameData {
 
     /**
      * <i>players</i> getter
+     *
      * @return the list of players
      */
     public List<PlayerData> getPlayers() {
@@ -49,6 +52,7 @@ public class GameData {
 
     /**
      * <i>currentTurn</i> getter
+     *
      * @return the current turn
      */
     public TurnData getCurrentTurn() {

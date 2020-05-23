@@ -6,28 +6,26 @@ import it.polimi.ingsw.view.ViewInterface;
 /**
  * InputManager abstraction
  * <p>
- *     An InputManager is an object responsible for the
- * </p>
+ * An InputManager is an object responsible for the console input acquisition and redirection
  */
 public abstract class InputManager {
 
+    /**
+     * The client to manage the input for
+     */
+    protected final Client client;
+    /**
+     * The view to call methods on
+     */
+    protected final ViewInterface view;
     /**
      * Determines if an eventual input has to be discarded or not
      */
     protected boolean isWaitingForInput = true;
 
     /**
-     * The client to manage the input for
-     */
-    protected final Client client;
-
-    /**
-     * The view to call methods on
-     */
-    protected final ViewInterface view;
-
-    /**
      * Default constructor
+     *
      * @param client the client to manage the inputs for
      */
     public InputManager(Client client) {
@@ -38,6 +36,7 @@ public abstract class InputManager {
 
     /**
      * Determines how to handle the received input based on the internal state
+     *
      * @param input the user input
      */
     public abstract void manageInput(String input);
@@ -48,7 +47,7 @@ public abstract class InputManager {
      * @param input the user input
      * @return a sanitized version of the input string
      */
-    protected String cleanInput(String input){
+    protected String cleanInput(String input) {
         return input.replace(" ", "").replace("\t", "");
     }
 

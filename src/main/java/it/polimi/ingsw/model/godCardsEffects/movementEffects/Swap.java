@@ -13,9 +13,9 @@ import java.util.List;
 /**
  * Swap position with opponents' workers workers when moving
  * <p>
- *     This effect alters the workers' walkable cells: workers can swap their position with an opponent worker if it is
- *     in an adjacent cell
-*/
+ * This effect alters the workers' walkable cells: workers can swap their position with an opponent worker if it is
+ * in an adjacent cell
+ */
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Swap extends MovementStrategy {
 
@@ -23,6 +23,7 @@ public class Swap extends MovementStrategy {
 
     /**
      * Default constructor
+     *
      * @see #initialize()
      */
     public Swap() {
@@ -32,6 +33,7 @@ public class Swap extends MovementStrategy {
 
     /**
      * Copy constructor
+     *
      * @param swap the strategy to clone
      * @param game the game in which the effect is used
      */
@@ -49,6 +51,7 @@ public class Swap extends MovementStrategy {
 
     /**
      * Applies the action and eventually swaps the target cell's occupant position
+     *
      * @param action the action to be performed
      */
     public void swapAction(MoveAction action) {
@@ -72,12 +75,13 @@ public class Swap extends MovementStrategy {
     /**
      * Determines if a moveAction is legal and applies it
      * <p>
-     *     Using this ruleSet, a movement action is considered valid if the following conditions are all true:
-     *     <ul>
-     *         <li>no worker has been moved yet during the turn</li>
-     *         <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
-     *     </ul>
-    * @param action the movement action to validate
+     * g this ruleSet, a movement action is considered valid if the following conditions are all true:
+     * <ul>
+     *     <li>no worker has been moved yet during the turn</li>
+     *     <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
+     * </ul>
+     *
+     * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -97,13 +101,14 @@ public class Swap extends MovementStrategy {
     /**
      * Provides a list of cells on which the worker can walk on
      * <p>
-     *     Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
-     *     at most one compared to the starting cell (domes do not count) and has no dome built on it; a worker can walk
-     *     on a cell occupied by another worker (if the opponent worker's cell satisfies the condition above mentioned).
-     *     If moving in a cell determines an immediate loss, the cell causing this behavior is not considered walkable;
-     *     if all the cells lead to an immediate loss, the rule above is no longer applied and the player is free to choose
-     *     which move to make before losing (see {@linkplain #canBuildOnAtLeastOneCell(Cell)})
-    * @param worker the worker to be moved
+     * Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
+     * at most one compared to the starting cell (domes do not count) and has no dome built on it; a worker can walk
+     * on a cell occupied by another worker (if the opponent worker's cell satisfies the condition above mentioned).
+     * If moving in a cell determines an immediate loss, the cell causing this behavior is not considered walkable;
+     * if all the cells lead to an immediate loss, the rule above is no longer applied and the player is free to choose
+     * which move to make before losing (see {@linkplain #canBuildOnAtLeastOneCell(Cell)})
+     *
+     * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
     @Override
@@ -132,8 +137,9 @@ public class Swap extends MovementStrategy {
     /**
      * Checks if, after moving in a given cell, the worker can perform a build action
      * <p>
-     *     This method is needed to avoid the player to make a move that would lead it to an immediate loss
-    * @param targetCell
+     * This method is needed to avoid the player to make a move that would lead it to an immediate loss
+     *
+     * @param targetCell
      * @return
      */
     private boolean canBuildOnAtLeastOneCell(Cell targetCell) {
@@ -146,6 +152,7 @@ public class Swap extends MovementStrategy {
 
     /**
      * Creates a clone of this object
+     *
      * @param game the current game
      * @return a clone of this object
      */

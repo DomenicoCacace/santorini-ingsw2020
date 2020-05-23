@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.godCardsEffects.affectOpponentTurnEffects;
 
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.Player;
-import it.polimi.ingsw.model.rules.RuleSetBase;
 import it.polimi.ingsw.model.rules.RuleSetStrategy;
 
 /**
@@ -13,6 +12,7 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
 
     /**
      * Default constructor
+     *
      * @see AffectOpponentTurnStrategy#initialize()
      */
     public CannotMoveUp() {
@@ -21,8 +21,9 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
 
     /**
      * Copy constructor
+     *
      * @param cannotMoveUp the strategy to clone
-     * @param game the game in which the effect is used
+     * @param game         the game in which the effect is used
      */
     private CannotMoveUp(CannotMoveUp cannotMoveUp, Game game) {
         this.game = game;
@@ -38,9 +39,9 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
     /**
      * Applies the end turn effect
      * <p>
-     *     Using this ruleSet, the end turn effects reset the attributes changed during the turn and, if a worker has
-     *     moved up during the turn, all of the other workers cannot move on a taller building during their next turn
-    */
+     * Using this ruleSet, the end turn effects reset the attributes changed during the turn and, if a worker has
+     * moved up during the turn, all of the other workers cannot move on a taller building during their next turn
+     */
     @Override
     public void doEffect() {
         if (hasMovedUp) {
@@ -54,6 +55,7 @@ public class CannotMoveUp extends AffectOpponentTurnStrategy {
 
     /**
      * Creates a clone of this object
+     *
      * @param game the current game
      * @return a clone of this object
      */

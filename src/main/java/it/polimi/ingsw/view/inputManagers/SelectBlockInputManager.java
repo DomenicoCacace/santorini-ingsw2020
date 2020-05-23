@@ -10,7 +10,7 @@ import java.util.List;
 public class SelectBlockInputManager extends InputManager {
 
     private final MessageManagerParser parser;
-    private final List<Block> possibleBlocks =new ArrayList<>();
+    private final List<Block> possibleBlocks = new ArrayList<>();
 
     public SelectBlockInputManager(Client client, MessageManagerParser parser, List<Block> possibleBlocks) {
         super(client);
@@ -22,12 +22,12 @@ public class SelectBlockInputManager extends InputManager {
     public void manageInput(String input) {
         input = cleanInput(input);
         try {
-            int index = Integer.parseInt(input) -1;
-            if(index>=0 && index < possibleBlocks.size())
+            int index = Integer.parseInt(input) - 1;
+            if (index >= 0 && index < possibleBlocks.size())
                 parser.sendBuild(possibleBlocks.get(index));
             else
                 view.showErrorMessage("Please insert a correct value");
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             view.showErrorMessage("please insert a number");
         }
     }

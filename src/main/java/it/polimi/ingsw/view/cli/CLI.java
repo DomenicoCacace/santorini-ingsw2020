@@ -24,9 +24,9 @@ public class CLI implements ViewInterface {
     public static final String YES = "y";
     public static final String NO = "n";
     private final PrettyPrinter printer;
+    private final ExecutorService ex = Executors.newSingleThreadScheduledExecutor();
+    private final Lock lock = new ReentrantLock();
     private InputManager inputManager;
-    private ExecutorService ex = Executors.newSingleThreadScheduledExecutor();
-    private Lock lock = new ReentrantLock();
 
     public CLI() throws IOException {
         printer = new PrettyPrinter();
@@ -69,13 +69,13 @@ public class CLI implements ViewInterface {
     @Override
     public void chooseUserGod(List<GodData> possibleGods) {
         System.out.println("Choose your god: ");
-        possibleGods.forEach(g -> System.out.println(possibleGods.indexOf(g)+1 + "-" + g.getName()));
+        possibleGods.forEach(g -> System.out.println(possibleGods.indexOf(g) + 1 + "-" + g.getName()));
     }
 
     @Override
     public void chooseGameGods(List<GodData> allGods, int size) {
         System.out.println("Choose the game gods:");
-        allGods.forEach(g -> System.out.println(allGods.indexOf(g)+1 + "-" + g.getName()));
+        allGods.forEach(g -> System.out.println(allGods.indexOf(g) + 1 + "-" + g.getName()));
     }
 
     private void readInput() {
@@ -84,7 +84,7 @@ public class CLI implements ViewInterface {
             if (scanner.hasNext()) {
                 lock.lock();
                 String input = scanner.nextLine();
-                if(!input.isBlank())
+                if (!input.isBlank())
                     inputManager.manageInput(input.trim());
                 lock.unlock();
             }
@@ -164,7 +164,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void  askLobbyName() throws CancellationException {
+    public void askLobbyName() throws CancellationException {
         System.out.print("Choose your lobby name:\n");
     }
 
@@ -215,9 +215,9 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void initGameBoard(List<Cell> gameboard) {
-        printer.setCachedBoard(gameboard);
-        showGameBoard(gameboard);
+    public void initGameBoard(List<Cell> gameBoard) {
+        printer.setCachedBoard(gameBoard);
+        showGameBoard(gameBoard);
     }
 
     @Override
@@ -237,7 +237,7 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws  CancellationException {
+    public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws CancellationException {
         printer.printBoard(gameBoard, buildableCells);   //TODO: we can put walkable and buildable together
         printer.printMessage("Select the cell where you want to to build! \nrow: ");
     }
@@ -281,7 +281,6 @@ public class CLI implements ViewInterface {
         possibleActions.forEach(a -> actions.add(a.toString()));
         printOptions(actions);
     }
-
 
 
     @Override

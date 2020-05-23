@@ -11,7 +11,7 @@ public class CreateLobbyRequest extends MessageFromClientToServer {
     private final int lobbySize;
 
     @JsonCreator
-    public CreateLobbyRequest(@JsonProperty("username")String username, @JsonProperty("lobbyName") String lobbyName, @JsonProperty("lobbySize") int lobbySize) {
+    public CreateLobbyRequest(@JsonProperty("username") String username, @JsonProperty("lobbyName") String lobbyName, @JsonProperty("lobbySize") int lobbySize) {
         super(username, Type.CLIENT_REQUEST);
         this.lobbyName = lobbyName;
         this.lobbySize = lobbySize;

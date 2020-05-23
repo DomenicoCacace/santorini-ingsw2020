@@ -31,6 +31,10 @@ public class GuiInit extends Application {
         launch();
     }
 
+    public static LoginController getLoginController() {
+        return loginController;
+    }
+
     @Override
     public void start(Stage primarystage) throws IOException {
         Parent panel;
@@ -43,10 +47,6 @@ public class GuiInit extends Application {
         stage.setScene(scene);
         stage.show();
 
-    }
-
-    public static LoginController getLoginController(){
-        return loginController;
     }
 
 }

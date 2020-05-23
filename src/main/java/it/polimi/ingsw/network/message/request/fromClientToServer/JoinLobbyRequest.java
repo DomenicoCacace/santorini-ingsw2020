@@ -10,7 +10,7 @@ public class JoinLobbyRequest extends MessageFromClientToServer {
     private final String lobbyName;
 
     @JsonCreator
-    public JoinLobbyRequest(@JsonProperty("username")String username, @JsonProperty("lobby name") String lobbyName) {
+    public JoinLobbyRequest(@JsonProperty("username") String username, @JsonProperty("lobby name") String lobbyName) {
         super(username, Type.CLIENT_REQUEST);
         this.lobbyName = lobbyName;
     }

@@ -28,8 +28,8 @@ public class PrintableObject {
      * throwing exceptions: in case the object size is bigger than the provided size, all chars outside the matrix
      * will be ignored; if smaller, the elements of the matrix will be left to null.
      * <br>
-     *     For further information see <a href="https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences">ANSI colors</a>
-    *
+     * For further information see <a href="https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences">ANSI colors</a>
+     *
      * @param file   the object file path
      * @param height the expected matrix height
      * @param width  the expected matrix width
@@ -73,7 +73,7 @@ public class PrintableObject {
      * <i>width</i> getter
      * <p>
      * Takes in account the ANSI reset code
-    *
+     *
      * @return the number of columns in the matrix
      */
     public int getWidth() {
@@ -82,6 +82,7 @@ public class PrintableObject {
 
     /**
      * <i>height</i> getter
+     *
      * @return the object height
      */
     public int getHeight() {

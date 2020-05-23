@@ -18,7 +18,8 @@ public class God {
 
     /**
      * Copy constructor
-     * @param god the god to be cloned
+     *
+     * @param god  the god to be cloned
      * @param game the game in which the god is being used
      */
     private God(God god, Game game) {
@@ -30,8 +31,9 @@ public class God {
 
     /**
      * Default constructor
-     * @param name the god's name
-     * @param workersNumber the number of workers associated to a given god
+     *
+     * @param name                the god's name
+     * @param workersNumber       the number of workers associated to a given god
      * @param descriptionStrategy a description of the god's power
      */
     public God(@JsonProperty("name") String name, @JsonProperty("workersNumber") int workersNumber, @JsonProperty("descriptionStrategy") String descriptionStrategy) {
@@ -42,6 +44,7 @@ public class God {
 
     /**
      * Creates a clone of this god
+     *
      * @param game the current game
      * @return a clone of this object
      */
@@ -51,6 +54,7 @@ public class God {
 
     /**
      * <i>name</i> getter
+     *
      * @return the god's name
      */
     public String getName() {
@@ -59,6 +63,7 @@ public class God {
 
     /**
      * <i>description</i> getter
+     *
      * @return the god power description
      */
     public String getDescriptionStrategy() {
@@ -67,6 +72,7 @@ public class God {
 
     /**
      * <i>workersNumber</i> getter
+     *
      * @return the number of workers associated with the god power
      */
     public int getWorkersNumber() {
@@ -75,6 +81,7 @@ public class God {
 
     /**
      * <i>strategy</i> getter
+     *
      * @return the strategy associated with the god effects
      */
     public RuleSetStrategy getStrategy() {
@@ -83,6 +90,7 @@ public class God {
 
     /**
      * <i>strategy</i> setter
+     *
      * @param strategy the strategy associated with thr god effects
      */
     public void setStrategy(RuleSetStrategy strategy) {
@@ -92,6 +100,7 @@ public class God {
 
     /**
      * Creates a {@linkplain GodData} object based on this god
+     *
      * @return this object's data class
      */
     public GodData buildDataClass() {

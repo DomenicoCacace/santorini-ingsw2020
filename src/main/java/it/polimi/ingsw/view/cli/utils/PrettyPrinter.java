@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Console Printing Utilities
-*/
+ */
 public class PrettyPrinter {
     private final int verticalWallWidth;
     private final int horizontalWallWidth;
@@ -27,8 +27,9 @@ public class PrettyPrinter {
      * Default constructor
      * <p>
      * Loads the <i>graphics</i> from file into PrintableObjects
+     *
      * @throws IOException if an I/O error occurs
-    */
+     */
     public PrettyPrinter() throws IOException {
         // FIXME: Load from configuration file
         int tableWidth = 120 + 1;  // includes the ansi reset sequence as last element
@@ -125,7 +126,7 @@ public class PrettyPrinter {
      * <p>
      * Assuming that both the cached and new board are ordered in the same way (see {@linkplain GameBoard#getAllCells()}),
      * this method updates the cached board to a new provided version, ready to be printed.
-    *
+     *
      * @param board the updated board
      */
     private void updateCachedBoard(List<Cell> board) {
@@ -150,7 +151,7 @@ public class PrettyPrinter {
      * <p>
      * Since the frame should not be saved on the <i>original</i> board, the {@linkplain #drawOnCell} method requires
      * a String[][] parameter on which the frame will be printed.
-    *
+     *
      * @param cell  the cell to highlight
      * @param board the board to print the frame on
      */
@@ -189,7 +190,7 @@ public class PrettyPrinter {
      * In case the given {@linkplain Cell#getOccupiedBy()} is not null, calls the {@link #drawOnCell} method, passing
      * the <i>sprite</i> corresponding to the worker's color; if the cell contains no worker, the original board
      * texture is reloaded, then the building, if existing, has to be restored.
-    *
+     *
      * @param cell the cell containing
      */
     private void drawWorker(Cell cell) {

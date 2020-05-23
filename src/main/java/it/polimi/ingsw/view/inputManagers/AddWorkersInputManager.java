@@ -7,8 +7,8 @@ public class AddWorkersInputManager extends InputManager {
 
     private static final int MIN_COORD = 1;
     private static final int MAX_COORD = 5;
-    private int col = -1, row = -1;
     private final MessageManagerParser parser;
+    private int col = -1, row = -1;
 
     public AddWorkersInputManager(Client client, MessageManagerParser parser) {
         super(client);
@@ -25,13 +25,11 @@ public class AddWorkersInputManager extends InputManager {
                     if (row == -1)
                         view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
                     else
-                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row +1) + "\ncol: ");
-                }
-                else if (row == -1) {
+                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
+                } else if (row == -1) {
                     row = coord - 1;
                     view.showSuccessMessage("col: ");
-                }
-                else if (col == -1) {
+                } else if (col == -1) {
                     col = coord - 1;
                     parser.addWorker(row, col);
                     isWaitingForInput = false;

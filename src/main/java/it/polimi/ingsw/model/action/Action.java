@@ -8,8 +8,8 @@ import it.polimi.ingsw.model.Worker;
 /**
  * Abstraction for Workers' actions
  * <p>
- *     Each action
-*/
+ * Each action
+ */
 public abstract class Action {
 
     protected final Cell targetCell;
@@ -17,8 +17,9 @@ public abstract class Action {
 
     /**
      * Default constructor
+     *
      * @param targetWorker the worker performing the action
-     * @param targetCell the cell to perform the action on
+     * @param targetCell   the cell to perform the action on
      */
     protected Action(Worker targetWorker, Cell targetCell) {
         this.targetCell = targetCell;
@@ -27,6 +28,7 @@ public abstract class Action {
 
     /**
      * <i>targetWorker</i> getter
+     *
      * @return the worker performing the action
      */
     public Worker getTargetWorker() {
@@ -35,6 +37,7 @@ public abstract class Action {
 
     /**
      * <i>startingCell</i> getter
+     *
      * @return the worker's current position
      */
     public Cell getStartingCell() {
@@ -43,6 +46,7 @@ public abstract class Action {
 
     /**
      * <i>targetCell</i> getter
+     *
      * @return the action's target cell
      */
     public Cell getTargetCell() {
@@ -51,6 +55,7 @@ public abstract class Action {
 
     /**
      * Checks if the action can be performed, based on the game status
+     *
      * @param game the game object which validates the action
      * @throws IllegalActionException if the action cannot be performed
      */

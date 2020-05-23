@@ -33,6 +33,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Default constructor
+     *
      * @see #initialize()
      */
     public RuleSetBase() {
@@ -43,9 +44,9 @@ public class RuleSetBase implements RuleSetStrategy {
      * Copy constructor
      * <p>
      * Used to restore the game status in case of unfortunate events on the server side
-    *
+     *
      * @param ruleSetBase the ruleSet to restore
-     * @param game the game code
+     * @param game        the game code
      */
     public RuleSetBase(RuleSetStrategy ruleSetBase, Game game) {
         this.game = game;
@@ -62,9 +63,9 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Sets the parameters for a new turn
      * <p>
-     *     Using this ruleSet, a player is granted one movement and one building action, which have to be used in this
-     *     order and by the same worker
-    */
+     * Using this ruleSet, a player is granted one movement and one building action, which have to be used in this
+     * order and by the same worker
+     */
     protected void initialize() {
         this.movesAvailable = 1;
         this.movesUpAvailable = 1;
@@ -75,6 +76,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * <i>movesAvailable</i> getter
+     *
      * @return the number of moves available
      */
     @Override
@@ -84,6 +86,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * <i>movesUpAvailable</i> getter
+     *
      * @return the number of moves available on a taller building
      */
     @Override
@@ -94,8 +97,9 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * <i>movesUpAvailable</i> setter
      * <p>
-     *     Used when an effect has a malus on other players' available moves
-    * @param num the number of moves up to be made available
+     * Used when an effect has a malus on other players' available moves
+     *
+     * @param num the number of moves up to be made available
      */
     @Override
     public void setMovesUpAvailable(int num) {
@@ -104,6 +108,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * <i>hasMovedUp</i> getter
+     *
      * @return true if the player moved up during the last turn, false otherwise
      */
     @Override
@@ -113,6 +118,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * <i>buildsAvailable</i> getter
+     *
      * @return the number of buildings the player can build
      */
     @Override
@@ -122,6 +128,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * <i>movedWorker</i> getter
+     *
      * @return the worker which has been moved during the last turn (can be <i>null</i>)
      */
     @Override
@@ -131,6 +138,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * <i>game</i> setter
+     *
      * @param game the game in which the effect is used
      */
     @Override
@@ -141,9 +149,10 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Provides the possible blocks buildable on a given cell
      * <p>
-     *     Using this ruleSet, a worker will always be able to build only one kind of block, immediately higher
-     *     than the one it is trying to build on
-    * @param selectedCell the cell to get the buildable blocks for
+     * Using this ruleSet, a worker will always be able to build only one kind of block, immediately higher
+     * than the one it is trying to build on
+     *
+     * @param selectedCell the cell to get the buildable blocks for
      * @return a list of blocks that can be built on the given cell
      */
     @Override
@@ -156,8 +165,8 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Applies end turn effects
      * <p>
-     *     Using this ruleSet, the end turn effects simply resets the attributes changed during the turn
-    */
+     * Using this ruleSet, the end turn effects simply resets the attributes changed during the turn
+     */
     @Override
     public void doEffect() {
         initialize();
@@ -165,6 +174,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Determines if the moveAction's target cell is a legal one
+     *
      * @param action the action to analyze
      * @return true if the cell is <i>walkable</i>, false otherwise
      */
@@ -175,13 +185,14 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Provides a list of possible actions for a player to perform, based on the chosen worker
      * <p>
-     *     Using this ruleSet, the possible actions for a worker are:
-     *     <ul>
-     *         <li>Change Worker/Move, if the worker  has not been moved yet</li>
-     *         <li>Build, if the worker has been moved</li>
-     *         <li>None, in any other case</li>
-     *     </ul>
-    * @param worker the worker to perform an action with
+     * g this ruleSet, the possible actions for a worker are:
+     * <ul>
+     *     <li>Change Worker/Move, if the worker  has not been moved yet</li>
+     *     <li>Build, if the worker has been moved</li>
+     *     <li>None, in any other case</li>
+     * </ul>
+     *
+     * @param worker the worker to perform an action with
      * @return a list of possible performable actions
      */
     @Override
@@ -200,12 +211,13 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines if a moveAction is legal and applies it
      * <p>
-     *     Using this ruleSet, a movement action is considered valid if the following conditions are all true:
-     *     <ul>
-     *         <li>no worker has been moved yet during the turn</li>
-     *         <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
-     *     </ul>
-    * @param action the movement action to validate
+     * g this ruleSet, a movement action is considered valid if the following conditions are all true:
+     * <ul>
+     *     <li>no worker has been moved yet during the turn</li>
+     *     <li>the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved</li>
+     * </ul>
+     *
+     * @param action the movement action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -228,13 +240,14 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines if a buildAction is legal and applies it
      * <p>
-     *     Using this ruleSet, a build action is considered valid if the following conditions are all true:
-     *     <ul>
-     *         <li>a worker has already been moved</li>
-     *         <li>the worker to perform the action is the same which has been moved</li>
-     *         <li>the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker</li>
-     *     </ul>
-    * @param action the build action to validate
+     * g this ruleSet, a build action is considered valid if the following conditions are all true:
+     * <ul>
+     *     <li>a worker has already been moved</li>
+     *     <li>the worker to perform the action is the same which has been moved</li>
+     *     <li>the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker</li>
+     * </ul>
+     *
+     * @param action the build action to validate
      * @return true if the action has been applied, false otherwise
      */
     @Override
@@ -250,6 +263,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Determines if the buildAction's target cell is a legal one
+     *
      * @param action the action to analyze
      * @return true if the cell is <i>buildable</i>, false otherwise
      * @see #isBuildActionValid(BuildAction)
@@ -260,6 +274,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Determines if the worker chosen for the build action can actually build
+     *
      * @param action the action to analyze
      * @return true if the worker can build, false otherwise
      * @see #isBuildActionValid(BuildAction)
@@ -271,6 +286,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Determines if the block to be built can actually be built
+     *
      * @param action the action to analyze
      * @return true if the block can be placed, false otherwise
      * @see #isBuildActionValid(BuildAction)
@@ -282,9 +298,10 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines if the win conditions are satisfied upon a movement action
      * <p>
-     *     Using this ruleSet, a player can win only upon moving (following the rules already defined in
-     *     {@linkplain #isMoveActionValid(MoveAction)}) on a level 3 building
-    * @param action the action to analyze
+     * Using this ruleSet, a player can win only upon moving (following the rules already defined in
+     * {@linkplain #isMoveActionValid(MoveAction)}) on a level 3 building
+     *
+     * @param action the action to analyze
      * @return true if the action led to victory, false otherwise
      */
     @Override
@@ -296,9 +313,10 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines if the lose conditions are satisfied upon a movement action
      * <p>
-     *     Using this ruleSet, a player can lose upon a movement action if the worker which has been moved cannot build
-     *     any block around it
-    * @param moveAction the action to analyze
+     * Using this ruleSet, a player can lose upon a movement action if the worker which has been moved cannot build
+     * any block around it
+     *
+     * @param moveAction the action to analyze
      * @return true if the action led to a loss, false otherwise
      */
     @Override
@@ -309,9 +327,10 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Checks if the turn can begin
      * <p>
-     *     Using this ruleSet, a player's turn can start if at least one of the player's workers can perform a movement
-     *     action
-    * @return true if there is at least one action to perform, false otherwise
+     * Using this ruleSet, a player's turn can start if at least one of the player's workers can perform a movement
+     * action
+     *
+     * @return true if there is at least one action to perform, false otherwise
      */
     @Override
     public boolean checkLoseCondition() {
@@ -324,9 +343,10 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines if the lose conditions are satisfied upon a build action
      * <p>
-     *     Using this ruleSet, the player can never lose after it performs a build action; it might "trap itself", but
-     *     in this case it will lose on the beginning of its next turn.
-    * @param buildAction the action to analyze
+     * Using this ruleSet, the player can never lose after it performs a build action; it might "trap itself", but
+     * in this case it will lose on the beginning of its next turn.
+     *
+     * @param buildAction the action to analyze
      * @return true if the action led to a loss, false otherwise
      */
     @Override
@@ -337,9 +357,10 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Provides a list of cells on which the worker can walk on
      * <p>
-     *     Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
-     *     at most one compared to the starting cell (domes do not count), is not occupied by another worker and has no dome built on it
-    * @param worker the worker to be moved
+     * Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
+     * at most one compared to the starting cell (domes do not count), is not occupied by another worker and has no dome built on it
+     *
+     * @param worker the worker to be moved
      * @return a list of <i>walkable</i> cells
      */
     @Override
@@ -353,8 +374,9 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Adds to a list the cells on which the given player can walk on
+     *
      * @param worker the worker to be moved
-     * @param cells the list of walkable cells
+     * @param cells  the list of walkable cells
      */
     protected void addWalkableCells(Worker worker, List<Cell> cells) {
         for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
@@ -366,9 +388,10 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines if a worker can reach a cell
      * <p>A cell is considered reachable if the height difference between the worker's cell and the target cell is at most 1,
-     * and the movesUpAvailable counter has not been decreased</p>
+     * and the movesUpAvailable counter has not been decreased
+     *
      * @param worker the worker to be moved
-     * @param cell the target cell
+     * @param cell   the target cell
      * @return true if the cell is reachable, false otherwise
      */
     protected boolean isCorrectDistance(Worker worker, Cell cell) {
@@ -378,8 +401,9 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Provides a list of cells on which the worker can build on
      * <p>
-     *     Using this ruleSet, a worker can build on any cell adjacent to its starting cell
-    * @param worker the worker to build with
+     * Using this ruleSet, a worker can build on any cell adjacent to its starting cell
+     *
+     * @param worker the worker to build with
      * @return a list of <i>buildable</i> cells
      */
     @Override
@@ -395,8 +419,9 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Adds to a list the cells on which the given player can build on
+     *
      * @param worker the worker to be moved
-     * @param cells the list of buildable cells
+     * @param cells  the list of buildable cells
      * @see #getBuildableCells(Worker)
      */
     protected void addBuildableCells(Worker worker, List<Cell> cells) {
@@ -409,8 +434,9 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines whether a player can end its turn
      * <p>
-     *     Using this ruleSet, a player cannot end manually its turn
-    * @return true if the player can end its turn, false otherwise
+     * Using this ruleSet, a player cannot end manually its turn
+     *
+     * @return true if the player can end its turn, false otherwise
      */
     @Override
     public boolean canEndTurn() {
@@ -420,10 +446,11 @@ public class RuleSetBase implements RuleSetStrategy {
     /**
      * Determines whether a player can end its turn
      * <p>
-     *     Using this ruleSet, a player turn is ended automatically right after it performs its build action
-     *     <br>
-     *         This method should never be invoked directly from the player
-    * @return true if the player can end its turn, false otherwise
+     * Using this ruleSet, a player turn is ended automatically right after it performs its build action
+     * <br>
+     * This method should never be invoked directly from the player
+     *
+     * @return true if the player can end its turn, false otherwise
      */
     @Override
     public boolean canEndTurnAutomatically() {
@@ -432,6 +459,7 @@ public class RuleSetBase implements RuleSetStrategy {
 
     /**
      * Creates a clone of this object
+     *
      * @param game the current game
      * @return a clone of this object
      */

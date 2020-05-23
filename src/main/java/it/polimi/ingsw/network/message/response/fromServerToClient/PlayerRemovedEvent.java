@@ -13,13 +13,13 @@ import java.util.List;
 public class PlayerRemovedEvent extends MessageFromServerToClient {
 
     private final String payload;
-    private final List<Cell> gameboard;
+    private final List<Cell> gameBoard;
 
     @JsonCreator
-    public PlayerRemovedEvent(@JsonProperty("payload") String payload, @JsonProperty("gameboard") List<Cell> gameboard) {
+    public PlayerRemovedEvent(@JsonProperty("payload") String payload, @JsonProperty("gameBoard") List<Cell> gameBoard) {
         super(ReservedUsernames.BROADCAST.toString(), Type.PLAYER_REMOVED);
         this.payload = payload;
-        this.gameboard = gameboard;
+        this.gameBoard = gameBoard;
     }
 
     public String getPayload() {
@@ -27,7 +27,7 @@ public class PlayerRemovedEvent extends MessageFromServerToClient {
     }
 
     public List<Cell> getGameboard() {
-        return gameboard;
+        return gameBoard;
     }
 
     @Override

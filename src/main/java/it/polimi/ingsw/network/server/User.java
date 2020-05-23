@@ -6,16 +6,17 @@ import it.polimi.ingsw.network.message.Message;
  * The entity connecting to the server; can be used to keep a game history or something similar
  */
 public class User {
-    private String username;
     private final VirtualClient virtualClient;
     private final Server server;
+    private String username;
 
     /**
      * Default constructor
      * <p>
-     *     When created, a user is associated to a virtualClient, which handles all its requests
-    * @param virtualClient the virtualClient associated to the user
-     * @param server the server reference
+     * When created, a user is associated to a virtualClient, which handles all its requests
+     *
+     * @param virtualClient the virtualClient associated to the user
+     * @param server        the server reference
      */
     public User(VirtualClient virtualClient, Server server) {
         this.virtualClient = virtualClient;
@@ -24,6 +25,7 @@ public class User {
 
     /**
      * <i>username</i> getter
+     *
      * @return the user's username
      */
     public String getUsername() {
@@ -32,6 +34,7 @@ public class User {
 
     /**
      * <i>username</i> setter
+     *
      * @param username the user's username
      */
     public void setUsername(String username) {
@@ -40,6 +43,7 @@ public class User {
 
     /**
      * Sends a message to the client
+     *
      * @param message the message to send
      */
     public void notify(Message message) {

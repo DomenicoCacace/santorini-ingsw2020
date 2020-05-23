@@ -24,16 +24,18 @@ public class Client {
 
     /**
      * First constructor
+     *
      * @param viewInterface the UI to use
      */
-    public Client(ViewInterface viewInterface){
+    public Client(ViewInterface viewInterface) {
         this.view = viewInterface;
     }
 
     /**
      * Default constructor
-     * @param username the client's username
-     * @param ipAddress the server address
+     *
+     * @param username      the client's username
+     * @param ipAddress     the server address
      * @param viewInterface the UI to use
      */
     public Client(String username, String ipAddress, ViewInterface viewInterface) {
@@ -46,7 +48,8 @@ public class Client {
     /**
      * Launches the client
      * <p>
-     *     To determine which UI to use, this method uses command line arguments
+     * To determine which UI to use, this method uses command line arguments
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {
@@ -55,8 +58,7 @@ public class Client {
             if (args.length == 0 || !args[0].equals("--GUI")) {
                 viewInterface = new CLI();
                 initClient(viewInterface);
-            }
-            else {
+            } else {
                 GUI.launchGui(); //FIXME
             }
         } catch (IOException e) {
@@ -68,9 +70,10 @@ public class Client {
 
     /**
      * Creates a new client instance
+     *
      * @param viewInterface the UI to use
      */
-    public static void initClient(ViewInterface viewInterface){
+    public static void initClient(ViewInterface viewInterface) {
         Client client = new Client(viewInterface);
         viewInterface.printLogo();
         List<String> savedUsers = new ArrayList<>();
@@ -86,8 +89,7 @@ public class Client {
                 bufferedReader.close();
                 viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askToReloadLastSettings(savedUsers);
-            }
-            else { //the file is empty
+            } else { //the file is empty
                 viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askIP();
             }
@@ -99,7 +101,8 @@ public class Client {
 
     /**
      * Saves a new login configuration to a file
-     * @param ip the server address
+     *
+     * @param ip       the server address
      * @param username the username
      * @throws IOException if an I/O error occurs
      */
@@ -107,11 +110,11 @@ public class Client {
         StringBuilder otherUsers = new StringBuilder();
         String ipLine;
         String nameLine;
-        int storedSetting=0;
+        int storedSetting = 0;
         FileReader fileReader = new FileReader(CONFIG_FILE);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
-        while (((ipLine = bufferedReader.readLine()) != null && !ipLine.equals("")) && storedSetting < MAX_SETTINGS_STORED -1){
-            if(!(nameLine = bufferedReader.readLine()).equals(username) || !ipLine.equals(ip)) {
+        while (((ipLine = bufferedReader.readLine()) != null && !ipLine.equals("")) && storedSetting < MAX_SETTINGS_STORED - 1) {
+            if (!(nameLine = bufferedReader.readLine()).equals(username) || !ipLine.equals(ip)) {
                 otherUsers.append(ipLine).append("\n").append(nameLine).append("\n");
                 storedSetting++;
             }
@@ -126,6 +129,7 @@ public class Client {
 
     /**
      * <i>username</i> getter
+     *
      * @return the user's username
      */
     public String getUsername() {
@@ -133,7 +137,22 @@ public class Client {
     }
 
     /**
+     * Sets the username and, if possible, starts a connection
+     *
+     * @param username the chosen username
+     * @see #startConnection()
+     */
+    public void setUsername(String username) {
+        this.username = username;
+        if (networkHandler == null)
+            startConnection();
+        else
+            networkHandler.login(username);
+    }
+
+    /**
      * <i>ipAddress</i> getter
+     *
      * @return the server address
      */
     public String getIpAddress() {
@@ -141,20 +160,8 @@ public class Client {
     }
 
     /**
-     * Sets the username and, if possible, starts a connection
-     * @param username the chosen username
-     * @see #startConnection()
-     */
-    public void setUsername(String username) {
-        this.username = username;
-        if(networkHandler == null)
-            startConnection();
-        else
-            networkHandler.login(username);
-    }
-
-    /**
      * <i>ipAddress</i> setter
+     *
      * @param ipAddress the server address
      */
     public void setIpAddress(String ipAddress) {
@@ -165,12 +172,12 @@ public class Client {
      * Opens a connection to the server
      */
     private void startConnection() {
-        try{
+        try {
             networkHandler = new NetworkHandler(this);
             setCurrentPlayer(true);
             networkHandler.login(this.username);
             new Thread(networkHandler).start();
-        }catch (IOException e) {
+        } catch (IOException e) {
             view.showErrorMessage("Couldn't connect to ip address: " + ipAddress);
             initClient(view);
         }
@@ -178,6 +185,7 @@ public class Client {
 
     /**
      * Sets a flag allowing the user to send messages
+     *
      * @param currentPlayer a boolean value
      */
     public void setCurrentPlayer(boolean currentPlayer) {
@@ -186,6 +194,7 @@ public class Client {
 
     /**
      * Sends a message to the server
+     *
      * @param message the message to be sent
      */
     public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
@@ -207,6 +216,7 @@ public class Client {
 
     /**
      * <i>view</i> getter
+     *
      * @return the UI in use
      */
     public ViewInterface getView() {

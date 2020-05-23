@@ -36,6 +36,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Default constructor
+     *
      * @param client the client to parse messages for
      */
     public MessageManagerParser(Client client) {
@@ -45,6 +46,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * <i>selectedCell</i> setter
+     *
      * @param selectedCell the cell to be used for the next action
      */
     public void setSelectedCell(Cell selectedCell) {
@@ -54,8 +56,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * <i>chosenSize</i> setter
      * <p>
-     *     This is crucial to correctly manage the
-     * </p>
+     * This is crucial to correctly manage the
+     *
      * @param chosenSize the lobby size
      */
     public void setChosenSize(int chosenSize) {
@@ -65,7 +67,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * <i>creatingLobby</i> setter
      * <p>
-     *     Used to determine if the user is creating a lobby
+     * Used to determine if the user is creating a lobby
+     *
      * @param creatingLobby a boolean value
      */
     public void setCreatingLobby(boolean creatingLobby) {
@@ -75,7 +78,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * <i>lookingForLobbies</i> setter
      * <p>
-     *     Used to determine if the user is looking for a lobby
+     * Used to determine if the user is looking for a lobby
+     *
      * @param lookingForLobbies a boolean value
      */
     public void setLookingForLobbies(boolean lookingForLobbies) {
@@ -86,15 +90,15 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages the login response
      * <p>
-     * Based on the {@linkplain LoginResponse} outcome
-     *    <ul>
-     *        <li>{@linkplain Type#OK}: login successful, the user is in the waiting room and asked to create/join a lobby</li>
-     *        <li>{@linkplain Type#SERVER_FULL}: the server has exceeded its maximum capacity, won't accept new connections</li>
-     *        <li>{@linkplain Type#INVALID_NAME}: the username is already taken or forbidden</li>
-     *    </ul>
-     *    At this stage, the method also tries to save the address+username combo in a file, for quick access on the
-     *    next login.
-    *
+     * ed on the {@linkplain LoginResponse} outcome
+     * <ul>
+     *     <li>{@linkplain Type#OK}: login successful, the user is in the waiting room and asked to create/join a lobby</li>
+     *     <li>{@linkplain Type#SERVER_FULL}: the server has exceeded its maximum capacity, won't accept new connections</li>
+     *     <li>{@linkplain Type#INVALID_NAME}: the username is already taken or forbidden</li>
+     * </ul>
+     * At this stage, the method also tries to save the address+username combo in a file, for quick access on the
+     * next login.
+     *
      * @param message the message to handle
      */
     @Override
@@ -121,6 +125,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Lets the user decide to join or create a lobby
+     *
      * @param lobbiesAvailable the list of available lobbies
      * @see LoginManager
      */
@@ -140,15 +145,16 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Notifies the user about the creation of a new lobby
      * <p>
-     *     If the user is looking for a lobby to join, the list of available lobbies is automatically refreshed and showed
+     * If the user is looking for a lobby to join, the list of available lobbies is automatically refreshed and showed
+     *
      * @param message the message to handle
      */
     @Override
     public void createLobby(LobbyCreatedEvent message) {
-        if(!isCreatingLobby) {
+        if (!isCreatingLobby) {
             if (isLookingForLobbies) {
                 try {
-                    inputManager = new LobbyInputManager(client,message.getLobbies(), this, true);
+                    inputManager = new LobbyInputManager(client, message.getLobbies(), this, true);
                     view.setInputManager(inputManager);
                     view.chooseLobbyToJoin(message.getLobbies());
                 } catch (CancellationException exception) {
@@ -166,11 +172,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Notifies the user about a new user joining the lobby
+     *
      * @param message the message to handle
      */
     @Override
     public void joinLobby(UserJoinedLobbyEvent message) {
-        if(!client.getUsername().equals(message.getJoinedUser()) && message.getJoinedUser()!=null)
+        if (!client.getUsername().equals(message.getJoinedUser()) && message.getJoinedUser() != null)
             view.showSuccessMessage("The user " + message.getJoinedUser() + " joined the lobby!");
         else {
             switch (message.getType()) {
@@ -189,7 +196,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     isLookingForLobbies = false;
                     view.showErrorMessage("Username not valid");
                     try {
-                        inputManager = new LoginManager(client,true);
+                        inputManager = new LoginManager(client, true);
                         view.setInputManager(inputManager);
                         view.askUsername();
                     } catch (CancellationException exception) {
@@ -206,6 +213,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Asks the user if it wants to restore a previously saved game
+     *
      * @param message the message to handle
      */
     @Override
@@ -218,6 +226,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Asks the lobby owner to choose the gods for the match
+     *
      * @param message the message to handle
      */
     @Override // Select gods for the match, request
@@ -230,6 +239,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Notifies the user about the gods chosen for the game
+     *
      * @param message the message to handled
      */
     @Override
@@ -244,14 +254,15 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Asks the user to choose its god
      * <br>
-     *     If there's only one god left to be chosen, it is automatically assigned to the player
+     * If there's only one god left to be chosen, it is automatically assigned to the player
+     *
      * @param message the message to handle
      */
     @Override  // choosing the player's unique god
     public void chooseYourGod(ChooseYourGodRequest message) {
         client.setCurrentPlayer(true);
         try {
-            if(message.getGods().size()==1) {
+            if (message.getGods().size() == 1) {
                 client.sendMessage(new ChooseYourGodResponse(client.getUsername(), message.getGods().get(0)));
                 view.showSuccessMessage("Your God is: " + message.getGods().get(0).getName());
                 return;
@@ -265,6 +276,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Asks the user to select the player which plays first
+     *
      * @param message the message to handle
      */
     @Override
@@ -277,6 +289,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Notifies the user that it's been moved to the waiting room upon an opponent's disconnection
+     *
      * @param message the message to handle
      */
     @Override
@@ -291,16 +304,18 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Sends a {@linkplain AddWorkerRequest} to the server to add a new Worker
+     *
      * @param row the worker cell row index
      * @param col the worker cell column index
      */
-    public void addWorker(int row, int col){
+    public void addWorker(int row, int col) {
         client.sendMessage(new AddWorkerRequest(client.getUsername(), gameBoard.get(5 * row + col)));
         client.setCurrentPlayer(false);
     }
 
     /**
      * Refreshes the game board
+     *
      * @param message the message to handle
      */
     @Override
@@ -312,12 +327,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a PlayerMoveEvent
      * <p>
-     *     Based on the {@linkplain PlayerMoveEvent} outcome:
-     *     <ul>
-     *         <li>{@linkplain Type#OK}: updates the saved game board</li>
-     *         <li>Any other case: shows an error message</li>
-     *     </ul>
-     * </p>
+     * d on the {@linkplain PlayerMoveEvent} outcome:
+     * <ul>
+     *     <li>{@linkplain Type#OK}: updates the saved game board</li>
+     *     <li>Any other case: shows an error message</li>
+     * </ul>
+     *
      * @param message the message to handle
      */
     @Override // Move action response
@@ -333,12 +348,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a PlayerBuildEvent
      * <p>
-     *     Based on the {@linkplain PlayerBuildEvent} outcome:
-     *     <ul>
-     *         <li>{@linkplain Type#OK}: updates the saved game board</li>
-     *         <li>Any other case: shows an error message</li>
-     *     </ul>
-     * </p>
+     * d on the {@linkplain PlayerBuildEvent} outcome:
+     * <ul>
+     *     <li>{@linkplain Type#OK}: updates the saved game board</li>
+     *     <li>Any other case: shows an error message</li>
+     * </ul>
+     *
      * @param message the message to handle
      */
     @Override // Build action response
@@ -353,10 +368,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages an EndTurnEvent
      * <p>
-     *     If the outcome is {@linkplain Type#OK}, the previous turn has been ended and a new one begun; if the user's
-     *     username is the same contained in the message, its {@linkplain Client#setCurrentPlayer(boolean)} token is
-     *     set to {@code true} and its turn begins
-     * </p>
+     * If the outcome is {@linkplain Type#OK}, the previous turn has been ended and a new one begun; if the user's
+     * username is the same contained in the message, its {@linkplain Client#setCurrentPlayer(boolean)} token is
+     * set to {@code true} and its turn begins
+     *
      * @param message the message to handle
      */
     @Override // End turn response
@@ -369,22 +384,21 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 inputManager = new SelectWorkerInputManager(client, this);
                 view.setInputManager(inputManager);
                 view.chooseWorker();
-            }
-            else
+            } else
                 client.setCurrentPlayer(false);
-        }
-        else
+        } else
             view.showErrorMessage("You can't end your turn now.");
     }
 
     /**
      * Asks the user to choose where to place its worker
+     *
      * @param message the message to handle
      */
     @Override // Place worker request
     public void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {
         client.setCurrentPlayer(true);
-        inputManager = new AddWorkersInputManager(client,this);
+        inputManager = new AddWorkersInputManager(client, this);
         view.setInputManager(inputManager);
         view.placeWorker();
     }
@@ -392,12 +406,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a WorkerAddedEvent
      * <p>
-     *     Based on the {@linkplain WorkerAddedEvent} outcome:
-     *     <ul>
-     *         <li>{@linkplain Type#OK}: updates the saved game board</li>
-     *         <li>Any other case: shows an error message</li>
-     *     </ul>
-     * </p>
+     * d on the {@linkplain WorkerAddedEvent} outcome:
+     * <ul>
+     *     <li>{@linkplain Type#OK}: updates the saved game board</li>
+     *     <li>Any other case: shows an error message</li>
+     * </ul>
+     *
      * @param message the message to handle
      */
     @Override  // Place worker response
@@ -406,17 +420,16 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             gameBoard = message.getPayload();
             view.showSuccessMessage("Worker placed!");
             view.showGameBoard(message.getPayload());
-        }
-        else
+        } else
             view.showErrorMessage("Can't place a worker in that cell :(");
     }
 
     /**
      * Manages a GameStartEvent
      * <p>
-     *     Signals the users the game started; the player designated as <i>first player</i>
-     *     (see {@linkplain ChooseStartingPlayerRequest}) is asked to perform an action
-     * </p>
+     * Signals the users the game started; the player designated as <i>first player</i>
+     * (see {@linkplain ChooseStartingPlayerRequest}) is asked to perform an action
+     *
      * @param message the message to handle
      */
     @Override
@@ -429,23 +442,22 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             view.setInputManager(inputManager);
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
-        }
-        else
+        } else
             client.setCurrentPlayer(false);
     }
 
     /**
      * Asks the user to choose a worker
+     *
      * @param row the cell row index
      * @param col the cell column index
      */
-    public void chooseWorker(int row, int col){
-        if (gameBoard.get(5 * row + col).getOccupiedBy() != null){
+    public void chooseWorker(int row, int col) {
+        if (gameBoard.get(5 * row + col).getOccupiedBy() != null) {
             selectedWorker = gameBoard.get(5 * row + col).getOccupiedBy();
             Message selectWorkerRequest = new SelectWorkerRequest(client.getUsername(), selectedWorker);
             client.sendMessage(selectWorkerRequest);
-        }
-        else {
+        } else {
             view.showErrorMessage("There's no worker in that cell!");
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
@@ -454,24 +466,27 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Sends a {@linkplain PlayerMoveRequest} to the server
+     *
      * @param selectedCell the cell to move the selected worker to
      */
-    public void sendMove(Cell selectedCell){
+    public void sendMove(Cell selectedCell) {
         client.sendMessage(new PlayerMoveRequest(client.getUsername(), selectedCell, selectedWorker));
         client.setCurrentPlayer(false);
     }
 
     /**
      * Sends a {@linkplain PlayerBuildRequest} to the server
+     *
      * @param selectedBlock block to be built on the target cell
      */
-    public void sendBuild(Block selectedBlock){
+    public void sendBuild(Block selectedBlock) {
         client.sendMessage(new PlayerBuildRequest(client.getUsername(), selectedCell, selectedBlock, selectedWorker));
         client.setCurrentPlayer(false);
     }
 
     /**
      * Manages a WinnerDeclaredEvent, showing the winner
+     *
      * @param message the message to handle
      */
     @Override // Winner declaration, received by all users
@@ -484,6 +499,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Manages a PlayerRemovedEvent, showing the winner
+     *
      * @param message the message to handle
      */
     @Override  // Player removed, received by all users
@@ -492,8 +508,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getPayload().equals(client.getUsername())) {
             view.showErrorMessage("You lost");
             client.setCurrentPlayer(false);
-        }
-        else {
+        } else {
             view.showGameBoard(message.getGameboard());
             view.showSuccessMessage(message.getPayload() + " lost");
         }
@@ -502,26 +517,25 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a WorkerSelectedResponse
      * <p>
-     *     If the response type is {@linkplain Type#OK}, the user is asked to choose the action to perform; otherwise, a
-     *     error message is shown
+     * If the response type is {@linkplain Type#OK}, the user is asked to choose the action to perform; otherwise, a
+     * error message is shown
+     *
      * @param message the message to handle
      */
     @Override
     public void onWorkerSelected(WorkerSelectedResponse message) {
         client.setCurrentPlayer(true);
         if (message.getType().equals(Type.OK)) {
-            if(message.getPossibleActions().size() == 1){
+            if (message.getPossibleActions().size() == 1) {
                 selectedWorker = message.getSelectedWorker();
                 messageToSend(message.getPossibleActions().get(0));
-            }
-            else {
+            } else {
                 selectedWorker = message.getSelectedWorker();
                 inputManager = new SelectActionInputManager(client, message.getPossibleActions(), this);
                 view.setInputManager(inputManager);
                 view.chooseAction(message.getPossibleActions());
             }
-        }
-        else {
+        } else {
             view.showErrorMessage("Wrong worker selected");
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
@@ -531,8 +545,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a WalkableCellsResponse
      * <p>
-     *     If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
-     *     its chosen worker can be moved; otherwise, an error message is shown
+     * If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
+     * its chosen worker can be moved; otherwise, an error message is shown
      *
      * @param message the message to visit
      */
@@ -542,8 +556,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), true, this);
             view.setInputManager(inputManager);
             view.moveAction(gameBoard, message.getPayload());
-        }
-        else {
+        } else {
             //we should never enter here
             view.showErrorMessage(message.getType().toString());
         }
@@ -552,8 +565,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a BuildableCellsResponse
      * <p>
-     *     If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
-     *     its chosen worker can build on; otherwise, an error message is shown
+     * If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
+     * its chosen worker can build on; otherwise, an error message is shown
      *
      * @param message the message to visit
      */
@@ -572,20 +585,21 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a PossibleBuildingBlockResponse
      * <p>
-     *     If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
-     *     its chosen worker can be moved; otherwise, an error message is shown
+     * If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
+     * its chosen worker can be moved; otherwise, an error message is shown
      *
      * @param message the message to visit
      */
     @Override
     public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
-        inputManager=new SelectBlockInputManager(client, this, message.getBlocks());
+        inputManager = new SelectBlockInputManager(client, this, message.getBlocks());
         view.setInputManager(inputManager);
         view.chooseBlockToBuild(message.getBlocks());
     }
 
     /**
      * Determines what message to send based on the action chosen by the user
+     *
      * @param chosenAction the chosen action
      */
     public void messageToSend(PossibleActions chosenAction) {
@@ -613,18 +627,20 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
 
     /**
      * Shows the walkable cells and asks the user where to move its chosen worker
+     *
      * @param walkableCells a list of walkable cells
      */
     //FIXME: in case the player selects the wrong cell we need to reprint the question
-    public void printOnMove(List<Cell> walkableCells){
+    public void printOnMove(List<Cell> walkableCells) {
         view.moveAction(gameBoard, walkableCells);
     }
 
     /**
      * Shows the buildable cells and asks the user where to build with its chosen worker
+     *
      * @param buildableCells a list of buildable cells
      */
-    public void printOnBuild(List<Cell> buildableCells){
+    public void printOnBuild(List<Cell> buildableCells) {
         view.buildAction(gameBoard, buildableCells);
     }
 

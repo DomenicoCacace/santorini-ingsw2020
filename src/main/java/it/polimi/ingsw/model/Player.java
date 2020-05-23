@@ -5,7 +5,6 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.listeners.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
-import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 
 import java.util.ArrayList;
@@ -35,10 +34,11 @@ public class Player implements PlayerInterface {
 
     /**
      * Copy constructor
-     * @param name the player's name
-     * @param god the player's god
-     * @param color the player's workers color
-     * @param workers the player's workers
+     *
+     * @param name           the player's name
+     * @param god            the player's god
+     * @param color          the player's workers color
+     * @param workers        the player's workers
      * @param selectedWorker the last worker selected (might be null)
      */
     //Used by jackson to deserialize, might marked as not used by IntelliJ; do NOT delete
@@ -62,7 +62,7 @@ public class Player implements PlayerInterface {
      * <br>
      * Regarding the game attribute, it is not assigned in the constructor, since the {@link Game}
      * is created after the creation of the players.
-    *
+     *
      * @param name  the player's username
      * @param god   the player's God card, chosen before the game is created
      * @param color the player's workers color, automatically determined before the game is created
@@ -110,6 +110,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Adds a worker to the board
+     *
      * @param cell the cell to place the worker to
      * @throws AddingFailedException if the target cell is already occupied or all the workers are already placed
      */
@@ -126,6 +127,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Checks if the player has placed all of its workers
+     *
      * @return true if all the player's workers have been placed, false otherwise
      */
     @Override
@@ -135,6 +137,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Applies the given action
+     *
      * @param action the action to be applied
      * @throws IllegalActionException if the action cannot be performed
      */
@@ -150,6 +153,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Ends the player's turn
+     *
      * @throws IllegalEndingTurnException if the turn cannot be ended
      */
     @Override
@@ -159,6 +163,7 @@ public class Player implements PlayerInterface {
 
     /**
      * <i>god</i> getter
+     *
      * @return the player's god
      */
     public God getGod() {
@@ -167,6 +172,7 @@ public class Player implements PlayerInterface {
 
     /**
      * <i>color</i> getter
+     *
      * @return the player's workers color
      */
     public Color getColor() {
@@ -175,6 +181,7 @@ public class Player implements PlayerInterface {
 
     /**
      * <i>name</i> getter
+     *
      * @return the player's username
      */
     public String getName() {
@@ -183,6 +190,7 @@ public class Player implements PlayerInterface {
 
     /**
      * <i>selectedWorker</i> getter
+     *
      * @return the worker selected to perform the next action
      */
     @JsonGetter
@@ -192,6 +200,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Sets the worker to perform the next action
+     *
      * @param selectedWorker the worker to select
      * @throws NotYourWorkerException if the worker is not owned by the player
      */
@@ -203,7 +212,7 @@ public class Player implements PlayerInterface {
                     this.selectedWorker = worker;
             }
             selectWorkerListener.forEach(selectWorkerListener1 ->
-                            selectWorkerListener1.onSelectedWorker(name, god.getStrategy().getPossibleActions(this.selectedWorker), this.selectedWorker));
+                    selectWorkerListener1.onSelectedWorker(name, god.getStrategy().getPossibleActions(this.selectedWorker), this.selectedWorker));
         } else
             throw new NotYourWorkerException();
     }
@@ -218,6 +227,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Provides a list of blocks which the selected worker can build on the given cell
+     *
      * @param selectedCell the cell to perform the build action on
      * @throws IllegalActionException if the build action cannot be performed
      */
@@ -233,6 +243,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Provides a list of cells on which the selected player can walk to
+     *
      * @throws WrongSelectionException if no worker has been selected
      */
     @Override
@@ -249,6 +260,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Provides a list of cells on which the selected player can build on
+     *
      * @throws WrongSelectionException if no worker has been selected
      */
     @Override
@@ -265,6 +277,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Creates a clone of this object
+     *
      * @param game the current game
      * @return a clone of this object
      */
@@ -274,6 +287,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Creates a {@linkplain PlayerData} object based on this player
+     *
      * @return this object's data class
      */
     public PlayerData buildDataClass() {
@@ -286,6 +300,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Adds a new listener
+     *
      * @param addWorkerListener the listener to add to the list
      */
     @Override
@@ -295,6 +310,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Adds a new listener
+     *
      * @param buildableCellsListener the listener to add to the list
      */
     @Override
@@ -304,6 +320,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Adds a new listener
+     *
      * @param walkableCellsListener the listener to add to the list
      */
     @Override
@@ -313,6 +330,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Adds a new listener
+     *
      * @param selectWorkerListener the listener to add to the list
      */
     @Override
@@ -322,6 +340,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Adds a new listener
+     *
      * @param buildingBlocksListener the listener to add to the list
      */
     @Override
@@ -331,6 +350,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Compares the argument to the receiver, and answers true if their names are equals
+     *
      * @param o the object to be
      * @return true if the object is the same as the cell, false otherwise
      */

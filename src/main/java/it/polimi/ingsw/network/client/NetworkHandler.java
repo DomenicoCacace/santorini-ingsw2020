@@ -12,7 +12,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Client-side client communication and message handler
@@ -33,6 +35,7 @@ public class NetworkHandler implements Runnable {
      * Default constructor
      * <p>
      * Tries to open a socket channel with the server
+     *
      * @param client the client to connect
      * @throws IOException if an I/O error occurs while opening the socket streams
      */
@@ -43,7 +46,7 @@ public class NetworkHandler implements Runnable {
         try {
             //TODO: add timeout
             this.serverConnection = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
-        } catch (UnknownHostException e){
+        } catch (UnknownHostException e) {
             throw new UnknownHostException();
         }
         this.inputSocket = new BufferedReader(new InputStreamReader(serverConnection.getInputStream()));
@@ -54,8 +57,9 @@ public class NetworkHandler implements Runnable {
     /**
      * Keeps listening on the network for messages
      * <p>
-     *     In case of a ping message, see {@linkplain #ping()}; for any other message, the relative visitor method is
-     *     called
+     * In case of a ping message, see {@linkplain #ping()}; for any other message, the relative visitor method is
+     * called
+     *
      * @see ClientMessageManagerVisitor
      */
     @Override
@@ -67,8 +71,7 @@ public class NetworkHandler implements Runnable {
                 if (ioData == null) {
                     client.getView().showErrorMessage("You have been disconnected");
                     break;
-                }
-                else if (ioData.equals(PING))
+                } else if (ioData.equals(PING))
                     new Thread(this::ping).start();
                 else {
                     MessageFromServerToClient message;
@@ -83,6 +86,7 @@ public class NetworkHandler implements Runnable {
 
     /**
      * Sends a login request to the server
+     *
      * @param username the username to log the user in
      */
     public void login(String username) {
@@ -98,7 +102,7 @@ public class NetworkHandler implements Runnable {
     /**
      * Terminates the current socket connection
      * <p>
-     *     This method causes also the input and output socket streams to be closed
+     * This method causes also the input and output socket streams to be closed
      */
     public void closeConnection() {
         try {
@@ -114,6 +118,7 @@ public class NetworkHandler implements Runnable {
 
     /**
      * Sends a message to the server
+     *
      * @param message the {@linkplain Message} to be sent
      * @throws IOException if an I/O error occurs
      */
@@ -128,6 +133,7 @@ public class NetworkHandler implements Runnable {
 
     /**
      * Sends a string to the server
+     *
      * @param string the string to send
      * @throws IOException if an I/O error occurs
      * @see #ping()
@@ -143,10 +149,10 @@ public class NetworkHandler implements Runnable {
     /**
      * Handles the client-server ping messages to check for connectivity
      * <p>
-     *      Every 5 seconds, this methods schedules a {@linkplain #closeConnection()} to be run; when a ping message
-     *      is received, the timer is defused and the thread is put to sleep for a second.
-     *      <br>
-     *          At every call, a ping message is also sent to the server
+     * Every 5 seconds, this methods schedules a {@linkplain #closeConnection()} to be run; when a ping message
+     * is received, the timer is defused and the thread is put to sleep for a second.
+     * <br>
+     * At every call, a ping message is also sent to the server
      */
     public void ping() {
         if (ex != null) {
@@ -163,7 +169,7 @@ public class NetworkHandler implements Runnable {
         } catch (IOException e) {
             //TODO:
         }
-        if(!serverConnection.isClosed()) {
+        if (!serverConnection.isClosed()) {
             ex = new ScheduledThreadPoolExecutor(5);
             ex.setExecuteExistingDelayedTasksAfterShutdownPolicy(false);
             ex.setRemoveOnCancelPolicy(true);

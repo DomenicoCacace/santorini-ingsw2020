@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * The base unit of the game board
  * <p>
- * class contains all information about a cell inside a gameboard, such as:
+ * class contains all information about a cell inside a gameBoard, such as:
  * <ul>
  *     <li>Position, via {@link #coordX} and {@link #coordY} (see {@link GameBoard};</li>
  *     <li>Building state, via {@link #block} and {@link #hasDome} (see {@link Block});</li>
@@ -34,7 +34,7 @@ public class Cell implements Serializable {
      * <p>
      * Creates a new Cell, assigning its coordinates. At the time of their creation, the Cells are empty; this
      * means that there are no buildings nor workers.
-    *
+     *
      * @param coordX the X coordinate of the cell to create
      * @param coordY the Y coordinate of the cell to create
      */
@@ -51,7 +51,7 @@ public class Cell implements Serializable {
      * <p>
      * Loads a previously saved Cell state; the Cell is "reassembled" in this constructor (after reading the saved
      * state from file) instead of being built during the file parsing to avoid reference problems.
-    *
+     *
      * @param coordX     the X coordinate of the cell to restore
      * @param coordY     the Y coordinate of the cell to restore
      * @param hasDome    the hasDome flag of the cell to restore
@@ -74,7 +74,7 @@ public class Cell implements Serializable {
      * <p>
      * Creates a clone of the given cell; used in the {@link #cloneCell()} method, passing <i>this</i> as the
      * parameter.
-    *
+     *
      * @param cell the cell to clone
      */
     private Cell(Cell cell) {
@@ -122,7 +122,7 @@ public class Cell implements Serializable {
      * construction; since there might be additional gods that allows a dome to be removed, we decided to leave it
      * as a setter. At the current stage of development, this method is always called passing <i>true</i> as a
      * parameter.
-    *
+     *
      * @param hasDome boolean flag to notify the dome presence
      */
     public void setHasDome(boolean hasDome) {
@@ -175,7 +175,7 @@ public class Cell implements Serializable {
      * <br>
      * The height difference between two cells is defined as the difference between the {@linkplain Block}s
      * built on the two cells.
-    *
+     *
      * @param cell the {@linkplain Cell} to compare
      * @return the height difference
      */
@@ -188,8 +188,8 @@ public class Cell implements Serializable {
      * Creates a clone of the cell
      * <p>
      * Using the private constructor to create a new Cell instance having the same attributes; used to clone and
-     * send the gameboard over the network.
-    *
+     * send the gameBoard over the network.
+     *
      * @return a clone of the cell
      */
     public Cell cloneCell() {
@@ -221,6 +221,7 @@ public class Cell implements Serializable {
     /**
      * Compares the argument to the receiver, and answers true if their coordinates and blocks built (including dome)
      * are equals
+     *
      * @param o the object to be compared  with this
      * @return true if the object is the same as the cell, false otherwise
      */

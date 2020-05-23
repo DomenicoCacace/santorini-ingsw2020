@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,25 +31,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class GUI extends Application implements ViewInterface {
 
-    private static Scene scene;
-    private ViewsType currentView;
-    private String inputString = "";
     private static final Lock lock = new ReentrantLock();
+    private static Scene scene;
+    private final String inputString = "";
+    private ViewsType currentView;
     private InputManager inputManager;
-
-
-    @Override
-    public void start(Stage primarystage) {
-        Parent empty = new Pane();
-        scene = new Scene(empty, 1280, 720);
-        primarystage.setScene(scene);
-        primarystage.show();
-        primarystage.setOnCloseRequest((WindowEvent t) -> {
-            Platform.exit();
-            System.exit(0);
-        });
-        new Thread(() -> Client.initClient(this)).start();
-    }
 
     public static void setRoot(String fxml) {
         lock.lock();
@@ -64,9 +51,21 @@ public class GUI extends Application implements ViewInterface {
         }
     }
 
-
     public static void launchGui() {
         launch();
+    }
+
+    @Override
+    public void start(Stage primarystage) {
+        Parent empty = new Pane();
+        scene = new Scene(empty, 1280, 720);
+        primarystage.setScene(scene);
+        primarystage.show();
+        primarystage.setOnCloseRequest((WindowEvent t) -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        new Thread(() -> Client.initClient(this)).start();
     }
 
     public void setInputString(String inputString) {
@@ -163,7 +162,7 @@ public class GUI extends Application implements ViewInterface {
         });
     }
 
-//TODO: Ask tutor about this
+    //TODO: Ask tutor about this
     @Override
     public void askLobbyName() {
 
@@ -218,13 +217,13 @@ public class GUI extends Application implements ViewInterface {
             setRoot("chooseGods");
             ChooseGodsController controller = ((FXMLLoader) scene.getUserData()).getController();
             List<VBox> vBoxes = new ArrayList<>();
-            controller.getGodImageContainer().getChildren().forEach(vBox -> vBoxes.add((VBox)vBox));
+            controller.getGodImageContainer().getChildren().forEach(vBox -> vBoxes.add((VBox) vBox));
             List<Node> vboxChildren = new ArrayList<>();
             vBoxes.forEach(vBox -> vboxChildren.addAll(vBox.getChildren()));
-            for(Node node: vboxChildren){
-                for(GodData godData: allGods){
-                    if(godData.getName().equals(node.getId())){
-                        ((ResizableImageView)node).setIndex(allGods.indexOf(godData));
+            for (Node node : vboxChildren) {
+                for (GodData godData : allGods) {
+                    if (godData.getName().equals(node.getId())) {
+                        ((ResizableImageView) node).setIndex(allGods.indexOf(godData));
                     }
                 }
             }
@@ -254,7 +253,7 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public void initGameBoard(List<Cell> gameboard) {
+    public void initGameBoard(List<Cell> gameBoard) {
 
     }
 

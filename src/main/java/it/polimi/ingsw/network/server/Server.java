@@ -24,20 +24,21 @@ import java.util.stream.Collectors;
 public class Server extends Thread {
     private final static int MAX_STORED_LOGS = 100;
     private final static Logger logger = Logger.getLogger(Logger.class.getName());
+    private final static int MAX_WAITING_CLIENTS = 15;    //FIXME: load from file
     private final Map<String, Lobby> gameLobbies;
     private final List<User> waitingRoom;
-    private final static int MAX_WAITING_CLIENTS = 15;    //FIXME: load from file
     private final HashMap<User, Lobby> users;
     private final int socketGreeterPort;
+    private final File logFile;
     private ServerSocket serverSocket;
     private Socket newClientSocket;
-    private final File logFile;
 
     /**
      * Default constructor
      * <p>
-     *     Creates a new server instance
-    * @throws IOException if an I/O error occurs while creating the log file
+     * Creates a new server instance
+     *
+     * @throws IOException if an I/O error occurs while creating the log file
      */
     public Server() throws IOException {
         socketGreeterPort = 4321; // TODO: get from file
@@ -51,7 +52,7 @@ public class Server extends Thread {
         logFile.createNewFile();
         File directory = new File(logFile.getAbsoluteFile().getParent());
         String[] filesInDirectory = directory.list();
-        if(filesInDirectory!=null) {
+        if (filesInDirectory != null) {
             for (String filename : filesInDirectory) {
                 if (filename.endsWith(".lck")) {
                     String absoluteFilePath = directory.toString() + File.separator + filename;
@@ -73,6 +74,7 @@ public class Server extends Thread {
 
     /**
      * Creates and runs the server
+     *
      * @param args currently none
      * @throws IOException if an I/O error occurs
      */
@@ -90,8 +92,7 @@ public class Server extends Thread {
         try {
             serverSocket = new ServerSocket(socketGreeterPort);
             logger.log(Level.INFO, "Socket server is up and listening on port " + socketGreeterPort);
-        }
-        catch (IOException ioException) {    // mainly because the port is already in use, should never happen
+        } catch (IOException ioException) {    // mainly because the port is already in use, should never happen
             logger.log(Level.SEVERE, ioException.getMessage());
             System.exit(1);
         }
@@ -101,11 +102,11 @@ public class Server extends Thread {
     /**
      * Client greeter
      * <p>
-     *     Every time the server receives a Socket connection, this method creates and runs a new {@linkplain VirtualClient}
-     *     object, which handles all the messages.
-     *     <br>
-     *         In the case of a Socket-thrown exception, the connection with the client is closed.
-    */
+     * Every time the server receives a Socket connection, this method creates and runs a new {@linkplain VirtualClient}
+     * object, which handles all the messages.
+     * <br>
+     * In the case of a Socket-thrown exception, the connection with the client is closed.
+     */
     @Override
     public void run() {
         while (true) {
@@ -114,14 +115,12 @@ public class Server extends Thread {
                 logger.log(Level.INFO, "New client accepted: " + newClientSocket.getRemoteSocketAddress());
                 Thread thread = new VirtualClient(this, newClientSocket);
                 thread.start();
-            }
-            catch (IOException ioException) {
+            } catch (IOException ioException) {
                 logger.log(Level.SEVERE, ioException.getMessage());
                 try {
                     newClientSocket.close();
                     logger.log(Level.WARNING, "Closing " + newClientSocket.getRemoteSocketAddress() + " connection");
-                }
-                catch (IOException ioException1) {
+                } catch (IOException ioException1) {
                     logger.log(Level.SEVERE, ioException1.getMessage());
                 }
             }
@@ -132,15 +131,16 @@ public class Server extends Thread {
     /**
      * Adds a new User to the server
      * <p>
-     *     Upon receiving a login request (in the {@linkplain VirtualClient}), this method checks if the username is
-     *     valid (usernames have to be unique and non-reserved keywords, such as ReservedUsernames.BROADCAST) and if there is
-     *     "enough space" on the server
-    * @param virtualClient the user to add
+     * Upon receiving a login request (in the {@linkplain VirtualClient}), this method checks if the username is
+     * valid (usernames have to be unique and non-reserved keywords, such as ReservedUsernames.BROADCAST) and if there is
+     * "enough space" on the server
+     *
+     * @param virtualClient the user to add
      * @throws RoomFullException if the room the user is trying to join is full
      */
     public synchronized void addClient(VirtualClient virtualClient) throws RoomFullException {        // Login of the player
         String username = virtualClient.getUser().getUsername();
-        if (waitingRoom.size()  < MAX_WAITING_CLIENTS) {
+        if (waitingRoom.size() < MAX_WAITING_CLIENTS) {
             virtualClient.getUser().setUsername(username);
             waitingRoom.add(virtualClient.getUser());
             users.put(virtualClient.getUser(), null);
@@ -149,14 +149,14 @@ public class Server extends Thread {
             gameLobbies.values().forEach(lobby -> lobbies.put(lobby.getRoomName(), lobby.lobbyInfo()));
             virtualClient.getUser().notify(new LoginResponse(Type.OK, username, lobbies));
             logger.log(Level.INFO, "Login completed, added " + virtualClient.getUser().getUsername());
-        }
-        else
+        } else
             throw new RoomFullException();
     }
 
 
     /**
      * Provides a list of the users in a lobby
+     *
      * @param lobby the lobby to check
      * @return the list of users in the lobby
      */
@@ -164,12 +164,14 @@ public class Server extends Thread {
         return users.keySet().stream().filter(u -> users.get(u) != null).filter(u -> users.get(u).equals(lobby)).collect(Collectors.toList());
     }
 
-    public void sendMessageToWaitingRoom(Message message){
+    public void sendMessageToWaitingRoom(Message message) {
         waitingRoom.forEach(user -> user.notify(message));
     }
 
-    /**_
+    /**
+     * _
      * Provides a list of the users in a lobby
+     *
      * @return the list of users in the waiting room
      */
     public List<User> getUsersInWaitingRoom() {
@@ -179,8 +181,9 @@ public class Server extends Thread {
     /**
      * Removes a lobby
      * <p>
-     *     If there are players in the lobby, those are moved to the waiting room
-    * @param lobby the lobby to delete
+     * If there are players in the lobby, those are moved to the waiting room
+     *
+     * @param lobby the lobby to delete
      */
     public void removeRoom(Lobby lobby) {
         waitingRoom.addAll(getUsersInRoom(lobby));
@@ -190,6 +193,7 @@ public class Server extends Thread {
 
     /**
      * Disconnects an user from the server
+     *
      * @param user the user to kick
      */
     public void onDisconnect(User user) {
@@ -197,17 +201,15 @@ public class Server extends Thread {
         if (lobby != null) {
             if (!lobby.gameStarted() || lobby.hasLost(user)) {
                 lobby.removeUser(user);
-                if(getUsersInRoom(lobby).size()==0)
+                if (getUsersInRoom(lobby).size() == 0)
                     gameLobbies.remove(lobby.getRoomName());
-            }
-            else {
+            } else {
                 lobby.removeUser(user);
                 List<User> usersInLobby = getUsersInRoom(lobby);
                 removeRoom(lobby);
                 usersInLobby.forEach(this::moveToWaitingRoom);
             }
-        }
-        else
+        } else
             waitingRoom.remove(user);
         users.remove(user);
         logger.log(Level.INFO, user.getUsername() + " has been kicked from the lobby");
@@ -221,7 +223,7 @@ public class Server extends Thread {
     /**
      * Moves an user to another lobby
      *
-     * @param user the user to move
+     * @param user  the user to move
      * @param lobby the lobby to move the user to
      */
     public void moveToRoom(User user, Lobby lobby) {
@@ -229,16 +231,15 @@ public class Server extends Thread {
         if (oldRoom == null) {
             logger.log(Level.INFO, user.getUsername() + " moved from waiting room to " + lobby.getRoomName());
             waitingRoom.remove(user);
-        }
-        else {
+        } else {
             logger.log(Level.INFO, user.getUsername() + " moved from " + oldRoom.getRoomName() + " to " + lobby.getRoomName());
-            if(getUsersInRoom(oldRoom).size() == 0)
+            if (getUsersInRoom(oldRoom).size() == 0)
                 removeRoom(oldRoom);
         }
     }
 
     public void moveToWaitingRoom(User user) {
-        Lobby oldRoom = users.replace(user,null);
+        Lobby oldRoom = users.replace(user, null);
         if (oldRoom != null) {
             waitingRoom.add(user);
             Map<String, List<String>> lobbyNames = new LinkedHashMap<>();

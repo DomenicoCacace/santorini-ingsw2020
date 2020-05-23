@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.inputManagers;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
 import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
 
 import java.util.ArrayList;
@@ -14,10 +13,6 @@ import java.util.List;
  */
 public class GodChoiceInputManager extends InputManager {
 
-    private enum State {
-        CHOOSE_INITIAL_GODS, CHOOSE_PERSONAL_GOD,
-    }
-
     private final State state;
     private final int godsToChoose;
     private final List<GodData> availableGods;
@@ -25,30 +20,30 @@ public class GodChoiceInputManager extends InputManager {
 
     /**
      * Constructor to be called to manage gods choice
-     * @param client the client to manage the inputs for
+     *
+     * @param client        the client to manage the inputs for
      * @param availableGods the list of gods to choose from
-     * @param godsToChoose the number of gods to choose
+     * @param godsToChoose  the number of gods to choose
      */
     public GodChoiceInputManager(Client client, List<GodData> availableGods, int godsToChoose) {
         super(client);
         this.availableGods = availableGods;
         this.godsToChoose = godsToChoose;
         this.userChoice = new ArrayList<>(godsToChoose);
-        if(godsToChoose == 1)
-            state= State.CHOOSE_PERSONAL_GOD;
+        if (godsToChoose == 1)
+            state = State.CHOOSE_PERSONAL_GOD;
         else
             state = State.CHOOSE_INITIAL_GODS;
     }
 
     /**
      * Determines how to handle the received input based on the internal state
-     * <p>
-     *     <ul>
-     *         <li>RELOADING: the user has to decide if it wants to reload a match (y/n)</li>
-     *         <li>CHOOSE_INITIAL_GODS: the lobby owner has to choose the gods for all of the players</li>
-     *         <li>CHOOSE_PERSONAL_GOD: the user has to choose its own god</li>
-     *     </ul>
-     * </p>
+     * <ul>
+     *     <li>RELOADING: the user has to decide if it wants to reload a match (y/n)</li>
+     *     <li>CHOOSE_INITIAL_GODS: the lobby owner has to choose the gods for all of the players</li>
+     *     <li>CHOOSE_PERSONAL_GOD: the user has to choose its own god</li>
+     * </ul>
+     *
      * @param input the user input
      */
     @Override
@@ -66,8 +61,7 @@ public class GodChoiceInputManager extends InputManager {
                             client.setCurrentPlayer(false);
                             isWaitingForInput = false;
                         }
-                    }
-                    else
+                    } else
                         view.showErrorMessage("Invalid choice");
 
                     if (isWaitingForInput)
@@ -80,8 +74,7 @@ public class GodChoiceInputManager extends InputManager {
                         client.sendMessage(new ChooseYourGodResponse(client.getUsername(), chosenGod));
                         client.setCurrentPlayer(false);
                         isWaitingForInput = false;
-                    }
-                    else {
+                    } else {
                         view.showErrorMessage("Invalid choice");
                         view.chooseUserGod(availableGods);
                     }
@@ -91,6 +84,7 @@ public class GodChoiceInputManager extends InputManager {
 
     /**
      * Retrieves the god chosen by parsing the user input
+     *
      * @param input the input string
      * @return the chosen god
      */
@@ -102,11 +96,14 @@ public class GodChoiceInputManager extends InputManager {
                 return availableGods.remove(godIndex - 1);
             else
                 return null;
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return null;
         }
     }
 
+    private enum State {
+        CHOOSE_INITIAL_GODS, CHOOSE_PERSONAL_GOD,
+    }
 
 
 }

@@ -13,7 +13,7 @@ public interface PlayerLostListener {
      * Notifies that a player lost
      *
      * @param username  the loser's username
-     * @param gameboard the changed gameboard without the loser's workers as a list of cells
+     * @param gameBoard the changed gameBoard without the loser's workers as a list of cells
      */
-    void onPlayerLoss(String username, List<Cell> gameboard);
+    void onPlayerLoss(String username, List<Cell> gameBoard);
 }

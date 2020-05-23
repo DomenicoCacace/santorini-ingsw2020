@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
 
 import java.util.ArrayList;
@@ -9,9 +8,9 @@ import java.util.List;
 
 public class LoginManager extends InputManager {
 
+    private final List<String> savedConfigs = new ArrayList<>();
     private boolean wantsToLoadSetting;
     private boolean isIpAlreadySet = false;
-    private final List<String> savedConfigs = new ArrayList<>();
 
     public LoginManager(Client client, List<String> savedConfigs) {
         super(client);
@@ -28,6 +27,7 @@ public class LoginManager extends InputManager {
      * When the client calls one of the login related methods it will also set the view's InputManager as a LoginManager.
      * The Manager that is set inside the view class represents the "state" of our program, we can set it through an enum or with a standard setter from Client / MessageParser
      * This method is called inside a synchronized block to avoid being called while the other thread is setting inputManager with a different obj.
+     *
      * @param input is the input of the user
      */
     @Override
