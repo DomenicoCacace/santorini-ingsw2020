@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.gui;
+package it.polimi.ingsw.view.gui.utils;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 public class ResizableImageView extends ImageView {
 
     //TODO: move this in a dedicated class
-    private int index;
+    private int index = -1;
     private String name;
 
 

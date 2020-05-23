@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import it.polimi.ingsw.view.gui.ResizableImageView?>
+<?import it.polimi.ingsw.view.gui.utils.ResizableImageView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>

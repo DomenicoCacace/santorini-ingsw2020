@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import it.polimi.ingsw.view.gui.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import it.polimi.ingsw.view.gui.utils.MapTileImage?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<TitledPane alignment="CENTER" collapsible="false" text="Santorini" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+<TitledPane alignment="CENTER" collapsible="false" text="Santorini" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.gui.viewController.GameScreenController">
    <content>
       <SplitPane fx:id="splitPane" dividerPositions="0.2, 0.8" prefHeight="720.0" prefWidth="1200.0">
         <items>
@@ -43,349 +50,445 @@
                                  <children>
                                     <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell00" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                          <MapTileImage fx:id="cell00" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
                                              <image>
                                                 <Image url="@MapTiles/00.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell01" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" StackPane.alignment="CENTER">
+                                          <MapTileImage fx:id="cell01" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" StackPane.alignment="CENTER">
                                              <image>
                                                 <Image url="@MapTiles/01.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell02" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" StackPane.alignment="CENTER">
+                                          <MapTileImage fx:id="cell02" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" StackPane.alignment="CENTER">
                                              <image>
                                                 <Image url="@MapTiles/02.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell03" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell03" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/03.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell10" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell10" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/10.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell20" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell20" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/20.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell30" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell30" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/30.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell40" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell40" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/40.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell11" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell11" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/11.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell12" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                          <MapTileImage fx:id="cell12" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
                                              <image>
                                                 <Image url="@MapTiles/12.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell13" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell13" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/13.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell21" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell21" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/21.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell22" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell22" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/22.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell23" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell23" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/23.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell24" fitHeight="146.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell24" cellTile="true" fitHeight="146.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/24.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell31" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell31" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/31.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell32" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell32" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/32.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell33" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell33" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/33.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell34" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell34" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/34.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell41" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell41" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/41.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell42" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell42" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/42.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell43" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell43" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/43.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell44" fitHeight="144.0" fitWidth="144.0">
+                                          <MapTileImage fx:id="cell44" cellTile="true" fitHeight="144.0" fitWidth="144.0">
                                              <image>
                                                 <Image url="@MapTiles/44.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell14" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell14" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/14.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
                                     <StackPane GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                                        <children>
-                                          <ResizableImageView fx:id="cell04" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
+                                          <MapTileImage fx:id="cell04" cellTile="true" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true">
                                              <image>
                                                 <Image url="@MapTiles/04.png" />
                                              </image>
-                                          </ResizableImageView>
+                                          </MapTileImage>
                                        </children>
                                     </StackPane>
-                                    <ResizableImageView fx:id="cell001" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/right5.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0011" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/top1.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0012" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/top2.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0013" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/top3.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0014" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/top4.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0015" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/top5.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0016" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/topRifght.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0017" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/left1.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0018" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/left2.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0019" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/left3.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell00110" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/left4.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell00111" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/left5.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell00112" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/bottomLeft.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell00113" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/bottom1.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001121" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/bottom2.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001122" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/bottom3.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001123" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/bottom4.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001124" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/bottomRight.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001125" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/bottom5.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001126" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/RIGHT1.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001127" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/right2.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001128" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/right3.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell001129" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/right4.png" />
-                                       </image>
-                                    </ResizableImageView>
-                                    <ResizableImageView fx:id="cell0011210" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <image>
-                                          <Image url="@MapTiles/topLeft.png" />
-                                       </image>
-                                    </ResizableImageView>
+                                    <StackPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/right5.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0011" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/top1.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0012" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/top2.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0013" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/top3.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0014" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/top4.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0015" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/top5.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0016" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/topRifght.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0017" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/left1.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0018" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/left2.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0019" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/left3.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell00110" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/left4.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell00111" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/left5.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell00112" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/bottomLeft.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell00113" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/bottom1.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001121" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/bottom2.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001122" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/bottom3.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001123" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/bottom4.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001124" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/bottomRight.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001125" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/bottom5.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001126" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/RIGHT1.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001127" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/right2.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001128" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/right3.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell001129" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/right4.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
+                                    <StackPane GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <children>
+                                          <MapTileImage fx:id="cell0011210" fitHeight="144.0" fitWidth="144.0" pickOnBounds="true" preserveRatio="false">
+                                             <image>
+                                                <Image url="@MapTiles/topLeft.png" />
+                                             </image>
+                                          </MapTileImage>
+                                       </children>
+                                    </StackPane>
                                  </children>
                               </GridPane>
                            </children>

@@ -94,45 +94,6 @@ public class CLI implements ViewInterface {
     @Override
     public void askToReloadLastSettings(List<String> savedUsers) {
         System.out.print("\t\tThere are some settings saved! do you want to load one of them? [" + YES + "/" + NO + "]: ");
-        /*List<String> chosenConfig = new ArrayList<>();
-        while (true) {
-
-            String input = null;
-            try {
-                input = askInputString(1000);
-            } catch (TimeoutException e) {
-                System.out.println("\n\t\tYou still there?");
-                stopInput();
-                return askToReloadLastSettings(savedUsers);
-            }
-            if (input.equals(YES)) {
-                System.out.println("Select the config you want to load!");
-                List<String> savedConfigs = new LinkedList<>();
-                savedConfigs.add("Use a different username/IP instead!");
-                for (int i = 1; i <= savedUsers.size(); i += 2) {
-                    savedConfigs.add(savedUsers.get(i) + " -- " + savedUsers.get(i - 1)); //This convert
-                }
-                int index = -1;
-                try {
-                    index = printList(savedConfigs, 1000);
-                } catch (TimeoutException e) {
-                    System.out.println("\n\t\tYou still there?");
-                    stopInput();
-                    return askToReloadLastSettings(savedUsers);
-                }
-                if (index != 0) { //If index == 0 the player chose to manually input user/Ip
-                    index--;
-                    index = index * 2;
-                    chosenConfig.add(savedUsers.get(index));
-                    chosenConfig.add(savedUsers.get(index + 1));
-                }
-                return chosenConfig;
-            } else if (input.equals(NO))
-                return chosenConfig;
-            System.out.println("please insert a correct option: (" + YES + "/" + NO + ")");
-        }
-
-         */
     }
 
     @Override
@@ -154,7 +115,7 @@ public class CLI implements ViewInterface {
     @Override
     public void gameStartScreen(List<Cell> gameBoard) {
         System.out.println("Let the game begin!");
-        showGameBoard(gameBoard);
+        initGameBoard(gameBoard);
         //TODO: enhance
     }
 
