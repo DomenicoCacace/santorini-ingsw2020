@@ -1,20 +1,17 @@
 package it.polimi.ingsw.view.gui.utils;
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.view.gui.viewController.GameScreenController;
-import javafx.event.EventHandler;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
 public class MapTileImage extends ResizableImageView {
 
-    //TODO: Rename to PNG!!
-    public static final String BLOCK1_DIR = "block1.jpg";
-    public static final String BLOCK2_DIR = "block2.jpg";
-    public static final String BLOCK3_DIR = "block3.jpg";
+    public static final String BLOCK1_DIR = "block1.png";
+    public static final String BLOCK2_DIR = "block2.png";
+    public static final String BLOCK3_DIR = "block3.png";
     public static final String DOME_DIR = "dome.png";
-    public static final String BLUE_WORKER_DIR = "blueWorker.jpg";
+    public static final String BLUE_WORKER_DIR = "blueWorker.png";
     public static final String RED_WORKER_DIR = "redWorker.png";
     public static final String PURPLE_WORKER_DIR = "purpleWorker.png";
 
@@ -22,8 +19,6 @@ public class MapTileImage extends ResizableImageView {
     private boolean isOccupied;
     private boolean isCellTile;
     private MapTileImage printedWorker;
-    private GameScreenController controller;
-
 
     public MapTileImage() {
         super();
@@ -44,7 +39,6 @@ public class MapTileImage extends ResizableImageView {
     }
 
     public void setController(GameScreenController controller) {
-        this.controller = controller;
         ((StackPane) this.getParent()).getChildren().forEach(node ->
                 node.setOnMouseClicked(event -> {
                     controller.handleCellCLicked(GridPane.getRowIndex(this.getParent()), GridPane.getColumnIndex(this.getParent()));

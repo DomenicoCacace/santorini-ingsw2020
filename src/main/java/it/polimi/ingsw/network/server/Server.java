@@ -199,6 +199,7 @@ public class Server extends Thread {
     public void onDisconnect(User user) {
         Lobby lobby = users.get(user);
         if (lobby != null) {
+            users.replace(user, null);
             if (!lobby.gameStarted() || lobby.hasLost(user)) {
                 lobby.removeUser(user);
                 if (getUsersInRoom(lobby).size() == 0)

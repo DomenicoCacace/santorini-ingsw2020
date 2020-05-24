@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.Glow;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -15,13 +17,20 @@ import java.util.ListIterator;
 public class GameScreenController {
 
     @FXML
+    private ListView<String> choiceList;
+    @FXML
     private GridPane mapGrid;
+    @FXML
+    private TextArea textArea;
     private GUI gui;
     private List<MapTileImage> mapTiles;
 
     public GridPane getMapGrid() {
         return mapGrid;
+    }
 
+    public ListView<String> getChoiceList() {
+        return choiceList;
     }
 
     public void setGui(GUI gui) {
@@ -35,6 +44,14 @@ public class GameScreenController {
                 }
             });
         });
+    }
+
+    public void onOptionChosen(){
+        if(choiceList.getSelectionModel().getSelectedItem()!=null) {
+            choiceList.setDisable(true);
+            gui.setInputString(String.valueOf(choiceList.getSelectionModel().getSelectedIndex() + 1));
+            choiceList.getItems().clear();
+        }
     }
 
     public void handleCellCLicked(int row, int col){
@@ -56,6 +73,7 @@ public class GameScreenController {
                         GridPane.getColumnIndex(currentMapTile.getParent()).equals(cell.getCoordY() + 1)){
                     currentMapTile.setDisable(false);
                     currentMapTile.setEffect(new Glow(1));
+                    break;
                 }
                 else if(!mapTileImageListIterator.hasNext())
                     currentMapTile.setDisable(true);

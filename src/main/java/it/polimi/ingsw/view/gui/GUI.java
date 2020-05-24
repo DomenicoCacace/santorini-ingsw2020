@@ -1,5 +1,4 @@
 package it.polimi.ingsw.view.gui;
-
 import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
@@ -23,10 +22,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -38,9 +35,7 @@ public class GUI extends Application implements ViewInterface {
 
     private static final Lock lock = new ReentrantLock();
     private static Scene scene;
-    private final String inputString = "";
     private ViewType currentView;
-    private final Condition condition = lock.newCondition();
     private InputManager inputManager;
 
     public static void setRoot(String fxml) {
@@ -103,26 +98,6 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void chooseMatchReload() {
-       /* Platform.runLater(()->{
-            final Stage dialog = new Stage();
-            dialog.initModality(Modality.APPLICATION_MODAL);
-            dialog.initOwner(scene.getWindow());
-            Pane pane = new Pane();
-
-            Popup popup = new Popup();
-            Label label = new Label("I found a message to reload! Do you want to reload it?");
-            Button yesButton = new Button("YES");
-            yesButton.setOnMouseClicked(event -> inputManager.manageInput(CLI.YES));
-            Button noButton = new Button("NO");
-            noButton.setOnMouseClicked(event -> inputManager.manageInput(CLI.NO));
-            pane.getChildren().addAll(label, yesButton, noButton);
-            Scene dialogScene = new Scene(pane, 300, 200);
-            dialog.setScene(dialogScene);
-            dialog.show();
-            //popup.getContent().addAll(label, yesButton, noButton);
-            //popup.show(scene.getWindow());
-        });
-        */
         inputManager.manageInput(CLI.YES); //TODO: Implement method to reload match
     }
 
@@ -194,12 +169,23 @@ public class GUI extends Application implements ViewInterface {
     //TODO: Ask tutor about this
     @Override
     public void askLobbyName() {
-
+        /*Platform.runLater(() -> {
+            if(currentView == ViewType.LOBBY) {
+                LobbyController lobbyController = ((FXMLLoader) scene.getUserData()).getController();
+                lobbyController.enableCreateButton();
+            }
+        });
+         */
     }
 
     @Override
     public void askLobbySize() {
-
+        Platform.runLater(() -> {
+            if(currentView == ViewType.LOBBY) {
+                LobbyController lobbyController = ((FXMLLoader) scene.getUserData()).getController();
+                lobbyController.enableCreateButton();
+            }
+        });
     }
 
 
@@ -219,7 +205,7 @@ public class GUI extends Application implements ViewInterface {
     public void chooseWorker() {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
-            controller.setGui(this);
+            //controller.setGui(this);
             controller.allCellsClickable();
         });
     }
@@ -228,7 +214,7 @@ public class GUI extends Application implements ViewInterface {
     public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
-            controller.setGui(this);
+            //controller.setGui(this);
             controller.makeCellsClickable(walkableCells);
         });
     }
@@ -237,14 +223,20 @@ public class GUI extends Application implements ViewInterface {
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
-            controller.setGui(this);
+            //controller.setGui(this);
             controller.makeCellsClickable(buildableCells);
         });
     }
 
     @Override
     public void chooseBlockToBuild(List<Block> buildableBlocks) {
-        setInputString("2"); //TODO don't hardcode
+        Platform.runLater(() -> {
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            List<String> blockNames = new ArrayList<>();
+            buildableBlocks.forEach(block -> blockNames.add(block.toString()));
+            controller.getChoiceList().getItems().addAll(blockNames);
+            controller.getChoiceList().setDisable(false);
+        });
     }
 
     @Override
@@ -300,14 +292,18 @@ public class GUI extends Application implements ViewInterface {
     public void placeWorker() {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
-            controller.setGui(this);
+            //controller.setGui(this);
             controller.allCellsClickable();
         });
     }
 
     @Override
     public void chooseAction(List<PossibleActions> possibleActions) {
-        setInputString("1");
+        Platform.runLater(() -> {
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            possibleActions.forEach(action -> controller.getChoiceList().getItems().add(action.toString()));
+            controller.getChoiceList().setDisable(false);
+        });
     }
 
 
@@ -318,6 +314,8 @@ public class GUI extends Application implements ViewInterface {
                 setRoot("allMap");
                 currentView = ViewType.GAME;
             }
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.setGui(this);
             List<MapTileImage> mapTileImages = parseMap();
             for (MapTileImage mapTile : mapTileImages) {
                 int row = GridPane.getRowIndex(mapTile.getParent()) - 1;
@@ -343,6 +341,8 @@ public class GUI extends Application implements ViewInterface {
                 setRoot("allMap");
                 currentView = ViewType.GAME;
             }
+            GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.setGui(this);
             List<MapTileImage> mapTileImages = parseMap();
             for (MapTileImage mapTile : mapTileImages) {
                 int row = GridPane.getRowIndex(mapTile.getParent()) - 1;

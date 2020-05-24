@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import it.polimi.ingsw.view.gui.utils.MapTileImage?>
-<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
@@ -19,7 +21,14 @@
         <items>
             <AnchorPane prefHeight="720.0" prefWidth="240.0">
                <children>
-                  <StackPane alignment="CENTER_LEFT" maxHeight="Infinity" maxWidth="1.0E9" prefHeight="720.0" prefWidth="240.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <StackPane alignment="CENTER_LEFT" prefHeight="720.0" prefWidth="240.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Pane prefHeight="720.0" prefWidth="251.0">
+                           <children>
+                              <ListView fx:id="choiceList" onMouseClicked="#onOptionChosen" layoutY="236.0" prefHeight="248.0" prefWidth="237.0" />
+                           </children>
+                        </Pane>
+                     </children></StackPane>
                </children>
             </AnchorPane>
             <StackPane prefHeight="720.0" prefWidth="720.0">
@@ -499,13 +508,13 @@
             </StackPane>
             <AnchorPane maxWidth="-Infinity" prefWidth="240.0">
                <children>
-                  <StackPane alignment="CENTER_RIGHT" prefHeight="718.0" prefWidth="426.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <StackPane alignment="CENTER_RIGHT" prefHeight="718.0" prefWidth="426.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TextArea fx:id="textArea" prefHeight="200.0" prefWidth="200.0" />
+                     </children></StackPane>
                </children>
             </AnchorPane>
         </items>
       </SplitPane>
    </content>
-   <cursor>
-      <Cursor fx:constant="CLOSED_HAND" />
-   </cursor>
 </TitledPane>

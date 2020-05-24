@@ -26,7 +26,7 @@ public class PlayerRemovedEvent extends MessageFromServerToClient {
         return payload;
     }
 
-    public List<Cell> getGameboard() {
+    public List<Cell> getGameBoard() {
         return gameBoard;
     }
 

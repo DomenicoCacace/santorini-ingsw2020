@@ -19,7 +19,9 @@ public class StartingPlayerController {
     }
 
     public void onPlayerSelected() {
-        gui.setInputString(String.valueOf(playersList.getSelectionModel().getSelectedIndex()+ 1));
-        playersList.setDisable(true);
+        if(playersList.getSelectionModel().getSelectedItem()!=null){
+            gui.setInputString(String.valueOf(playersList.getSelectionModel().getSelectedIndex() + 1));
+            playersList.setDisable(true);
+        }
     }
 }

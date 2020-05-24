@@ -89,7 +89,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             }
         } catch (IOException | NullPointerException e) {
             logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()) + "\n" + input, e);
-
             server.onDisconnect(this.user);
         }
     }

@@ -276,7 +276,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         gameInterface.addPlayerLostListener(this);
         gameInterface.addEndGameListener(this);
         messageParser.setServerController(controller);
-        messageParser.parseMessageFromServerToClient(new GameBoardUpdate(players.get(0).getName(), gameInterface.buildBoardData()));
+        messageParser.parseMessageFromServerToClient(new GameBoardUpdate(ReservedUsernames.BROADCAST.toString(), gameInterface.buildBoardData()));
         messageParser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), gameInterface.buildBoardData()));
     }
 

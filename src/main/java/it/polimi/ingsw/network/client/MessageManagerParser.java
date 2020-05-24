@@ -130,7 +130,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * @see LoginManager
      */
     public void enterLobby(Map<String, List<String>> lobbiesAvailable) {
-
         isLookingForLobbies = true;
         inputManager = new LobbyInputManager(client, lobbiesAvailable, this, false);
         view.setInputManager(inputManager);
@@ -504,12 +503,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      */
     @Override  // Player removed, received by all users
     public void onPlayerRemoved(PlayerRemovedEvent message) {
-        gameBoard = message.getGameboard();
+        gameBoard = message.getGameBoard();
         if (message.getPayload().equals(client.getUsername())) {
             view.showErrorMessage("You lost");
             client.setCurrentPlayer(false);
         } else {
-            view.showGameBoard(message.getGameboard());
+            view.showGameBoard(message.getGameBoard());
             view.showSuccessMessage(message.getPayload() + " lost");
         }
     }

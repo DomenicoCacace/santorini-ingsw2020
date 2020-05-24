@@ -49,8 +49,6 @@ public class LoginController {
                     oldConfigs.setOpacity(0.2);
                 }
             }
-
-
             //oldConfigs.setDisable(!(this.username.isBlank() && this.ipAddress.isBlank()));
         });
         ipID.focusedProperty().addListener((observable, oldValue, newValue) -> {
@@ -66,6 +64,8 @@ public class LoginController {
             //oldConfigs.setDisable(!(this.username.isBlank() && this.ipAddress.isBlank()));
         });
     }
+
+
 
     public TextField getUsernameID() {
         return usernameID;
@@ -102,7 +102,7 @@ public class LoginController {
 
     public void onOldConfigSelected() {
         lock.lock();
-        if (isReloading) {
+        if (isReloading && oldConfigs.getSelectionModel().getSelectedItem()!=null) {
             gui.setInputString(CLI.YES);
             gui.setInputString(String.valueOf(oldConfigs.getSelectionModel().getSelectedIndex() + 2));
         }

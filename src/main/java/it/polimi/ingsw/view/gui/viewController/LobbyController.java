@@ -2,10 +2,12 @@ package it.polimi.ingsw.view.gui.viewController;
 
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.inputManagers.LobbyInputManager;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 
 public class LobbyController {
 
@@ -40,17 +42,24 @@ public class LobbyController {
 
     public void onCreate() {
         if (inputRequested) {
-            createBtn.setDisable(true);
-            joinBtn.setDisable(true);
             inputRequested = false;
             gui.setInputString(LobbyInputManager.CREATE_LOBBY);
             gui.setInputString(lobbyName);
             gui.setInputString(lobbySize);
+            createBtn.setDisable(true);
+            joinBtn.setDisable(true);
         }
     }
 
-    public void onLobbyCreated() {
-
+    public void enableCreateButton(){
+        if(this.createBtn.isDisable() && !(lobbySize.equals("3") || lobbySize.equals("2"))) {
+            this.createBtn.setDisable(false);
+            this.createBtn.setOnMouseClicked(event -> {
+                this.createBtn.setDisable(true);
+                gui.setInputString(lobbySize);
+            });
+            inputRequested = true;
+        }
     }
 
     public void onJoin() {
@@ -75,8 +84,7 @@ public class LobbyController {
     }
 
     public void onLobbySelected() {
-        if (inputRequested) {
-
+        if (inputRequested && lobbyList.getSelectionModel().getSelectedItem()!=null) {
             gui.setInputString(String.valueOf(lobbyList.getSelectionModel().getSelectedIndex() + 1));
             lobbyList.setDisable(true);
         }
