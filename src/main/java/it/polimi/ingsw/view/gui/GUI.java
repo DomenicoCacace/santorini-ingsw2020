@@ -5,7 +5,6 @@ import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
 import it.polimi.ingsw.view.gui.utils.ResizableImageView;
 import it.polimi.ingsw.view.gui.viewController.*;
@@ -22,8 +21,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -98,7 +101,11 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void chooseMatchReload() {
-        inputManager.manageInput(CLI.YES); //TODO: Implement method to reload match
+        Platform.runLater(() -> {
+            setRoot("reloadMatch");
+            ReloadMatchController reloadMatchController = ((FXMLLoader) scene.getUserData()).getController();
+            reloadMatchController.setGUI(this);
+        });
     }
 
     @Override

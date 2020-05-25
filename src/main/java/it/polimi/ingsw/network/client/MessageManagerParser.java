@@ -133,7 +133,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         isLookingForLobbies = true;
         inputManager = new LobbyInputManager(client, lobbiesAvailable, this, false);
         view.setInputManager(inputManager);
-        inputManager.startTimer(60);
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
         if (lobbiesAvailable.keySet().size() > 0) {
@@ -155,9 +154,9 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (!isCreatingLobby) {
             if (isLookingForLobbies) {
                 try {
+                    inputManager.stopTimer();
                     inputManager = new LobbyInputManager(client, message.getLobbies(), this, true);
                     view.setInputManager(inputManager);
-                    inputManager.startTimer(60);
                     view.chooseLobbyToJoin(message.getLobbies());
                     inputManager.startTimer(60);
 
@@ -308,6 +307,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         isCreatingLobby = false;
         if (message.getDisconnectedUser() != null)
             view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
+        inputManager.stopTimer();
         enterLobby(message.getAvailableLobbies());
     }
 

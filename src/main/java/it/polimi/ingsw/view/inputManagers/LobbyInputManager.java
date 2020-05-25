@@ -78,9 +78,14 @@ public class LobbyInputManager extends InputManager {
     private void chosenIndexEvaluator(List<String> lobbies, int index) {
         if (index == lobbies.size()) {
             messageManagerParser.enterLobby(lobbiesAvailable);
-            return;
+            stopTimer();
         }
-        onLobbyChosen(lobbies.get((index)));
+        else if(index < 0 || index > lobbies.size()) {
+            view.showErrorMessage("Insert a valid option!");
+            view.chooseLobbyToJoin(lobbiesAvailable);
+        }
+        else
+            onLobbyChosen(lobbies.get((index)));
     }
 
     private void manageLobbyOption(String input) {
@@ -90,11 +95,13 @@ public class LobbyInputManager extends InputManager {
             messageManagerParser.setCreatingLobby(true);
             messageManagerParser.setLookingForLobbies(false);
             view.askLobbyName();
+            startTimer(60);
         } else if (input.equals(JOIN_LOBBY) && lobbiesAvailable.keySet().size() > 0) {  // Join existing lobby
             stopTimer();
             this.state = State.JOIN;
             messageManagerParser.setLookingForLobbies(true);
             view.chooseLobbyToJoin(lobbiesAvailable);
+            startTimer(60);
         } else {
             messageManagerParser.enterLobby(lobbiesAvailable);
         }

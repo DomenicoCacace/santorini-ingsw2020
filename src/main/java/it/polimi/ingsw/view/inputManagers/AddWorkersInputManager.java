@@ -32,6 +32,7 @@ public class AddWorkersInputManager extends InputManager {
                         view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
                 } else if (row == -1) {
                     row = coord - 1;
+                    startTimer(60);
                     view.showSuccessMessage("col: ");
                 } else if (col == -1) {
                     stopTimer();

@@ -3,8 +3,6 @@ package it.polimi.ingsw.view.inputManagers;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +18,7 @@ public abstract class InputManager {
     /**
      * The scheduled task that manage the timeout on user input
      */
-    protected ScheduledFuture<?> inputCountdown;
+    protected static ScheduledFuture<?> inputCountdown;
     private int secondsPassed = 0;
     /**
      * The client to manage the input for
