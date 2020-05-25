@@ -2,8 +2,8 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.message.response.fromServerToClient.LoginResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.MovedToWaitingRoomResponse;
+import it.polimi.ingsw.network.message.fromServerToClient.LoginResponse;
+import it.polimi.ingsw.network.message.fromServerToClient.MovedToWaitingRoomResponse;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 
 import java.io.File;

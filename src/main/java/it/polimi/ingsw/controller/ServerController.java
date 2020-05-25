@@ -11,8 +11,7 @@ import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseWorkerPositionRequest;
-import it.polimi.ingsw.network.message.response.fromServerToClient.*;
+import it.polimi.ingsw.network.message.fromServerToClient.*;
 import it.polimi.ingsw.network.server.User;
 
 import java.io.File;

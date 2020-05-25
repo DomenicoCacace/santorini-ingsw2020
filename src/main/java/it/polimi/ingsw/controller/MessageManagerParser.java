@@ -6,11 +6,11 @@ import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.message.Message;
-import it.polimi.ingsw.network.message.request.fromClientToServer.*;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.*;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseInitialGodsResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseStartingPlayerResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseToReloadMatchResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.network.server.Lobby;
 
 import java.util.List;

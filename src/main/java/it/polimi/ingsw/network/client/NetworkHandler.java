@@ -4,7 +4,7 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
-import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
+import it.polimi.ingsw.network.message.fromClientToServer.LoginRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;

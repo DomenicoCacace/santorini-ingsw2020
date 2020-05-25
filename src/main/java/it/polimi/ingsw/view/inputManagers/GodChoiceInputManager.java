@@ -2,8 +2,8 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseInitialGodsResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseYourGodResponse;
 
 import java.util.ArrayList;
 import java.util.List;

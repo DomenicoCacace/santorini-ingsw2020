@@ -5,10 +5,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import it.polimi.ingsw.network.message.request.fromServerToClient.ChooseStartingPlayerRequest;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseInitialGodsResponse;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.*;
+import it.polimi.ingsw.network.message.fromServerToClient.*;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseInitialGodsResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseStartingPlayerResponse;
 
 /**
  * Abstract message

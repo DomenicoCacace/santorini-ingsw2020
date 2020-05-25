@@ -6,10 +6,9 @@ import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.Worker;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.message.request.fromClientToServer.*;
-import it.polimi.ingsw.network.message.request.fromServerToClient.*;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseYourGodResponse;
-import it.polimi.ingsw.network.message.response.fromServerToClient.*;
+import it.polimi.ingsw.network.message.fromClientToServer.*;
+import it.polimi.ingsw.network.message.fromServerToClient.*;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseYourGodResponse;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.inputManagers.*;
 

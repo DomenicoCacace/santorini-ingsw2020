@@ -6,11 +6,11 @@ import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.MessageFromClientToServer;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.message.request.fromClientToServer.CreateLobbyRequest;
-import it.polimi.ingsw.network.message.request.fromClientToServer.JoinLobbyRequest;
-import it.polimi.ingsw.network.message.request.fromClientToServer.LoginRequest;
-import it.polimi.ingsw.network.message.response.fromServerToClient.LobbyCreatedEvent;
-import it.polimi.ingsw.network.message.response.fromServerToClient.UserJoinedLobbyEvent;
+import it.polimi.ingsw.network.message.fromClientToServer.CreateLobbyRequest;
+import it.polimi.ingsw.network.message.fromClientToServer.JoinLobbyRequest;
+import it.polimi.ingsw.network.message.fromClientToServer.LoginRequest;
+import it.polimi.ingsw.network.message.fromServerToClient.LobbyCreatedEvent;
+import it.polimi.ingsw.network.message.fromServerToClient.UserJoinedLobbyEvent;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 

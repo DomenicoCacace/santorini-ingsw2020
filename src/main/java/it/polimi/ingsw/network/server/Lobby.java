@@ -11,11 +11,11 @@ import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
-import it.polimi.ingsw.network.message.request.fromServerToClient.*;
-import it.polimi.ingsw.network.message.response.fromServerToClient.ChosenGodsEvent;
-import it.polimi.ingsw.network.message.response.fromServerToClient.GameBoardUpdate;
-import it.polimi.ingsw.network.message.response.fromServerToClient.UserJoinedLobbyEvent;
-import it.polimi.ingsw.network.message.response.fromServerToClient.WinnerDeclaredEvent;
+import it.polimi.ingsw.network.message.fromServerToClient.*;
+import it.polimi.ingsw.network.message.fromServerToClient.ChosenGodsEvent;
+import it.polimi.ingsw.network.message.fromServerToClient.GameBoardUpdate;
+import it.polimi.ingsw.network.message.fromServerToClient.UserJoinedLobbyEvent;
+import it.polimi.ingsw.network.message.fromServerToClient.WinnerDeclaredEvent;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 

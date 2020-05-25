@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseStartingPlayerResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseStartingPlayerResponse;
 
 import java.util.ArrayList;
 import java.util.List;

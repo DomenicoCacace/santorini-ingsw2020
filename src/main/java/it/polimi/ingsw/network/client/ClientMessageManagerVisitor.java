@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.message.request.fromServerToClient.*;
-import it.polimi.ingsw.network.message.response.fromServerToClient.*;
+import it.polimi.ingsw.network.message.fromServerToClient.*;
 
 /**
  * Visitor interface for messages travelling from the server to the client

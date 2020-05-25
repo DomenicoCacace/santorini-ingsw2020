@@ -3,7 +3,7 @@ package it.polimi.ingsw.view.inputManagers;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
-import it.polimi.ingsw.network.message.request.fromClientToServer.SelectBuildingCellRequest;
+import it.polimi.ingsw.network.message.fromClientToServer.SelectBuildingCellRequest;
 
 import java.util.ArrayList;
 import java.util.List;

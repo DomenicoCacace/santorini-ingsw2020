@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.network.message.response.fromClientToServer.ChooseToReloadMatchResponse;
+import it.polimi.ingsw.network.message.fromClientToServer.ChooseToReloadMatchResponse;
 
 public class ReloadGameInputManager extends InputManager {
 
