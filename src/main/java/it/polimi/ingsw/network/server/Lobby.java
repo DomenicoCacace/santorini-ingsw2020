@@ -135,7 +135,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * @param message the message to send
      */
     public void broadcastMessage(Message message) {
-        playerMap.keySet().forEach(user -> user.notify(message));
+        usersInLobby.stream().filter(name -> !name.equals(ReservedUsernames.BROADCAST.toString())).forEach(name -> server.getUser(name, this).notify(message));
     }
 
     /**
@@ -153,7 +153,9 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         server.moveToRoom(user, this);
         playerMap.put(user, null);
         usersInLobby.add(user.getUsername());
-        messageParser.parseMessageFromServerToClient(new UserJoinedLobbyEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, null, maxRoomSize, user.getUsername()));
+        if(usersInLobby.size()>2) { //If i'm doing addUser for the first user i don't need to send the joinLobby event because he'll receive a createLobbyEvent
+            messageParser.parseMessageFromServerToClient(new UserJoinedLobbyEvent(ReservedUsernames.BROADCAST.toString(), Type.OK, null, maxRoomSize, user.getUsername()));
+        }
         if (playerMap.keySet().size() == maxRoomSize) {
             gameStarted = true;
             server.getGameLobbies().remove(this.roomName);
@@ -227,7 +229,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
      * @param godData the list of all the available gods
      */
     public void askGods(List<GodData> godData) {
-        String firstPlayerName = /*new LinkedList<>(playerMap.keySet()).get(0).getUsername()*/usersInLobby.get(1);
+        String firstPlayerName = usersInLobby.get(1);
         this.gameStarted = true;
         messageParser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(firstPlayerName, godData));
     }

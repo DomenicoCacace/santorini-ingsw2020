@@ -133,12 +133,14 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         isLookingForLobbies = true;
         inputManager = new LobbyInputManager(client, lobbiesAvailable, this, false);
         view.setInputManager(inputManager);
+        inputManager.startTimer(60);
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
         if (lobbiesAvailable.keySet().size() > 0) {
             options.add("Join lobby");
         }
         view.lobbyOptions(options);
+        inputManager.startTimer(60);
     }
 
     /**
@@ -155,7 +157,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 try {
                     inputManager = new LobbyInputManager(client, message.getLobbies(), this, true);
                     view.setInputManager(inputManager);
+                    inputManager.startTimer(60);
                     view.chooseLobbyToJoin(message.getLobbies());
+                    inputManager.startTimer(60);
+
                 } catch (CancellationException exception) {
                     //
                 }
@@ -197,6 +202,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     try {
                         inputManager = new LoginManager(client, true);
                         view.setInputManager(inputManager);
+                        inputManager.startTimer(60);
                         view.askUsername();
                     } catch (CancellationException exception) {
                         return;
@@ -220,6 +226,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new ReloadGameInputManager(client);
         view.setInputManager(inputManager);
+        inputManager.startTimer(60);
         view.chooseMatchReload();
     }
 
@@ -233,6 +240,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new GodChoiceInputManager(client, message.getGods(), chosenSize);
         view.setInputManager(inputManager);
+        inputManager.startTimer(60);
         view.chooseGameGods(message.getGods(), chosenSize);
     }
 
@@ -268,6 +276,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             }
             inputManager = new GodChoiceInputManager(client, message.getGods(), 1);
             view.setInputManager(inputManager);
+            inputManager.startTimer(60);
             view.chooseUserGod(message.getGods());
         } catch (CancellationException ignored) {
         }
@@ -283,6 +292,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new ChooseStartingPlayerInputManager(client, message.getPayload());
         view.setInputManager(inputManager);
+        inputManager.startTimer(60);
         view.chooseStartingPlayer(message.getPayload());
     }
 
@@ -382,6 +392,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 client.setCurrentPlayer(true);
                 inputManager = new SelectWorkerInputManager(client, this);
                 view.setInputManager(inputManager);
+                inputManager.startTimer(60);
                 view.chooseWorker();
             } else
                 client.setCurrentPlayer(false);
@@ -399,6 +410,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new AddWorkersInputManager(client, this);
         view.setInputManager(inputManager);
+        inputManager.startTimer(60);
         view.placeWorker();
     }
 
@@ -439,6 +451,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())) {
             client.setCurrentPlayer(true);
             view.setInputManager(inputManager);
+            inputManager.startTimer(60);
             view.chooseWorker();
             inputManager.setWaitingForInput(true);
         } else
@@ -532,6 +545,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 selectedWorker = message.getSelectedWorker();
                 inputManager = new SelectActionInputManager(client, message.getPossibleActions(), this);
                 view.setInputManager(inputManager);
+                inputManager.startTimer(60);
                 view.chooseAction(message.getPossibleActions());
             }
         } else {
@@ -554,6 +568,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), true, this);
             view.setInputManager(inputManager);
+            inputManager.startTimer(60);
             view.moveAction(gameBoard, message.getPayload());
         } else {
             //we should never enter here
@@ -574,6 +589,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), false, this);
             view.setInputManager(inputManager);
+            inputManager.startTimer(60);
             view.buildAction(gameBoard, message.getPayload());
         } else {
             //we should never enter here
@@ -593,6 +609,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
         inputManager = new SelectBlockInputManager(client, this, message.getBlocks());
         view.setInputManager(inputManager);
+        inputManager.startTimer(60);
         view.chooseBlockToBuild(message.getBlocks());
     }
 
@@ -616,6 +633,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             case SELECT_OTHER_WORKER:
                 inputManager = new SelectWorkerInputManager(client, this);
                 view.setInputManager(inputManager);
+                inputManager.startTimer(60);
                 view.chooseWorker();
                 break;
         }

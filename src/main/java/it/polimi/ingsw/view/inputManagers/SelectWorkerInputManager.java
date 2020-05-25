@@ -18,7 +18,11 @@ public class SelectWorkerInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             input = cleanInput(input);
             try {
                 int coord = Integer.parseInt(input);
@@ -28,9 +32,12 @@ public class SelectWorkerInputManager extends InputManager {
                     else
                         view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
                 } else if (row == -1) {
+                    stopTimer();
                     row = coord - 1;
                     view.showSuccessMessage("col: ");
+                    startTimer(60);
                 } else if (col == -1) {
+                    stopTimer();
                     col = coord - 1;
                     isWaitingForInput = false;
                     parser.chooseWorker(row, col);
@@ -42,5 +49,4 @@ public class SelectWorkerInputManager extends InputManager {
             }
         }
     }
-
 }

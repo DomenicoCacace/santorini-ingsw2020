@@ -3,13 +3,25 @@ package it.polimi.ingsw.view.inputManagers;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 /**
  * InputManager abstraction
  * <p>
  * An InputManager is an object responsible for the console input acquisition and redirection
  */
 public abstract class InputManager {
+    public static final String QUIT = "quit";
 
+    /**
+     * The scheduled task that manage the timeout on user input
+     */
+    protected ScheduledFuture<?> inputCountdown;
+    private int secondsPassed = 0;
     /**
      * The client to manage the input for
      */
@@ -54,5 +66,45 @@ public abstract class InputManager {
 
     public void setWaitingForInput(boolean waitingForInput) {
         isWaitingForInput = waitingForInput;
+    }
+
+    /**
+     *
+     * @param availableTime the maximum time the user has to input something
+     */
+    public void startTimer(int availableTime) {
+        secondsPassed = 0;
+        if (inputCountdown != null) {
+            inputCountdown.cancel(true);
+        }
+        ScheduledThreadPoolExecutor ex = new ScheduledThreadPoolExecutor(2);
+        inputCountdown = ex.scheduleAtFixedRate(() -> increaseSecondPassed(availableTime), 1, 1, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Method called by the scheduled future, it increase and manage the secondPassed variable
+     * when secondPassed reaches availableTime the user will be disconnected for inactivity
+     * @param availableTime the maximum time the user has to input something
+     */
+    private void increaseSecondPassed(int availableTime) {
+        if (secondsPassed == availableTime) {
+            view.showErrorMessage("Timeout!!");
+            client.inputTimeout();
+            stopTimer();
+        } else if (secondsPassed == 30) {
+            view.showErrorMessage("You have only 30 seconds left to insert a valid command!");
+            secondsPassed++;
+        } else
+            secondsPassed++;
+    }
+
+    /**
+     * This method cancels the task and reset the second passed
+     */
+    public void stopTimer() {
+        if (inputCountdown != null) {
+            inputCountdown.cancel(true);
+        }
+        secondsPassed = 0;
     }
 }

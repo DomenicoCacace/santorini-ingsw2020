@@ -223,4 +223,8 @@ public class Client {
         return this.view;
     }
 
+    public void inputTimeout() {
+        stopConnection();
+        new Thread(()->Client.initClient(view)).start();
+    }
 }

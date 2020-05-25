@@ -49,14 +49,18 @@ public class GodChoiceInputManager extends InputManager {
     @Override
     public void manageInput(String input) {
         GodData chosenGod;
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             switch (state) {
                 case CHOOSE_INITIAL_GODS:
                     chosenGod = askGod(input);
                     if (chosenGod != null) {
                         userChoice.add(chosenGod);
                         if (userChoice.size() == godsToChoose) {
-
+                            stopTimer();
                             client.sendMessage(new ChooseInitialGodsResponse(client.getUsername(), userChoice));
                             client.setCurrentPlayer(false);
                             isWaitingForInput = false;
@@ -70,7 +74,7 @@ public class GodChoiceInputManager extends InputManager {
                 case CHOOSE_PERSONAL_GOD:
                     chosenGod = askGod(input);
                     if (chosenGod != null) {
-
+                        stopTimer();
                         client.sendMessage(new ChooseYourGodResponse(client.getUsername(), chosenGod));
                         client.setCurrentPlayer(false);
                         isWaitingForInput = false;

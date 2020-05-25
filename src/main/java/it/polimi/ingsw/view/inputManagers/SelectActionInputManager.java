@@ -25,11 +25,16 @@ public class SelectActionInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             input = cleanInput(input);
             try {
                 int index = Integer.parseInt(input) - 1;
                 if (index >= 0 && index < possibleActions.size()) {
+                    stopTimer();
                     new Thread(() -> parser.messageToSend(possibleActions.get(index))).start(); //TODO: remove deadlock -- Look if there's a better solution
                     isWaitingForInput = false;
                 } else

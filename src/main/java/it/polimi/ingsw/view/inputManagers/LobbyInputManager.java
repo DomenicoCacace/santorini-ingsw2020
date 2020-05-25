@@ -33,7 +33,11 @@ public class LobbyInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             switch (state) {
                 case CREATE_OR_JOIN:
                     input = cleanInput(input);
@@ -81,11 +85,13 @@ public class LobbyInputManager extends InputManager {
 
     private void manageLobbyOption(String input) {
         if (input.equals(CREATE_LOBBY)) {
+            stopTimer();
             this.state = State.CREATE;
             messageManagerParser.setCreatingLobby(true);
             messageManagerParser.setLookingForLobbies(false);
             view.askLobbyName();
         } else if (input.equals(JOIN_LOBBY) && lobbiesAvailable.keySet().size() > 0) {  // Join existing lobby
+            stopTimer();
             this.state = State.JOIN;
             messageManagerParser.setLookingForLobbies(true);
             view.chooseLobbyToJoin(lobbiesAvailable);
@@ -96,13 +102,16 @@ public class LobbyInputManager extends InputManager {
     }
 
     private void onLobbyNameChosen(String lobbyName) {
+        stopTimer();
         this.lobbyName = lobbyName;
         view.askLobbySize();
+        startTimer(60);
     }
 
     private void onLobbySize(int chosenSize) {
         messageManagerParser.setChosenSize(chosenSize);
         isWaitingForInput = false;
+        stopTimer();
         client.sendMessage(new CreateLobbyRequest(client.getUsername(), lobbyName, chosenSize));
         messageManagerParser.setCreatingLobby(false);
     }
@@ -110,6 +119,7 @@ public class LobbyInputManager extends InputManager {
     private void onLobbyChosen(String input) {
         messageManagerParser.setLookingForLobbies(false);
         isWaitingForInput = false;
+        stopTimer();
         client.sendMessage(new JoinLobbyRequest(client.getUsername(), input));
     }
 

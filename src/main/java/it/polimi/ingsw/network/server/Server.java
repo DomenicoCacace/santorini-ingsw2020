@@ -29,7 +29,6 @@ public class Server extends Thread {
     private final List<User> waitingRoom;
     private final HashMap<User, Lobby> users;
     private final int socketGreeterPort;
-    private final File logFile;
     private ServerSocket serverSocket;
     private Socket newClientSocket;
 
@@ -48,7 +47,7 @@ public class Server extends Thread {
 
         File logDir = new File("./logs");
         logDir.mkdir();
-        this.logFile = new File(logDir + File.separator + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt");
+        File logFile = new File(logDir + File.separator + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt");
         logFile.createNewFile();
         File directory = new File(logFile.getAbsoluteFile().getParent());
         String[] filesInDirectory = directory.list();
@@ -186,7 +185,7 @@ public class Server extends Thread {
      * @param lobby the lobby to delete
      */
     public void removeRoom(Lobby lobby) {
-        waitingRoom.addAll(getUsersInRoom(lobby));
+        getUsersInRoom(lobby).forEach(this::moveToWaitingRoom);
         getUsersInRoom(lobby).forEach(lobby::removeUser);
         gameLobbies.remove(lobby.getRoomName(), lobby);
     }
@@ -206,9 +205,7 @@ public class Server extends Thread {
                     gameLobbies.remove(lobby.getRoomName());
             } else {
                 lobby.removeUser(user);
-                List<User> usersInLobby = getUsersInRoom(lobby);
                 removeRoom(lobby);
-                usersInLobby.forEach(this::moveToWaitingRoom);
             }
         } else
             waitingRoom.remove(user);

@@ -20,15 +20,23 @@ public class SelectBlockInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        input = cleanInput(input);
-        try {
-            int index = Integer.parseInt(input) - 1;
-            if (index >= 0 && index < possibleBlocks.size())
-                parser.sendBuild(possibleBlocks.get(index));
-            else
-                view.showErrorMessage("Please insert a correct value");
-        } catch (NumberFormatException e) {
-            view.showErrorMessage("please insert a number");
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
+            input = cleanInput(input);
+            try {
+                int index = Integer.parseInt(input) - 1;
+                if (index >= 0 && index < possibleBlocks.size()) {
+                    stopTimer();
+                    parser.sendBuild(possibleBlocks.get(index));
+                    isWaitingForInput = false;
+                } else
+                    view.showErrorMessage("Please insert a correct value");
+            } catch (NumberFormatException e) {
+                view.showErrorMessage("please insert a number");
+            }
         }
     }
 }

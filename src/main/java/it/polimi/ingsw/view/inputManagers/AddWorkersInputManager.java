@@ -17,7 +17,11 @@ public class AddWorkersInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             input = cleanInput(input);
             try {
                 int coord = Integer.parseInt(input);
@@ -30,6 +34,7 @@ public class AddWorkersInputManager extends InputManager {
                     row = coord - 1;
                     view.showSuccessMessage("col: ");
                 } else if (col == -1) {
+                    stopTimer();
                     col = coord - 1;
                     parser.addWorker(row, col);
                     isWaitingForInput = false;

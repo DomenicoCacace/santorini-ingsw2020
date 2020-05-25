@@ -17,7 +17,11 @@ public class ReloadGameInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             if (input.equals("y")) {    //TODO: use static constant
                 reloadMatch(true);
                 isWaitingForInput = false;
@@ -33,7 +37,7 @@ public class ReloadGameInputManager extends InputManager {
      * @param choice true if the owner wants to reload the saved game, false otherwise
      */
     private void reloadMatch(boolean choice) {
-
+        stopTimer();
         client.sendMessage(new ChooseToReloadMatchResponse(client.getUsername(), choice));
         client.setCurrentPlayer(false);
     }

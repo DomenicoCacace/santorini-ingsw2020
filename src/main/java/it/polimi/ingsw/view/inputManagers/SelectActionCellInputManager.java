@@ -31,7 +31,11 @@ public class SelectActionCellInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             List<Cell> selectedCell;
             input = cleanInput(input);
             switch (state) {
@@ -44,12 +48,15 @@ public class SelectActionCellInputManager extends InputManager {
                             else
                                 view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
                         } else if (row == -1) {
+                            stopTimer();
                             row = coord - 1;
                             view.showSuccessMessage("col: ");
+                            startTimer(60);
                         } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
                             if (selectedCell.size() == 1) {
+                                stopTimer();
                                 isWaitingForInput = false;
                                 parser.sendMove(selectedCell.get(0));
                             } else {
@@ -72,15 +79,17 @@ public class SelectActionCellInputManager extends InputManager {
                             else
                                 view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
                         } else if (row == -1) {
+                            stopTimer();
                             row = coord - 1;
                             view.showSuccessMessage("col: ");
+                            startTimer(60);
                         } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
                             if (selectedCell.size() == 1) {
+                                stopTimer();
                                 isWaitingForInput = false;
                                 parser.setSelectedCell(selectedCell.get(0));
-
                                 client.sendMessage(new SelectBuildingCellRequest(client.getUsername(), selectedCell.get(0)));
                             } else {
                                 view.showErrorMessage("Please select a valid cell!!");

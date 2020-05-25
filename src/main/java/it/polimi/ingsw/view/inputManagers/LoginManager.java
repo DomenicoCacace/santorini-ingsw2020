@@ -59,6 +59,7 @@ public class LoginManager extends InputManager {
     private void loadSavedConfig(int index) {
         if (!(index < 0 || index > (savedConfigs.size() / 2))) {
             if (index != 0) { //If index == 0 the player chose to manually input user/Ip
+                stopTimer();
                 index--;
                 index = index * 2;
                 isWaitingForInput = false;
@@ -68,6 +69,7 @@ public class LoginManager extends InputManager {
             } else {
                 view.askIP();
                 savedConfigs.clear(); //If he answered " insert ip manually " i clear the savedCinfigs so that he want be able to load them
+                startTimer(60);
             }
         } else {
             view.showErrorMessage("Insert a valid option");
@@ -78,13 +80,19 @@ public class LoginManager extends InputManager {
     private void chooseToReloadSetting(String input) {
         input = cleanInput(input);
         if (input.equals(CLI.YES)) { //If he answers yes than i print all the saved configs, the next input will have to be an integer
+            stopTimer();
             wantsToLoadSetting = true;
             generateOptions(); //This method prints the saved configs with the format user -- ipAddress
         } else if (input.equals(CLI.NO)) {
+            stopTimer();
             view.askIP();
             savedConfigs.clear(); //If he doesn't want to reload setting i clear the list so that the next input will be managed without passing throught this if
-        } else
+            startTimer(60);
+        } else {
+            stopTimer();
             view.askToReloadLastSettings(savedConfigs); //If he doesn't answer with yes or no i repeat the question
+            startTimer(60);
+        }
     }
 
     public void generateOptions() {

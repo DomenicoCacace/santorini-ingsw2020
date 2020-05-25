@@ -23,12 +23,16 @@ public class ChooseStartingPlayerInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (isWaitingForInput) {
+        if (input.equals(QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+        } else if (isWaitingForInput) {
             input = cleanInput(input);
             try {
                 int index = Integer.parseInt(input) - 1;
                 if (index >= 0 && index < usernames.size()) {
-                    //FIXME: We can change where we set the currentPlayer
+                    stopTimer();
                     client.sendMessage(new ChooseStartingPlayerResponse(client.getUsername(), usernames.get(index)));
                     client.setCurrentPlayer(false);
                 } else {
