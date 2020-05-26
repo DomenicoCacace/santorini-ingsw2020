@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
 import it.polimi.ingsw.view.gui.utils.ResizableImageView;
@@ -155,7 +156,7 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void gameStartScreen(List<Cell> gameBoard) {
-        //TODO: printBuilding - Print popUp
+        //TODO: Print popUp
         initGameBoard(gameBoard);
     }
 
@@ -299,7 +300,6 @@ public class GUI extends Application implements ViewInterface {
     public void placeWorker() {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
-            //controller.setGui(this);
             controller.allCellsClickable();
         });
     }
@@ -342,7 +342,6 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void initGameBoard(List<Cell> gameBoard) {
-        //TODO: printBuilding
         Platform.runLater(() -> {
             if (currentView != ViewType.GAME) {
                 setRoot("allMap");

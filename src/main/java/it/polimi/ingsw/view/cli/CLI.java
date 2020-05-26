@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.utils.PrettyPrinter;
 import it.polimi.ingsw.view.inputManagers.InputManager;
@@ -21,8 +22,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * Command Line Interface manager
  */
 public class CLI implements ViewInterface {
-    public static final String YES = "y";
-    public static final String NO = "n";
+    //public static final String YES = "y";
+    //public static final String NO = "n";
     private final PrettyPrinter printer;
     private final ExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     private final Lock lock = new ReentrantLock();
@@ -93,7 +94,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public void askToReloadLastSettings(List<String> savedUsers) {
-        System.out.print("\t\tThere are some settings saved! do you want to load one of them? [" + YES + "/" + NO + "]: ");
+        System.out.print("\t\tThere are some settings saved! do you want to load one of them? [" + Constants.YES + "/" + Constants.NO + "]: ");
     }
 
     @Override
@@ -108,7 +109,6 @@ public class CLI implements ViewInterface {
 
     @Override
     public void askUsername() throws CancellationException {
-        //TODO: make the user choose if it wants the default one
         System.out.print("\t\tInsert your username: ");
     }
 
@@ -133,42 +133,6 @@ public class CLI implements ViewInterface {
     public void askLobbySize() throws CancellationException {
         System.out.print("Choose the room size:\n");
     }
-/*
-    @Override
-    public String chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) throws CancellationException {
-        List<String> lobbies = new LinkedList<>(lobbiesAvailable.keySet());
-        lobbies.add(SHOW_INFO_ALL_LOBBIES);
-        lobbies.add("Go back");
-        System.out.println("Choose which lobby to join!");
-        int index = printList(lobbies, 1000);
-        if (index == lobbies.size() - 2) {
-            StringBuilder stringBuilder = new StringBuilder();
-            lobbiesAvailable.values().forEach(info -> {
-                stringBuilder.append(showLobbyInfo(info)).append("\n");
-            });
-            System.out.println(stringBuilder.toString() + "\r");
-            return chooseLobbyToJoin(lobbiesAvailable);
-        } else if (index == lobbies.size() - 1) {
-            return null;
-        } else if (askToChoose(ASK_TO_VIEW_LOBBY_INFO)) {
-            System.out.println(showLobbyInfo(lobbiesAvailable.get(lobbies.get(index))));
-            if (!askToChoose("Do you want to join lobby(" + YES + ") or do you want to review the lobbies?(" + NO + ")"))
-                return chooseLobbyToJoin(lobbiesAvailable);
-        }
-        return lobbies.get((index));
-    }
-
-    private boolean askToChoose(String question) throws CancellationException {
-        while (true) {
-            System.out.println(question);
-
-            String input = askInputString(60);
-            if (input.equals(YES))
-                return true;
-            else if (input.equals(NO))
-                return false;
-        }
-    } */
 
     @Override
     public void showGameBoard(List<Cell> gameBoard) {
@@ -188,7 +152,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public void chooseMatchReload() throws CancellationException {
-        System.out.println("I found a match to reload! do you want to reload? (" + YES + "/" + NO + ")");
+        System.out.println("I found a match to reload! do you want to reload? (" + Constants.YES + "/" + Constants.NO + ")");
     }
 
     @Override
@@ -199,7 +163,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws CancellationException {
-        printer.printBoard(gameBoard, buildableCells);   //TODO: we can put walkable and buildable together
+        printer.printBoard(gameBoard, buildableCells);
         printer.printMessage("Select the cell where you want to to build! \nrow: ");
     }
 

@@ -80,7 +80,6 @@ public class Server extends Thread {
     public static void main(String[] args) throws IOException {
         Server server = new Server();
         server.startServer();
-        //TODO: implement server console to monitor things
     }
 
 

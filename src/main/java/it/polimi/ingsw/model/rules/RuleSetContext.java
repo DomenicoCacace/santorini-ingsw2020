@@ -52,7 +52,7 @@ public class RuleSetContext {
      */
     public RuleSetStrategy getStrategy() {
         return strategy;
-    } // TODO: just for testing
+    } //just for testing
 
     /**
      * <i>strategy</i> setter

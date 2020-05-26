@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.cli.CLI;
 
 import java.util.ArrayList;
@@ -79,11 +80,11 @@ public class LoginManager extends InputManager {
 
     private void chooseToReloadSetting(String input) {
         input = cleanInput(input);
-        if (input.equals(CLI.YES)) { //If he answers yes than i print all the saved configs, the next input will have to be an integer
+        if (input.equals(Constants.YES)) { //If he answers yes than i print all the saved configs, the next input will have to be an integer
             stopTimer();
             wantsToLoadSetting = true;
             generateOptions(); //This method prints the saved configs with the format user -- ipAddress
-        } else if (input.equals(CLI.NO)) {
+        } else if (input.equals(Constants.NO)) {
             stopTimer();
             view.askIP();
             savedConfigs.clear(); //If he doesn't want to reload setting i clear the list so that the next input will be managed without passing throught this if

@@ -384,7 +384,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * Notifies all users that a player lost
      * <p>
      * The file containing the saved game is also deleted, to be replaced with a new one
-     * FIXME: check if the file is replaced or just deleted
+     *
      *
      * @param username  the player which lost
      * @param gameBoard the changed gameBoard without the loser's workers

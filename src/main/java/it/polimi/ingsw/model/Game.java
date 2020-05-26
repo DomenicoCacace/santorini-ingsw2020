@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
  *    This is perhaps the most dense class of the entire project, but after some discussion it has been decided not to
  *    "tear it apart".
  */
-//TODO: create general interface Listener
 public class Game implements GameInterface {
 
     private final GameBoard gameBoard;
@@ -121,8 +120,7 @@ public class Game implements GameInterface {
             this.winner = null;
 
         this.currentRuleSet = new RuleSetContext();
-        //FIXME: maybe this.currentRuleSet.setStrategy, would make more sense tbh
-        currentRuleSet.setStrategy(this.currentTurn.getRuleSetStrategy());
+        this.currentRuleSet.setStrategy(this.currentTurn.getRuleSetStrategy());
 
     }
 
@@ -323,11 +321,6 @@ public class Game implements GameInterface {
      * require the player to have spent all the available actions for its current turn, so the turn is
      * automatically ended.
      */
-    /*
-     * TODO: when implementing the undo function, verify that the player is allowed to undo its last action before the
-     *  next turn is generated, as it might cause severe problems
-     *  (we might never implement this feature)
-     */
     private void endTurnAutomatically() {
         if (currentRuleSet.canEndTurnAutomatically())
             generateNextTurn();
@@ -344,7 +337,6 @@ public class Game implements GameInterface {
      */
     public void generateNextTurn() {
         nextTurn = new Turn(currentTurn.getTurnNumber() + 1, nextPlayer());
-        //FIXME: line below seems to be redundant
         currentRuleSet.setStrategy(currentTurn.getCurrentPlayer().getGod().getStrategy());
         currentRuleSet.doEffect();
         currentRuleSet.setStrategy(nextPlayer().getGod().getStrategy());
@@ -415,7 +407,7 @@ public class Game implements GameInterface {
         } else {
             playerLostListener.forEach(listener -> listener.onPlayerLoss(player.getName(), buildBoardData()));
         }
-        generateNextTurn(); //FIXME: we should do this only if there wasn't a winner
+        generateNextTurn();
     }
 
 
@@ -463,7 +455,6 @@ public class Game implements GameInterface {
      */
     @Override
     public void restoreState() {
-        //FIXME: manage file path
         for (Player player : this.players) {
             player.setGame(this);
             int x, y;

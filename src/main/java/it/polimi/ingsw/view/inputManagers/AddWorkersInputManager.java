@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
+import it.polimi.ingsw.view.Constants;
 
 public class AddWorkersInputManager extends InputManager {
 
@@ -17,7 +18,7 @@ public class AddWorkersInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(QUIT)) {
+        if (input.equals(Constants.QUIT)) {
             stopTimer();
             client.stopConnection();
             new Thread(() -> Client.initClient(view)).start();

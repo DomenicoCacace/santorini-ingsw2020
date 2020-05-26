@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.viewController;
 
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
 import javafx.fxml.FXML;
@@ -43,7 +44,7 @@ public class LoginController {
             this.username = usernameID.getText();
             if (!this.username.isBlank()) {
                 if (isReloading) {
-                    gui.setInputString(CLI.NO);
+                    gui.setInputString(Constants.NO);
                     isReloading = false;
                     oldConfigs.setDisable(true);
                     oldConfigs.setOpacity(0.2);
@@ -55,7 +56,7 @@ public class LoginController {
             this.ipAddress = ipID.getText();
             if (!this.ipAddress.isBlank()) {
                 if (isReloading) {
-                    gui.setInputString(CLI.NO);
+                    gui.setInputString(Constants.NO);
                     isReloading = false;
                     oldConfigs.setDisable(true);
                     oldConfigs.setOpacity(0.2);
@@ -87,7 +88,7 @@ public class LoginController {
     public void onLogin() {
         lock.lock();
         if (isReloading)
-            gui.setInputString(CLI.NO);
+            gui.setInputString(Constants.NO);
         if ((!ipAddress.isBlank() || ipIsSet) && !username.isBlank()) {
             if (!ipIsSet) {
                 gui.setInputString(ipAddress);
@@ -103,7 +104,7 @@ public class LoginController {
     public void onOldConfigSelected() {
         lock.lock();
         if (isReloading && oldConfigs.getSelectionModel().getSelectedItem()!=null) {
-            gui.setInputString(CLI.YES);
+            gui.setInputString(Constants.YES);
             gui.setInputString(String.valueOf(oldConfigs.getSelectionModel().getSelectedIndex() + 2));
         }
         lock.unlock();

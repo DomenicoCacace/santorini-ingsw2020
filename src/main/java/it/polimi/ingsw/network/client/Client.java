@@ -55,17 +55,16 @@ public class Client {
     public static void main(String[] args) {
         ViewInterface viewInterface;
         try {
-            if (args.length == 0 || !args[0].equals("--GUI")) {
+            if (args.length == 0 || !args[0].equals("--CLI")) {
+                GUI.launchGui();
+            } else {
                 viewInterface = new CLI();
                 initClient(viewInterface);
-            } else {
-                GUI.launchGui(); //FIXME
             }
         } catch (IOException e) {
             System.out.println("Error: resources not found");
             System.exit(1);
         }
-        //TODO: Here I ask the user if he wants to use the Cli/Gui
     }
 
     /**

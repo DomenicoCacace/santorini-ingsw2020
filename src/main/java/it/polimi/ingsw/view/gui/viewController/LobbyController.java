@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.viewController;
 
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.inputManagers.LobbyInputManager;
 import javafx.event.EventHandler;
@@ -43,7 +44,7 @@ public class LobbyController {
     public void onCreate() {
         if (inputRequested) {
             inputRequested = false;
-            gui.setInputString(LobbyInputManager.CREATE_LOBBY);
+            gui.setInputString(Constants.CREATE_LOBBY);
             gui.setInputString(lobbyName);
             gui.setInputString(lobbySize);
             createBtn.setDisable(true);
@@ -67,7 +68,7 @@ public class LobbyController {
             createBtn.setDisable(true);
             joinBtn.setDisable(true);
             inputRequested = false;
-            gui.setInputString(LobbyInputManager.JOIN_LOBBY);
+            gui.setInputString(Constants.JOIN_LOBBY);
         }
     }
 

@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.message.fromClientToServer.ChooseToReloadMatchResponse;
+import it.polimi.ingsw.view.Constants;
 
 public class ReloadGameInputManager extends InputManager {
 
@@ -17,12 +18,12 @@ public class ReloadGameInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(QUIT)) {
+        if (input.equals(Constants.QUIT)) {
             stopTimer();
             client.stopConnection();
             new Thread(() -> Client.initClient(view)).start();
         } else if (isWaitingForInput) {
-            if (input.equals("y")) {    //TODO: use static constant
+            if (input.equals(Constants.YES)) {
                 reloadMatch(true);
                 isWaitingForInput = false;
             } else {

@@ -82,7 +82,7 @@ public class PushTest {
     }
 
     @Test
-    void getWalkableCellsTest() throws IOException, AddingFailedException {
+    void getWalkableCellsTest() throws AddingFailedException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         game.generateNextTurn();

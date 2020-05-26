@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.inputManagers;
 import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
+import it.polimi.ingsw.view.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class SelectBlockInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(QUIT)) {
+        if (input.equals(Constants.QUIT)) {
             stopTimer();
             client.stopConnection();
             new Thread(() -> Client.initClient(view)).start();

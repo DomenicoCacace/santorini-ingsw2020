@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
 import it.polimi.ingsw.network.message.fromClientToServer.SelectBuildingCellRequest;
+import it.polimi.ingsw.view.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class SelectActionCellInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(QUIT)) {
+        if (input.equals(Constants.QUIT)) {
             stopTimer();
             client.stopConnection();
             new Thread(() -> Client.initClient(view)).start();
@@ -69,7 +70,7 @@ public class SelectActionCellInputManager extends InputManager {
                         view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD);
                     }
                     break;
-                case BUILD: //BuildAction
+                case BUILD:
                     try {
                         int coord = Integer.parseInt(input);
                         if (coord < MIN_COORD || coord > MAX_COORD) {

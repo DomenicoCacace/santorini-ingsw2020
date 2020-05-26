@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.gui.viewController;
 
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
 import javafx.fxml.FXML;
@@ -16,10 +17,10 @@ public class ReloadMatchController {
 
     public void onReloadMatch(MouseEvent mouseEvent){
         if(mouseEvent.getSource().equals(yesButton)){
-            gui.setInputString(CLI.YES);
+            gui.setInputString(Constants.YES);
         }
         else if (mouseEvent.getSource().equals(noButton)){
-            gui.setInputString(CLI.NO);
+            gui.setInputString(Constants.NO);
         }
     }
 

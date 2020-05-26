@@ -136,7 +136,7 @@ public class PrettyPrinter {
             if (board.get(i).getOccupiedBy() != lastGameBoardPrinted.get(i).getOccupiedBy())
                 drawWorker(board.get(i));
         }
-        lastGameBoardPrinted = board;   //TODO: check if safe
+        lastGameBoardPrinted = board;
     }
 
     private void overrideCachedBoard(List<Cell> board) {
@@ -167,7 +167,6 @@ public class PrettyPrinter {
     private void drawBlock(Cell cell) {
         if (cell.getBlock().getHeight() > 0) {
             PrintableObject block = buildingBlocks.get(cell.getBlock().getHeight() - 1);
-            //restoreBuild(cell); //TODO: send specific message from server to client to avoid restoring
             drawOnCell(block, cachedBoard, cell.getCoordX(), cell.getCoordY());
         }
     }

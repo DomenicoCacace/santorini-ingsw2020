@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.network.message.fromClientToServer.CreateLobbyRequest;
 import it.polimi.ingsw.network.message.fromClientToServer.JoinLobbyRequest;
 
@@ -14,8 +15,6 @@ import java.util.Map;
  */
 public class LobbyInputManager extends InputManager {
 
-    public static final String CREATE_LOBBY = "1";
-    public static final String JOIN_LOBBY = "2";
     private final MessageManagerParser messageManagerParser;
     private final Map<String, List<String>> lobbiesAvailable;
     private State state;
@@ -33,7 +32,7 @@ public class LobbyInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(QUIT)) {
+        if (input.equals(Constants.QUIT)) {
             stopTimer();
             client.stopConnection();
             new Thread(() -> Client.initClient(view)).start();
@@ -89,14 +88,14 @@ public class LobbyInputManager extends InputManager {
     }
 
     private void manageLobbyOption(String input) {
-        if (input.equals(CREATE_LOBBY)) {
+        if (input.equals(Constants.CREATE_LOBBY)) {
             stopTimer();
             this.state = State.CREATE;
             messageManagerParser.setCreatingLobby(true);
             messageManagerParser.setLookingForLobbies(false);
             view.askLobbyName();
             startTimer(60);
-        } else if (input.equals(JOIN_LOBBY) && lobbiesAvailable.keySet().size() > 0) {  // Join existing lobby
+        } else if (input.equals(Constants.JOIN_LOBBY) && lobbiesAvailable.keySet().size() > 0) {  // Join existing lobby
             stopTimer();
             this.state = State.JOIN;
             messageManagerParser.setLookingForLobbies(true);

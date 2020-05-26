@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  * An InputManager is an object responsible for the console input acquisition and redirection
  */
 public abstract class InputManager {
-    public static final String QUIT = "quit";
+    //public static final String Constants.QUIT = "quit";
 
     /**
      * The scheduled task that manage the timeout on user input

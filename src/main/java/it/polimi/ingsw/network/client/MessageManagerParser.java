@@ -162,7 +162,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 } catch (CancellationException exception) {
                     //
                 }
-            } else if (message.getType().equals(Type.OK)) { //TODO: check lobby name
+            } else if (message.getType().equals(Type.OK)) {
                 view.showSuccessMessage("You created lobby");
                 view.showSuccessMessage("Waiting for other players to connect");
             } else {
@@ -185,7 +185,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             switch (message.getType()) {
                 case OK:
                     isLookingForLobbies = false;
-                    view.showSuccessMessage("You entered lobby");   //TODO: do not show when creating a lobby
+                    view.showSuccessMessage("You entered lobby");
                     chosenSize = message.getLobbySize();
                     client.setCurrentPlayer(false);
                     break;
@@ -646,7 +646,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      *
      * @param walkableCells a list of walkable cells
      */
-    //FIXME: in case the player selects the wrong cell we need to reprint the question
     public void printOnMove(List<Cell> walkableCells) {
         view.moveAction(gameBoard, walkableCells);
     }
