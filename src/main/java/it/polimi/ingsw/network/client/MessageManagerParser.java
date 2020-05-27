@@ -238,7 +238,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new GodChoiceInputManager(client, message.getGods(), chosenSize);
         view.setInputManager(inputManager);
-        inputManager.startTimer(60);
+        inputManager.startTimer(120);
         view.chooseGameGods(message.getGods(), chosenSize);
     }
 

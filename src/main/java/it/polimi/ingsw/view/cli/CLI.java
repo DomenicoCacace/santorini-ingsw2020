@@ -70,13 +70,13 @@ public class CLI implements ViewInterface {
     @Override
     public void chooseUserGod(List<GodData> possibleGods) {
         System.out.println("Choose your god: ");
-        possibleGods.forEach(g -> System.out.println(possibleGods.indexOf(g) + 1 + "-" + g.getName()));
+        possibleGods.forEach(g -> System.out.println(possibleGods.indexOf(g) + 1 + "-" + g.getName() + " -> Effect: " + g.getDescriptionStrategy()));
     }
 
     @Override
     public void chooseGameGods(List<GodData> allGods, int size) {
         System.out.println("Choose the game gods:");
-        allGods.forEach(g -> System.out.println(allGods.indexOf(g) + 1 + "-" + g.getName()));
+        allGods.forEach(g -> System.out.println(allGods.indexOf(g) + 1 + "-" + g.getName() + " -> Effect: " + g.getDescriptionStrategy()));
     }
 
     private void readInput() {

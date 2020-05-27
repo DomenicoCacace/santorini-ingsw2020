@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
-import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
 import it.polimi.ingsw.view.gui.utils.ResizableImageView;
@@ -17,9 +16,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -261,23 +260,22 @@ public class GUI extends Application implements ViewInterface {
         Platform.runLater(() -> {
             setRoot("chooseGods");
             ChooseGodsController controller = ((FXMLLoader) scene.getUserData()).getController();
-            List<VBox> vBoxes = new ArrayList<>();
-            controller.getGodImageContainer().getChildren().forEach(vBox -> vBoxes.add((VBox) vBox));
-            List<Node> vboxChildren = new ArrayList<>();
-            vBoxes.forEach(vBox -> vboxChildren.addAll(vBox.getChildren()));
-            for(Node node: vboxChildren){
+            List<HBox> hBoxes = new ArrayList<>();
+            controller.getGodImageContainer().getChildren().forEach(hBox -> hBoxes.add((HBox) hBox));
+            List<Node> hBoxChildren = new ArrayList<>();
+            hBoxes.forEach(hBox -> hBoxChildren.addAll(hBox.getChildren()));
+            for(Node node: hBoxChildren){
                 ListIterator<GodData> godDataListIterator = possibleGods.listIterator();
                 boolean nameFound = false;
                 GodData god;
                 while (godDataListIterator.hasNext() && !nameFound){
                     god = godDataListIterator.next();
                     if (god.getName().equals(node.getId())) {
+                        controller.addEnabledGod((ResizableImageView) node);
                         ((ResizableImageView) node).setIndex(possibleGods.indexOf(god));
+                        node.setDisable(false);
+                        node.setOpacity(1);
                         nameFound=true;
-                    }
-                    else if(!godDataListIterator.hasNext()) {
-                        node.setOpacity(0.2);
-                        node.setDisable(true);
                     }
                 }
             }

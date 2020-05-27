@@ -89,7 +89,7 @@ public abstract class InputManager {
             view.showErrorMessage("Timeout!!");
             client.inputTimeout();
             stopTimer();
-        } else if (secondsPassed == 30) {
+        } else if (secondsPassed == (availableTime - 30)) {
             view.showErrorMessage("You have only 30 seconds left to insert a valid command!");
             secondsPassed++;
         } else
