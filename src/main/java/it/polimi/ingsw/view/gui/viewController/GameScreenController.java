@@ -5,6 +5,7 @@ import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.effect.Glow;
 import javafx.scene.layout.GridPane;
@@ -16,6 +17,8 @@ import java.util.ListIterator;
 
 public class GameScreenController {
 
+    @FXML
+    private SplitPane splitPane;
     @FXML
     private ListView<String> choiceList;
     @FXML
@@ -34,6 +37,11 @@ public class GameScreenController {
     }
 
     public void setGui(GUI gui) {
+        splitPane.widthProperty().addListener((observableValue, oldValue, newValue) ->{
+            splitPane.setDividerPositions(0.2, 0.8);
+            splitPane.maxHeightProperty().setValue(splitPane.widthProperty().getValue() * 9/16);
+            splitPane.minHeightProperty().setValue(splitPane.widthProperty().getValue() * 9/16);
+        } );
         this.gui = gui;
         mapTiles = new ArrayList<>();
         mapGrid.getChildren().forEach(node -> {

@@ -73,7 +73,7 @@ public class LobbyController {
     }
 
     public void backButton() {
-        gui.setInputString(String.valueOf(lobbyList.getItems().size()));
+        gui.setInputString(String.valueOf(lobbyList.getItems().size() +1));
     }
 
     public void setGUI(GUI gui) {

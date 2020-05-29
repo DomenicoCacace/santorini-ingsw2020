@@ -90,7 +90,7 @@
                                  </HBox.margin>
                               </ResizableImageView>
                               <Region prefHeight="123.0" prefWidth="40.0" HBox.hgrow="NEVER" />
-                              <ResizableImageView fx:id="Hephaestus" disable="true" fitWidth="248.0" onMouseClicked="#cardClicked" opacity="0.2" HBox.hgrow="ALWAYS">
+                              <ResizableImageView fx:id="Hephaestus" disable="true" fitWidth="248.0" onMouseClicked="#cardClicked" opacity="0.2" smooth="false" HBox.hgrow="ALWAYS">
                                  <image>
                                     <Image url="@GodCards/hephaestus.png" />
                                  </image>

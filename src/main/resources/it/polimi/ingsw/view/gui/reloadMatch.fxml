@@ -26,7 +26,7 @@
                         <HBox fillHeight="false" prefHeight="364.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
                            <children>
                               <Region prefHeight="408.0" prefWidth="290.0" HBox.hgrow="ALWAYS" />
-                              <VBox prefHeight="351.0" prefWidth="288.0" HBox.hgrow="NEVER">
+                              <VBox prefHeight="376.0" prefWidth="288.0" HBox.hgrow="NEVER">
                                  <children>
                                     <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                                  </children>
@@ -38,14 +38,14 @@
                               <HBox layoutX="250.0" layoutY="79.0" prefHeight="257.0" prefWidth="868.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <VBox prefHeight="257.0" prefWidth="350.0" HBox.hgrow="ALWAYS" />
-                                    <VBox fillWidth="false" prefHeight="194.0" prefWidth="192.0" HBox.hgrow="NEVER">
+                                    <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="169.0" prefWidth="184.0" HBox.hgrow="NEVER">
                                        <children>
-                                          <ResizableImageView fitHeight="46.0" fitWidth="192.0" preserveRatio="true">
+                                          <ResizableImageView preserveRatio="true" VBox.vgrow="NEVER">
                                              <image>
                                                 <Image url="@reloadMatch.png" />
                                              </image>
                                           </ResizableImageView>
-                                          <Pane prefHeight="28.0" prefWidth="192.0">
+                                          <Pane prefHeight="129.0" prefWidth="191.0" VBox.vgrow="ALWAYS">
                                              <children>
                                                 <Button fx:id="noButton" layoutX="120.0" layoutY="2.0" mnemonicParsing="false" onMouseClicked="#onReloadMatch" prefHeight="27.0" prefWidth="52.0" text="NO" />
                                                 <Button fx:id="yesButton" layoutX="20.0" layoutY="2.0" mnemonicParsing="false" onMouseClicked="#onReloadMatch" prefHeight="27.0" prefWidth="52.0" text="YES" />

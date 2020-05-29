@@ -64,6 +64,9 @@ public class GUI extends Application implements ViewInterface {
         Parent empty = new Pane();
         scene = new Scene(empty, 1280, 720);
         primarystage.setScene(scene);
+        primarystage.setTitle("Santorini");
+        primarystage.minHeightProperty().setValue(360);
+        primarystage.minWidthProperty().setValue(640);
         primarystage.show();
         primarystage.setOnCloseRequest((WindowEvent t) -> {
             Platform.exit();

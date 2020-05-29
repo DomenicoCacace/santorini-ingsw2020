@@ -50,16 +50,16 @@ public class Server extends Thread {
         File logFile = new File(logDir + File.separator + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt");
         logFile.createNewFile();
         File directory = new File(logFile.getAbsoluteFile().getParent());
-        String[] filesInDirectory = directory.list();
-        if (filesInDirectory != null) {
-            for (String filename : filesInDirectory) {
-                if (filename.endsWith(".lck")) {
-                    String absoluteFilePath = directory.toString() + File.separator + filename;
-                    File fileToDelete = new File(absoluteFilePath);
-                    fileToDelete.delete();
+        deleteOldFiles(directory);
+        File[] files = directory.listFiles();
+        if (files!=null) {
+            for (File file : files){
+                if (file.getName().endsWith(".lck")) {
+                    file.delete();
                 }
             }
         }
+        deleteOldFiles(new File("./savedGames"));
         FileHandler fileHandler;
         try {
             fileHandler = new FileHandler(logFile.getPath());
@@ -68,6 +68,18 @@ public class Server extends Thread {
             logger.addHandler(fileHandler);
         } catch (SecurityException | IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void deleteOldFiles(File directory){
+        final long time = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000);
+        File[] filesJson = directory.listFiles();
+        if (filesJson!=null) {
+            for (File file : filesJson){
+                if (file.lastModified() < time) {
+                    file.delete();
+                }
+            }
         }
     }
 

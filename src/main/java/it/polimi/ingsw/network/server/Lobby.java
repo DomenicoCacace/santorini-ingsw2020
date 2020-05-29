@@ -82,6 +82,8 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         }
     }
 
+
+
     private boolean checkSavedGame() {
         File savedGameDir = new File("./savedGames");
         savedGameDir.mkdir();
