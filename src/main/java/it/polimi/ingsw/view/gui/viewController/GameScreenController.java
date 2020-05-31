@@ -28,6 +28,10 @@ public class GameScreenController {
     private GUI gui;
     private List<MapTileImage> mapTiles;
 
+    public TextArea getTextArea() {
+        return textArea;
+    }
+
     public GridPane getMapGrid() {
         return mapGrid;
     }

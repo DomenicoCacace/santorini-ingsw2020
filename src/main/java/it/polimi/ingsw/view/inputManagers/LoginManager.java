@@ -52,6 +52,8 @@ public class LoginManager extends InputManager {
                 view.askUsername();
             } else { //after he chooses the ip his next input will be the username
                 isWaitingForInput = false;
+                if(input.length()>30)
+                    input = input.substring(0, 29).trim();
                 client.setUsername(input);
             }
         }

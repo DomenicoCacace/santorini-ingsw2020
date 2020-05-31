@@ -22,8 +22,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * Command Line Interface manager
  */
 public class CLI implements ViewInterface {
-    //public static final String YES = "y";
-    //public static final String NO = "n";
     private final PrettyPrinter printer;
     private final ExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     private final Lock lock = new ReentrantLock();
@@ -147,7 +145,7 @@ public class CLI implements ViewInterface {
 
     @Override
     public void chooseWorker() throws CancellationException {
-        System.out.println("Choose your worker! \nrow: ");
+        System.out.println("Choose your worker! \nSelect row and column! ");
     }
 
     @Override
@@ -158,13 +156,13 @@ public class CLI implements ViewInterface {
     @Override
     public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) throws CancellationException {
         printer.printBoard(gameBoard, walkableCells);
-        printer.printMessage("Select the cell where you want to to move! \nrow: ");
+        printer.printMessage("Select the cell where you want to to move! \nSelect row and column! ");
     }
 
     @Override
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws CancellationException {
         printer.printBoard(gameBoard, buildableCells);
-        printer.printMessage("Select the cell where you want to to build! \nrow: ");
+        printer.printMessage("Select the cell where you want to to build! \nSelect row and column! ");
     }
 
     @Override
@@ -190,7 +188,7 @@ public class CLI implements ViewInterface {
     @Override
     public void placeWorker() throws CancellationException {
         System.out.println("Place your Worker!");
-        System.out.println("row: ");
+        System.out.println("Select row and column! ");
     }
 
     @Override

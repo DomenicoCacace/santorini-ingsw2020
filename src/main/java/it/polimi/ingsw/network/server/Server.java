@@ -6,8 +6,7 @@ import it.polimi.ingsw.network.message.fromServerToClient.LoginResponse;
 import it.polimi.ingsw.network.message.fromServerToClient.MovedToWaitingRoomResponse;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -40,11 +39,19 @@ public class Server extends Thread {
      * @throws IOException if an I/O error occurs while creating the log file
      */
     public Server() throws IOException {
-        socketGreeterPort = 4321; // TODO: get from file
+        int port;
         this.gameLobbies = new LinkedHashMap<>();
         this.users = new LinkedHashMap<>();
         this.waitingRoom = new LinkedList<>();
-
+        try {
+            InputStream socketPort = this.getClass().getResourceAsStream("socketPort.txt");
+            InputStreamReader inputStreamReader = new InputStreamReader(socketPort);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            port = Integer.parseInt(bufferedReader.readLine().trim());
+        }catch (Exception e){
+            port = 4321;
+        }
+        socketGreeterPort = port;
         File logDir = new File("./logs");
         logDir.mkdir();
         File logFile = new File(logDir + File.separator + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt");

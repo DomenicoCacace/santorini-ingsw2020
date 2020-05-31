@@ -14,8 +14,8 @@ public class LobbyController {
 
     private static boolean inputRequested = false;
     private GUI gui;
-    private String lobbyName;
-    private String lobbySize;
+    private String lobbyName ="";
+    private String lobbySize ="";
     @FXML
     private Button createBtn;
     @FXML
@@ -42,7 +42,7 @@ public class LobbyController {
     }
 
     public void onCreate() {
-        if (inputRequested) {
+        if (inputRequested && !(lobbyName.isBlank() || lobbySize.isBlank())) {
             inputRequested = false;
             gui.setInputString(Constants.CREATE_LOBBY);
             gui.setInputString(lobbyName);

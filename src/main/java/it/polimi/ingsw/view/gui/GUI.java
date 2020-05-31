@@ -15,6 +15,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -215,6 +217,7 @@ public class GUI extends Application implements ViewInterface {
     public void chooseWorker() {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.getTextArea().appendText("\nChoose your worker! ");
             //controller.setGui(this);
             controller.allCellsClickable();
         });
@@ -224,6 +227,7 @@ public class GUI extends Application implements ViewInterface {
     public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.getTextArea().appendText("\nSelect the cell where you want to to move! ");
             //controller.setGui(this);
             controller.makeCellsClickable(walkableCells);
         });
@@ -233,6 +237,7 @@ public class GUI extends Application implements ViewInterface {
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.getTextArea().appendText("\nSelect the cell where you want to to build! ");
             //controller.setGui(this);
             controller.makeCellsClickable(buildableCells);
         });
@@ -242,6 +247,7 @@ public class GUI extends Application implements ViewInterface {
     public void chooseBlockToBuild(List<Block> buildableBlocks) {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.getTextArea().appendText("\nChoose the block to build: ");
             List<String> blockNames = new ArrayList<>();
             buildableBlocks.forEach(block -> blockNames.add(block.toString()));
             controller.getChoiceList().getItems().addAll(blockNames);
@@ -301,6 +307,7 @@ public class GUI extends Application implements ViewInterface {
     public void placeWorker() {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+            controller.getTextArea().appendText("\nPlace your Worker! ");
             controller.allCellsClickable();
         });
     }
@@ -380,7 +387,10 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void showErrorMessage(String error) {
-        System.out.println(error);
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR, error + "\n", ButtonType.OK);
+            alert.showAndWait();
+        });
     }
 
     @Override
@@ -390,8 +400,12 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void showSuccessMessage(String message) {
-        System.out.println(message);
+        if(currentView.equals(ViewType.GAME)){
+            Platform.runLater(() -> {
+                GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
+                controller.getTextArea().appendText(message + "\n");
+            });
+        }
+        else System.out.println(message);
     }
-
-
 }

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
+import java.util.concurrent.*;
 
 /**
  * Handles incoming messages from the server and their respective responses
@@ -307,7 +307,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getDisconnectedUser() != null)
             view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
         inputManager.stopTimer();
-        enterLobby(message.getAvailableLobbies());
+        ScheduledThreadPoolExecutor ex = new ScheduledThreadPoolExecutor(1);
+        ex.schedule(() -> enterLobby(message.getAvailableLobbies()), 10, TimeUnit.SECONDS);
     }
 
     /**
@@ -428,7 +429,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void onWorkerAdd(WorkerAddedEvent message) {
         if (message.getType().equals(Type.OK)) {
             gameBoard = message.getPayload();
-            view.showSuccessMessage("Worker placed!");
+            view.showSuccessMessage("\nWorker placed!");
             view.showGameBoard(message.getPayload());
         } else
             view.showErrorMessage("Can't place a worker in that cell :(");
