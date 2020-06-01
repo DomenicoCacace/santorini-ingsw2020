@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
+import it.polimi.ingsw.model.dataClass.GameData;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.Type;
@@ -87,7 +88,8 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         PlayerInterface currPlayerInterface = playerMap.get(currPlayerData.getName());
         if (currPlayerData.getSelectedWorker() != null) { //Now i have selectedWorker inside the playerDataClass
             try {
-                parser.parseMessageFromServerToClient(new GameBoardUpdate(ReservedUsernames.BROADCAST.toString(), game.buildBoardData())); //need this otherwise client doesn't have gameBoard saved locally!
+                GameData gameData = game.buildGameData();
+                parser.parseMessageFromServerToClient(new GameBoardUpdate(ReservedUsernames.BROADCAST.toString(), gameData.getBoard(), gameData.getPlayers())); //need this otherwise client doesn't have gameBoard saved locally!
                 currPlayerInterface.setSelectedWorker(currPlayerData.getSelectedWorker());//simulate a setWorker, in this way the player will call the SelectWorkerlistener.
             } catch (NotYourWorkerException e) {
                 logger.log(Level.SEVERE, "Entered a forbidden catch clause while restoring a saved game");

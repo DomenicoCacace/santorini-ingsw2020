@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.client;
 
 
+import com.fasterxml.jackson.databind.node.NumericNode;
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
@@ -12,9 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * Client-side client communication and message handler
@@ -39,16 +38,25 @@ public class NetworkHandler implements Runnable {
      * @param client the client to connect
      * @throws IOException if an I/O error occurs while opening the socket streams
      */
-    public NetworkHandler(Client client) throws IOException {
+    public NetworkHandler(Client client) throws IOException, NumberFormatException, InterruptedException, ExecutionException, TimeoutException {
         this.jacksonParser = new JacksonMessageBuilder();
         this.client = client;
         this.parser = new MessageManagerParser(client);
-        try {
-            //TODO: add timeout
-            this.serverConnection = new Socket(client.getIpAddress(), 4321);    //FIXME: hardcoded port
-        } catch (UnknownHostException e) {
-            throw new UnknownHostException();
+        //TODO: add timeout
+        String address;
+        int port;
+        String clientInput = client.getIpAddress();
+        if (clientInput.contains(":")) {
+            int index = clientInput.indexOf(":");
+            address = clientInput.substring(0, index).trim();
+            port = Integer.parseInt(clientInput.substring(index + 1).trim());
+        } else {
+            address = clientInput;
+            port = 4321;
         }
+        ExecutorService ex = Executors.newSingleThreadExecutor();
+        Future<Socket> socketFuture = ex.submit(() -> new Socket(address, port));
+        this.serverConnection = socketFuture.get(5, TimeUnit.SECONDS);
         this.inputSocket = new BufferedReader(new InputStreamReader(serverConnection.getInputStream()));
         this.outputSocket = new OutputStreamWriter(serverConnection.getOutputStream());
         this.outputSocket.flush();

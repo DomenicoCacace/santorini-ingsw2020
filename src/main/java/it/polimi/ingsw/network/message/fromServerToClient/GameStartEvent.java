@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.message.Type;
 
 
 public class GameStartEvent extends MessageFromServerToClient {
+
     private final GameData payload;
 
     @JsonCreator

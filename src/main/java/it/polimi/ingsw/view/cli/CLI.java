@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.utils.PrettyPrinter;
@@ -12,8 +13,6 @@ import it.polimi.ingsw.view.inputManagers.InputManager;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -22,10 +21,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * Command Line Interface manager
  */
 public class CLI implements ViewInterface {
+
     private final PrettyPrinter printer;
-    private final ExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     private final Lock lock = new ReentrantLock();
     private InputManager inputManager;
+    private List<PlayerData> players = new ArrayList<>();
 
     public CLI() throws IOException {
         printer = new PrettyPrinter();
@@ -36,6 +36,11 @@ public class CLI implements ViewInterface {
         lock.lock();
         this.inputManager = inputManager;
         lock.unlock();
+    }
+
+    @Override
+    public void printCol() {
+        printer.printMessage("col: ");
     }
 
     @Override
@@ -111,9 +116,9 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void gameStartScreen(List<Cell> gameBoard) {
+    public void gameStartScreen(List<Cell> gameBoard, List<PlayerData> players) {
         System.out.println("Let the game begin!");
-        initGameBoard(gameBoard);
+        initGameScreen(gameBoard, players);
         //TODO: enhance
     }
 
@@ -138,14 +143,28 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void initGameBoard(List<Cell> gameBoard) {
+    public void initGameScreen(List<Cell> gameBoard, List<PlayerData> players) {
         printer.setCachedBoard(gameBoard);
         showGameBoard(gameBoard);
+        if(this.players.isEmpty()) {
+            this.players = players;
+            StringBuilder builder = new StringBuilder();
+            players.forEach(playerData ->
+                    builder.append("The player ")
+                            .append(playerData.getName())
+                            .append(" is the color ")
+                            .append(playerData.getColor().toString())
+                            .append(" and is playing with the God ")
+                            .append(playerData.getGod().getName())
+                            .append("\n"));
+            System.out.println(builder.toString());
+        }
     }
 
     @Override
     public void chooseWorker() throws CancellationException {
-        System.out.println("Choose your worker! \nSelect row and column! ");
+        System.out.println("Choose your worker! \nrow: ");
+
     }
 
     @Override
@@ -156,13 +175,13 @@ public class CLI implements ViewInterface {
     @Override
     public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) throws CancellationException {
         printer.printBoard(gameBoard, walkableCells);
-        printer.printMessage("Select the cell where you want to to move! \nSelect row and column! ");
+        printer.printMessage("Select the cell where you want to to move! \nrow: ");
     }
 
     @Override
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws CancellationException {
         printer.printBoard(gameBoard, buildableCells);
-        printer.printMessage("Select the cell where you want to to build! \nSelect row and column! ");
+        printer.printMessage("Select the cell where you want to to build! \nrow: ");
     }
 
     @Override
@@ -188,7 +207,7 @@ public class CLI implements ViewInterface {
     @Override
     public void placeWorker() throws CancellationException {
         System.out.println("Place your Worker!");
-        System.out.println("Select row and column! ");
+        System.out.println("row: ");
     }
 
     @Override

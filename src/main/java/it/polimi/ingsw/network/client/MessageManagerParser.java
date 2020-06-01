@@ -1,9 +1,6 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.model.Block;
-import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.model.PossibleActions;
-import it.polimi.ingsw.model.Worker;
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.fromClientToServer.*;
@@ -330,7 +327,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void onGameBoardUpdate(GameBoardUpdate message) {
         gameBoard = message.getGameBoard();
-        view.initGameBoard(message.getGameBoard());
+        view.initGameScreen(message.getGameBoard(), message.getPlayers());
     }
 
     /**
@@ -446,7 +443,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void onGameStart(GameStartEvent message) {
         inputManager = new SelectWorkerInputManager(client, this);
-        view.gameStartScreen(message.getPayload().getBoard());
+        view.gameStartScreen(message.getPayload().getBoard(), message.getPayload().getPlayers());
         gameBoard = message.getPayload().getBoard();
         if (message.getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())) {
             client.setCurrentPlayer(true);

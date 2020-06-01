@@ -7,6 +7,7 @@ import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.listeners.EndGameListener;
 import it.polimi.ingsw.listeners.PlayerLostListener;
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.dataClass.GameData;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.Message;
@@ -81,8 +82,6 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             logger.log(Level.SEVERE, roomFullException.getMessage());
         }
     }
-
-
 
     private boolean checkSavedGame() {
         File savedGameDir = new File("./savedGames");
@@ -276,11 +275,13 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         playerMap.keySet().forEach(u -> playerInterfaceMap.put(u, playerMap.get(u)));
         List<Player> players = new LinkedList<>(playerMap.values());
         GameInterface gameInterface = new Game(new GameBoard(), players);
-        controller = new ServerController(gameInterface, playerInterfaceMap, messageParser, fileCreation());
+        savedGame = fileCreation();
+        controller = new ServerController(gameInterface, playerInterfaceMap, messageParser, savedGame);
         gameInterface.addPlayerLostListener(this);
         gameInterface.addEndGameListener(this);
         messageParser.setServerController(controller);
-        messageParser.parseMessageFromServerToClient(new GameBoardUpdate(ReservedUsernames.BROADCAST.toString(), gameInterface.buildBoardData()));
+        GameData gameData = gameInterface.buildGameData();
+        messageParser.parseMessageFromServerToClient(new GameBoardUpdate(ReservedUsernames.BROADCAST.toString(), gameData.getBoard(), gameData.getPlayers()));
         messageParser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), gameInterface.buildBoardData()));
     }
 

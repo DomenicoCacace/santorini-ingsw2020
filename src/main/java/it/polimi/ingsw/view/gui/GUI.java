@@ -3,6 +3,7 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
@@ -159,9 +160,9 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public void gameStartScreen(List<Cell> gameBoard) {
+    public void gameStartScreen(List<Cell> gameBoard, List<PlayerData> players) {
         //TODO: Print popUp
-        initGameBoard(gameBoard);
+        initGameScreen(gameBoard, players);
     }
 
     @Override
@@ -348,7 +349,7 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public void initGameBoard(List<Cell> gameBoard) {
+    public void initGameScreen(List<Cell> gameBoard, List<PlayerData> players) {
         Platform.runLater(() -> {
             if (currentView != ViewType.GAME) {
                 setRoot("allMap");
@@ -394,6 +395,11 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void printOptions(List<String> options) {
+
+    }
+
+    @Override
+    public void printCol() {
 
     }
 

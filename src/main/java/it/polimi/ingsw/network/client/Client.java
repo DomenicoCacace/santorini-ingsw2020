@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.client;
 
+import com.fasterxml.jackson.databind.node.NumericNode;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
@@ -7,8 +8,11 @@ import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.inputManagers.LoginManager;
 
 import java.io.*;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Representation of a client,
@@ -176,7 +180,7 @@ public class Client {
             setCurrentPlayer(true);
             networkHandler.login(this.username);
             new Thread(networkHandler).start();
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException | InterruptedException | ExecutionException | TimeoutException e) {
             view.showErrorMessage("Couldn't connect to ip address: " + ipAddress);
             initClient(view);
         }

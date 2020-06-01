@@ -34,7 +34,7 @@ public class AddWorkersInputManager extends InputManager {
                 } else if (row == -1) {
                     row = coord - 1;
                     startTimer(60);
-                    view.showSuccessMessage("col: ");
+                    view.printCol();
                 } else if (col == -1) {
                     stopTimer();
                     col = coord - 1;

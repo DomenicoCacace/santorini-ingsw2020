@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.view.inputManagers.InputManager;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface ViewInterface {
 
     void askUsername();
 
-    void gameStartScreen(List<Cell> gameBoard);
+    void gameStartScreen(List<Cell> gameBoard, List<PlayerData> playerData);
 
     void lobbyOptions(List<String> options);  //FIXME: write decent code
 
@@ -49,13 +50,15 @@ public interface ViewInterface {
 
     //void showLobbyInfo(List<String> info);
 
+    void printCol();
+
     void placeWorker();
 
     void chooseAction(List<PossibleActions> possibleActions);
 
     void showGameBoard(List<Cell> gameBoard);
 
-    void initGameBoard(List<Cell> gameBoard);
+    void initGameScreen(List<Cell> gameBoard, List<PlayerData> players);
 
     void showErrorMessage(String error);
 

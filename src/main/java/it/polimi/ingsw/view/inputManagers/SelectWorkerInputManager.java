@@ -34,6 +34,7 @@ public class SelectWorkerInputManager extends InputManager {
                         view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
                 } else if (row == -1) {
                     row = coord - 1;
+                    view.printCol();
                     startTimer(60);
                 } else if (col == -1) {
                     stopTimer();
