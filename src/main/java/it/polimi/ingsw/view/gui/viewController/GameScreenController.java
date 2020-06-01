@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.effect.Glow;
+import javafx.scene.effect.SepiaTone;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
@@ -76,6 +76,8 @@ public class GameScreenController {
     }
 
     public void makeCellsClickable(List<Cell> availableCell){
+        SepiaTone sepiaTone = new SepiaTone();
+        sepiaTone.setLevel(0.7);
         availableCell.forEach(cell -> {
             ListIterator<MapTileImage> mapTileImageListIterator = mapTiles.listIterator();
             MapTileImage currentMapTile;
@@ -84,7 +86,7 @@ public class GameScreenController {
                 if(GridPane.getRowIndex(currentMapTile.getParent()).equals(cell.getCoordX() +1 ) &&
                         GridPane.getColumnIndex(currentMapTile.getParent()).equals(cell.getCoordY() + 1)){
                     currentMapTile.setDisable(false);
-                    currentMapTile.setEffect(new Glow(1));
+                    currentMapTile.setEffect(sepiaTone);
                     break;
                 }
                 else if(!mapTileImageListIterator.hasNext())

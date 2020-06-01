@@ -178,7 +178,6 @@ public class GUI extends Application implements ViewInterface {
         });
     }
 
-    //TODO: Ask tutor about this
     @Override
     public void askLobbyName() {
         /*Platform.runLater(() -> {
@@ -217,7 +216,7 @@ public class GUI extends Application implements ViewInterface {
     public void chooseWorker() {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
-            controller.getTextArea().appendText("\nChoose your worker! ");
+            controller.getTextArea().appendText("\n\nChoose your worker!\n");
             //controller.setGui(this);
             controller.allCellsClickable();
         });

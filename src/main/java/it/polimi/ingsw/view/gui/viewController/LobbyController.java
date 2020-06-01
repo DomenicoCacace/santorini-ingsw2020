@@ -2,13 +2,10 @@ package it.polimi.ingsw.view.gui.viewController;
 
 import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.gui.GUI;
-import it.polimi.ingsw.view.inputManagers.LobbyInputManager;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 
 public class LobbyController {
 
@@ -88,6 +85,7 @@ public class LobbyController {
         if (inputRequested && lobbyList.getSelectionModel().getSelectedItem()!=null) {
             gui.setInputString(String.valueOf(lobbyList.getSelectionModel().getSelectedIndex() + 1));
             lobbyList.setDisable(true);
+            backButton.setDisable(true);
         }
     }
 
