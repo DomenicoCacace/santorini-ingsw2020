@@ -345,8 +345,11 @@ public class Game implements GameInterface {
 
         if (currentRuleSet.checkLoseCondition()) {
             removePlayer(currentTurn.getCurrentPlayer());
-        } else
-            endTurnListener.forEach(endTurnListener1 -> endTurnListener1.onTurnEnd(currentTurn.getCurrentPlayer().getName()));
+        } else {
+            List<Cell> workersCell = new ArrayList<>();
+            currentTurn.getCurrentPlayer().getWorkers().forEach(worker -> workersCell.add(worker.getPosition()));
+            endTurnListener.forEach(endTurnListener1 -> endTurnListener1.onTurnEnd(currentTurn.getCurrentPlayer().getName(), workersCell));
+        }
     }
 
     /**

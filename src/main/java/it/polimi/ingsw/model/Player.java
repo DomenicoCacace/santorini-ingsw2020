@@ -194,7 +194,7 @@ public class Player implements PlayerInterface {
      * @return the worker selected to perform the next action
      */
     @JsonGetter
-    private Worker getSelectedWorker() {
+    public Worker getSelectedWorker() {
         return selectedWorker;
     }
 

@@ -214,12 +214,11 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public void chooseWorker() {
+    public void chooseWorker(List<Cell> workersCells) {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
             controller.getTextArea().appendText("\n\nChoose your worker!\n");
-            //controller.setGui(this);
-            controller.allCellsClickable();
+            controller.makeCellsClickable(workersCells);
         });
     }
 
@@ -228,7 +227,6 @@ public class GUI extends Application implements ViewInterface {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
             controller.getTextArea().appendText("\nSelect the cell where you want to to move! ");
-            //controller.setGui(this);
             controller.makeCellsClickable(walkableCells);
         });
     }

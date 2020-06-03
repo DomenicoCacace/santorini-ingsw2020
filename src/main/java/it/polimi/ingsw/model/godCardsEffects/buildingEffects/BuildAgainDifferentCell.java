@@ -157,6 +157,11 @@ public class BuildAgainDifferentCell extends BuildingStrategy {
         return (movesAvailable == 0 && buildsAvailable <= 1);
     }
 
+    @Override
+    public boolean canEndTurnAutomatically() {
+        return (super.canEndTurnAutomatically() || (buildsAvailable > 0 && getBuildableCells(movedWorker).size()==0));
+    }
+
     /**
      * Creates a clone of this object
      *

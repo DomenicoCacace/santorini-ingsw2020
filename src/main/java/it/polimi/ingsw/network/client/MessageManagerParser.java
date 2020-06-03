@@ -10,10 +10,12 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.inputManagers.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * Handles incoming messages from the server and their respective responses
@@ -305,7 +307,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             view.showErrorMessage("The player " + message.getDisconnectedUser() + " disconnected from the game; moved to waiting room");
         inputManager.stopTimer();
         ScheduledThreadPoolExecutor ex = new ScheduledThreadPoolExecutor(1);
-        ex.schedule(() -> enterLobby(message.getAvailableLobbies()), 10, TimeUnit.SECONDS);
+        ex.schedule(() -> enterLobby(message.getAvailableLobbies()), 10, TimeUnit.SECONDS); //TODO: lobbies aren't updated for 10 seconds
     }
 
     /**
@@ -383,14 +385,13 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override // End turn response
     public void onTurnEnd(EndTurnEvent message) {
         if (message.getType().equals(Type.OK)) {
-            client.setCurrentPlayer(message.getPayload().equals(client.getUsername()));
-
-            if (client.getUsername().equals(message.getPayload())) { //if currentPlayer
+            client.setCurrentPlayer(message.getNewCurrentPlayerName().equals(client.getUsername()));
+            if (client.getUsername().equals(message.getNewCurrentPlayerName())) { //if currentPlayer
                 client.setCurrentPlayer(true);
-                inputManager = new SelectWorkerInputManager(client, this);
+                inputManager = new SelectWorkerInputManager(client,message.getWorkersCells(), this);
                 view.setInputManager(inputManager);
                 inputManager.startTimer(60);
-                view.chooseWorker();
+                view.chooseWorker(message.getWorkersCells());
             } else
                 client.setCurrentPlayer(false);
         } else
@@ -442,14 +443,16 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      */
     @Override
     public void onGameStart(GameStartEvent message) {
-        inputManager = new SelectWorkerInputManager(client, this);
         view.gameStartScreen(message.getPayload().getBoard(), message.getPayload().getPlayers());
         gameBoard = message.getPayload().getBoard();
         if (message.getPayload().getCurrentTurn().getCurrentPlayer().getName().equals(client.getUsername())) {
             client.setCurrentPlayer(true);
+            List<Cell> workersCell = new ArrayList<>();
+            message.getPayload().getCurrentTurn().getCurrentPlayer().getWorkers().forEach(worker -> workersCell.add(worker.getPosition()));
+            inputManager = new SelectWorkerInputManager(client, workersCell, this);
             view.setInputManager(inputManager);
             inputManager.startTimer(60);
-            view.chooseWorker();
+            view.chooseWorker(workersCell);
             inputManager.setWaitingForInput(true);
         } else
             client.setCurrentPlayer(false);
@@ -458,19 +461,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Asks the user to choose a worker
      *
-     * @param row the cell row index
-     * @param col the cell column index
+     * @param worker the selected worker
      */
-    public void chooseWorker(int row, int col) {
-        if (gameBoard.get(5 * row + col).getOccupiedBy() != null) {
-            selectedWorker = gameBoard.get(5 * row + col).getOccupiedBy();
-            Message selectWorkerRequest = new SelectWorkerRequest(client.getUsername(), selectedWorker);
-            client.sendMessage(selectWorkerRequest);
-        } else {
-            view.showErrorMessage("There's no worker in that cell!");
-            view.chooseWorker();
-            inputManager.setWaitingForInput(true);
-        }
+    public void chooseWorker(Worker worker) {
+        selectedWorker = worker;
+        Message selectWorkerRequest = new SelectWorkerRequest(client.getUsername(), selectedWorker);
+        client.sendMessage(selectWorkerRequest);
     }
 
     /**
@@ -535,19 +531,19 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void onWorkerSelected(WorkerSelectedResponse message) {
         client.setCurrentPlayer(true);
         if (message.getType().equals(Type.OK)) {
+            selectedWorker = message.getSelectedWorker();
+            Color playerColor = selectedWorker.getColor();
+            List<Cell> workersCells = gameBoard.stream().filter(cell -> cell.getOccupiedBy()!=null).filter(cell -> cell.getOccupiedBy().getColor().equals(playerColor)).collect(Collectors.toList());
             if (message.getPossibleActions().size() == 1) {
-                selectedWorker = message.getSelectedWorker();
-                messageToSend(message.getPossibleActions().get(0));
+                messageToSend(message.getPossibleActions().get(0), workersCells);
             } else {
-                selectedWorker = message.getSelectedWorker();
-                inputManager = new SelectActionInputManager(client, message.getPossibleActions(), this);
+                inputManager = new SelectActionInputManager(client, message.getPossibleActions(),workersCells, this);
                 view.setInputManager(inputManager);
                 inputManager.startTimer(60);
                 view.chooseAction(message.getPossibleActions());
             }
         } else {
             view.showErrorMessage("Wrong worker selected");
-            view.chooseWorker();
             inputManager.setWaitingForInput(true);
         }
     }
@@ -615,7 +611,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      *
      * @param chosenAction the chosen action
      */
-    public void messageToSend(PossibleActions chosenAction) {
+    public void messageToSend(PossibleActions chosenAction, List<Cell> workersCell) {
         Message nextAction = null;
         switch (chosenAction) {
             case BUILD:
@@ -628,10 +624,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 nextAction = new EndTurnRequest(client.getUsername());
                 break;
             case SELECT_OTHER_WORKER:
-                inputManager = new SelectWorkerInputManager(client, this);
+                inputManager = new SelectWorkerInputManager(client, workersCell, this);
                 view.setInputManager(inputManager);
                 inputManager.startTimer(60);
-                view.chooseWorker();
+                view.chooseWorker(workersCell);
                 break;
         }
 

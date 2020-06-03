@@ -278,7 +278,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
         try {
             playerMap.get(username).askPassTurn();
         } catch (IllegalEndingTurnException e) {
-            parser.parseMessageFromServerToClient(new EndTurnEvent(Type.CANNOT_END_TURN, username, null));
+            parser.parseMessageFromServerToClient(new EndTurnEvent(Type.CANNOT_END_TURN, username, null, null));
         }
     }
 
@@ -365,9 +365,9 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * @param name the next player's username
      */
     @Override
-    public void onTurnEnd(String name) {
+    public void onTurnEnd(String name, List<Cell> workersCells) {
         saveState();
-        parser.parseMessageFromServerToClient(new EndTurnEvent(Type.OK, ReservedUsernames.BROADCAST.toString(), name));
+        parser.parseMessageFromServerToClient(new EndTurnEvent(Type.OK, ReservedUsernames.BROADCAST.toString(), name, workersCells));
     }
 
     /**

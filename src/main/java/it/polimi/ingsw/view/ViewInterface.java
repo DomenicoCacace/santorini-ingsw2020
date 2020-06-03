@@ -34,7 +34,7 @@ public interface ViewInterface {
 
     void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable);
 
-    void chooseWorker();
+    void chooseWorker(List<Cell> cells);
 
     void moveAction(List<Cell> gameBoard, List<Cell> walkableCells);
 

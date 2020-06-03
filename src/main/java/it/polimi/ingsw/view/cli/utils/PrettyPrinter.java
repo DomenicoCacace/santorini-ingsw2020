@@ -111,6 +111,14 @@ public class PrettyPrinter {
         showMatrix(gameBoard);
     }
 
+    public void highlightWorkers(List<Cell> toHighlight) {
+        String[][] gameBoard = cloneMatrix(cachedBoard);
+        for (Cell cell : toHighlight) {
+            highlight(cell, gameBoard);
+        }
+        showMatrix(gameBoard);
+    }
+
     /**
      * Sets the first version of a board, useful in case of a restoration from a saved game
      *

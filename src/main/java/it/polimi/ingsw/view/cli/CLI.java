@@ -162,9 +162,9 @@ public class CLI implements ViewInterface {
     }
 
     @Override
-    public void chooseWorker() throws CancellationException {
+    public void chooseWorker(List<Cell> cells) throws CancellationException {
+        printer.highlightWorkers(cells);
         System.out.println("Choose your worker! \nrow: ");
-
     }
 
     @Override
