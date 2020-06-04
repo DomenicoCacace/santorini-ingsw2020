@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.gui.viewController;
 
 import it.polimi.ingsw.view.Constants;
-import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -67,7 +66,6 @@ public class LoginController {
     }
 
 
-
     public TextField getUsernameID() {
         return usernameID;
     }
@@ -103,7 +101,7 @@ public class LoginController {
 
     public void onOldConfigSelected() {
         lock.lock();
-        if (isReloading && oldConfigs.getSelectionModel().getSelectedItem()!=null) {
+        if (isReloading && oldConfigs.getSelectionModel().getSelectedItem() != null) {
             gui.setInputString(Constants.YES);
             gui.setInputString(String.valueOf(oldConfigs.getSelectionModel().getSelectedIndex() + 2));
         }

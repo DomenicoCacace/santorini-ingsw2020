@@ -18,20 +18,17 @@ import java.util.concurrent.TimeoutException;
  * Representation of a client,
  */
 public class Client {
-    private static final File CONFIG_FILE = new File("../config.txt");
     private static final int MAX_SETTINGS_STORED = 5;
+    private static final File CONFIG_FILE = new File("../config.txt");
+
     private final ViewInterface view;
     private String username;
     private String ipAddress;
     private NetworkHandler networkHandler;
     private boolean currentPlayer;
 
-    /**
-     * First constructor
-     *
-     * @param viewInterface the UI to use
-     */
-    public Client(ViewInterface viewInterface) {
+
+    public Client(ViewInterface viewInterface){
         this.view = viewInterface;
     }
 
@@ -40,9 +37,8 @@ public class Client {
      *
      * @param username      the client's username
      * @param ipAddress     the server address
-     * @param viewInterface the UI to use
      */
-    public Client(String username, String ipAddress, ViewInterface viewInterface) {
+    public Client(ViewInterface viewInterface, String username, String ipAddress) {
         this.view = viewInterface;
         this.username = username;
         this.ipAddress = ipAddress;
@@ -57,17 +53,19 @@ public class Client {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        ViewInterface viewInterface;
+        ViewInterface view;
         try {
             if (args.length == 0 || !args[0].equals("--CLI")) {
                 GUI.launchGui();
             } else {
-                viewInterface = new CLI();
-                initClient(viewInterface);
+                view = new CLI();
+                initClient(view);
             }
-        } catch (IOException e) {
-            System.out.println("Error: resources not found");
-            System.exit(1);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Could not start the game, exiting...");
+            System.exit(-1);
         }
     }
 
@@ -76,7 +74,8 @@ public class Client {
      *
      * @param viewInterface the UI to use
      */
-    public static void initClient(ViewInterface viewInterface) {
+    public static void
+    initClient(ViewInterface viewInterface) {
         Client client = new Client(viewInterface);
         viewInterface.printLogo();
         List<String> savedUsers = new ArrayList<>();
@@ -96,6 +95,7 @@ public class Client {
                 viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askIP();
             }
+
         } catch (IOException e) {
             Client.initClient(viewInterface);
             e.printStackTrace();
@@ -182,7 +182,7 @@ public class Client {
             new Thread(networkHandler).start();
         } catch (IOException | NumberFormatException | InterruptedException | ExecutionException | TimeoutException e) {
             view.showErrorMessage("Couldn't connect to ip address: " + ipAddress);
-            initClient(view);
+            Client.initClient(view);
         }
     }
 
@@ -217,17 +217,12 @@ public class Client {
         networkHandler.closeConnection();
     }
 
-    /**
-     * <i>view</i> getter
-     *
-     * @return the UI in use
-     */
     public ViewInterface getView() {
-        return this.view;
+        return view;
     }
 
     public void inputTimeout() {
         stopConnection();
-        new Thread(()->Client.initClient(view)).start();
+        Client.initClient(view);
     }
 }

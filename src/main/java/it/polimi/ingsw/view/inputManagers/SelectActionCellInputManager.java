@@ -32,13 +32,8 @@ public class SelectActionCellInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(Constants.QUIT)) {
-            stopTimer();
-            client.stopConnection();
-            new Thread(() -> Client.initClient(view)).start();
-        } else if (isWaitingForInput) {
+        if (isWaitingForInput) {
             List<Cell> selectedCell;
-            input = cleanInput(input);
             switch (state) {
                 case MOVE:
                     try {
@@ -51,7 +46,7 @@ public class SelectActionCellInputManager extends InputManager {
                         } else if (row == -1) {
                             row = coord - 1;
                             view.printCol();
-                            startTimer(60);
+                            startTimer(Constants.TIMER_DEFAULT);
                         } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
@@ -81,7 +76,7 @@ public class SelectActionCellInputManager extends InputManager {
                         } else if (row == -1) {
                             row = coord - 1;
                             view.printCol();
-                            startTimer(60);
+                            startTimer(Constants.TIMER_DEFAULT);
                         } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());

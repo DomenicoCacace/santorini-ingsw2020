@@ -11,8 +11,8 @@ public class LobbyController {
 
     private static boolean inputRequested = false;
     private GUI gui;
-    private String lobbyName ="";
-    private String lobbySize ="";
+    private String lobbyName = "";
+    private String lobbySize = "";
     @FXML
     private Button createBtn;
     @FXML
@@ -49,8 +49,8 @@ public class LobbyController {
         }
     }
 
-    public void enableCreateButton(){
-        if(this.createBtn.isDisable() && !(lobbySize.equals("3") || lobbySize.equals("2"))) {
+    public void enableCreateButton() {
+        if (this.createBtn.isDisable() && !(lobbySize.equals("3") || lobbySize.equals("2"))) {
             this.createBtn.setDisable(false);
             this.createBtn.setOnMouseClicked(event -> {
                 this.createBtn.setDisable(true);
@@ -70,7 +70,7 @@ public class LobbyController {
     }
 
     public void backButton() {
-        gui.setInputString(String.valueOf(lobbyList.getItems().size() +1));
+        gui.setInputString(String.valueOf(lobbyList.getItems().size() + 1));
     }
 
     public void setGUI(GUI gui) {
@@ -82,7 +82,7 @@ public class LobbyController {
     }
 
     public void onLobbySelected() {
-        if (inputRequested && lobbyList.getSelectionModel().getSelectedItem()!=null) {
+        if (inputRequested && lobbyList.getSelectionModel().getSelectedItem() != null) {
             gui.setInputString(String.valueOf(lobbyList.getSelectionModel().getSelectedIndex() + 1));
             lobbyList.setDisable(true);
             backButton.setDisable(true);

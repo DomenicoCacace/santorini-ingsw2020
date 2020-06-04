@@ -2,20 +2,19 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.Constants;
-import it.polimi.ingsw.view.cli.CLI;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LoginManager extends InputManager {
 
-    private final List<String> savedConfigs = new ArrayList<>();
+    private List<String> savedConfigs = new ArrayList<>();
     private boolean wantsToLoadSetting;
     private boolean isIpAlreadySet = false;
 
     public LoginManager(Client client, List<String> savedConfigs) {
         super(client);
-        this.savedConfigs.addAll(savedConfigs);
+        this.savedConfigs = savedConfigs;
     }
 
     public LoginManager(Client client, boolean isIpAlreadySet) {
@@ -39,7 +38,6 @@ public class LoginManager extends InputManager {
                     chooseToReloadSetting(input);
                 } else {
                     try {
-                        input = cleanInput(input);
                         int index = Integer.parseInt(input) - 1;
                         loadSavedConfig(index);
                     } catch (NumberFormatException e) {
@@ -52,7 +50,7 @@ public class LoginManager extends InputManager {
                 view.askUsername();
             } else { //after he chooses the ip his next input will be the username
                 isWaitingForInput = false;
-                if(input.length()>30)
+                if (input.length() > 30)
                     input = input.substring(0, 29).trim();
                 client.setUsername(input);
             }
@@ -72,7 +70,7 @@ public class LoginManager extends InputManager {
             } else {
                 view.askIP();
                 savedConfigs.clear(); //If he answered " insert ip manually " i clear the savedCinfigs so that he want be able to load them
-                startTimer(60);
+                startTimer(Constants.TIMER_DEFAULT);
             }
         } else {
             view.showErrorMessage("Insert a valid option");
@@ -81,7 +79,6 @@ public class LoginManager extends InputManager {
     }
 
     private void chooseToReloadSetting(String input) {
-        input = cleanInput(input);
         if (input.equals(Constants.YES)) { //If he answers yes than i print all the saved configs, the next input will have to be an integer
             stopTimer();
             wantsToLoadSetting = true;
@@ -89,12 +86,13 @@ public class LoginManager extends InputManager {
         } else if (input.equals(Constants.NO)) {
             stopTimer();
             view.askIP();
-            savedConfigs.clear(); //If he doesn't want to reload setting i clear the list so that the next input will be managed without passing throught this if
-            startTimer(60);
+            savedConfigs.clear(); //If he doesn't want to reload setting i clear the list so that the next input will be managed without passing through this if
+            startTimer(Constants.TIMER_DEFAULT);
         } else {
             stopTimer();
+            view.showErrorMessage("Insert a valid option");
             view.askToReloadLastSettings(savedConfigs); //If he doesn't answer with yes or no i repeat the question
-            startTimer(60);
+            startTimer(Constants.TIMER_DEFAULT);
         }
     }
 
@@ -104,6 +102,7 @@ public class LoginManager extends InputManager {
         for (int i = 1; i <= savedConfigs.size(); i += 2) {
             configOptions.add(savedConfigs.get(i) + " -- " + savedConfigs.get(i - 1)); //This convert
         }
-        view.printOptions(configOptions);
+        view.printUserServerCombos(configOptions);
+        //view.printOptions(configOptions);
     }
 }

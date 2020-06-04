@@ -13,13 +13,11 @@ import java.util.concurrent.TimeUnit;
  * An InputManager is an object responsible for the console input acquisition and redirection
  */
 public abstract class InputManager {
-    //public static final String Constants.QUIT = "quit";
 
     /**
      * The scheduled task that manage the timeout on user input
      */
     protected static ScheduledFuture<?> inputCountdown;
-    private int secondsPassed = 0;
     /**
      * The client to manage the input for
      */
@@ -32,6 +30,7 @@ public abstract class InputManager {
      * Determines if an eventual input has to be discarded or not
      */
     protected boolean isWaitingForInput = true;
+    private int secondsPassed = 0;
 
     /**
      * Default constructor
@@ -41,15 +40,17 @@ public abstract class InputManager {
     public InputManager(Client client) {
         this.client = client;
         this.view = client.getView();
-        this.isWaitingForInput = true;
     }
 
     /**
      * Determines how to handle the received input based on the internal state
+     * <p>
+     * This method expects an already trimmed input
      *
      * @param input the user input
      */
     public abstract void manageInput(String input);
+
 
     /**
      * <a href=https://xkcd.com/327/>Sanitizes</a> an input string
@@ -67,6 +68,7 @@ public abstract class InputManager {
     }
 
     /**
+     * Starts the timer which will terminate the client if no input is received for a certain amount of time
      *
      * @param availableTime the maximum time the user has to input something
      */
@@ -82,6 +84,7 @@ public abstract class InputManager {
     /**
      * Method called by the scheduled future, it increase and manage the secondPassed variable
      * when secondPassed reaches availableTime the user will be disconnected for inactivity
+     *
      * @param availableTime the maximum time the user has to input something
      */
     private void increaseSecondPassed(int availableTime) {

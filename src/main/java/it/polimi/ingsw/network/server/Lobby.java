@@ -83,6 +83,12 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         }
     }
 
+
+    /**
+     * Checks if exists a saved file to restore a game with the current players
+     *
+     * @return <code>true</code> if such a file exists, <code>false</code> otherwise
+     */
     private boolean checkSavedGame() {
         File savedGameDir = new File("./savedGames");
         savedGameDir.mkdir();
@@ -99,6 +105,17 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         return false;
     }
 
+    /**
+     * Determines the name to save the game on a file
+     * <p>
+     *     The filename will be in the format
+     *     <br>
+     *         <code>LOBBYNAME_USER1_USER2(_USER3).json</code>
+     *         <br>
+     *             The usernames are ordered alphabetically; the third username is present only for 3 players matches.
+     *
+     * @return the filename, built following the up mentioned rules
+     */
     private String getFileName() {
         StringBuilder orderedNames = new StringBuilder(this.getRoomName());
         orderedNames.append("_");
@@ -167,6 +184,10 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         }
     }
 
+    /**
+     * Creates the savefile on disk, or retrieves an already existing file from disk
+     * @return the file to save the game to
+     */
     private File fileCreation() {
         File gameToSave;
         String fileName = getFileName();
@@ -235,6 +256,10 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         messageParser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(firstPlayerName, godData));
     }
 
+    /**
+     * Asks a player to choose its personal god for the game
+     * @param username the user's username to ask to choose to
+     */
     public void askToChooseGod(String username) {
         messageParser.parseMessageFromServerToClient(new ChooseYourGodRequest(username, availableGods));
     }
@@ -296,10 +321,22 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             server.getGameLobbies().put(this.roomName, this);
     }
 
+    /**
+     * Creates a list containing this lobby information, with the following format:
+     *
+     * <ul>
+     *     <li>lobby name</li>
+     *     <li>number of users in the lobby</li>
+     *     <li>number of available slots</li>
+     *     <li>list of users in the lobby</li>
+     * </ul>
+     *
+     * @return a list containing the lobby information as described above
+     */
     public List<String> lobbyInfo() {
         List<String> info = new ArrayList<>();
         info.add(this.roomName);
-        info.add(String.valueOf(usersInLobby.size() - 1));
+        info.add(String.valueOf(usersInLobby.size() - 1));  // "BROADCAST" has to be removed, hence the -1
         info.add(String.valueOf(this.maxRoomSize - usersInLobby.size() + 1));
         info.addAll(this.usersInLobby);
         info.remove(ReservedUsernames.BROADCAST.toString());

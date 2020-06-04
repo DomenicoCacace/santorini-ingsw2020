@@ -2,9 +2,9 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
-import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.network.message.fromClientToServer.CreateLobbyRequest;
 import it.polimi.ingsw.network.message.fromClientToServer.JoinLobbyRequest;
+import it.polimi.ingsw.view.Constants;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -32,14 +32,9 @@ public class LobbyInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(Constants.QUIT)) {
-            stopTimer();
-            client.stopConnection();
-            new Thread(() -> Client.initClient(view)).start();
-        } else if (isWaitingForInput) {
+        if (isWaitingForInput) {
             switch (state) {
                 case CREATE_OR_JOIN:
-                    input = cleanInput(input);
                     manageLobbyOption(input);
                     break;
                 case CREATE:
@@ -78,12 +73,10 @@ public class LobbyInputManager extends InputManager {
         if (index == lobbies.size()) {
             messageManagerParser.enterLobby(lobbiesAvailable);
             stopTimer();
-        }
-        else if(index < 0 || index > lobbies.size()) {
+        } else if (index < 0 || index > lobbies.size()) {
             view.showErrorMessage("Insert a valid option!");
             view.chooseLobbyToJoin(lobbiesAvailable);
-        }
-        else
+        } else
             onLobbyChosen(lobbies.get((index)));
     }
 
@@ -94,13 +87,13 @@ public class LobbyInputManager extends InputManager {
             messageManagerParser.setCreatingLobby(true);
             messageManagerParser.setLookingForLobbies(false);
             view.askLobbyName();
-            startTimer(60);
+            startTimer(Constants.TIMER_DEFAULT);
         } else if (input.equals(Constants.JOIN_LOBBY) && lobbiesAvailable.keySet().size() > 0) {  // Join existing lobby
             stopTimer();
             this.state = State.JOIN;
             messageManagerParser.setLookingForLobbies(true);
             view.chooseLobbyToJoin(lobbiesAvailable);
-            startTimer(60);
+            startTimer(Constants.TIMER_DEFAULT);
         } else {
             messageManagerParser.enterLobby(lobbiesAvailable);
         }
@@ -111,7 +104,7 @@ public class LobbyInputManager extends InputManager {
         stopTimer();
         this.lobbyName = lobbyName;
         view.askLobbySize();
-        startTimer(60);
+        startTimer(Constants.TIMER_DEFAULT);
     }
 
     private void onLobbySize(int chosenSize) {

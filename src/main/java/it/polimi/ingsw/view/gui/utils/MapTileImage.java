@@ -1,4 +1,5 @@
 package it.polimi.ingsw.view.gui.utils;
+
 import it.polimi.ingsw.model.Color;
 import it.polimi.ingsw.view.gui.viewController.GameScreenController;
 import javafx.scene.image.Image;
@@ -53,18 +54,18 @@ public class MapTileImage extends ResizableImageView {
         return isOccupied;
     }
 
-    public void printBlock(int height){
+    public void printBlock(int height) {
         StackPane stackPane = ((StackPane) this.getParent());
         MapTileImage mapTileImage = new MapTileImage(chooseImage(height));
-        mapTileImage.isCellTile=false;
+        mapTileImage.isCellTile = false;
         mapTileImage.setFitHeight(this.getFitHeight() - 0.5);
         mapTileImage.setFitWidth(this.getFitWidth() - 0.5);
         this.height = height;
         stackPane.getChildren().add(mapTileImage);
     }
 
-    private Image chooseImage(int height){
-        switch (height){
+    private Image chooseImage(int height) {
+        switch (height) {
             case 1:
                 return new Image(this.getClass().getResourceAsStream(BLOCK1_DIR));
             case 2:
@@ -73,34 +74,36 @@ public class MapTileImage extends ResizableImageView {
                 return new Image(this.getClass().getResourceAsStream(BLOCK3_DIR));
             case 4:
                 return new Image(this.getClass().getResourceAsStream(DOME_DIR));
-            default: return null; //Shouldn't be here
+            default:
+                return null; //Shouldn't be here
         }
     }
 
-    public void printBuilding(int height){
-        for(int i = 1; i <= height; i++){
+    public void printBuilding(int height) {
+        for (int i = 1; i <= height; i++) {
             printBlock(i);
         }
     }
 
-    private Image chooseWorker(Color color){
-        switch (color){
+    private Image chooseWorker(Color color) {
+        switch (color) {
             case BLUE:
                 return new Image(this.getClass().getResourceAsStream(BLUE_WORKER_DIR));
             case RED:
                 return new Image(this.getClass().getResourceAsStream(RED_WORKER_DIR));
             case PURPLE:
                 return new Image(this.getClass().getResourceAsStream(PURPLE_WORKER_DIR));
-            default: return null; //Shouldn't be here
+            default:
+                return null; //Shouldn't be here
         }
     }
 
-    public void printWorker(Color color){
-        if(isOccupied)
+    public void printWorker(Color color) {
+        if (isOccupied)
             removeWorker();
         StackPane stackPane = ((StackPane) this.getParent());
         printedWorker = new MapTileImage(chooseWorker(color));
-        printedWorker.isCellTile=false;
+        printedWorker.isCellTile = false;
         printedWorker.setFitHeight(this.getFitHeight() - 0.5);
         printedWorker.setFitWidth(this.getFitWidth() - 0.5);
         stackPane.getChildren().add(printedWorker);
@@ -108,7 +111,7 @@ public class MapTileImage extends ResizableImageView {
 
     }
 
-    public void removeWorker(){
+    public void removeWorker() {
         StackPane stackPane = ((StackPane) this.getParent());
         stackPane.getChildren().removeAll(printedWorker);
     }

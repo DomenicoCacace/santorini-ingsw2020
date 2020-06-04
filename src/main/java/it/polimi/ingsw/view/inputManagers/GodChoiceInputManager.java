@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.message.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.fromClientToServer.ChooseYourGodResponse;
-import it.polimi.ingsw.view.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,6 @@ public class GodChoiceInputManager extends InputManager {
     /**
      * Determines how to handle the received input based on the internal state
      * <ul>
-     *     <li>RELOADING: the user has to decide if it wants to reload a match (y/n)</li>
      *     <li>CHOOSE_INITIAL_GODS: the lobby owner has to choose the gods for all of the players</li>
      *     <li>CHOOSE_PERSONAL_GOD: the user has to choose its own god</li>
      * </ul>
@@ -50,11 +48,7 @@ public class GodChoiceInputManager extends InputManager {
     @Override
     public void manageInput(String input) {
         GodData chosenGod;
-        if (input.equals(Constants.QUIT)) {
-            stopTimer();
-            client.stopConnection();
-            new Thread(() -> Client.initClient(view)).start();
-        } else if (isWaitingForInput) {
+        if (isWaitingForInput) {
             switch (state) {
                 case CHOOSE_INITIAL_GODS:
                     chosenGod = askGod(input);
@@ -72,6 +66,7 @@ public class GodChoiceInputManager extends InputManager {
                     if (isWaitingForInput)
                         view.chooseGameGods(availableGods, godsToChoose - userChoice.size());
                     break;
+
                 case CHOOSE_PERSONAL_GOD:
                     chosenGod = askGod(input);
                     if (chosenGod != null) {
@@ -90,11 +85,10 @@ public class GodChoiceInputManager extends InputManager {
     /**
      * Retrieves the god chosen by parsing the user input
      *
-     * @param input the input string
+     * @param input the god index
      * @return the chosen god
      */
     private GodData askGod(String input) {
-        input = cleanInput(input);
         try {
             int godIndex = Integer.parseInt(cleanInput(input));
             if (godIndex > 0 && godIndex <= availableGods.size())

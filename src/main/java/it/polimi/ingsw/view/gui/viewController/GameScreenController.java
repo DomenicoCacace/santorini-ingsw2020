@@ -41,16 +41,16 @@ public class GameScreenController {
     }
 
     public void setGui(GUI gui) {
-        splitPane.widthProperty().addListener((observableValue, oldValue, newValue) ->{
+        splitPane.widthProperty().addListener((observableValue, oldValue, newValue) -> {
             splitPane.setDividerPositions(0.2, 0.8);
-            splitPane.maxHeightProperty().setValue(splitPane.widthProperty().getValue() * 9/16);
-            splitPane.minHeightProperty().setValue(splitPane.widthProperty().getValue() * 9/16);
-        } );
+            splitPane.maxHeightProperty().setValue(splitPane.widthProperty().getValue() * 9 / 16);
+            splitPane.minHeightProperty().setValue(splitPane.widthProperty().getValue() * 9 / 16);
+        });
         this.gui = gui;
         mapTiles = new ArrayList<>();
         mapGrid.getChildren().forEach(node -> {
             ((StackPane) node).getChildren().forEach(mapTile -> {
-                if(((MapTileImage) mapTile).isCellTile()) {
+                if (((MapTileImage) mapTile).isCellTile()) {
                     mapTiles.add(((MapTileImage) mapTile));
                     ((MapTileImage) mapTile).setController(this);
                 }
@@ -58,15 +58,15 @@ public class GameScreenController {
         });
     }
 
-    public void onOptionChosen(){
-        if(choiceList.getSelectionModel().getSelectedItem()!=null) {
+    public void onOptionChosen() {
+        if (choiceList.getSelectionModel().getSelectedItem() != null) {
             choiceList.setDisable(true);
             gui.setInputString(String.valueOf(choiceList.getSelectionModel().getSelectedIndex() + 1));
             choiceList.getItems().clear();
         }
     }
 
-    public void handleCellCLicked(int row, int col){
+    public void handleCellCLicked(int row, int col) {
         mapTiles.forEach(mapTileImage -> {
             mapTileImage.setDisable(true);
             mapTileImage.setEffect(null);
@@ -81,21 +81,20 @@ public class GameScreenController {
         availableCell.forEach(cell -> {
             ListIterator<MapTileImage> mapTileImageListIterator = mapTiles.listIterator();
             MapTileImage currentMapTile;
-            while(mapTileImageListIterator.hasNext()){
+            while (mapTileImageListIterator.hasNext()) {
                 currentMapTile = mapTileImageListIterator.next();
-                if(GridPane.getRowIndex(currentMapTile.getParent()).equals(cell.getCoordX() +1 ) &&
-                        GridPane.getColumnIndex(currentMapTile.getParent()).equals(cell.getCoordY() + 1)){
+                if (GridPane.getRowIndex(currentMapTile.getParent()).equals(cell.getCoordX() + 1) &&
+                        GridPane.getColumnIndex(currentMapTile.getParent()).equals(cell.getCoordY() + 1)) {
                     currentMapTile.setDisable(false);
                     currentMapTile.setEffect(sepiaTone);
                     break;
-                }
-                else if(!mapTileImageListIterator.hasNext())
+                } else if (!mapTileImageListIterator.hasNext())
                     currentMapTile.setDisable(true);
             }
         });
     }
 
-    public void allCellsClickable(){
+    public void allCellsClickable() {
         mapTiles.forEach(mapTileImage -> mapTileImage.setDisable(false));
     }
 }

@@ -27,12 +27,7 @@ public class SelectWorkerInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(Constants.QUIT)) {
-            stopTimer();
-            client.stopConnection();
-            new Thread(() -> Client.initClient(view)).start();
-        } else if (isWaitingForInput) {
-            input = cleanInput(input);
+        if (isWaitingForInput) {
             try {
                 int coord = Integer.parseInt(input);
                 if (coord < MIN_COORD || coord > MAX_COORD) {
@@ -43,7 +38,7 @@ public class SelectWorkerInputManager extends InputManager {
                 } else if (row == -1) {
                     row = coord - 1;
                     view.printCol();
-                    startTimer(60);
+                    startTimer(Constants.TIMER_DEFAULT);
                 } else if (col == -1) {
                     col = coord - 1;
                     Optional<Cell> workerCell = workerCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).findFirst();
