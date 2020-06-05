@@ -29,7 +29,6 @@ public class Color {
         try {
             properties.loadFromXML(in);
         } catch (IOException e) {
-            e.printStackTrace();
         }
         backgroundDark = "\033" + properties.getProperty("bgColorDark", WHITE_BG);
         backgroundLight = "\033" + properties.getProperty("bgColorLight", WHITE_BG);

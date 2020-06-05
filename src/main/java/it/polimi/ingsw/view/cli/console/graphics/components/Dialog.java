@@ -82,6 +82,29 @@ public abstract class Dialog extends Window {
     }
 
     /**
+     * Custom constructor
+     * <p>
+     * Creates a custom size dialog window, without printing it;
+     * <br>
+     * The console echo is disabled as soon as the Dialog is created
+     *
+     * @param height  the dialog height
+     * @param width   the dialog width
+     * @param title   the dialog title
+     * @param message the dialog message
+     * @param caller  the window which invoked this
+     */
+    protected Dialog(String title, String message, int width, int height, CursorPosition position, Window caller) {
+        super(caller, width, height, position);
+        this.title = title;
+        this.message = message;
+        this.interactiveItems = new ArrayDeque<>();
+        this.nonInteractiveItems = new ArrayList<>();
+        Console.in.disableConsoleInput();
+    }
+
+
+    /**
      * Determines if the dialog can be closed; by default, a dialog can be closed anytime
      *
      * @return true if the dialog can be closed, false otherwise

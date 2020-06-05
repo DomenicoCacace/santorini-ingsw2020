@@ -88,7 +88,6 @@ public class CursorPosition implements KeyEventListener {
         }
     }
 
-
     @Override
     public void onBackspace() {
         if (Console.in.isConsoleInputEnabled()) {

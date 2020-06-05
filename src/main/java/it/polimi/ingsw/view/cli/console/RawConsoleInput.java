@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.cli.console;
 
 import it.polimi.ingsw.view.Constants;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
@@ -14,6 +15,7 @@ public class RawConsoleInput {
 
     private final Semaphore semaphore;
     private final List<KeyEventListener> keyEventListeners;
+    private final List<KeyEventListener> listenersToRestore;
     private final int maxBufferSize;
     private boolean escape;
     private StringBuilder inputBuffer;
@@ -23,6 +25,7 @@ public class RawConsoleInput {
     public RawConsoleInput(int maxBufferSize) {
         this.maxBufferSize = maxBufferSize;
         keyEventListeners = new ArrayList<>();
+        listenersToRestore = new ArrayList<>();
         inputBuffer = new StringBuilder();
         semaphore = new Semaphore(0);
         inputEnable = false;
@@ -199,6 +202,22 @@ public class RawConsoleInput {
     public void addKeyEventListener(KeyEventListener listener) {
         if (!keyEventListeners.contains(listener))
             this.keyEventListeners.add(listener);
+    }
+
+    public void exclusiveKeyEventListener(KeyEventListener listener) {
+        listenersToRestore.addAll(keyEventListeners);
+        for (KeyEventListener l : keyEventListeners)
+            keyEventListeners.remove(l);
+
+        keyEventListeners.add(listener);
+    }
+
+    public void restoreKeyEventListeners() {
+        for (KeyEventListener l : keyEventListeners)
+            keyEventListeners.remove(l);
+        keyEventListeners.addAll(listenersToRestore);
+        for (KeyEventListener l : listenersToRestore)
+            listenersToRestore.remove(l);
     }
 
     /**

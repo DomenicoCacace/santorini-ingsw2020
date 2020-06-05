@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.cli.console.graphics.components;
 
+import it.polimi.ingsw.view.cli.console.CursorPosition;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -43,6 +45,24 @@ public abstract class InputDialog extends Dialog {
      */
     public InputDialog(String title, String message, int width, int height, Window caller) {
         super(title, message, width, height, caller);
+        inputs = new LinkedHashMap<>();
+    }
+
+    /**
+     * Custom constructor
+     * <p>
+     * Creates a custom size input dialog window, without printing it;
+     * <br>
+     * The console echo is disabled as soon as the Dialog is created
+     *
+     * @param height  the dialog height
+     * @param width   the dialog width
+     * @param title   the dialog title
+     * @param message the dialog message
+     * @param caller  the window which invoked this
+     */
+    public InputDialog(String title, String message, int width, int height, CursorPosition initCoord, Window caller) {
+        super(title, message, width, height, initCoord, caller);
         inputs = new LinkedHashMap<>();
     }
 

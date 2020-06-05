@@ -189,6 +189,12 @@ public class BasicPrinter extends Printer {
     }
 
     /**
+     * Does nothing in this printer
+     */
+    @Override
+    public void enterGameMode() {}
+
+    /**
      * Prints the game board on the screen, updating the cached board status
      *
      * @param gameBoard the board to print
@@ -239,7 +245,7 @@ public class BasicPrinter extends Printer {
 
     /**
      * Asks the user to choose a worker
-     * @param cells
+     * @param cells the cells containing the user's workers
      */
     @Override
     public void chooseWorker(List<Cell> cells) {

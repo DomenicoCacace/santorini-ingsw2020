@@ -10,8 +10,7 @@ import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.graphics.*;
-import it.polimi.ingsw.view.cli.console.graphics.components.Dialog;
-import it.polimi.ingsw.view.cli.console.graphics.components.Window;
+import it.polimi.ingsw.view.cli.console.graphics.components.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -21,9 +20,11 @@ import java.util.*;
  * Fancy printer for systems supporting non canonical mode
  */
 public class FancyPrinter extends Printer {
-    private final Window console;
-    private final CursorPosition boardOffset = new CursorPosition(1, 1);
+    protected final Console console;
     private final List<Dialog> messageDialogs = new ArrayList<>();
+    private FancyPrinterBoardUtils boardUtils;
+
+
     private Status currentStatus;
 
     /**
@@ -32,7 +33,7 @@ public class FancyPrinter extends Printer {
      * @param console the console in which the output will be printed
      * @param cli     the UI object
      */
-    public FancyPrinter(Window console, CLI cli) throws IOException {
+    public FancyPrinter(Console console, CLI cli) throws IOException {
         super(cli);
         this.console = console;
     }
@@ -232,13 +233,19 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseStartingPlayer(List<String> players) {
-        new SingleChoiceListDialog("Starting player", "", console, players).show();
+        new SingleChoiceListDialog("Starting player", "Choose which player will play first", console, players).show();
     }
 
     @Override
-    protected void loadGameGraphics() {
-        super.loadGameGraphics();
-        //TODO: add cell borders
+    public void enterGameMode() {
+        super.enterGameMode();
+        try {
+            removeStaleMessages();
+            boardUtils = new FancyPrinterBoardUtils(this);
+            Console.addWindow(boardUtils);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -249,7 +256,7 @@ public class FancyPrinter extends Printer {
     @Override
     public void showGameBoard(List<Cell> gameBoard) {
         updateCachedBoard(gameBoard);
-        Console.out.drawMatrix(cachedBoard, boardOffset);
+        Console.out.drawMatrix(cachedBoard, boardUtils.getBoardOffset());
     }
 
     /**
@@ -265,7 +272,7 @@ public class FancyPrinter extends Printer {
         for (Cell cell : toHighlight)
             highlight(cell, tempBoard);
 
-        Console.out.drawMatrix(tempBoard, boardOffset);
+        Console.out.drawMatrix(tempBoard, boardUtils.getBoardOffset());
     }
 
     /**
@@ -275,7 +282,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseAction(List<PossibleActions> possibleActions) {
-
+        boardUtils.enableActionSelector(possibleActions);
     }
 
     /**
@@ -283,7 +290,8 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void placeWorker() {
-
+        //new MessageDialog("Place your worker", boardUtils).show();
+        boardUtils.enableGridInput();
     }
 
     /**
@@ -292,7 +300,8 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseWorker(List<Cell> cells) {
-
+        highlightWorkers(cells);
+        boardUtils.enableGridInput();
     }
 
     /**
@@ -302,7 +311,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     protected void highlightWorkers(List<Cell> cells) {
-
+        showGameBoard(lastGameBoardPrinted, cells);
     }
 
     /**
@@ -313,7 +322,8 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
-
+        showGameBoard(gameBoard, walkableCells);
+        boardUtils.enableGridInput();
     }
 
     /**
@@ -324,7 +334,8 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
-
+        showGameBoard(gameBoard, buildableCells);
+        boardUtils.enableGridInput();
     }
 
     /**
@@ -336,6 +347,44 @@ public class FancyPrinter extends Printer {
     public void chooseBlockToBuild(List<Block> buildableBlocks) {
 
     }
+
+
+    /**
+     * Highlights a single cell
+     *
+     * @param cell the cell to highlight
+     * @param cellBorder the PrintableObject containing the cell border
+     */
+    public void selectCell(Cell cell, PrintableObject cellBorder) {
+        int colOffset = verticalWallWidth + (cellWidth+verticalWallWidth)*cell.getCoordX();
+        int rowOffset = horizontalWallWidth + (cellHeight+horizontalWallWidth)*cell.getCoordY();
+        CursorPosition cellOffset = CursorPosition.offset(boardUtils.getBoardOffset(), rowOffset, colOffset);
+
+        String[][] cellToHighlight = subMatrix(cachedBoard, rowOffset, colOffset, cellHeight, cellWidth);
+
+        for (int row = 0; row < cellHeight; row++) {
+            for (int col = 0; col < cellWidth; col++) {
+                if (!cellBorder.getObject()[row][col].contains("\033[0m"))  // ignores resets to preserve the original background
+                    cellToHighlight[row][col] = cellBorder.getObject()[row][col];
+            }
+        }
+        Console.out.drawMatrix(cellToHighlight, cellOffset);
+    }
+
+    /**
+     * Deselects a cell, hiding the highlighted border
+     *
+     * @param cell the cell to disable
+     */
+    public void deselectCell(Cell cell) {
+        int colOffset = verticalWallWidth + (cellWidth+verticalWallWidth)*cell.getCoordX();
+        int rowOffset = horizontalWallWidth + (cellHeight+horizontalWallWidth)*cell.getCoordY();
+        CursorPosition cellOffset = CursorPosition.offset(boardUtils.getBoardOffset(), rowOffset, colOffset);
+
+        String[][] cellToHighlight = subMatrix(cachedBoard, rowOffset, colOffset, cellHeight, cellWidth);
+        Console.out.drawMatrix(cellToHighlight, cellOffset);
+    }
+
 
 
     /**
@@ -359,13 +408,17 @@ public class FancyPrinter extends Printer {
         return godsDetails;
     }
 
+    /**
+     * Removes stale messages not closed by the user at the right time
+     */
     private void removeStaleMessages() {
-        for (Dialog dialog : messageDialogs) {
-            dialog.remove();
-            //messageDialogs.remove(dialog);
+        if (messageDialogs.size() > 0) {
+            for (Dialog dialog : messageDialogs) {
+                dialog.remove();
+                //messageDialogs.remove(dialog);
+            }
         }
     }
-
 
     /**
      * The internal state,

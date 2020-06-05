@@ -267,7 +267,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         try {
             if (message.getGods().size() == 1) {
                 client.sendMessage(new ChooseYourGodResponse(client.getUsername(), message.getGods().get(0)));
-                view.showSuccessMessage("Your God is: " + message.getGods().get(0).getName());
+                view.showSuccessMessage("Your God is " + message.getGods().get(0).getName());
                 return;
             }
             inputManager = new GodChoiceInputManager(client, message.getGods(), 1);

@@ -63,8 +63,6 @@ public abstract class Printer {
         emptyBoard = new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("emptyBoardPath")), boardWidth, boardHeight).getObject();
         cachedBoard = cloneMatrix(emptyBoard);
 
-        loadGameGraphics(); // might be done somewhere else
-
     }
 
     /**
@@ -174,7 +172,7 @@ public abstract class Printer {
     /**
      * Loads the graphics resources for the game and sets up stuff
      */
-    protected void loadGameGraphics() {
+    public void enterGameMode() {
         try {
             lastGameBoardPrinted = new GameBoard().getAllCells();
 
@@ -189,7 +187,6 @@ public abstract class Printer {
             workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("purpleWorkerPath")), cellWidth, cellHeight));
             workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("redWorkerPath")), cellWidth, cellHeight));
         } catch (IOException e) {
-
         }
     }
 
@@ -306,6 +303,25 @@ public abstract class Printer {
             System.arraycopy(input[row], 0, clone[row], 0, input[0].length);
         }
         return clone;
+    }
+
+    /**
+     * Retrieves a subMatrix from a bigger matrix
+     *
+     * @param input the input matrix
+     * @param startRow the input row coordinate to start extracting the subMatrix
+     * @param startCol the input column coordinate to start extracting the subMatrix
+     * @param finalRow the subMatrix number of rows
+     * @param finalRow the subMatrix number of columns
+     * @return the required subMatrix
+     */
+    protected String[][] subMatrix(String[][] input, int startRow, int startCol, int finalRow, int finalCol) {
+        String[][] subMatrix = new String[finalRow][finalCol];
+        for (int row = 0; row < finalRow; row++) {
+            for (int col = 0; col < finalCol; col++)
+                subMatrix[row][col] = input[row+startRow][col+startCol];
+        }
+        return subMatrix;
     }
 
     /**

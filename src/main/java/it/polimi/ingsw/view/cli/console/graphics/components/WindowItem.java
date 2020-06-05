@@ -144,6 +144,5 @@ public abstract class WindowItem extends Rectangle {
             else
                 break;
         } while (row < initCoord.getRow() + height && col < initCoord.getCol() + width);
-
     }
 }
