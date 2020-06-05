@@ -95,7 +95,7 @@ public class RawConsoleInput {
     /**
      * Provides the number of printable characters in the buffer
      *
-     * @return the number of characcters in the buffer
+     * @return the number of characters in the buffer
      */
     public int currentInputSize() {
         return inputBuffer.length();

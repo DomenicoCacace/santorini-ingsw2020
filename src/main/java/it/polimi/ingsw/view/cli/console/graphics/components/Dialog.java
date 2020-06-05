@@ -169,7 +169,7 @@ public abstract class Dialog extends Window {
     /**
      * Provides the dialog item which is currently selected
      *
-     * @return the
+     * @return the currently selected interactive item
      */
     protected InteractiveItem currentInteractiveItem() {
         return interactiveItems.peekFirst();

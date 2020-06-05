@@ -162,8 +162,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     //
                 }
             } else if (message.getType().equals(Type.OK)) {
-                view.showSuccessMessage("You created lobby");
-                view.showSuccessMessage("Waiting for other players to connect");
+                view.showSuccessMessage("You successfully created your lobby \n Waiting for other player to join");
             } else {
                 view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
                 enterLobby(message.getLobbies());

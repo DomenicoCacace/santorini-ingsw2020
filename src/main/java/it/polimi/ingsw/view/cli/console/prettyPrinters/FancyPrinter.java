@@ -4,12 +4,13 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.graphics.*;
-import it.polimi.ingsw.view.cli.console.graphics.MessageDialog;
+import it.polimi.ingsw.view.cli.console.graphics.components.Dialog;
 import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.*;
 public class FancyPrinter extends Printer {
     private final Window console;
     private final CursorPosition boardOffset = new CursorPosition(1, 1);
+    private final List<Dialog> messageDialogs = new ArrayList<>();
     private Status currentStatus;
 
     /**
@@ -52,7 +54,9 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void printMessage(String msg) {
-        new MessageDialog(msg, Console.currentWindow());
+        MessageDialog dialog = new MessageDialog(msg, console);
+        messageDialogs.add(dialog);
+        dialog.show();
     }
 
     /**
@@ -121,9 +125,10 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void lobbyOptions(List<String> options) {
+        removeStaleMessages();
         HashMap<String, String> buttons = new LinkedHashMap<>();
         options.forEach(o -> buttons.put(o, String.valueOf(options.indexOf(o) + 1)));
-        new ButtonsDialog("Lobby options", "Choose what action to do", console, buttons, true).show();
+        new ButtonsDialog("Lobby options", "Login successful\nChoose what action to do", console, buttons, true).show();
     }
 
     /**
@@ -183,6 +188,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseToReloadMatch() {
+        removeStaleMessages();
         HashMap<String, String> buttons = new LinkedHashMap<>();
         buttons.put("NO", "n");
         buttons.put("YES", "y");
@@ -198,6 +204,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseGameGods(List<GodData> allGods, int size) {
+        removeStaleMessages();
         if (currentStatus.equals(Status.LOBBY)) {
             LinkedHashMap<String, LinkedList<String>> godsDetails = generateGodsDescriptions(allGods);
             new MultipleChoiceListDialog("Pick " + size + " Gods", "ARROW KEYS: navigate Gods\nENTER: select/deselect God", console, godsDetails, size).show();
@@ -212,6 +219,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseUserGod(List<GodData> possibleGods) {
+        removeStaleMessages();
         LinkedHashMap<String, LinkedList<String>> godsDetails = generateGodsDescriptions(possibleGods);
         new DetailedSingleChoiceListDialog("Choose your god", "", console, godsDetails).show();
         currentStatus = Status.GAME;
@@ -280,7 +288,7 @@ public class FancyPrinter extends Printer {
 
     /**
      * Asks the user to choose a worker
-     * @param cells
+     * @param cells the cells containing the player's workers
      */
     @Override
     public void chooseWorker(List<Cell> cells) {
@@ -349,6 +357,13 @@ public class FancyPrinter extends Printer {
             godsDetails.put(g.getName(), description);
         });
         return godsDetails;
+    }
+
+    private void removeStaleMessages() {
+        for (Dialog dialog : messageDialogs) {
+            dialog.remove();
+            //messageDialogs.remove(dialog);
+        }
     }
 
 

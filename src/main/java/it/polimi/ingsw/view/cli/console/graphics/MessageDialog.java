@@ -1,8 +1,6 @@
 package it.polimi.ingsw.view.cli.console.graphics;
 
 
-import it.polimi.ingsw.view.cli.console.CursorPosition;
-import it.polimi.ingsw.view.cli.console.graphics.components.ClosingButton;
 import it.polimi.ingsw.view.cli.console.graphics.components.Dialog;
 import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
@@ -21,23 +19,20 @@ public final class MessageDialog extends Dialog {
      */
     public MessageDialog(String message, Window caller) {
         super("Notification", message, caller);
-        int colOff = findCenter(this.getWidth(), 10);
-        int rowOff = findCenter(this.getHeight(), 3) * 9 / 5;
-        addInteractiveItem(new ClosingButton(this, new CursorPosition(rowOff, colOff), "OK"));
     }
 
     /**
-     * Removes the error dialog
+     * Removes the message dialog
      *
      * @see Dialog#remove()
      */
     @Override
     public void onCarriageReturn() {
-        currentInteractiveItem().onCarriageReturn();
+       onQuit();
     }
 
     @Override
     public void onQuit() {
-        remove();
+        this.remove();
     }
 }
