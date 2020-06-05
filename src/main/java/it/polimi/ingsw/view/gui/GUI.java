@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -355,6 +356,20 @@ public class GUI extends Application implements ViewInterface {
             }
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
             controller.setGui(this);
+            List<Node> labels = controller.getPlayersInfo().getChildren();
+            int i = 0;
+            for(PlayerData player : players){
+                ((Label)labels.get(i)).setText(" " + player.getName() + "\n " +
+                        player.getColor() + "\n " + player.getGod().getName());
+                labels.get(i).setDisable(false);
+                labels.get(i).setOpacity(1);
+                labels.get(i).setOnMouseClicked(mouseEvent -> {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                            player.getGod().getDescriptionStrategy() + "\n", ButtonType.OK);
+                    alert.showAndWait();
+                });
+                i++;
+            }
             List<MapTileImage> mapTileImages = parseMap();
             for (MapTileImage mapTile : mapTileImages) {
                 int row = GridPane.getRowIndex(mapTile.getParent()) - 1;

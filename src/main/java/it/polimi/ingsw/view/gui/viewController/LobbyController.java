@@ -90,4 +90,7 @@ public class LobbyController {
     }
 
 
+    public void onQuit() {
+        gui.setInputString(Constants.QUIT);
+    }
 }

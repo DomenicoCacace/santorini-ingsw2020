@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import it.polimi.ingsw.view.gui.utils.*?>
+<?import it.polimi.ingsw.view.gui.utils.ResizableImageView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -25,7 +25,10 @@
                   </ResizableImageView>
                   <VBox>
                      <children>
-                        <HBox fillHeight="false" prefHeight="286.0" prefWidth="868.0" VBox.vgrow="ALWAYS" />
+                        <HBox fillHeight="false" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#onQuit" prefHeight="286.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Button mnemonicParsing="false" onMouseClicked="#onQuit" text="Quit" />
+                           </children></HBox>
                         <AnchorPane prefHeight="415.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
                            <children>
                               <HBox layoutX="250.0" layoutY="79.0" prefHeight="257.0" prefWidth="868.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -74,7 +77,7 @@
                                                                   <HBox prefHeight="115.0" prefWidth="201.0">
                                                                      <children>
                                                                         <Region prefHeight="35.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
-                                                                        <Button fx:id="joinBtn" onMouseClicked="#onJoin" mnemonicParsing="false" prefHeight="35.0" text="Join Lobby" />
+                                                                        <Button fx:id="joinBtn" mnemonicParsing="false" onMouseClicked="#onJoin" prefHeight="35.0" text="Join Lobby" />
                                                                         <Region prefHeight="200.0" prefWidth="50.0" HBox.hgrow="ALWAYS" />
                                                                      </children>
                                                                   </HBox>

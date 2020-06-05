@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.gui.viewController;
 
 import it.polimi.ingsw.model.Cell;
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
 import javafx.fxml.FXML;
@@ -8,6 +9,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.effect.SepiaTone;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 
@@ -25,20 +27,11 @@ public class GameScreenController {
     private GridPane mapGrid;
     @FXML
     private TextArea textArea;
+    @FXML
+    private AnchorPane playersInfo;
+
     private GUI gui;
     private List<MapTileImage> mapTiles;
-
-    public TextArea getTextArea() {
-        return textArea;
-    }
-
-    public GridPane getMapGrid() {
-        return mapGrid;
-    }
-
-    public ListView<String> getChoiceList() {
-        return choiceList;
-    }
 
     public void setGui(GUI gui) {
         splitPane.widthProperty().addListener((observableValue, oldValue, newValue) ->{
@@ -83,7 +76,7 @@ public class GameScreenController {
             MapTileImage currentMapTile;
             while(mapTileImageListIterator.hasNext()){
                 currentMapTile = mapTileImageListIterator.next();
-                if(GridPane.getRowIndex(currentMapTile.getParent()).equals(cell.getCoordX() +1 ) &&
+                if(GridPane.getRowIndex(currentMapTile.getParent()).equals(cell.getCoordX() + 1 ) &&
                         GridPane.getColumnIndex(currentMapTile.getParent()).equals(cell.getCoordY() + 1)){
                     currentMapTile.setDisable(false);
                     currentMapTile.setEffect(sepiaTone);
@@ -97,5 +90,25 @@ public class GameScreenController {
 
     public void allCellsClickable(){
         mapTiles.forEach(mapTileImage -> mapTileImage.setDisable(false));
+    }
+
+    public AnchorPane getPlayersInfo() {
+        return playersInfo;
+    }
+
+    public TextArea getTextArea() {
+        return textArea;
+    }
+
+    public GridPane getMapGrid() {
+        return mapGrid;
+    }
+
+    public ListView<String> getChoiceList() {
+        return choiceList;
+    }
+
+    public void onQuit() {
+        gui.setInputString(Constants.QUIT);
     }
 }
