@@ -8,11 +8,11 @@
     <entry key="cellWidth">22</entry>
     <entry key="cellHeight">11</entry>
     <entry key="emptyBoardPath">board.art</entry>
-    <entry key="standardCellFramePath">redCellFrame.art</entry>
+    <entry key="standardCellFramePath">cellFrame.art</entry>
     <entry key="firstLevelTopPath">blocks/firstLevelTop.art</entry>
     <entry key="secondLevelTopPath">blocks/secondLevelTop.art</entry>
     <entry key="thirdLevelTopPath">blocks/thirdLevelTop.art</entry>
-    <entry key="domeTopPath">blocks/domeTopPath.art</entry>
+    <entry key="domeTopPath">blocks/domeTop.art</entry>
     <entry key="blueWorkerPath">workers/blueWorker.art</entry>
     <entry key="purpleWorkerPath">workers/purpleWorker.art</entry>
     <entry key="redWorkerPath">workers/redWorker.art</entry>

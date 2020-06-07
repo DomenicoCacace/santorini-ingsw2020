@@ -67,8 +67,8 @@ public class GridOverlay extends WindowItem implements Toggleable {
      */
     @Override
     public void onDisable() {
-        parent.getCli().evaluateInput(String.valueOf(coordX));
-        parent.getCli().evaluateInput(String.valueOf(coordY));
+        parent.getCli().evaluateInput(String.valueOf(coordX + 1));
+        parent.getCli().evaluateInput(String.valueOf(coordY + 1));
     }
 
 

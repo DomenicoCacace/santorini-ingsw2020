@@ -243,6 +243,7 @@ public class FancyPrinter extends Printer {
             removeStaleMessages();
             boardUtils = new FancyPrinterBoardUtils(this);
             Console.addWindow(boardUtils);
+            Console.currentWindow().show();
         } catch (IOException e) {
             e.printStackTrace();
         }
