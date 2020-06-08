@@ -20,7 +20,7 @@ public final class ErrorDialog extends Dialog {
      * @param message the error message
      */
     public ErrorDialog(String message, Window caller) {
-        super("Error", message, caller);
+        super("Error", message, caller, "ErrorDialog");
         int colOff = findCenter(this.getWidth(), 10);
         int rowOff = findCenter(this.getHeight(), 3) * 9 / 5;
         addInteractiveItem(new ClosingButton(this, new CursorPosition(rowOff, colOff), "OK"));

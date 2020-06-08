@@ -27,7 +27,6 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      */
     protected final CLI cli;
 
-
     /**
      * The window background
      */
@@ -40,7 +39,7 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * Creates the initial window, centered
      */
     public Window(CLI cli) {
-        super(null);
+        super(null, "Console");
         this.cli = cli;
         enableInputOnReturn = false;
         returnTo = new CursorPosition();
@@ -54,9 +53,10 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * Creates a new Window, loading its settings from file
      *
      * @param parent the parent
+     * @param ID the Window ID
      */
-    public Window(Window parent) {
-        super(parent);
+    public Window(Window parent, String ID) {
+        super(parent, ID);
         this.cli = parent.cli;
         enableInputOnReturn = Console.in.isConsoleInputEnabled();
         returnTo = CursorPosition.offset(Console.cursor, 0, 0);
@@ -73,9 +73,10 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * @param height    the window height
      * @param initCoord the window initial coordinates
      * @param parent    the caller
+     * @param ID the Window ID
      */
-    public Window(Window parent, int width, int height, CursorPosition initCoord) {
-        super(parent, initCoord, width, height);
+    public Window(Window parent, int width, int height, CursorPosition initCoord, String ID) {
+        super(parent, initCoord, width, height, ID);
         this.cli = parent.cli;
         enableInputOnReturn = Console.in.isConsoleInputEnabled();
         returnTo = CursorPosition.offset(Console.cursor, -1, 0);
@@ -123,7 +124,7 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      *
      * @return the Window which opened this
      */
-    public Window getParent() {
+    public WindowItem getParent() {
         return parent;
     }
 
@@ -160,6 +161,7 @@ public abstract class Window extends WindowItem implements KeyEventListener {
 
     /**
      * Shows the window on the console
+     *
      */
     public void show() {
         Console.out.drawMatrix(background, initCoord);

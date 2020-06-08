@@ -24,6 +24,6 @@ public class ReturningListItem extends ListItem {
     @Override
     public void onCarriageReturn() {
         parent.remove();
-        parent.getCli().evaluateInput(String.valueOf(retVal));
+        ((InputDialog) parent).getCli().evaluateInput(String.valueOf(retVal));
     }
 }

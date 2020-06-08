@@ -43,6 +43,6 @@ public class ClosingButton extends Button {
         if (((Dialog) parent).canBeClosed())
             ((Dialog) parent).onQuit();
         else
-            new ErrorDialog("Cannot close the dialog; make sure that all the fields have been filled and then retry", parent).show();
+            new ErrorDialog("Cannot close the dialog; make sure that all the fields have been filled and then retry", ((Dialog) parent)).show();
     }
 }

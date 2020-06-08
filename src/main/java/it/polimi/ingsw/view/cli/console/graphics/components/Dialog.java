@@ -3,10 +3,6 @@ package it.polimi.ingsw.view.cli.console.graphics.components;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.RawConsoleOutput;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 import static it.polimi.ingsw.view.Constants.*;
@@ -26,16 +22,6 @@ public abstract class Dialog extends Window {
      */
     protected final String message;
 
-    /**
-     * A list containing all the interactive items
-     */
-    protected final Deque<InteractiveItem> interactiveItems;
-
-    /**
-     * A list containing all non-interactive items (e.g. {@linkplain DetailPane})
-     */
-    protected final List<WindowItem> nonInteractiveItems;
-
 
     /**
      * Default constructor
@@ -48,13 +34,12 @@ public abstract class Dialog extends Window {
      * @param title   the dialog title
      * @param message the dialog message
      * @param parent  the window which invoked this
+     * @param ID the object ID
      */
-    protected Dialog(String title, String message, Window parent) {
-        super(parent);
+    protected Dialog(String title, String message, Window parent, String ID) {
+        super(parent, ID);
         this.title = title;
         this.message = message;
-        this.interactiveItems = new ArrayDeque<>();
-        this.nonInteractiveItems = new ArrayList<>();
         Console.in.disableConsoleInput();
     }
 
@@ -72,12 +57,10 @@ public abstract class Dialog extends Window {
      * @param message the dialog message
      * @param caller  the window which invoked this
      */
-    protected Dialog(String title, String message, int width, int height, Window caller) {
-        super(caller, width, height, new CursorPosition(findCenter(caller.getHeight(), height), findCenter(caller.getWidth(), width)));
+    protected Dialog(String title, String message, int width, int height, Window caller, String ID) {
+        super(caller, width, height, new CursorPosition(findCenter(caller.getHeight(), height), findCenter(caller.getWidth(), width)), ID);
         this.title = title;
         this.message = message;
-        this.interactiveItems = new ArrayDeque<>();
-        this.nonInteractiveItems = new ArrayList<>();
         Console.in.disableConsoleInput();
     }
 
@@ -93,13 +76,12 @@ public abstract class Dialog extends Window {
      * @param title   the dialog title
      * @param message the dialog message
      * @param caller  the window which invoked this
+     * @param ID the object ID
      */
-    protected Dialog(String title, String message, int width, int height, CursorPosition position, Window caller) {
-        super(caller, width, height, position);
+    protected Dialog(String title, String message, int width, int height, CursorPosition position, Window caller, String ID) {
+        super(caller, width, height, position, ID);
         this.title = title;
         this.message = message;
-        this.interactiveItems = new ArrayDeque<>();
-        this.nonInteractiveItems = new ArrayList<>();
         Console.in.disableConsoleInput();
     }
 
@@ -171,52 +153,6 @@ public abstract class Dialog extends Window {
         Console.out.printAt(CursorPosition.offset(initCoord, height - 1, width), parent.getBackgroundColor() + LINE_SHADOW_RIGHT);
     }
 
-    /**
-     * Adds a new interactive item to the items list
-     *
-     * @param item the item to add
-     */
-    protected void addInteractiveItem(InteractiveItem item) {
-        interactiveItems.addLast(item);
-    }
-
-    /**
-     * Adds a new item to the items list
-     *
-     * @param item the item to add
-     */
-    protected void addNonInteractiveItem(WindowItem item) {
-        nonInteractiveItems.add(item);
-    }
-
-    /**
-     * Provides the dialog item which is currently selected
-     *
-     * @return the currently selected interactive item
-     */
-    protected InteractiveItem currentInteractiveItem() {
-        return interactiveItems.peekFirst();
-    }
-
-    /**
-     * Retrieves the next item
-     *
-     * @return the next item in the deque
-     */
-    protected InteractiveItem nextInteractiveItem() {
-        interactiveItems.addLast(interactiveItems.pollFirst());
-        return interactiveItems.peekFirst();
-    }
-
-    /**
-     * Retrieves the previous item
-     *
-     * @return the previous item in the deque
-     */
-    protected InteractiveItem previousInteractiveItem() {
-        interactiveItems.addFirst(interactiveItems.pollLast());
-        return interactiveItems.peekFirst();
-    }
 
     /**
      * Draws itself
@@ -228,12 +164,12 @@ public abstract class Dialog extends Window {
         drawShadows();
         drawMessage();
         drawTitle();
-        if (interactiveItems.size() > 0) {
-            interactiveItems.forEach(InteractiveItem::show);
+        if (activeItems.size() > 0) {
+            activeItems.forEach(ActiveItem::show);
             currentInteractiveItem().onSelect();
         }
-        if (nonInteractiveItems.size() > 0) {
-            nonInteractiveItems.forEach(WindowItem::show);
+        if (passiveItems.size() > 0) {
+            passiveItems.forEach(WindowItem::show);
         }
     }
 
@@ -243,10 +179,10 @@ public abstract class Dialog extends Window {
     @Override
     public void remove() {
         super.remove();
-        if (nonInteractiveItems.size() > 0)
-            nonInteractiveItems.forEach(WindowItem::remove);
-        if (interactiveItems.size() > 0)
-            interactiveItems.forEach(InteractiveItem::remove);
+        if (passiveItems.size() > 0)
+            passiveItems.forEach(WindowItem::remove);
+        if (activeItems.size() > 0)
+            activeItems.forEach(ActiveItem::remove);
         if (enableInputOnReturn)
             Console.in.enableConsoleInput();
         Console.closeWindow(this);

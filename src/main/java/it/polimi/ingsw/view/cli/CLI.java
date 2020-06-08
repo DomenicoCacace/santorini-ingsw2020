@@ -215,7 +215,6 @@ public class CLI implements ViewInterface {
      * @param playerData the players data
      */
     public void gameStartScreen(List<Cell> gameBoard, List<PlayerData> playerData) {
-        printer.enterGameMode();
         printer.updateGameData(gameBoard, playerData);
     }
 
@@ -235,8 +234,7 @@ public class CLI implements ViewInterface {
      * @param gameBoard the board to start with
      * @param players information about the players
      */
-    public void refreshGameScreen(List<Cell> gameBoard, List<PlayerData> players) {
-        printer.enterGameMode();
+    public void gameBoardUpdate(List<Cell> gameBoard, List<PlayerData> players) {
         printer.updateGameData(gameBoard, players);
         printer.showGameBoard(gameBoard);
     }

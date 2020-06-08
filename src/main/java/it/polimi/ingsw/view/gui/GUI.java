@@ -159,7 +159,7 @@ public class GUI extends Application implements ViewInterface {
     @Override
     public void gameStartScreen(List<Cell> gameBoard, List<PlayerData> players) {
         //TODO: Print popUp
-        refreshGameScreen(gameBoard, players);
+        gameBoardUpdate(gameBoard, players);
     }
 
     @Override
@@ -341,7 +341,7 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public void refreshGameScreen(List<Cell> gameBoard, List<PlayerData> players) {
+    public void gameBoardUpdate(List<Cell> gameBoard, List<PlayerData> players) {
         Platform.runLater(() -> {
             if (currentView != ViewType.GAME) {
                 setRoot("allMap");

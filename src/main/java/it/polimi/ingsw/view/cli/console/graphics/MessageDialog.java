@@ -18,7 +18,7 @@ public final class MessageDialog extends Dialog {
      * @param message the error message
      */
     public MessageDialog(String message, Window caller) {
-        super("Notification", message, caller);
+        super("Notification", message, caller, "MessageDialog");
     }
 
     /**

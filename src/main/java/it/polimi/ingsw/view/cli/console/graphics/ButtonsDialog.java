@@ -2,7 +2,7 @@ package it.polimi.ingsw.view.cli.console.graphics;
 
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.graphics.components.InputDialog;
-import it.polimi.ingsw.view.cli.console.graphics.components.InteractiveItem;
+import it.polimi.ingsw.view.cli.console.graphics.components.ActiveItem;
 import it.polimi.ingsw.view.cli.console.graphics.components.ReturningButton;
 import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
@@ -35,7 +35,7 @@ public final class ButtonsDialog extends InputDialog {
 
         /*buttonText = buttons.keySet().toArray()[0].toString();*/
         int numOfButtons = buttons.keySet().size();
-        int buttonWidth = InteractiveItem.maxStringLength(new ArrayList<>(buttons.keySet())) + 4;
+        int buttonWidth = ActiveItem.maxStringLength(new ArrayList<>(buttons.keySet())) + 4;
 
         if (stackButtons || numOfButtons > 2) {
             int colOff = findCenter(this.getWidth(), buttonWidth);

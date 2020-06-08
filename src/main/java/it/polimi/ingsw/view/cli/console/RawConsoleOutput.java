@@ -51,6 +51,8 @@ public class RawConsoleOutput {
      * @return the number of <i>clean</i> characters
      */
     private static int actualLength(String str) {
+        if (str == null)
+            return 0;
         int len = 0;
         boolean esc = false;
         for (int pos = 0; pos < str.length(); pos++) {
@@ -139,7 +141,6 @@ public class RawConsoleOutput {
         for (int row = 0; row < matrix.length; row++) {
             for (int col = 0; col < matrix[0].length; col++)
                 Console.out.print(matrix[row][col]);
-            Console.out.println("");
         }
     }
 

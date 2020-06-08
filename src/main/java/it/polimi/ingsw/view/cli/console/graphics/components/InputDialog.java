@@ -10,7 +10,7 @@ public abstract class InputDialog extends Dialog {
     /**
      * Maps all the interactiveItems which
      */
-    protected HashMap<InteractiveItem, String> inputs;
+    protected HashMap<ActiveItem, String> inputs;
 
     /**
      * Default constructor
@@ -25,7 +25,7 @@ public abstract class InputDialog extends Dialog {
      * @param caller  the window which invoked this
      */
     public InputDialog(String title, String message, Window caller) {
-        super(title, message, caller);
+        super(title, message, caller, title);
         inputs = new LinkedHashMap<>();
     }
 
@@ -44,7 +44,7 @@ public abstract class InputDialog extends Dialog {
      * @param caller  the window which invoked this
      */
     public InputDialog(String title, String message, int width, int height, Window caller) {
-        super(title, message, width, height, caller);
+        super(title, message, width, height, caller, title);
         inputs = new LinkedHashMap<>();
     }
 
@@ -62,12 +62,12 @@ public abstract class InputDialog extends Dialog {
      * @param caller  the window which invoked this
      */
     public InputDialog(String title, String message, int width, int height, CursorPosition initCoord, Window caller) {
-        super(title, message, width, height, initCoord, caller);
+        super(title, message, width, height, initCoord, caller, title);
         inputs = new LinkedHashMap<>();
     }
 
 
-    public HashMap<InteractiveItem, String> getInputs() {
+    public HashMap<ActiveItem, String> getInputs() {
         return inputs;
     }
 
@@ -103,13 +103,13 @@ public abstract class InputDialog extends Dialog {
     }
 
     /**
-     * Provides the first {@linkplain #interactiveItems} textColor
+     * Provides the first {@linkplain #activeItems} textColor
      *
      * @return the first item's text color scheme
      */
     @Override
     public String getTextColor() {
-        return interactiveItems.getFirst().getTextColor();
+        return activeItems.getFirst().getTextColor();
     }
 
     /**
@@ -118,7 +118,7 @@ public abstract class InputDialog extends Dialog {
     @Override
     public void show() {
         super.show();
-        interactiveItems.forEach(InteractiveItem::show);
+        activeItems.forEach(ActiveItem::show);
         currentInteractiveItem().onSelect();
     }
 

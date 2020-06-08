@@ -6,7 +6,7 @@ import it.polimi.ingsw.view.cli.console.CursorPosition;
 /**
  * A <i>clickable</i> button
  */
-public abstract class Button extends InteractiveItem {
+public abstract class Button extends ActiveItem {
 
     private final String text;
 
@@ -20,7 +20,7 @@ public abstract class Button extends InteractiveItem {
      * @param text      the button text
      */
     protected Button(Dialog parent, CursorPosition initCoord, String text) {
-        super(parent, initCoord, text.length() + 4, 3);
+        super(parent, initCoord, text.length() + 4, 3, text);
         this.text = text;
     }
 
@@ -36,7 +36,7 @@ public abstract class Button extends InteractiveItem {
      * @param text      the button text
      */
     protected Button(Dialog parent, CursorPosition initCoord, int width, int height, String text) {
-        super(parent, initCoord, width, height);
+        super(parent, initCoord, width, height, text);
         this.text = text;
     }
 
@@ -52,7 +52,7 @@ public abstract class Button extends InteractiveItem {
      * Shows the button on the screen
      */
     @Override
-    protected void show() {
+    public void show() {
         super.show();
         drawText();
         drawBorders();

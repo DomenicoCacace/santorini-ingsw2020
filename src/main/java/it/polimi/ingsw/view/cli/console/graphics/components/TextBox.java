@@ -6,7 +6,7 @@ import it.polimi.ingsw.view.cli.console.CursorPosition;
 /**
  * A field to be filled with text by the user
  */
-public class TextBox extends InteractiveItem {
+public class TextBox extends ActiveItem {
 
     private final String label;
     private String inputText;
@@ -21,7 +21,7 @@ public class TextBox extends InteractiveItem {
      * @param label     the textBox label
      */
     public TextBox(InputDialog parent, CursorPosition initCoord, String label) {
-        super(parent, initCoord);
+        super(parent, initCoord, label);
         this.label = label;
         parent.getInputs().put(this, this.inputText);
     }
@@ -38,7 +38,7 @@ public class TextBox extends InteractiveItem {
      * @param height    the label height
      */
     public TextBox(InputDialog parent, CursorPosition initCoord, int width, int height, String label) {
-        super(parent, initCoord, width, height);
+        super(parent, initCoord, width, height, label);
         this.label = label;
         parent.getInputs().put(this, this.inputText);
     }

@@ -3,10 +3,7 @@ package it.polimi.ingsw.view.cli.console.graphics;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
-import it.polimi.ingsw.view.cli.console.graphics.components.PrintableObject;
-import it.polimi.ingsw.view.cli.console.graphics.components.Toggleable;
-import it.polimi.ingsw.view.cli.console.graphics.components.Window;
-import it.polimi.ingsw.view.cli.console.graphics.components.WindowItem;
+import it.polimi.ingsw.view.cli.console.graphics.components.*;
 import it.polimi.ingsw.view.cli.console.prettyPrinters.FancyPrinter;
 
 import java.io.IOException;
@@ -16,17 +13,18 @@ import java.util.List;
 /**
  * An invisible overlay to select the cells on the board
  */
-public class GridOverlay extends WindowItem implements Toggleable {
+public class GridOverlay extends ActiveItem implements Toggleable {
 
     private final FancyPrinter printer;
     private final List<PrintableObject> cellOverlays;   // 0: red; 1: blue; 2: yellow;
+    private List<Cell> highlightedCells = new ArrayList<>();
 
     // coordinates range from 0 to 4
     private int coordX;
     private int coordY;
 
-    public GridOverlay(Window parent, CursorPosition initCoord, FancyPrinter printer) throws IOException {
-        super(parent, initCoord);
+    public GridOverlay(Window parent, CursorPosition initCoord, FancyPrinter printer, String ID) throws IOException {
+        super(parent, initCoord, ID);
         this.printer = printer;
         cellOverlays = new ArrayList<>();
         cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellRedBorder")),
@@ -35,6 +33,16 @@ public class GridOverlay extends WindowItem implements Toggleable {
                 Integer.parseInt(properties.getProperty("cellWidth")), Integer.parseInt(properties.getProperty("cellHeight"))));*/
         /*cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellYellowBorder")),
                 Integer.parseInt(properties.getProperty("cellWidth")), Integer.parseInt(properties.getProperty("cellHeight"))));*/
+    }
+
+
+    /**
+     * Sets the cells to highlight, valid until this gets disabled
+     *
+     * @param highlightedCells the cells to highlight
+     */
+    public void setHighlightedCells(List<Cell> highlightedCells) {
+        this.highlightedCells = highlightedCells;
     }
 
     /**
@@ -48,7 +56,26 @@ public class GridOverlay extends WindowItem implements Toggleable {
      * Deselects the current cell
      */
     private void deselect() {
-        printer.deselectCell(new Cell(coordX, coordY));
+        if (highlightedCells.stream().anyMatch(c -> c.getCoordX() == coordX && c.getCoordY() == coordY))
+            printer.selectCell(new Cell(coordX, coordY), cellOverlays.get(0));  //FIXME: use another color
+        else
+            printer.deselectCell(new Cell(coordX, coordY));
+    }
+
+    /**
+     * Defines the object behaviour when selected
+     */
+    @Override
+    public void onSelect() {
+        enable();
+    }
+
+    /**
+     * Defines the object behaviour when released
+     */
+    @Override
+    public void onRelease() {
+        onDisable();
     }
 
     /**
@@ -56,7 +83,6 @@ public class GridOverlay extends WindowItem implements Toggleable {
      */
     @Override
     public void enable() {
-        Console.in.addKeyEventListener(this);
         coordX = 2;
         coordY = 2;
         select();
@@ -67,8 +93,9 @@ public class GridOverlay extends WindowItem implements Toggleable {
      */
     @Override
     public void onDisable() {
-        parent.getCli().evaluateInput(String.valueOf(coordX + 1));
-        parent.getCli().evaluateInput(String.valueOf(coordY + 1));
+        ((Window) parent).getCli().evaluateInput(String.valueOf(coordY + 1));
+        ((Window) parent).getCli().evaluateInput(String.valueOf(coordX + 1));
+        this.highlightedCells = new ArrayList<>();
     }
 
 
@@ -110,5 +137,13 @@ public class GridOverlay extends WindowItem implements Toggleable {
         deselect();
         coordX = (5 +coordX - 1) % 5;
         select();
+    }
+
+    /**
+     * Returns the currently selected cell to the inputManager
+     */
+    @Override
+    public void onCarriageReturn() {
+        onDisable();
     }
 }

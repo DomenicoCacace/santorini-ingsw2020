@@ -29,7 +29,7 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
     public DetailedSingleChoiceListDialog(String title, String message, Window caller, LinkedHashMap<String, LinkedList<String>> options) {
         super(title, message, caller, new ArrayList<>(options.keySet()));
         this.options = options;
-        detailPane = new DetailPane(this, 30, 20);
+        detailPane = new DetailPane(this, 30, 20, "DetailPane");
         detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow() + 1, this.getInitCoord().getCol() + this.getWidth() - 2);
         addNonInteractiveItem(detailPane);
     }

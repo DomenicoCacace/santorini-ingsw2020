@@ -9,7 +9,7 @@ import it.polimi.ingsw.view.cli.console.KeyEventListener;
 /**
  * An abstraction for any object containable in a Window
  */
-public abstract class InteractiveItem extends WindowItem implements Toggleable {
+public abstract class ActiveItem extends WindowItem implements Toggleable {
 
 
     /**
@@ -19,11 +19,12 @@ public abstract class InteractiveItem extends WindowItem implements Toggleable {
      * <br>
      * The initial coordinates are relative to the object's parent
      *
-     * @param parent    the Dialog containing this
-     * @param initCoord the item coordinates
+     * @param parent    the Window containing this
+     * @param initCoord the item
+     * @param ID the object ID
      */
-    protected InteractiveItem(Dialog parent, CursorPosition initCoord) {
-        super(parent, initCoord);
+    protected ActiveItem(WindowItem parent, CursorPosition initCoord, String ID) {
+        super(parent, initCoord, ID);
     }
 
     /**
@@ -33,13 +34,14 @@ public abstract class InteractiveItem extends WindowItem implements Toggleable {
      * <br>
      * The initial coordinates are relative to the object's parent
      *
-     * @param parent    the Dialog containing this
+     * @param parent    the Window containing this
      * @param initCoord the item coordinates
      * @param width     the object width
      * @param height    the object height
+     * @param ID the object ID
      */
-    protected InteractiveItem(Dialog parent, CursorPosition initCoord, int width, int height) {
-        super(parent, initCoord, width, height);
+    protected ActiveItem(Window parent, CursorPosition initCoord, int width, int height, String ID) {
+        super(parent, initCoord, width, height, ID);
     }
 
     /**
@@ -50,7 +52,6 @@ public abstract class InteractiveItem extends WindowItem implements Toggleable {
     public String getBackgroundColor() {
         return parent.getBackgroundColor();
     }
-
 
     /**
      * Defines the object behaviour when selected

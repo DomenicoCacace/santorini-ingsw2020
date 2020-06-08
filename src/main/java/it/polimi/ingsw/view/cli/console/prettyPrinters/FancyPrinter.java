@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
-import it.polimi.ingsw.network.message.Message;
+import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.console.Console;
@@ -22,9 +22,9 @@ import java.util.*;
 public class FancyPrinter extends Printer {
     protected final Console console;
     private final List<Dialog> messageDialogs = new ArrayList<>();
-    private FancyPrinterBoardUtils boardUtils;
+    private final FancyPrinterBoardUtils boardUtils;
 
-
+    private boolean firstTime = true;
     private Status currentStatus;
 
     /**
@@ -36,6 +36,8 @@ public class FancyPrinter extends Printer {
     public FancyPrinter(Console console, CLI cli) throws IOException {
         super(cli);
         this.console = console;
+        boardUtils = new FancyPrinterBoardUtils(this);
+        super.enterGameMode();
     }
 
     /**
@@ -45,7 +47,8 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void printError(String errorMsg) {
-        new ErrorDialog(errorMsg, Console.currentWindow());
+        if (currentStatus != Status.GAME)
+            new ErrorDialog(errorMsg, Console.currentWindow());
     }
 
     /**
@@ -55,9 +58,11 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void printMessage(String msg) {
-        MessageDialog dialog = new MessageDialog(msg, console);
-        messageDialogs.add(dialog);
-        dialog.show();
+        if (currentStatus != Status.GAME) {
+            MessageDialog dialog = new MessageDialog(msg, console);
+            messageDialogs.add(dialog);
+            dialog.show();
+        }
     }
 
     /**
@@ -193,8 +198,7 @@ public class FancyPrinter extends Printer {
         HashMap<String, String> buttons = new LinkedHashMap<>();
         buttons.put("NO", "n");
         buttons.put("YES", "y");
-        new ButtonsDialog("Reload match", "I found a saved game for you. Doo you want to reload it?", console, buttons, false);
-        currentStatus = Status.GAME;
+        new ButtonsDialog("Reload match", "I found a saved game for you. Do you want to reload it?", console, buttons, false).show();
     }
 
     /**
@@ -236,17 +240,27 @@ public class FancyPrinter extends Printer {
         new SingleChoiceListDialog("Starting player", "Choose which player will play first", console, players).show();
     }
 
+    /**
+     * Updates information about the game and the players
+     *
+     * @param board   the game board
+     * @param players information about the players
+     */
+    @Override
+    public void updateGameData(List<Cell> board, List<PlayerData> players) {
+        super.updateGameData(board, players);
+        boardUtils.setPlayerData(players);
+    }
+
     @Override
     public void enterGameMode() {
-        super.enterGameMode();
-        try {
-            removeStaleMessages();
-            boardUtils = new FancyPrinterBoardUtils(this);
-            Console.addWindow(boardUtils);
-            Console.currentWindow().show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //super.enterGameMode();
+        removeStaleMessages();
+        Console.cursor.setCoordinates(0, 0);
+        Console.cursor.setAsHome();
+        Console.cursor.moveToHome();
+        boardUtils.show();
+        currentStatus = Status.GAME;
     }
 
     /**
@@ -257,7 +271,11 @@ public class FancyPrinter extends Printer {
     @Override
     public void showGameBoard(List<Cell> gameBoard) {
         updateCachedBoard(gameBoard);
-        Console.out.drawMatrix(cachedBoard, boardUtils.getBoardOffset());
+        if (firstTime) {
+            enterGameMode();
+            firstTime = false;
+        }
+        boardUtils.showGameBoard();
     }
 
     /**
@@ -269,11 +287,7 @@ public class FancyPrinter extends Printer {
     @Override
     public void showGameBoard(List<Cell> gameBoard, List<Cell> toHighlight) {
         updateCachedBoard(gameBoard);
-        String[][] tempBoard = cloneMatrix(cachedBoard);
-        for (Cell cell : toHighlight)
-            highlight(cell, tempBoard);
-
-        Console.out.drawMatrix(tempBoard, boardUtils.getBoardOffset());
+        boardUtils.showGameBoard(toHighlight);
     }
 
     /**
@@ -291,7 +305,6 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void placeWorker() {
-        //new MessageDialog("Place your worker", boardUtils).show();
         boardUtils.enableGridInput();
     }
 

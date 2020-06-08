@@ -42,6 +42,7 @@ public abstract class Printer {
     protected final String[][] emptyBoard;
     protected final String[][] cachedBoard;
     protected List<Cell> lastGameBoardPrinted;
+
     Properties properties = new Properties();
 
     /**
@@ -163,7 +164,7 @@ public abstract class Printer {
      * @param board the game board
      * @param players information about the players
      */
-    public final void updateGameData(List<Cell> board, List<PlayerData> players) {
+    public void updateGameData(List<Cell> board, List<PlayerData> players) {
         this.playerData = players;
         setCachedBoard(board);
         showGameBoard(board);
@@ -210,8 +211,8 @@ public abstract class Printer {
     public abstract void placeWorker();
 
     /**
-     * Asks the user to pic a worker
-     * @param cells
+     * Asks the user to pick a worker
+     * @param cells the cells containing the player's workers
      */
     public abstract void chooseWorker(List<Cell> cells);
 
@@ -312,7 +313,7 @@ public abstract class Printer {
      * @param startRow the input row coordinate to start extracting the subMatrix
      * @param startCol the input column coordinate to start extracting the subMatrix
      * @param finalRow the subMatrix number of rows
-     * @param finalRow the subMatrix number of columns
+     * @param finalCol the subMatrix number of columns
      * @return the required subMatrix
      */
     protected String[][] subMatrix(String[][] input, int startRow, int startCol, int finalRow, int finalCol) {

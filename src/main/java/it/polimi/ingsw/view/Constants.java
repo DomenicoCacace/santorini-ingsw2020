@@ -52,6 +52,6 @@ public class Constants {
     // MISC
     public static final String BLINKER = "\033[5m" + '\u2588' + CURSOR_BACK + "\033[25m";
     public static final String STOP_BLINK = "\033[25m";
-    public static final int TIMER_DEFAULT = 600;    //FIXME bring back to 60
+    public static final int TIMER_DEFAULT = 60;
 
 }

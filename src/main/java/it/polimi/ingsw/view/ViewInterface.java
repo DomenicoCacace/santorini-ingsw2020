@@ -142,7 +142,7 @@ public interface ViewInterface {
      * @param gameBoard the board to start with
      * @param players information about the players
      */
-    void refreshGameScreen(List<Cell> gameBoard, List<PlayerData> players);
+    void gameBoardUpdate(List<Cell> gameBoard, List<PlayerData> players);
 
     /**
      * Asks the user to place its worker on the board

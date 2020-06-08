@@ -41,7 +41,7 @@ public final class MultipleChoiceListDialog extends InputDialog {
 
         button = new ClosingButton(this, new CursorPosition(7 + options.size(), colOff), "Confirm");
         addInteractiveItem(button);
-        detailPane = new DetailPane(this, 37, 20);
+        detailPane = new DetailPane(this, 37, 20, "DetailPane");
         detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow() + 1, this.getInitCoord().getCol() + this.getWidth() - 2);
         addNonInteractiveItem(detailPane);
     }
@@ -66,13 +66,13 @@ public final class MultipleChoiceListDialog extends InputDialog {
     public void onQuit() {
         remove();
 
-        for (InteractiveItem item : inputs.keySet()) {
+        for (ActiveItem item : inputs.keySet()) {
             String retVal = inputs.get(item);
             cli.evaluateInput(retVal);
 
             int actualVal = Integer.parseInt(retVal);
 
-            for (InteractiveItem key : inputs.keySet()) {
+            for (ActiveItem key : inputs.keySet()) {
                 if (Integer.parseInt(inputs.get(key)) > actualVal)
                     inputs.replace(key, String.valueOf(Integer.parseInt(inputs.get(key)) - 1));
             }

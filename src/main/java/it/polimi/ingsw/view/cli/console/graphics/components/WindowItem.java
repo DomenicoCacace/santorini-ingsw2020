@@ -3,6 +3,9 @@ package it.polimi.ingsw.view.cli.console.graphics.components;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 import static it.polimi.ingsw.view.Constants.*;
@@ -15,7 +18,22 @@ public abstract class WindowItem extends Rectangle {
     /**
      * The window which invoked the dialog
      */
-    protected final Window parent;
+    protected final WindowItem parent;
+
+    /**
+     * The item ID
+     */
+    protected final String ID;
+
+    /**
+     * A list containing all the interactive items
+     */
+    protected final Deque<ActiveItem> activeItems;
+
+    /**
+     * A list containing all non-interactive items (e.g. {@linkplain DetailPane})
+     */
+    protected final List<WindowItem> passiveItems;
 
     /**
      * Window constructor
@@ -24,10 +42,14 @@ public abstract class WindowItem extends Rectangle {
      * </p>
      *
      * @param parent the Window containing this
+     * @param ID the object ID
      */
-    protected WindowItem(Window parent) {
+    protected WindowItem(Window parent, String ID) {
         super();
         this.parent = parent;
+        this.ID = ID;
+        this.activeItems = new ArrayDeque<>();
+        this.passiveItems = new ArrayList<>();
     }
 
     /**
@@ -39,11 +61,15 @@ public abstract class WindowItem extends Rectangle {
      *
      * @param parent    the Window containing this
      * @param initCoord the item coordinates
+     * @param ID the object ID
      */
-    protected WindowItem(Window parent, CursorPosition initCoord) {
+    protected WindowItem(WindowItem parent, CursorPosition initCoord, String ID) {
         this.parent = parent;
         this.initCoord.setCoordinates(initCoord.getRow() + parent.getInitCoord().getRow(),
                 initCoord.getCol() + parent.getInitCoord().getCol());
+        this.ID = ID;
+        this.activeItems = new ArrayDeque<>();
+        this.passiveItems = new ArrayList<>();
     }
 
     /**
@@ -57,12 +83,63 @@ public abstract class WindowItem extends Rectangle {
      * @param initCoord the item coordinates
      * @param width     the object width
      * @param height    the object height
+     * @param ID  the object ID
      */
-    protected WindowItem(Window parent, CursorPosition initCoord, int width, int height) {
+    protected WindowItem(WindowItem parent, CursorPosition initCoord, int width, int height, String ID) {
         super(initCoord, width, height);
         this.parent = parent;
         this.initCoord.setCoordinates(initCoord.getRow() + parent.getInitCoord().getRow(),
                 initCoord.getCol() + parent.getInitCoord().getCol());
+        this.ID = ID;
+        this.activeItems = new ArrayDeque<>();
+        this.passiveItems = new ArrayList<>();
+    }
+
+    /**
+     * Adds a new interactive item to the items list
+     *
+     * @param item the item to add
+     */
+    protected void addInteractiveItem(ActiveItem item) {
+        activeItems.addLast(item);
+    }
+
+    /**
+     * Adds a new item to the items list
+     *
+     * @param item the item to add
+     */
+    protected void addNonInteractiveItem(WindowItem item) {
+        passiveItems.add(item);
+    }
+
+    /**
+     * Provides the dialog item which is currently selected
+     *
+     * @return the currently selected interactive item
+     */
+    protected ActiveItem currentInteractiveItem() {
+        return activeItems.peekFirst();
+    }
+
+    /**
+     * Retrieves the next item
+     *
+     * @return the next item in the deque
+     */
+    protected ActiveItem nextInteractiveItem() {
+        activeItems.addLast(activeItems.pollFirst());
+        return activeItems.peekFirst();
+    }
+
+    /**
+     * Retrieves the previous item
+     *
+     * @return the previous item in the deque
+     */
+    protected ActiveItem previousInteractiveItem() {
+        activeItems.addFirst(activeItems.pollLast());
+        return activeItems.peekFirst();
     }
 
     /**
@@ -80,8 +157,17 @@ public abstract class WindowItem extends Rectangle {
      *
      * @return this item's parent
      */
-    public Window getParent() {
+    public WindowItem getParent() {
         return parent;
+    }
+
+    /**
+     * <i>ID</i> getter
+     *
+     * @return the WindowItem ID
+     */
+    public String getID() {
+        return ID;
     }
 
     /**
@@ -121,7 +207,7 @@ public abstract class WindowItem extends Rectangle {
     /**
      * Prints the object on the screen
      */
-    protected void show() {
+    public void show() {
         drawBackground();
         drawBorders();
     }
@@ -130,19 +216,24 @@ public abstract class WindowItem extends Rectangle {
      * Removes itself, restoring the underlying dialogs
      */
     public void remove() {
-        Window caller = this.parent;
-        int row;
-        int col = initCoord.getCol();
-        do {
+        try {
+            Window caller = ((Window) this.parent);
+            int row;
+            int col = initCoord.getCol();
+            do {
 
-            for (row = initCoord.getRow(); row < initCoord.getRow() + Math.min(caller.height - initCoord.getRow(), height + 1); row++) {
-                for (col = initCoord.getCol(); col < initCoord.getCol() + Math.min(caller.width - initCoord.getCol(), width + 1); col++)
-                    Console.out.printAt(new CursorPosition(row, col), caller.background[row][col]);
-            }
-            if (caller.parent != null)
-                caller = caller.parent;
-            else
-                break;
-        } while (row < initCoord.getRow() + height && col < initCoord.getCol() + width);
+                for (row = initCoord.getRow(); row < initCoord.getRow() + Math.min(caller.height - initCoord.getRow(), height + 1); row++) {
+                    for (col = initCoord.getCol(); col < initCoord.getCol() + Math.min(caller.width - initCoord.getCol(), width + 1); col++)
+                        Console.out.printAt(new CursorPosition(row, col), caller.background[row][col]);
+                }
+                if (caller.parent != null)
+                    caller = ((Window) caller.parent);
+                else
+                    break;
+            } while (row < initCoord.getRow() + height && col < initCoord.getCol() + width);
+        }
+        catch (ClassCastException e) {
+            System.exit(-1);
+        }
     }
 }

@@ -328,7 +328,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void onGameBoardUpdate(GameBoardUpdate message) {
         gameBoard = message.getGameBoard();
-        view.refreshGameScreen(message.getGameBoard(), message.getPlayers());
+        view.gameBoardUpdate(message.getGameBoard(), message.getPlayers());
     }
 
     /**
