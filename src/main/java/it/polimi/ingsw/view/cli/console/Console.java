@@ -15,7 +15,7 @@ public class Console extends Window implements KeyEventListener {
     public static final CursorPosition cursor = new CursorPosition();    //fixme make private
     private static final String[] rawMode = {"/bin/sh", "-c", "stty raw -echo </dev/tty"};
     private static final String[] saneMode = {"/bin/sh", "-c", "stty sane echo </dev/tty"};
-    private static final Stack<Window> windowsOpen = new Stack<>();
+    public static final Stack<Window> windowsOpen = new Stack<>();
 
     /**
      * Default constructor

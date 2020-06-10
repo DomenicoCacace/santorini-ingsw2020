@@ -281,15 +281,25 @@ public abstract class Printer {
      * this method updates the cached board to a new provided version, ready to be printed.
      *
      * @param board the updated board
+     * @return a list containing the updated cells
      */
-    protected void updateCachedBoard(List<Cell> board) {
+    protected List<Cell> updateCachedBoard(List<Cell> board) {
+        List<Cell> updatedCells = new ArrayList<>();
+        Cell currentCell;
         for (int i = 0; i < board.size(); i++) {
-            if (!board.get(i).equals(lastGameBoardPrinted.get(i)))
-                placeBlock(board.get(i));
-            if (board.get(i).getOccupiedBy() != lastGameBoardPrinted.get(i).getOccupiedBy())
-                placeWorker(board.get(i));
+            currentCell = board.get(i);
+            if (!board.get(i).equals(lastGameBoardPrinted.get(i))) {
+                placeBlock(currentCell);
+                updatedCells.add(currentCell);
+            }
+            if (currentCell.getOccupiedBy() != lastGameBoardPrinted.get(i).getOccupiedBy()) {
+                placeWorker(currentCell);
+                if (!updatedCells.contains(currentCell))
+                    updatedCells.add(currentCell);
+            }
         }
         lastGameBoardPrinted = board;
+        return updatedCells;
     }
 
     /**

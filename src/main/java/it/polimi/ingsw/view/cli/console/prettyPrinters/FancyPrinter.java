@@ -70,15 +70,10 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void printStartingScreen() {
-        Console.cursor.setCoordinates(0, 0);
-        Console.cursor.setAsHome();
-        Console.cursor.moveToHome();
-
         currentStatus = Status.LOGIN;
         //FIXME load path from properties
         console.addToBackground(mainLogo, new CursorPosition(2, (console.getWidth() - 151) / 2));
-        console.show();
-
+        switchToConsole();
     }
 
     /**
@@ -132,6 +127,7 @@ public class FancyPrinter extends Printer {
     @Override
     public void lobbyOptions(List<String> options) {
         removeStaleMessages();
+        switchToConsole();
         HashMap<String, String> buttons = new LinkedHashMap<>();
         options.forEach(o -> buttons.put(o, String.valueOf(options.indexOf(o) + 1)));
         new ButtonsDialog("Lobby options", "Login successful\nChoose what action to do", console, buttons, true).show();
@@ -254,7 +250,8 @@ public class FancyPrinter extends Printer {
 
     @Override
     public void enterGameMode() {
-        //super.enterGameMode();
+        /*if (Console.windowsOpen.contains(console))
+            Console.closeWindow(console);*/
         removeStaleMessages();
         Console.cursor.setCoordinates(0, 0);
         Console.cursor.setAsHome();
@@ -442,5 +439,17 @@ public class FancyPrinter extends Printer {
      */
     private enum Status {
         LOGIN, LOBBY, GAME
+    }
+
+    private void switchToConsole() {
+        if (boardUtils != null) {
+            if (Console.windowsOpen.contains(boardUtils))
+                Console.closeWindow(boardUtils);
+
+            Console.cursor.setCoordinates(0, 0);
+            Console.cursor.setAsHome();
+            Console.cursor.moveToHome();
+            console.show();
+        }
     }
 }

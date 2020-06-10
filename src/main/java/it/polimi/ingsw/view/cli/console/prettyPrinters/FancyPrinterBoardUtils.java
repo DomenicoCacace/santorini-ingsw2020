@@ -74,7 +74,7 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
                     players.put(p.getName(), description);
                 });
 
-                playerInfo = new ListPane(this, CursorPosition.offset(boardOffset, 0, printer.boardWidth + 2), 65, 20, players, "PlayersDetails");
+                playerInfo = new ListPane(this, CursorPosition.offset(boardOffset, 0, printer.boardWidth + 2), 65, 10, players, "PlayersDetails");
                 playerInfo.show();
                 activeItems.addLast(playerInfo);
                 playerInfoSet = true;

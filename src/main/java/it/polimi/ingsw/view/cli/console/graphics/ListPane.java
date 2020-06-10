@@ -19,7 +19,7 @@ public class ListPane extends ActiveItem implements KeyEventListener {
 
         List<String> items = new ArrayList<>(options.keySet());
         items.forEach(s -> addInteractiveItem(new SimpleListItem(this, new CursorPosition(7 + items.indexOf(s), colOff), s)));
-        detailPane = new DetailPane(this, width, height, "DetailPane");
+        detailPane = new DetailPane(this, width, 2*height, "DetailPane");
         detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow() + height + 1, this.getInitCoord().getCol());
         addNonInteractiveItem(detailPane);
     }
