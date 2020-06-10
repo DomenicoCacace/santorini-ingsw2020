@@ -1,9 +1,9 @@
 package it.polimi.ingsw.view.gui.viewController;
 
 import it.polimi.ingsw.view.Constants;
-import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.gui.GUI;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -111,5 +111,9 @@ public class LoginController {
     }
 
 
+    public void showGameRules() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, Constants.GAME_RULES);
+        alert.showAndWait();
+    }
 }
 

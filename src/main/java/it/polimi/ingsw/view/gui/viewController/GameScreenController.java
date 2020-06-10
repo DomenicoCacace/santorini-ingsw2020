@@ -5,6 +5,7 @@ import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.gui.utils.MapTileImage;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
@@ -110,5 +111,10 @@ public class GameScreenController {
 
     public void onQuit() {
         gui.setInputString(Constants.QUIT);
+    }
+
+    public void showGameRules() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, Constants.GAME_RULES);
+        alert.showAndWait();
     }
 }

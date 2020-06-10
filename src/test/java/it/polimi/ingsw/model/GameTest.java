@@ -26,7 +26,6 @@ class GameTest {
     private Game game;
     private final Map playermap = new LinkedHashMap<>();
 
-
     @BeforeEach
     void setUp() throws AddingFailedException {
         gods = new ArrayList<>();
@@ -59,13 +58,9 @@ class GameTest {
         players.get(2).addWorker(game.getGameBoard().getCell(2, 4));
         players.get(2).addWorker(game.getGameBoard().getCell(1, 2));
 
-
         game.setCurrentTurn(new Turn(0, players.get(players.size() - 1)));
         game.generateNextTurn();
-
     }
-
-
 
     @Test
     void NextTurnGenerationTest() {
@@ -81,54 +76,11 @@ class GameTest {
         }
     }
 
-/*
-    @Test
-    void persistenceTest() throws IOException, IllegalActionException {
-
-        Worker currentWorker = game.getPlayers().get(0).getWorkers().get(0);
-        Cell targetCell = game.getGameBoard().getCell(2, 3);
-        Action moveAction = new MoveAction(currentWorker, targetCell);
-        moveAction.getValidation(game);
-        game = game.restoreState();
-
-        currentWorker = game.getPlayers().get(0).getWorkers().get(0);
-        assertEquals(game.getGameBoard().getCell(2,3), game.getPlayers().get(0).getWorkers().get(0).getPosition());
-        assertEquals(game.getGameBoard().getCell(2,3), currentWorker.getPosition());
-        targetCell = game.getGameBoard().getCell(1, 3);
-        moveAction= new MoveAction(currentWorker,targetCell);
-        try{
-            moveAction.getValidation(game);
-        } catch (IllegalActionException e){
-            assertNotNull(e);
-        }
-        assertEquals(game.getGameBoard().getCell(2,3), currentWorker.getPosition());
-
-        game  = game.restoreState();
-
-        currentWorker = game.getPlayers().get(0).getWorkers().get(0);
-        targetCell = game.getGameBoard().getCell(3, 3);
-        moveAction = new MoveAction(currentWorker, targetCell);
-        assertEquals(game.getGameBoard().getCell(2,3), currentWorker.getPosition());
-
-        game.generateNextTurn();
-        game.generateNextTurn();
-        currentWorker=game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
-        targetCell=game.getGameBoard().getCell(2,3);
-        moveAction = new MoveAction(currentWorker, targetCell);
-        try{
-            moveAction.getValidation(game);
-        } catch (IllegalActionException e){
-            assertNotNull(e);
-        }
-    }
-*/
     @Test
     void correctLoseManagement3PlayersTest() {
-
         game.getGameBoard().getCell(3,3).setBlock(Block.LEVEL3);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
         game.generateNextTurn();
-
 
         assertEquals(game.getCurrentTurn().getTurnNumber(), 3);
         assertEquals(game.getPlayers().size(), 2);

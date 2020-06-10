@@ -82,26 +82,6 @@ public class PushTest {
     }
 
     @Test
-    void getWalkableCellsTest() throws AddingFailedException {
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
-        game.generateNextTurn();
-        Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
-
-        // TODO: assert forSystem.out.println(game.getWalkableCells(currentWorker));
-    }
-
-    @Test
-    void getBuildableCellsTest() throws IOException, AddingFailedException {
-        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
-        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
-        game.generateNextTurn();
-        Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
-
-        // TODO: assert for System.out.println(game.getBuildableCells(currentWorker));
-    }
-
-    @Test
     void cannotPushOutsideTest() throws IOException, AddingFailedException, IllegalActionException {
         players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
