@@ -4,7 +4,7 @@
     <entry key="height">20</entry>
     <entry key="width">40</entry>
     <entry key="bgColorLight">[48;5;12m</entry> <!--Turquoise background-->
-    <entry key="bgColorDark">[48;5;12m</entry> <!--Turquoise background-->
+    <entry key="bgColorDark">[48;5;9m</entry> <!--Red background-->
     <entry key="fgColorDark">[38;2;0;0;0m</entry>   <!--Black foreground-->
-    <entry key="fgColorLight">[38;5;231m</entry>   <!--White foreground-->
+    <entry key="fgColorLight">[38;2;0;0;0m</entry>   <!--White foreground-->
 </properties>

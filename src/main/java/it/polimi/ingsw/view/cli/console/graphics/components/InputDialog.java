@@ -171,5 +171,4 @@ public abstract class InputDialog extends Dialog {
     public void onArrowDown() {
         onArrowRight();
     }
-
 }

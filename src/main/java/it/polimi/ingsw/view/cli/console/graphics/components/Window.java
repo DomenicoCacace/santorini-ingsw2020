@@ -106,6 +106,7 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      *
      * @return the cli containing this
      */
+    @Override
     public CLI getCli() {
         return cli;
     }
@@ -135,6 +136,8 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * @return the window background
      */
     private String[][] setBackground(String defaultString) {
+        Console.cursor.setCoordinates(0, 0);
+        Console.cursor.moveCursorTo();
         String[][] newScene = new String[height][width];
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
@@ -152,10 +155,17 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * @param coord the starting coordinates of the scene
      */
     public void addToBackground(PrintableObject obj, CursorPosition coord) {
+        Console.cursor.setCoordinates(0, 0);
+        Console.cursor.moveCursorTo();
         String[][] object = obj.getObject();
         for (int row = coord.getRow(); row < Math.min(obj.getHeight() + coord.getRow(), height); row++) {
-            for (int col = coord.getCol(); col < Math.min(obj.getWidth() + coord.getCol(), width); col++)
-                background[row][col] = object[row - coord.getRow()][col - coord.getCol()];
+            for (int col = coord.getCol(); col < Math.min(obj.getWidth() + coord.getCol(), width); col++) {
+                String val = object[row - coord.getRow()][col - coord.getCol()];
+                background[row][col] = val;
+                if (val.contains(ANSI_RESET)) {
+                    background[row][col] = getBackgroundColor() + " ";
+                }
+            }
         }
     }
 

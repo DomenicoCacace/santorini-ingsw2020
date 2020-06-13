@@ -22,8 +22,9 @@ import static it.polimi.ingsw.view.Constants.ANSI_RESET;
  */
 public abstract class Printer {
 
-    public static final int sceneWidth = 211;
-    public static final int sceneHeight = 63;
+    public static final int sceneWidth = 190;
+    public static final int sceneHeight = 62;
+
     /**
      * The UI which created the printer
      */

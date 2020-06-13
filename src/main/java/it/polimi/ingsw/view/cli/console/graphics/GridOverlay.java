@@ -56,7 +56,7 @@ public class GridOverlay extends ActiveItem implements Toggleable {
      * Deselects the current cell
      */
     private void deselect() {
-        if (highlightedCells.stream().anyMatch(c -> c.getCoordX() == coordX && c.getCoordY() == coordY))
+        if (highlightedCells.stream().anyMatch(c -> c.getCoordX() == coordY && c.getCoordY() == coordX))
             printer.selectCell(new Cell(coordX, coordY), cellOverlays.get(0));  //FIXME: use another color
         else
             printer.deselectCell(new Cell(coordX, coordY));
@@ -85,7 +85,6 @@ public class GridOverlay extends ActiveItem implements Toggleable {
     public void enable() {
         coordX = 2;
         coordY = 2;
-        select();
     }
 
     /**
@@ -93,6 +92,8 @@ public class GridOverlay extends ActiveItem implements Toggleable {
      */
     @Override
     public void onDisable() {
+        deselect();
+        highlightedCells.forEach(c -> printer.deselectCell(new Cell(c.getCoordX(), c.getCoordY())));
         ((Window) parent).getCli().evaluateInput(String.valueOf(coordY + 1));
         ((Window) parent).getCli().evaluateInput(String.valueOf(coordX + 1));
         this.highlightedCells = new ArrayList<>();
@@ -146,4 +147,10 @@ public class GridOverlay extends ActiveItem implements Toggleable {
     public void onCarriageReturn() {
         onDisable();
     }
+
+    /**
+     * Prints the object on the screen
+     */
+    @Override
+    public void show() {}
 }

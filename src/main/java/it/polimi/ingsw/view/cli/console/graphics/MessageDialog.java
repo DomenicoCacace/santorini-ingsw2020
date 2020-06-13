@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.cli.console.graphics;
 
 
+import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.graphics.components.Dialog;
 import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
@@ -19,6 +20,10 @@ public final class MessageDialog extends Dialog {
      */
     public MessageDialog(String message, Window caller) {
         super("Notification", message, caller, "MessageDialog");
+    }
+
+    public MessageDialog(String message, Window caller, int width, int height, CursorPosition initCoord) {
+        super("Notification", message, width, height, initCoord, caller, "MessageDialog");
     }
 
     /**

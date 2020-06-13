@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.cli.console.graphics.components;
 
+import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 
@@ -93,6 +94,15 @@ public abstract class WindowItem extends Rectangle {
         this.ID = ID;
         this.activeItems = new ArrayDeque<>();
         this.passiveItems = new ArrayList<>();
+    }
+
+    /**
+     * <i>cli</i> getter
+     *
+     * @return null, if not overridden
+     */
+    protected CLI getCli() {
+        return null;
     }
 
     /**

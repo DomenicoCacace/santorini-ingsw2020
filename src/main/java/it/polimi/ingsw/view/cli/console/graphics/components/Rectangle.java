@@ -45,8 +45,8 @@ public abstract class Rectangle {
     protected Rectangle() {
         loadPropertiesFile();
         color = new Color(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + ".xml"));
-        height = Integer.parseInt(properties.getProperty("height", "61"));
-        width = Integer.parseInt(properties.getProperty("width", "211"));
+        height = Integer.parseInt(properties.getProperty("height", "63"));
+        width = Integer.parseInt(properties.getProperty("width", "190"));
         initCoord.setCoordinates(Integer.parseInt(properties.getProperty("startRow", "0")),
                 Integer.parseInt(properties.getProperty("startCol", "0")));
     }
@@ -127,7 +127,7 @@ public abstract class Rectangle {
     }
 
     /**
-     * <i>backfroundColor</i> getter
+     * <i>backgroundColor</i> getter
      *
      * @return the rectangle dark color scheme
      */

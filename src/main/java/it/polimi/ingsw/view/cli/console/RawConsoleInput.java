@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.cli.console;
 
+import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.Constants;
 
 import java.security.Key;
@@ -125,6 +126,10 @@ public class RawConsoleInput {
                 if (Console.in.currentBufferSize() > 0)
                     semaphore.release();
                 break;
+            case Constants.HORIZONTAL_TAB:
+                for (KeyEventListener l : keyEventListeners)
+                    l.onTab();
+                break;
             default:
                 break;
         }
@@ -139,12 +144,6 @@ public class RawConsoleInput {
                     if (inputBuffer.length() > 0)
                         inputBuffer.deleteCharAt(inputBuffer.length() - 1);
                     break;
-
-                case Constants.HORIZONTAL_TAB:
-                    for (KeyEventListener l : keyEventListeners)
-                        l.onTab();
-                    break;
-
 
                 default:
                     if (input > 0x1F && currentBufferSize() < maxBufferSize) {  // printable characters
@@ -204,22 +203,6 @@ public class RawConsoleInput {
             this.keyEventListeners.add(listener);
     }
 
-    public void exclusiveKeyEventListener(KeyEventListener listener) {
-        listenersToRestore.addAll(keyEventListeners);
-        for (KeyEventListener l : keyEventListeners)
-            keyEventListeners.remove(l);
-
-        keyEventListeners.add(listener);
-    }
-
-    public void restoreKeyEventListeners() {
-        for (KeyEventListener l : keyEventListeners)
-            keyEventListeners.remove(l);
-        keyEventListeners.addAll(listenersToRestore);
-        for (KeyEventListener l : listenersToRestore)
-            listenersToRestore.remove(l);
-    }
-
     /**
      * Removes a key event listener
      * <br>
@@ -253,7 +236,7 @@ public class RawConsoleInput {
      * <li>Input disabled: no echo is provided, "locking" the cursor in place; the console just <i>ignores</i>
      * the keystrokes, not filling the buffer.</li>
      * </ul>
-     * Escape sequences are always read.
+     * Escape sequences are always evaluated.
      *
      * @return true if the input is enabled, false otherwise
      */

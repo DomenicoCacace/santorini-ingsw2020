@@ -40,7 +40,7 @@ public abstract class ActiveItem extends WindowItem implements Toggleable {
      * @param height    the object height
      * @param ID the object ID
      */
-    protected ActiveItem(Window parent, CursorPosition initCoord, int width, int height, String ID) {
+    protected ActiveItem(WindowItem parent, CursorPosition initCoord, int width, int height, String ID) {
         super(parent, initCoord, width, height, ID);
     }
 

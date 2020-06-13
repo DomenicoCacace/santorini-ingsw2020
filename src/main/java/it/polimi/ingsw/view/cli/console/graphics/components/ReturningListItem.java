@@ -14,7 +14,7 @@ public class ReturningListItem extends ListItem {
      * @param initCoord the initial coordinates
      * @param item      the item's string
      */
-    public ReturningListItem(InputDialog parent, CursorPosition initCoord, String item, int retVal) {
+    public ReturningListItem(WindowItem parent, CursorPosition initCoord, String item, int retVal) {
         super(parent, initCoord, item, retVal);
     }
 
@@ -24,6 +24,6 @@ public class ReturningListItem extends ListItem {
     @Override
     public void onCarriageReturn() {
         parent.remove();
-        ((InputDialog) parent).getCli().evaluateInput(String.valueOf(retVal));
+        parent.getCli().evaluateInput(String.valueOf(retVal));
     }
 }

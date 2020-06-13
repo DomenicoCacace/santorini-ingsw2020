@@ -21,7 +21,7 @@ public class ListItem extends SimpleListItem {
      * @param initCoord the initial coordinates
      * @param item      the item's string
      */
-    public ListItem(InputDialog parent, CursorPosition initCoord, String item, int retVal) {
+    public ListItem(WindowItem parent, CursorPosition initCoord, String item, int retVal) {
         super(parent, initCoord, item);
         this.retVal = retVal;
     }

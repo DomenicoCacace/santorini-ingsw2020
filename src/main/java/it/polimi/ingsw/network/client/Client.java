@@ -74,8 +74,7 @@ public class Client {
      *
      * @param viewInterface the UI to use
      */
-    public static void
-    initClient(ViewInterface viewInterface) {
+    public static void initClient(ViewInterface viewInterface) {
         Client client = new Client(viewInterface);
         viewInterface.printLogo();
         List<String> savedUsers = new ArrayList<>();

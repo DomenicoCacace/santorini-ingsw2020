@@ -1,14 +1,13 @@
 package it.polimi.ingsw.view.cli.console.prettyPrinters;
 
+import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.KeyEventListener;
-import it.polimi.ingsw.view.cli.console.graphics.ListPane;
-import it.polimi.ingsw.view.cli.console.graphics.SingleChoiceListDialog;
-import it.polimi.ingsw.view.cli.console.graphics.GridOverlay;
+import it.polimi.ingsw.view.cli.console.graphics.*;
 import it.polimi.ingsw.view.cli.console.graphics.components.*;
 
 import java.io.IOException;
@@ -25,8 +24,11 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
     private final FancyPrinter printer;
     private final CursorPosition boardOffset;
 
+
     private final GridOverlay gridOverlay;
     private ListPane playerInfo;
+    private final LoggerPane messages;
+    private SingleChoiceListPane selector;
     private boolean playerInfoSet = false;
 
 
@@ -35,11 +37,22 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
         super(printer.console, "BoardPrinter");
         Console.in.disableConsoleInput();
         this.printer = printer;
+        this.messages = new LoggerPane(this, new CursorPosition(2,124), 64, 25, "Logger");
         this.initCoord.setCoordinates(0, 0);
         boardOffset = new CursorPosition(1, 1);
         this.addToBackground(new PrintableObject(printer.getClass().getResourceAsStream(properties.getProperty("emptyBoardPath")), printer.boardWidth, printer.boardHeight), boardOffset);
         gridOverlay = new GridOverlay(printer.console, boardOffset, printer, "BoardOverlay");
         passiveItems.add(gridOverlay);
+    }
+
+    /**
+     * Shows the window on the console
+     */
+    @Override
+    public void show() {
+        super.show();
+        activeItems.forEach(WindowItem::show);
+        messages.show();
     }
 
     /**
@@ -51,12 +64,18 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
         return boardOffset;
     }
 
-    /**
-     * Enables the user to select a cell, using a {@linkplain GridOverlay}
-     */
+
     public void enableGridInput() {
         activeItems.addFirst(gridOverlay);
         gridOverlay.enable();
+    }
+
+    /**
+     * Enables the user to select a cell, using a {@linkplain GridOverlay}
+     */
+    public void enableGridInput(List<Cell> highlighted) {
+        enableGridInput();
+        gridOverlay.setHighlightedCells(highlighted);
     }
 
     public void setPlayerData(List<PlayerData> playerData) {
@@ -74,7 +93,7 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
                     players.put(p.getName(), description);
                 });
 
-                playerInfo = new ListPane(this, CursorPosition.offset(boardOffset, 0, printer.boardWidth + 2), 65, 10, players, "PlayersDetails");
+                playerInfo = new ListPane(this, new CursorPosition(41, 124), 64, 20, players, "PlayersDetails");
                 playerInfo.show();
                 activeItems.addLast(playerInfo);
                 playerInfoSet = true;
@@ -90,11 +109,30 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
     public void enableActionSelector(List<PossibleActions> actions) {
         List<String> options = new ArrayList<>();
         actions.forEach(a -> options.add(a.toString()));
-        new SingleChoiceListDialog("", "Select an action", this, options, 65, 13, new CursorPosition(43, 124)).show();
+        selector = new SingleChoiceListPane(this, new CursorPosition(19, 124), 63, 13, options, "ActionSelector");
+        activeItems.addFirst(selector);
+        selector.show();
+    }
+
+    public void enableBlockSelector(List<Block> buildableBlocks) {
+        List<String> options = new ArrayList<>();
+        buildableBlocks.forEach(b -> options.add(b.name()));
+        selector = new SingleChoiceListPane(this, new CursorPosition(19, 124), 63, 13, options, "ActionSelector");
+        activeItems.addFirst(selector);
+        selector.show();
+    }
+
+    public void showErrorMessage(String error) {
+        messages.addLogLine(error, true);
+    }
+
+    public void showMessage(String message) {
+        messages.addLogLine(message, false);
     }
 
     public void showGameBoard() {
         Console.out.drawMatrix(printer.cachedBoard, boardOffset);
+        activeItems.forEach(WindowItem::show);
     }
 
     public void showGameBoard(List<Cell> toHighlight) {
@@ -113,6 +151,11 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
         if (currentInteractiveItem().equals(gridOverlay)) {
             activeItems.remove(gridOverlay);
         }
+        if (selector != null) {
+            selector.remove();
+            activeItems.remove(selector);
+            selector = null;
+        }
     }
 
 
@@ -121,8 +164,8 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
      */
     @Override
     public void onTab() {
-        nextInteractiveItem();
-        currentInteractiveItem().onSelect();
+        if (playerInfo != null)
+            playerInfo.onArrowRight();
     }
 
     /**
@@ -132,6 +175,7 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
     public void onArrowUp() {
         if (currentInteractiveItem() != null)
             currentInteractiveItem().onArrowUp();
+
     }
 
     /**
@@ -148,7 +192,7 @@ public class FancyPrinterBoardUtils extends Window implements KeyEventListener  
      */
     @Override
     public void onArrowRight() {
-        if (currentInteractiveItem() != null)
+            if (currentInteractiveItem() != null)
             currentInteractiveItem().onArrowRight();
     }
 

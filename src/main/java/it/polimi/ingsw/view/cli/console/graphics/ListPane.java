@@ -19,8 +19,8 @@ public class ListPane extends ActiveItem implements KeyEventListener {
 
         List<String> items = new ArrayList<>(options.keySet());
         items.forEach(s -> addInteractiveItem(new SimpleListItem(this, new CursorPosition(7 + items.indexOf(s), colOff), s)));
-        detailPane = new DetailPane(this, width, 2*height, "DetailPane");
-        detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow() + height + 1, this.getInitCoord().getCol());
+        detailPane = new DetailPane(this, width, height, "DetailPane");
+        detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow(), this.getInitCoord().getCol());
         addNonInteractiveItem(detailPane);
     }
 
@@ -30,7 +30,6 @@ public class ListPane extends ActiveItem implements KeyEventListener {
      */
     @Override
     public void show() {
-        super.show();
         refreshPane();
     }
 
@@ -51,8 +50,7 @@ public class ListPane extends ActiveItem implements KeyEventListener {
      */
     @Override
     public void onArrowRight() {
-        currentInteractiveItem().onRelease();
-        nextInteractiveItem().onSelect();
+        nextInteractiveItem();
         refreshPane();
     }
 
@@ -61,8 +59,7 @@ public class ListPane extends ActiveItem implements KeyEventListener {
      */
     @Override
     public void onArrowLeft() {
-        currentInteractiveItem().onRelease();
-        previousInteractiveItem().onSelect();
+        previousInteractiveItem();
         refreshPane();
     }
 
@@ -72,8 +69,7 @@ public class ListPane extends ActiveItem implements KeyEventListener {
      */
     @Override
     public void onArrowUp() {
-        currentInteractiveItem().onRelease();
-        previousInteractiveItem().onSelect();
+        previousInteractiveItem();
         refreshPane();
     }
 
@@ -82,8 +78,7 @@ public class ListPane extends ActiveItem implements KeyEventListener {
      */
     @Override
     public void onArrowDown() {
-        currentInteractiveItem().onRelease();
-        nextInteractiveItem().onSelect();
+        nextInteractiveItem();
         refreshPane();
     }
 
@@ -119,11 +114,5 @@ public class ListPane extends ActiveItem implements KeyEventListener {
         this.drawBorders();
     }
 
-    /**
-     * Disables the component
-     */
-    @Override
-    public void onDisable() {
-        this.hideBorders();
-    }
+
 }

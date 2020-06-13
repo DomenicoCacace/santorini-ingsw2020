@@ -21,8 +21,8 @@ import java.util.*;
  */
 public class FancyPrinter extends Printer {
     protected final Console console;
-    private final List<Dialog> messageDialogs = new ArrayList<>();
-    private final FancyPrinterBoardUtils boardUtils;
+    private final List<Dialog> dialogs = new ArrayList<>();
+    private FancyPrinterBoardUtils boardUtils;
 
     private boolean firstTime = true;
     private Status currentStatus;
@@ -36,7 +36,6 @@ public class FancyPrinter extends Printer {
     public FancyPrinter(Console console, CLI cli) throws IOException {
         super(cli);
         this.console = console;
-        boardUtils = new FancyPrinterBoardUtils(this);
         super.enterGameMode();
     }
 
@@ -47,8 +46,14 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void printError(String errorMsg) {
-        if (currentStatus != Status.GAME)
-            new ErrorDialog(errorMsg, Console.currentWindow());
+        if (currentStatus != Status.GAME || boardUtils == null) {
+            ErrorDialog dialog = new ErrorDialog(errorMsg, Console.currentWindow());
+            dialogs.add(dialog);
+            dialog.show();
+        }
+        else {
+            boardUtils.showErrorMessage(errorMsg);
+        }
     }
 
     /**
@@ -58,10 +63,13 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void printMessage(String msg) {
-        if (currentStatus != Status.GAME) {
+        if (currentStatus != Status.GAME || boardUtils == null) {
             MessageDialog dialog = new MessageDialog(msg, console);
-            messageDialogs.add(dialog);
+            dialogs.add(dialog);
             dialog.show();
+        }
+        else {
+            boardUtils.showMessage(msg);
         }
     }
 
@@ -115,7 +123,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void askUsername() {
-        if (currentStatus == Status.LOBBY)
+        if (currentStatus == Status.IN_LOBBY)
             new TextInputDialog("Login", "Insert your username", console, 50, 15, "Username").show();
     }
 
@@ -138,8 +146,9 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void askLobbyName() {
+        removeStaleMessages();
         new TextInputDialog("New Lobby", "Insert the lobby information", console, 50, 24, "Name", "Size").show();
-        currentStatus = Status.LOBBY;
+        currentStatus = Status.CREATING_LOBBY;
     }
 
     /**
@@ -147,6 +156,14 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void askLobbySize() {
+        removeStaleMessages();
+        if (currentStatus == Status.IN_LOBBY) {
+            HashMap<String, String> buttons = new LinkedHashMap<>();
+            buttons.put("2 players", "2");
+            buttons.put("3 players", "3");
+            new ButtonsDialog("Lobby size", "Invalid input\nSelect the lobby size", console, buttons, true).show();
+        }
+        currentStatus = Status.IN_LOBBY;
     }
 
     /**
@@ -157,6 +174,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) {
+        removeStaleMessages();
         LinkedHashMap<String, LinkedList<String>> lobbyDetails = new LinkedHashMap<>();
 
         lobbiesAvailable.forEach((name, details) -> {
@@ -182,7 +200,7 @@ public class FancyPrinter extends Printer {
         });
 
         new DetailedSingleChoiceListDialog("Join Lobby", "ARROW KEYS: navigate lobbies \n ENTER: select lobby", console, lobbyDetails).show();
-        currentStatus = Status.LOBBY;
+        currentStatus = Status.IN_LOBBY;
     }
 
     /**
@@ -206,7 +224,7 @@ public class FancyPrinter extends Printer {
     @Override
     public void chooseGameGods(List<GodData> allGods, int size) {
         removeStaleMessages();
-        if (currentStatus.equals(Status.LOBBY)) {
+        if (currentStatus.equals(Status.IN_LOBBY)) {
             LinkedHashMap<String, LinkedList<String>> godsDetails = generateGodsDescriptions(allGods);
             new MultipleChoiceListDialog("Pick " + size + " Gods", "ARROW KEYS: navigate Gods\nENTER: select/deselect God", console, godsDetails, size).show();
             currentStatus = Status.GAME;
@@ -250,13 +268,14 @@ public class FancyPrinter extends Printer {
 
     @Override
     public void enterGameMode() {
-        /*if (Console.windowsOpen.contains(console))
-            Console.closeWindow(console);*/
         removeStaleMessages();
-        Console.cursor.setCoordinates(0, 0);
-        Console.cursor.setAsHome();
-        Console.cursor.moveToHome();
-        boardUtils.show();
+        try {
+            boardUtils = new FancyPrinterBoardUtils(this);
+            boardUtils.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         currentStatus = Status.GAME;
     }
 
@@ -312,7 +331,7 @@ public class FancyPrinter extends Printer {
     @Override
     public void chooseWorker(List<Cell> cells) {
         highlightWorkers(cells);
-        boardUtils.enableGridInput();
+        boardUtils.enableGridInput(cells);
     }
 
     /**
@@ -334,7 +353,7 @@ public class FancyPrinter extends Printer {
     @Override
     public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
         showGameBoard(gameBoard, walkableCells);
-        boardUtils.enableGridInput();
+        boardUtils.enableGridInput(walkableCells);
     }
 
     /**
@@ -346,7 +365,7 @@ public class FancyPrinter extends Printer {
     @Override
     public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
         showGameBoard(gameBoard, buildableCells);
-        boardUtils.enableGridInput();
+        boardUtils.enableGridInput(buildableCells);
     }
 
     /**
@@ -356,7 +375,7 @@ public class FancyPrinter extends Printer {
      */
     @Override
     public void chooseBlockToBuild(List<Block> buildableBlocks) {
-
+        boardUtils.enableBlockSelector(buildableBlocks);
     }
 
 
@@ -388,6 +407,7 @@ public class FancyPrinter extends Printer {
      * @param cell the cell to disable
      */
     public void deselectCell(Cell cell) {
+        //inverted heere
         int colOffset = verticalWallWidth + (cellWidth+verticalWallWidth)*cell.getCoordX();
         int rowOffset = horizontalWallWidth + (cellHeight+horizontalWallWidth)*cell.getCoordY();
         CursorPosition cellOffset = CursorPosition.offset(boardUtils.getBoardOffset(), rowOffset, colOffset);
@@ -395,8 +415,6 @@ public class FancyPrinter extends Printer {
         String[][] cellToHighlight = subMatrix(cachedBoard, rowOffset, colOffset, cellHeight, cellWidth);
         Console.out.drawMatrix(cellToHighlight, cellOffset);
     }
-
-
 
     /**
      * Decorates the gods descriptions to be printed
@@ -423,10 +441,9 @@ public class FancyPrinter extends Printer {
      * Removes stale messages not closed by the user at the right time
      */
     private void removeStaleMessages() {
-        if (messageDialogs.size() > 0) {
-            for (Dialog dialog : messageDialogs) {
+        if (dialogs.size() > 0) {
+            for (Dialog dialog : dialogs) {
                 dialog.remove();
-                //messageDialogs.remove(dialog);
             }
         }
     }
@@ -438,18 +455,20 @@ public class FancyPrinter extends Printer {
      * internal status
      */
     private enum Status {
-        LOGIN, LOBBY, GAME
+        LOGIN, CREATING_LOBBY, IN_LOBBY, GAME
     }
 
     private void switchToConsole() {
         if (boardUtils != null) {
             if (Console.windowsOpen.contains(boardUtils))
                 Console.closeWindow(boardUtils);
-
-            Console.cursor.setCoordinates(0, 0);
-            Console.cursor.setAsHome();
-            Console.cursor.moveToHome();
-            console.show();
+            boardUtils = null;
+            firstTime = true;
+            System.gc();
         }
+        Console.cursor.setCoordinates(0, 0);
+        Console.cursor.setAsHome();
+        Console.cursor.moveToHome();
+        console.show();
     }
 }
