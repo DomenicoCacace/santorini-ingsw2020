@@ -4,18 +4,19 @@ import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
 import java.io.IOException;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Console utilities
  */
-public class Console extends Window implements KeyEventListener {
+public final class Console extends Window implements KeyEventListener {
     public static final RawConsoleInput in = new RawConsoleInput(80);
     public static final RawConsoleOutput out = new RawConsoleOutput();
-    public static final CursorPosition cursor = new CursorPosition();    //fixme make private
+    public static final CursorPosition cursor = new CursorPosition();
     private static final String[] rawMode = {"/bin/sh", "-c", "stty raw -echo </dev/tty"};
     private static final String[] saneMode = {"/bin/sh", "-c", "stty sane echo </dev/tty"};
-    public static final Stack<Window> windowsOpen = new Stack<>();
+    protected static final Deque<Window> windowsOpen = new ArrayDeque<>();
 
     /**
      * Default constructor
@@ -26,9 +27,13 @@ public class Console extends Window implements KeyEventListener {
     private Console(CLI cli) {
         //TODO: manage non compatible stuff
         super(cli);
-        enableRawMode();
-        in.addKeyEventListener(cursor);
-        new Thread(in::listen).start();
+        if (cli.enableRawMode()) {
+            enableRawMode();
+            in.addKeyEventListener(cursor);
+            new Thread(in::listenForRawInput).start();
+        }
+        else
+            new Thread(in::listenForStandardInput).start();
         Console.in.enableConsoleInput();
     }
 
@@ -38,11 +43,25 @@ public class Console extends Window implements KeyEventListener {
      * @param cli the view invoking the console
      */
     public static Console init(CLI cli) {
-        windowsOpen.forEach(Window::remove);
-        windowsOpen.removeAllElements();
+        if (!windowsOpen.isEmpty()) {
+            windowsOpen.forEach(Window::remove);
+
+            while (!windowsOpen.isEmpty())
+                windowsOpen.pop();
+        }
         Console console = new Console(cli);
         addWindow(console);
         return console;
+    }
+
+    /**
+     * Determines if a Window is still showing on the console
+     *
+     * @param window the window to check
+     * @return true if the window is still showing, false otherwise
+     */
+    public static boolean isOpen(Window window) {
+        return windowsOpen.contains(window);
     }
 
     /**
@@ -63,7 +82,7 @@ public class Console extends Window implements KeyEventListener {
      *
      * @return the number of open windows
      */
-    public static int windowsOpen() {
+    public static int numberOfWindowsOpen() {
         return windowsOpen.size();
     }
 
@@ -86,10 +105,16 @@ public class Console extends Window implements KeyEventListener {
      * @param window the window to close
      */
     public static void closeWindow(Window window) {
-        in.removeKeyEventListener(window);
-        windowsOpen.remove(window);
-        if (currentWindow().getParent() != null)  // a dialog, not the console
-            windowsOpen.peek().show();
+        Window currentWindow = currentWindow();
+        if (currentWindow != null) {
+            in.removeKeyEventListener(window);
+            windowsOpen.remove(window);
+            if (currentWindow.getParent() != null) { // a dialog, not the console
+                Window toShow = windowsOpen.peek();
+                if (toShow != null)
+                    toShow.show();
+            }
+        }
         cursor.setCoordinates(window.getReturnTo().getRow(), window.getReturnTo().getCol());
         cursor.moveCursorTo();
         in.addKeyEventListener(windowsOpen.peek());
@@ -132,7 +157,9 @@ public class Console extends Window implements KeyEventListener {
         try {
             Runtime.getRuntime().exec(saneMode).waitFor();
         } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
+            System.err.println("Could not go back to console canonical mode");
+            Thread.currentThread().interrupt();
+            System.exit(-1);
         }
     }
 
@@ -145,7 +172,8 @@ public class Console extends Window implements KeyEventListener {
         try {
             Runtime.getRuntime().exec(rawMode).waitFor();
         } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
+            System.err.println("Could not enter console raw mode");
+            Thread.currentThread().interrupt();
         }
     }
 

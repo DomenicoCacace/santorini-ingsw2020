@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.cli.console.graphics.components;
 
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
-import it.polimi.ingsw.view.cli.console.KeyEventListener;
 
 
 /**
@@ -11,26 +10,25 @@ import it.polimi.ingsw.view.cli.console.KeyEventListener;
  */
 public abstract class ActiveItem extends WindowItem implements Toggleable {
 
-
     /**
      * Default constructor
      * <p>
-     * Creates an interactive item using its default settings;
+     * Creates an active item using its default settings;
      * <br>
      * The initial coordinates are relative to the object's parent
      *
      * @param parent    the Window containing this
      * @param initCoord the item
-     * @param ID the object ID
+     * @param id the object id
      */
-    protected ActiveItem(WindowItem parent, CursorPosition initCoord, String ID) {
-        super(parent, initCoord, ID);
+    protected ActiveItem(WindowItem parent, CursorPosition initCoord, String id) {
+        super(parent, initCoord, id);
     }
 
     /**
      * Custom constructor
      * <p>
-     * Creates an interactive item using custom settings
+     * Creates an active item using custom settings
      * <br>
      * The initial coordinates are relative to the object's parent
      *
@@ -38,10 +36,10 @@ public abstract class ActiveItem extends WindowItem implements Toggleable {
      * @param initCoord the item coordinates
      * @param width     the object width
      * @param height    the object height
-     * @param ID the object ID
+     * @param id the object id
      */
-    protected ActiveItem(WindowItem parent, CursorPosition initCoord, int width, int height, String ID) {
-        super(parent, initCoord, width, height, ID);
+    protected ActiveItem(WindowItem parent, CursorPosition initCoord, int width, int height, String id) {
+        super(parent, initCoord, width, height, id);
     }
 
     /**
@@ -49,6 +47,7 @@ public abstract class ActiveItem extends WindowItem implements Toggleable {
      *
      * @return the <b>parent's</b> background color
      */
+    @Override
     public String getBackgroundColor() {
         return parent.getBackgroundColor();
     }

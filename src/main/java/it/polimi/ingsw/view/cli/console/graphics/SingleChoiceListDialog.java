@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.cli.console.graphics;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.graphics.components.InputDialog;
 import it.polimi.ingsw.view.cli.console.graphics.components.ReturningListItem;
-import it.polimi.ingsw.view.cli.console.graphics.components.Toggleable;
 import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class SingleChoiceListDialog extends InputDialog {
         super(title, message, width(options), 8 + options.size(), caller);
 
         int colOff = findCenter(this.getWidth(), options.stream().mapToInt(String::length).filter(s -> s >= 0).max().orElse(0));
-        options.forEach(s -> addInteractiveItem(new ReturningListItem(this, new CursorPosition(7 + options.indexOf(s), colOff), s, options.indexOf(s) + 1)));
+        options.forEach(s -> addActiveItem(new ReturningListItem(this, new CursorPosition(7 + options.indexOf(s), colOff), s, options.indexOf(s) + 1)));
     }
 
     /**
@@ -52,7 +51,7 @@ public class SingleChoiceListDialog extends InputDialog {
         super(title, message, width, height, initCoord, caller);
 
         int colOff = findCenter(this.getWidth(), options.stream().mapToInt(String::length).filter(s -> s >= 0).max().orElse(0));
-        options.forEach(s -> addInteractiveItem(new ReturningListItem(this, new CursorPosition(7 + options.indexOf(s), colOff), s, options.indexOf(s) + 1)));
+        options.forEach(s -> addActiveItem(new ReturningListItem(this, new CursorPosition(7 + options.indexOf(s), colOff), s, options.indexOf(s) + 1)));
     }
 
     /**

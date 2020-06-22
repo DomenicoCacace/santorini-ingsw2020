@@ -24,10 +24,10 @@ public class DetailPane extends WindowItem implements LiveRefreshItemInterface {
      * The initial coordinates are relative to the object's parent
      *
      * @param parent the Window containing this
-     * @param ID the object ID
+     * @param id the object id
      */
-    public DetailPane(Window parent, String ID) {
-        super(parent, new CursorPosition(), ID);
+    public DetailPane(Window parent, String id) {
+        super(parent, new CursorPosition(), id);
         initCoord.setCoordinates(parent.getInitCoord().getRow(), parent.initCoord.getCol() + parent.getWidth());
     }
 
@@ -41,10 +41,10 @@ public class DetailPane extends WindowItem implements LiveRefreshItemInterface {
      * @param parent the Dialog containing this
      * @param width  the object width
      * @param height the object height
-     * @param ID the object ID
+     * @param id the object id
      */
-    public DetailPane(WindowItem parent, int width, int height, String ID) {
-        super(parent, new CursorPosition(), width, height, ID);
+    public DetailPane(WindowItem parent, int width, int height, String id) {
+        super(parent, new CursorPosition(), width, height, id);
         initCoord.setCoordinates(parent.getInitCoord().getRow(), parent.initCoord.getCol() + parent.getWidth());
     }
 

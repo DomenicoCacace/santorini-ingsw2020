@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.cli.console.graphics.components;
 
-import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 
 /**
@@ -13,7 +12,6 @@ public class ListItem extends SimpleListItem {
      */
     protected final int retVal;
 
-
     /**
      * Default constructor
      *
@@ -25,7 +23,6 @@ public class ListItem extends SimpleListItem {
         super(parent, initCoord, item);
         this.retVal = retVal;
     }
-
 
     /**
      * Adds or removes this to the parent's inputs

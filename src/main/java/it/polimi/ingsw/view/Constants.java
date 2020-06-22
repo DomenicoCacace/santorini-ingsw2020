@@ -1,7 +1,9 @@
 package it.polimi.ingsw.view;
 
 
-public class Constants {
+public final class Constants {
+
+    private Constants(){}
 
     // NON-PRINTABLE CHARACTERS
     public static final int END_OF_TEXT = 0x03;
@@ -22,7 +24,6 @@ public class Constants {
 
     // COLORS
     public static final String ANSI_RESET = "\033[0m";
-    public static final String NO_COLOR = "";
 
 
     // DEFAULT INPUT STRINGS
@@ -50,8 +51,9 @@ public class Constants {
     public static final String CURSOR_BACK = "\033[1D";
 
     // MISC
-    public static final String BLINKER = "\033[5m" + '\u2588' + CURSOR_BACK + "\033[25m";
     public static final String STOP_BLINK = "\033[25m";
-    public static final int TIMER_DEFAULT = 500;    //fixme
+    public static final String BLINKER = "\033[5m" + '\u2588' + CURSOR_BACK + STOP_BLINK;
+
+    public static final int INPUT_TIMER = 60;
 
 }

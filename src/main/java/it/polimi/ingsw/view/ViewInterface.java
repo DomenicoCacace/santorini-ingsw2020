@@ -17,7 +17,9 @@ import java.util.Map;
 public interface ViewInterface {
 
     //FIXME
-    default void printCol(){};
+    default void printCol(){
+        // defined by the children, if needed
+    }
 
     /**
      * Sets the {@linkplain InputManager} to parse the inputs
@@ -57,7 +59,9 @@ public interface ViewInterface {
      *
      * @param options the address/username combos
      */
-    default void printUserServerCombos(List<String> options){};
+    default void printUserServerCombos(List<String> options){
+        // defined by the children, if needed
+    }
 
     /**
      * Asks the user the server address to connect to

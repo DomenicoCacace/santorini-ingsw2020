@@ -214,7 +214,6 @@ public abstract class Rectangle {
             Console.out.printAt(CursorPosition.offset(initCoord, height, col), color.backgroundDark + LINE_SHADOW_BOTTOM);
 
         Console.out.printAt(CursorPosition.offset(initCoord, height, 0), color.light);
-        //Console.out.printAt(CursorPosition.offset(initCoord, height, width-1), Console.currentWindow().color.dark + LINE_SHADOW_BOTTOM);
         Console.out.printAt(CursorPosition.offset(initCoord, height, width), color.backgroundDark + LINE_SHADOW_CORNER);
         Console.out.printAt(CursorPosition.offset(initCoord, height - 1, width), color.backgroundDark + LINE_SHADOW_RIGHT);
     }
@@ -230,7 +229,6 @@ public abstract class Rectangle {
             Console.out.printAt(CursorPosition.offset(initCoord, height, col), color.backgroundDark + " ");
 
         Console.out.printAt(CursorPosition.offset(initCoord, height, 0), color.light);
-        //Console.out.printAt(CursorPosition.offset(initCoord, height, width-1), Console.currentWindow().color.dark + LINE_SHADOW_BOTTOM);
         Console.out.printAt(CursorPosition.offset(initCoord, height, width), color.backgroundDark + " ");
         Console.out.printAt(CursorPosition.offset(initCoord, height - 1, width), color.backgroundDark + " ");
     }

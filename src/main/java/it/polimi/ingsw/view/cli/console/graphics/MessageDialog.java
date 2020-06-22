@@ -36,6 +36,9 @@ public final class MessageDialog extends Dialog {
        onQuit();
     }
 
+    /**
+     * Removes the message dialog
+     */
     @Override
     public void onQuit() {
         this.remove();

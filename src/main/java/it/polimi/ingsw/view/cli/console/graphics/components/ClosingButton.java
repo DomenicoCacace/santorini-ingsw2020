@@ -34,7 +34,6 @@ public class ClosingButton extends Button {
         super(parent, initCoord, width, height, text);
     }
 
-
     /**
      * Closes the parent, performing eventual operations defined by the caller's {@linkplain Dialog#onQuit()}.
      */

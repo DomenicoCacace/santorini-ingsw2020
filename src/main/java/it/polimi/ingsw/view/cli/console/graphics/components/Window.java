@@ -53,14 +53,14 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * Creates a new Window, loading its settings from file
      *
      * @param parent the parent
-     * @param ID the Window ID
+     * @param id the Window id
      */
-    public Window(Window parent, String ID) {
-        super(parent, ID);
+    public Window(Window parent, String id) {
+        super(parent, id);
         this.cli = parent.cli;
         enableInputOnReturn = Console.in.isConsoleInputEnabled();
         returnTo = CursorPosition.offset(Console.cursor, 0, 0);
-        initCoord.setCoordinates(getInitCoord().getRow() + (Console.windowsOpen() - 1) * 2, getInitCoord().getCol() + (Console.windowsOpen() - 1) * 2);
+        initCoord.setCoordinates(getInitCoord().getRow() + (Console.numberOfWindowsOpen() - 1) * 2, getInitCoord().getCol() + (Console.numberOfWindowsOpen() - 1) * 2);
         background = setBackground(color.getDark() + " ");
     }
 
@@ -73,32 +73,14 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * @param height    the window height
      * @param initCoord the window initial coordinates
      * @param parent    the caller
-     * @param ID the Window ID
+     * @param id the Window id
      */
-    public Window(Window parent, int width, int height, CursorPosition initCoord, String ID) {
-        super(parent, initCoord, width, height, ID);
+    public Window(Window parent, int width, int height, CursorPosition initCoord, String id) {
+        super(parent, initCoord, width, height, id);
         this.cli = parent.cli;
         enableInputOnReturn = Console.in.isConsoleInputEnabled();
         returnTo = CursorPosition.offset(Console.cursor, -1, 0);
         background = setBackground(color.getDark() + " ");
-    }
-
-    /**
-     * <i>width</i> getter
-     *
-     * @return the window width
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * <i>height</i> getter
-     *
-     * @return the windows height
-     */
-    public int getHeight() {
-        return height;
     }
 
     /**
@@ -120,14 +102,6 @@ public abstract class Window extends WindowItem implements KeyEventListener {
         return returnTo;
     }
 
-    /**
-     * <i>caller</i> getter
-     *
-     * @return the Window which opened this
-     */
-    public WindowItem getParent() {
-        return parent;
-    }
 
     /**
      * Sets the background as a uniform matrix
@@ -173,6 +147,7 @@ public abstract class Window extends WindowItem implements KeyEventListener {
      * Shows the window on the console
      *
      */
+    @Override
     public void show() {
         Console.out.drawMatrix(background, initCoord);
         Console.addWindow(this);

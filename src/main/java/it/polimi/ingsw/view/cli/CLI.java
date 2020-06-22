@@ -8,8 +8,9 @@ import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.console.Console;
-import it.polimi.ingsw.view.cli.console.prettyPrinters.FancyPrinter;
-import it.polimi.ingsw.view.cli.console.prettyPrinters.Printer;
+import it.polimi.ingsw.view.cli.console.printers.Printer;
+import it.polimi.ingsw.view.cli.console.printers.basicPrinter.BasicPrinter;
+import it.polimi.ingsw.view.cli.console.printers.fancyPrinter.FancyPrinter;
 import it.polimi.ingsw.view.inputManagers.InputManager;
 
 import java.io.IOException;
@@ -26,13 +27,29 @@ public class CLI implements ViewInterface {
     protected static Lock lock = new ReentrantLock();
     private final Printer printer;
     private InputManager inputManager;
+    private final boolean enableRawMode;
 
     /**
      * Default constructor
+     *
+     * @param enableRawMode determines if the terminal in which the program is running allows non-canonical mode
      */
-    public CLI() throws IOException {
-        printer = new FancyPrinter(Console.init(this), this);
+    public CLI(boolean enableRawMode) throws IOException {
+        this.enableRawMode = enableRawMode;
+        if (enableRawMode)
+            printer = new FancyPrinter(Console.init(this), this);
+        else
+            printer = new BasicPrinter(Console.init(this), this);
         new Thread(this::readInput).start();
+    }
+
+    /**
+     * Determines if the terminal running the application allows non-canonical mode
+     *
+     * @return true if the terminal allows non-canonical mode, false otherwise
+     */
+    public boolean enableRawMode() {
+        return this.enableRawMode;
     }
 
     /**

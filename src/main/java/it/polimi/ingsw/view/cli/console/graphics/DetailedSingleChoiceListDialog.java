@@ -5,13 +5,17 @@ import it.polimi.ingsw.view.cli.console.graphics.components.ReturningListItem;
 import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
+/**
+ * A dialog containing a list of possible options, each having a description, which is shown when the <i>cursor</i>
+ * passes on the item
+ */
 public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog {
 
     private final DetailPane detailPane;
-    private final LinkedHashMap<String, LinkedList<String>> options;
+    private final Map<String, LinkedList<String>> options;
 
     /**
      * Default constructor
@@ -26,12 +30,13 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
      * @param caller  the window which invoked this
      * @param options the options to show and their details
      */
-    public DetailedSingleChoiceListDialog(String title, String message, Window caller, LinkedHashMap<String, LinkedList<String>> options) {
+    public DetailedSingleChoiceListDialog(String title, String message, Window caller,
+                                          Map<String, LinkedList<String>> options) {
         super(title, message, caller, new ArrayList<>(options.keySet()));
         this.options = options;
         detailPane = new DetailPane(this, 30, 20, "DetailPane");
         detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow() + 1, this.getInitCoord().getCol() + this.getWidth() - 2);
-        addNonInteractiveItem(detailPane);
+        addPassiveItem(detailPane);
     }
 
     /**
@@ -48,7 +53,7 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
      */
     private void refreshPane() {
         try {
-            String currentSelection = ((ReturningListItem) currentInteractiveItem()).getItem();
+            String currentSelection = ((ReturningListItem) currentActiveItem()).getItem();
             detailPane.refresh(detailPane.adaptStrings(new ArrayList<>(options.get(currentSelection))));
         } catch (ClassCastException e) {
             // do nothing
@@ -56,7 +61,7 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowRight() {
@@ -65,7 +70,7 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog and refreshes the details
+     * Selects the previous ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowLeft() {
@@ -74,7 +79,7 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onTab() {
@@ -83,7 +88,7 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog and refreshes the details
+     * Selects the previous ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowUp() {
@@ -92,7 +97,7 @@ public final class DetailedSingleChoiceListDialog extends SingleChoiceListDialog
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowDown() {

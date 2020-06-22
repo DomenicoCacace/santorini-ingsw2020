@@ -1,36 +1,21 @@
-package it.polimi.ingsw.view.cli.console.prettyPrinters;
+package it.polimi.ingsw.view.cli.console.printers;
 
-import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.GameBoard;
-import it.polimi.ingsw.model.PossibleActions;
-import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.model.dataClass.PlayerData;
-import it.polimi.ingsw.view.cli.CLI;
+import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.graphics.components.PrintableObject;
+import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import static it.polimi.ingsw.view.Constants.ANSI_RESET;
 
-/**
- * Console Printing Utilities
- */
-public abstract class Printer {
+public abstract class BoardUtils extends Window {
 
-    public static final int sceneWidth = 190;
-    public static final int sceneHeight = 62;
-
-    /**
-     * The UI which created the printer
-     */
-    protected final CLI cli;
     protected List<PlayerData> playerData;
-    protected final PrintableObject mainLogo;
     protected final int boardWidth;
     protected final int boardHeight;
     protected final int verticalWallWidth;
@@ -44,18 +29,18 @@ public abstract class Printer {
     protected final String[][] cachedBoard;
     protected List<Cell> lastGameBoardPrinted;
 
-    Properties properties = new Properties();
-
     /**
      * Default constructor
+     * <br>
+     * Creates a new BoardUtils window, loading its settings from file
      *
-     * @param cli the view which created the printer
+     * @param parent the parent
+     * @param id     the Window id
      */
-    protected Printer(CLI cli) throws IOException {
-        this.cli = cli;
-        mainLogo = PrintableObject.load(this, "mainLogo.art", 151, 24);
-        properties.loadFromXML(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + ".xml"));
+    public BoardUtils(Window parent, String id) throws IOException {
+        super(parent, id);
 
+        lastGameBoardPrinted = new GameBoard().getAllCells();
         boardWidth = Integer.parseInt(properties.getProperty("boardWidth"));
         boardHeight = Integer.parseInt(properties.getProperty("boardHeight"));
         verticalWallWidth = Integer.parseInt(properties.getProperty("verticalWallWidth"));
@@ -65,99 +50,36 @@ public abstract class Printer {
         emptyBoard = new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("emptyBoardPath")), boardWidth, boardHeight).getObject();
         cachedBoard = cloneMatrix(emptyBoard);
 
+        try {
+            cellFrames.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("standardCellFramePath")), cellWidth, cellHeight));
+
+            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("firstLevelTopPath")), cellWidth, cellHeight));
+            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("secondLevelTopPath")), cellWidth, cellHeight));
+            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("thirdLevelTopPath")), cellWidth, cellHeight));
+            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("domeTopPath")), cellWidth, cellHeight));
+
+            workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("blueWorkerPath")), cellWidth, cellHeight));
+            workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("purpleWorkerPath")), cellWidth, cellHeight));
+            workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("redWorkerPath")), cellWidth, cellHeight));
+        } catch (IOException e) {
+            Console.close();
+        }
     }
 
+    public abstract void showGameBoard();
+
     /**
-     * Shows an error message
+     * Shows the current gameBoard on the screen, highlighting some cells
      *
-     * @param errorMsg the error message
+     * @param toHighlight the cells to highlight
      */
-    public abstract void printError(String errorMsg);
+    public abstract void showGameBoard(List<Cell> toHighlight);
 
     /**
-     * Shows a success message
-     *
-     * @param msg the message
+     * Highlights the user's workers
+     * @param cells the cells containing the user's workers
      */
-    public abstract void printMessage(String msg);
-
-    /**
-     * Shows the logo
-     */
-    public abstract void printStartingScreen();
-
-    /**
-     * Asks the user if it wants to reload a previously saved address/username combo
-     */
-    public abstract void askToReloadSettings();
-
-    /**
-     * Shows the user the saved address/username combos
-     *
-     * @param options the address/username combos
-     */
-    public abstract void showSavedSettings(List<String> options);
-
-    /**
-     * Asks the user to insert the server address
-     */
-    public abstract void askIp();
-
-    /**
-     * Asks the user to insert its username
-     */
-    public abstract void askUsername();
-
-    /**
-     * Asks the user to choose whether to join or create a lobby
-     *
-     * @param options a list of possible options
-     */
-    public abstract void lobbyOptions(List<String> options);
-
-    /**
-     * Asks the user to choose a name for the lobby to be created
-     */
-    public abstract void askLobbyName();
-
-    /**
-     * Asks the user to choose the lobby size
-     */
-    public abstract void askLobbySize();
-
-    /**
-     * Asks the user which lobby to join
-     *
-     * @param lobbiesAvailable a map containing the lobbies available and their relative information
-     */
-    public abstract void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable);
-
-    /**
-     * Asks the user if it wants to reload an existing saved match
-     */
-    public abstract void chooseToReloadMatch();
-
-    /**
-     * Asks the user to choose the gods for the game
-     *
-     * @param allGods the list of available gods
-     * @param size    the number of players
-     */
-    public abstract void chooseGameGods(List<GodData> allGods, int size);
-
-    /**
-     * Asks the user  to choose its personal god for the game
-     *
-     * @param possibleGods a list containing the available gods
-     */
-    public abstract void chooseUserGod(List<GodData> possibleGods);
-
-    /**
-     * Asks the user which player will play first
-     *
-     * @param players the players in game
-     */
-    public abstract void chooseStartingPlayer(List<String> players);
+    public abstract void highlightWorkers(List<Cell> cells);
 
     /**
      * Updates information about the game and the players
@@ -170,88 +92,6 @@ public abstract class Printer {
         setCachedBoard(board);
         showGameBoard(board);
     }
-
-    /**
-     * Loads the graphics resources for the game and sets up stuff
-     */
-    public void enterGameMode() {
-        try {
-            lastGameBoardPrinted = new GameBoard().getAllCells();
-
-            cellFrames.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("standardCellFramePath")), cellWidth, cellHeight));
-
-            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("firstLevelTopPath")), cellWidth, cellHeight));
-            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("secondLevelTopPath")), cellWidth, cellHeight));
-            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("thirdLevelTopPath")), cellWidth, cellHeight));
-            buildingBlocks.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("domeTopPath")), cellWidth, cellHeight));
-
-            workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("blueWorkerPath")), cellWidth, cellHeight));
-            workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("purpleWorkerPath")), cellWidth, cellHeight));
-            workers.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("redWorkerPath")), cellWidth, cellHeight));
-        } catch (IOException e) {
-        }
-    }
-
-    /**
-     * Prints the game board on the screen
-     *
-     * @param gameBoard the board to print
-     */
-    public abstract void showGameBoard(List<Cell> gameBoard);
-
-    /**
-     * Prints the game board on the screen
-     *
-     * @param gameBoard the board to print
-     */
-    public abstract void showGameBoard(List<Cell> gameBoard, List<Cell> toHighlight);
-
-    /**
-     * Asks the user to place its worker on the board
-     */
-    public abstract void placeWorker();
-
-    /**
-     * Asks the user to pick a worker
-     * @param cells the cells containing the player's workers
-     */
-    public abstract void chooseWorker(List<Cell> cells);
-
-    /**
-     * Highlights the user's workers
-     * @param cells the cells containing the user's workers
-     */
-    protected abstract void highlightWorkers(List<Cell> cells);
-
-    /**
-     * Asks the user which action to perform
-     *
-     * @param possibleActions a list of possible actions
-     */
-    public abstract void chooseAction(List<PossibleActions> possibleActions);
-
-    /**
-     * Asks the user to select a cell to move its current worker to
-     *
-     * @param gameBoard     the current game board
-     * @param walkableCells the cells on which the worker can be moved to
-     */
-    public abstract void moveAction(List<Cell> gameBoard, List<Cell> walkableCells);
-
-    /**
-     * Asks the user to select a cell to build on
-     *
-     * @param gameBoard      the current game board
-     * @param buildableCells the cells on which the worker can build
-     */
-    public abstract void buildAction(List<Cell> gameBoard, List<Cell> buildableCells);
-
-    /**
-     * Asks the user which block to build on a cell
-     *
-     * @param buildableBlocks the possible blocks (always more than one)
-     */
-    public abstract void chooseBlockToBuild(List<Block> buildableBlocks);
 
     /**
      * Sets the first version of a board, useful in case of a restoration from a saved game
@@ -330,8 +170,7 @@ public abstract class Printer {
     protected String[][] subMatrix(String[][] input, int startRow, int startCol, int finalRow, int finalCol) {
         String[][] subMatrix = new String[finalRow][finalCol];
         for (int row = 0; row < finalRow; row++) {
-            for (int col = 0; col < finalCol; col++)
-                subMatrix[row][col] = input[row+startRow][col+startCol];
+            if (finalCol >= 0) System.arraycopy(input[row + startRow], startCol, subMatrix[row], 0, finalCol);
         }
         return subMatrix;
     }
@@ -398,7 +237,8 @@ public abstract class Printer {
                 default:
                     worker = null;  // never gets here
             }
-            decorateCell(worker, cachedBoard, cell.getCoordX(), cell.getCoordY());
+            if (worker != null)
+                decorateCell(worker, cachedBoard, cell.getCoordX(), cell.getCoordY());
         } else {
             int rowOffset = (horizontalWallWidth + cell.getCoordX() * (horizontalWallWidth + cellHeight));
             int colOffset = (verticalWallWidth + cell.getCoordY() * (verticalWallWidth + cellWidth));

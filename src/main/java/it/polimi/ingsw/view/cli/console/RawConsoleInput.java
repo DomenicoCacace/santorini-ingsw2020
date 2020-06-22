@@ -1,11 +1,10 @@
 package it.polimi.ingsw.view.cli.console;
 
-import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.view.Constants;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
 
@@ -16,7 +15,6 @@ public class RawConsoleInput {
 
     private final Semaphore semaphore;
     private final List<KeyEventListener> keyEventListeners;
-    private final List<KeyEventListener> listenersToRestore;
     private final int maxBufferSize;
     private boolean escape;
     private StringBuilder inputBuffer;
@@ -26,7 +24,6 @@ public class RawConsoleInput {
     public RawConsoleInput(int maxBufferSize) {
         this.maxBufferSize = maxBufferSize;
         keyEventListeners = new ArrayList<>();
-        listenersToRestore = new ArrayList<>();
         inputBuffer = new StringBuilder();
         semaphore = new Semaphore(0);
         inputEnable = false;
@@ -35,7 +32,7 @@ public class RawConsoleInput {
     /**
      * Constantly listens for keystrokes
      */
-    protected void listen() {
+    protected void listenForRawInput() {
         int rawInput;
         while (true) {
             try {
@@ -45,9 +42,17 @@ public class RawConsoleInput {
                 else
                     handleInputs(rawInput);
             } catch (Exception e) {
-                e.printStackTrace();
                 Console.close();
+                break;
             }
+        }
+    }
+
+    protected void listenForStandardInput() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            inputBuffer = new StringBuilder(scanner.nextLine());
+            semaphore.release();
         }
     }
 
@@ -82,6 +87,7 @@ public class RawConsoleInput {
             semaphore.drainPermits();
             return line;
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             Console.close();
             return null;
         }
@@ -211,10 +217,8 @@ public class RawConsoleInput {
      * @param listener the listener to remove
      */
     public void removeKeyEventListener(KeyEventListener listener) {
-        if (listener != null) {
-            if (keyEventListeners.contains(listener))
-                this.keyEventListeners.remove(listener);
-        }
+        if (listener != null && keyEventListeners.contains(listener))
+            this.keyEventListeners.remove(listener);
     }
 
     /**
@@ -229,7 +233,7 @@ public class RawConsoleInput {
     /**
      * Determines if the console input is enabled
      * <p>
-     * ling or disabling the console input does not affect the {@linkplain #listen()} method in any way;
+     * ling or disabling the console input does not affect the {@linkplain #listenForRawInput()} method in any way;
      * <ul>
      * <li>Input enabled: the console works as usual, registering all keystrokes and adding new characters in
      * the buffer</li>

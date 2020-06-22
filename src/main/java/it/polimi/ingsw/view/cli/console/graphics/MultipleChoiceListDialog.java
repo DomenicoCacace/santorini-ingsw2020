@@ -4,16 +4,16 @@ import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.graphics.components.*;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public final class MultipleChoiceListDialog extends InputDialog {
 
     private final int numberOfChoices;
     private final DetailPane detailPane;
     private final ClosingButton button;
-    private final LinkedHashMap<String, LinkedList<String>> listOptions;
+    private final Map<String, LinkedList<String>> listOptions;
 
 
     /**
@@ -30,20 +30,21 @@ public final class MultipleChoiceListDialog extends InputDialog {
      * @param detailedOptions the options to show and their details
      * @param numberOfChoices the number of items to select
      */
-    public MultipleChoiceListDialog(String title, String message, Window caller, LinkedHashMap<String, LinkedList<String>> detailedOptions, int numberOfChoices) {
+    public MultipleChoiceListDialog(String title, String message, Window caller,
+                                    Map<String, LinkedList<String>> detailedOptions, int numberOfChoices) {
         super(title, message, width(new ArrayList<>(detailedOptions.keySet())), 12 + detailedOptions.size(), caller);
         this.numberOfChoices = numberOfChoices;
         listOptions = detailedOptions;
         List<String> options = new ArrayList<>(detailedOptions.keySet());
         int colOff = findCenter(this.getWidth(), options.stream().mapToInt(String::length).filter(s -> s >= 0).max().orElse(0));
 
-        options.forEach(s -> addInteractiveItem(new ListItem(this, new CursorPosition(5 + options.indexOf(s), colOff), s, options.indexOf(s) + 1)));
+        options.forEach(s -> addActiveItem(new ListItem(this, new CursorPosition(5 + options.indexOf(s), colOff), s, options.indexOf(s) + 1)));
 
         button = new ClosingButton(this, new CursorPosition(7 + options.size(), colOff), "Confirm");
-        addInteractiveItem(button);
+        addActiveItem(button);
         detailPane = new DetailPane(this, 37, 20, "DetailPane");
         detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow() + 1, this.getInitCoord().getCol() + this.getWidth() - 2);
-        addNonInteractiveItem(detailPane);
+        addPassiveItem(detailPane);
     }
 
     /**
@@ -91,10 +92,8 @@ public final class MultipleChoiceListDialog extends InputDialog {
     public boolean canBeClosed() {
         int valid = 0;
         for (String val : inputs.values()) {
-            if (val != null) {
-                if (!(val.isBlank() && val.isEmpty()))
-                    valid++;
-            }
+            if (val != null && !(val.isBlank() && val.isEmpty()))
+                valid++;
         }
         return valid == numberOfChoices;
     }
@@ -110,7 +109,7 @@ public final class MultipleChoiceListDialog extends InputDialog {
      */
     private void refreshPane() {
         try {
-            String currentSelection = ((ListItem) currentInteractiveItem()).getItem();
+            String currentSelection = ((ListItem) currentActiveItem()).getItem();
             detailPane.refresh(detailPane.adaptStrings(new ArrayList<>(listOptions.get(currentSelection))));
         } catch (ClassCastException e) {
             // do nothing
@@ -122,19 +121,19 @@ public final class MultipleChoiceListDialog extends InputDialog {
      */
     @Override
     public void onCarriageReturn() {
-        if (currentInteractiveItem().equals(button)) {
+        if (currentActiveItem().equals(button)) {
             button.onCarriageReturn();
         } else {  // it must be a ListItem, the cast is legit
-            currentInteractiveItem().onCarriageReturn();
+            currentActiveItem().onCarriageReturn();
             if (inputs.size() > numberOfChoices) {
-                inputs.remove(currentInteractiveItem());
-                ((ListItem) currentInteractiveItem()).deselect();
+                inputs.remove(currentActiveItem());
+                ((ListItem) currentActiveItem()).deselect();
             }
         }
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowRight() {
@@ -143,7 +142,7 @@ public final class MultipleChoiceListDialog extends InputDialog {
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog and refreshes the details
+     * Selects the previous ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowLeft() {
@@ -152,7 +151,7 @@ public final class MultipleChoiceListDialog extends InputDialog {
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onTab() {
@@ -161,7 +160,7 @@ public final class MultipleChoiceListDialog extends InputDialog {
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog and refreshes the details
+     * Selects the previous ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowUp() {
@@ -170,7 +169,7 @@ public final class MultipleChoiceListDialog extends InputDialog {
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowDown() {

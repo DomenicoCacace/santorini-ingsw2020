@@ -2,26 +2,47 @@ package it.polimi.ingsw.view.cli.console.graphics;
 
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.KeyEventListener;
-import it.polimi.ingsw.view.cli.console.graphics.components.*;
+import it.polimi.ingsw.view.cli.console.graphics.components.ActiveItem;
+import it.polimi.ingsw.view.cli.console.graphics.components.DetailPane;
+import it.polimi.ingsw.view.cli.console.graphics.components.SimpleListItem;
+import it.polimi.ingsw.view.cli.console.graphics.components.Window;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+/**
+ * A pane showing a list of elements; when the enter key is pressed, the currently selected item is triggered, causing
+ * it to return its value to the inputManager and this to be hidden by the container
+ */
 public class ListPane extends ActiveItem implements KeyEventListener {
 
     private final Map<String, List<String>> options;
     private final DetailPane detailPane;
 
-    public ListPane(Window caller, CursorPosition initCoord, int width, int height, Map<String, List<String>> options, String ID) {
-        super(caller, initCoord, width, height, ID);
+    /**
+     * Custom constructor
+     * <p>
+     * Creates a SimpleListChoiceDialog, using custom values for its width and height
+     *
+     * @param caller  the window which invoked this
+     * @param initCoord the initial coordinates
+     * @param width the pane width
+     * @param height the pane height
+     * @param options the options to show
+     * @param id the item id
+     */
+    public ListPane(Window caller, CursorPosition initCoord, int width, int height, Map<String, List<String>> options, String id) {
+        super(caller, initCoord, width, height, id);
         this.options = options;
 
         int colOff = findCenter(this.getWidth(), options.keySet().stream().mapToInt(String::length).filter(s -> s >= 0).max().orElse(0));
 
         List<String> items = new ArrayList<>(options.keySet());
-        items.forEach(s -> addInteractiveItem(new SimpleListItem(this, new CursorPosition(7 + items.indexOf(s), colOff), s)));
+        items.forEach(s -> addActiveItem(new SimpleListItem(this, new CursorPosition(7 + items.indexOf(s), colOff), s)));
         detailPane = new DetailPane(this, width, height, "DetailPane");
         detailPane.getInitCoord().setCoordinates(this.getInitCoord().getRow(), this.getInitCoord().getCol());
-        addNonInteractiveItem(detailPane);
+        addPassiveItem(detailPane);
     }
 
 
@@ -38,7 +59,7 @@ public class ListPane extends ActiveItem implements KeyEventListener {
      */
     private void refreshPane() {
         try {
-            String currentSelection = ((SimpleListItem) currentInteractiveItem()).getItem();
+            String currentSelection = ((SimpleListItem) currentActiveItem()).getItem();
             detailPane.refresh(detailPane.adaptStrings(new ArrayList<>(options.get(currentSelection))));
         } catch (ClassCastException e) {
             // do nothing
@@ -46,40 +67,38 @@ public class ListPane extends ActiveItem implements KeyEventListener {
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowRight() {
-        nextInteractiveItem();
+        nextActiveItem();
         refreshPane();
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog and refreshes the details
+     * Selects the previous ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowLeft() {
-        previousInteractiveItem();
+        previousActiveItem();
         refreshPane();
     }
 
 
     /**
-     * Selects the previous InteractiveItem on the Dialog and refreshes the details
+     * Selects the previous ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowUp() {
-        previousInteractiveItem();
-        refreshPane();
+        onArrowLeft();
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog and refreshes the details
+     * Selects the next ActiveItem on the Dialog and refreshes the details
      */
     @Override
     public void onArrowDown() {
-        nextInteractiveItem();
-        refreshPane();
+        onArrowRight();
     }
 
     /**
@@ -113,6 +132,4 @@ public class ListPane extends ActiveItem implements KeyEventListener {
     public void enable() {
         this.drawBorders();
     }
-
-
 }

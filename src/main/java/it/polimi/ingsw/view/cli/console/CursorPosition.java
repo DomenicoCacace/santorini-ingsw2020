@@ -1,11 +1,11 @@
 package it.polimi.ingsw.view.cli.console;
 
 import it.polimi.ingsw.view.Constants;
-import it.polimi.ingsw.view.cli.console.prettyPrinters.Printer;
+import it.polimi.ingsw.view.cli.console.printers.Printer;
 
 public class CursorPosition implements KeyEventListener {
 
-    public static final CursorPosition maxCursor = new CursorPosition(Printer.sceneHeight, Printer.sceneWidth);
+    public static final CursorPosition maxCursor = new CursorPosition(Printer.SCENE_HEIGHT, Printer.SCENE_WIDTH);
     private static final CursorPosition homePosition = new CursorPosition();
     private int row;
     private int col;
@@ -52,11 +52,13 @@ public class CursorPosition implements KeyEventListener {
     }
 
     public void blink() {
-        System.out.print(Constants.BLINKER + Console.currentWindow().getTextColor());
+        if (Console.currentWindow() != null)
+            System.out.print(Constants.BLINKER + Console.currentWindow().getTextColor());
     }
 
     public void stopBlink() {
-        System.out.print(Constants.STOP_BLINK + Console.currentWindow().getTextColor() + " ");
+        if (Console.currentWindow() != null)
+            System.out.print(Constants.STOP_BLINK + Console.currentWindow().getTextColor() + " ");
     }
 
 
@@ -77,14 +79,11 @@ public class CursorPosition implements KeyEventListener {
 
     @Override
     public void onCarriageReturn() {
-        if (Console.in.isConsoleInputEnabled()) {
-            if (Console.in.currentBufferSize() > 0) {
-                stopBlink();
-                col = homePosition.col;
-                //row++;
-                setAsHome();
-                moveToHome();
-            }
+        if (Console.in.isConsoleInputEnabled() && Console.in.currentBufferSize() > 0) {
+            stopBlink();
+            col = homePosition.col;
+            setAsHome();
+            moveToHome();
         }
     }
 

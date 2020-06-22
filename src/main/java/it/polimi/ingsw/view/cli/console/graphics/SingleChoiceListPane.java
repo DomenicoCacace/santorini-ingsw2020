@@ -22,12 +22,13 @@ public class SingleChoiceListPane extends ActiveItem {
      * @param initCoord the item coordinates
      * @param width     the object width
      * @param height    the object height
-     * @param ID        the object ID
+     * @param id        the object id
      */
-    public SingleChoiceListPane(WindowItem parent, CursorPosition initCoord, int width, int height, List<String> options, String ID) {
-        super(parent, initCoord, width, height, ID);
+    public SingleChoiceListPane(WindowItem parent, CursorPosition initCoord, int width, int height, List<String> options, String id) {
+        super(parent, initCoord, width, height, id);
         int colOff = findCenter(this.getWidth(), options.stream().mapToInt(String::length).filter(s -> s >= 0).max().orElse(0));
-        options.forEach(s -> addInteractiveItem(new ReturningListItem(this, new CursorPosition(7 + options.indexOf(s), colOff), s, options.indexOf(s) + 1)));
+        options.forEach(s -> addActiveItem(new ReturningListItem(this, new CursorPosition(3 + options.indexOf(s),
+                colOff), s, options.indexOf(s) + 1)));
     }
 
     /**
@@ -45,7 +46,9 @@ public class SingleChoiceListPane extends ActiveItem {
      */
     @Override
     public void onSelect() {
-
+        /*
+         * Does nothing, as it is meant to take exclusive control of the input
+         */
     }
 
     /**
@@ -53,7 +56,9 @@ public class SingleChoiceListPane extends ActiveItem {
      */
     @Override
     public void onRelease() {
-
+        /*
+         * Does nothing, as it is meant to take exclusive control of the input
+         */
     }
 
     /**
@@ -63,37 +68,37 @@ public class SingleChoiceListPane extends ActiveItem {
     public void show() {
         super.show();
         activeItems.forEach(ActiveItem::show);
-        currentInteractiveItem().onSelect();
+        currentActiveItem().onSelect();
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog
+     * Selects the next ActiveItem on the Dialog
      */
     @Override
     public void onArrowRight() {
-        currentInteractiveItem().onRelease();
-        nextInteractiveItem().onSelect();
+        currentActiveItem().onRelease();
+        nextActiveItem().onSelect();
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog
+     * Selects the previous ActiveItem on the Dialog
      */
     @Override
     public void onArrowLeft() {
-        currentInteractiveItem().onRelease();
-        previousInteractiveItem().onSelect();
+        currentActiveItem().onRelease();
+        previousActiveItem().onSelect();
     }
 
     /**
-     * Performs an action based on the currently selected interactiveItem
+     * Performs an action based on the currently selected ActiveItem
      */
     @Override
     public void onCarriageReturn() {
-        currentInteractiveItem().onCarriageReturn();
+        currentActiveItem().onCarriageReturn();
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog
+     * Selects the next ActiveItem on the Dialog
      */
     @Override
     public void onTab() {
@@ -101,7 +106,7 @@ public class SingleChoiceListPane extends ActiveItem {
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog
+     * Selects the previous ActiveItem on the Dialog
      */
     @Override
     public void onArrowUp() {
@@ -109,7 +114,7 @@ public class SingleChoiceListPane extends ActiveItem {
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog
+     * Selects the next ActiveItem on the Dialog
      */
     @Override
     public void onArrowDown() {

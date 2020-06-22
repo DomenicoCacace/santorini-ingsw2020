@@ -1,12 +1,15 @@
-package it.polimi.ingsw.view.cli.console.prettyPrinters;
+package it.polimi.ingsw.view.cli.console.printers.basicPrinter;
 
 import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
+import it.polimi.ingsw.model.dataClass.PlayerData;
 import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.cli.CLI;
 import it.polimi.ingsw.view.cli.console.Console;
+import it.polimi.ingsw.view.cli.console.printers.BoardUtils;
+import it.polimi.ingsw.view.cli.console.printers.Printer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,8 +24,8 @@ public class BasicPrinter extends Printer {
      *
      * @param cli the view which created the printer
      */
-    protected BasicPrinter(CLI cli) throws IOException {
-        super(cli);
+    public BasicPrinter(Console console, CLI cli) throws IOException {
+        super(cli, console);
     }
 
     /**
@@ -58,7 +61,8 @@ public class BasicPrinter extends Printer {
      */
     @Override
     public void askToReloadSettings() {
-        System.out.print("\t\tThere are some settings saved! do you want to load one of them? [" + Constants.YES + "/" + Constants.NO + "]: ");
+        System.out.print("\t\tThere are some settings saved! do you want to load one of them? [" + Constants.YES +
+                "/" + Constants.NO + "]: ");
     }
 
     /**
@@ -151,7 +155,8 @@ public class BasicPrinter extends Printer {
      */
     @Override
     public void chooseToReloadMatch() {
-        System.out.println("I found a match to reload! do you want to reload? (" + Constants.YES + "/" + Constants.NO + ")");
+        System.out.println("I found a match to reload! do you want to reload? (" + Constants.YES + "/" + Constants.NO +
+                ")");
     }
 
     /**
@@ -189,36 +194,33 @@ public class BasicPrinter extends Printer {
     }
 
     /**
-     * Does nothing in this printer
-     */
-    @Override
-    public void enterGameMode() {}
-
-    /**
-     * Prints the game board on the screen, updating the cached board status
+     * Creates a BoardUtils object, based on the printer calling it
      *
-     * @param gameBoard the board to print
+     * @return a boardUtils object
      */
     @Override
-    public void showGameBoard(List<Cell> gameBoard) {
-        updateCachedBoard(gameBoard);
-        Console.out.drawMatrix(cachedBoard);
+    protected BoardUtils setBoardUtils() {
+        try {
+            return new BasicPrinterBoardUtils(this.console);
+        }
+        catch (IOException e) {
+            System.err.println("Could not instantiate BasicPrinterBoardUtils");
+            System.exit(-1);
+            return null;
+        }
     }
 
     /**
-     * Prints the gameBoard, highlighting
+     * Updates information about the game and the players
      *
-     * @param board       the board to print
-     * @param toHighlight the cells to highlight
+     * @param board   the game board
+     * @param players information about the players
      */
     @Override
-    public void showGameBoard(List<Cell> board, List<Cell> toHighlight) {
-        updateCachedBoard(board);
-        String[][] gameBoard = cloneMatrix(cachedBoard);
-        for (Cell cell : toHighlight)
-            highlight(cell, gameBoard);
-
-        Console.out.drawMatrix(gameBoard);
+    public void updateGameData(List<Cell> board, List<PlayerData> players) {
+        /*
+         * Does nothing, in this CLI version it has been decided not to implement too many details
+         */
     }
 
     /**
@@ -251,15 +253,6 @@ public class BasicPrinter extends Printer {
     public void chooseWorker(List<Cell> cells) {
         highlightWorkers(cells);
         System.out.println("Choose your worker! \nSelect row and column! ");
-    }
-
-    @Override
-    protected void highlightWorkers(List<Cell> cells) {
-        String[][] gameBoard = cloneMatrix(cachedBoard);
-        for (Cell cell : cells) {
-            highlight(cell, gameBoard);
-        }
-        Console.out.drawMatrix(gameBoard);
     }
 
     /**

@@ -4,13 +4,14 @@ import it.polimi.ingsw.view.cli.console.CursorPosition;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class InputDialog extends Dialog {
 
     /**
-     * Maps all the interactiveItems which
+     * Maps all the activeItems which
      */
-    protected HashMap<ActiveItem, String> inputs;
+    protected final HashMap<ActiveItem, String> inputs;
 
     /**
      * Default constructor
@@ -66,8 +67,12 @@ public abstract class InputDialog extends Dialog {
         inputs = new LinkedHashMap<>();
     }
 
-
-    public HashMap<ActiveItem, String> getInputs() {
+    /**
+     * Provides a map containing active items and their corresponding values to be returned
+     *
+     * @return the up mentioned map
+     */
+    public Map<ActiveItem, String> getInputs() {
         return inputs;
     }
 
@@ -82,10 +87,8 @@ public abstract class InputDialog extends Dialog {
     public boolean canBeClosed() {
         int valid = 0;
         for (String val : inputs.values()) {
-            if (val != null) {
-                if (!(val.isBlank() && val.isEmpty()))
-                    valid++;
-            }
+            if (val != null && !(val.isBlank() && val.isEmpty()))
+                valid++;
         }
         return valid == inputs.keySet().size();
     }
@@ -119,37 +122,37 @@ public abstract class InputDialog extends Dialog {
     public void show() {
         super.show();
         activeItems.forEach(ActiveItem::show);
-        currentInteractiveItem().onSelect();
+        currentActiveItem().onSelect();
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog
+     * Selects the next ActiveItem on the Dialog
      */
     @Override
     public void onArrowRight() {
-        currentInteractiveItem().onRelease();
-        nextInteractiveItem().onSelect();
+        currentActiveItem().onRelease();
+        nextActiveItem().onSelect();
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog
+     * Selects the previous ActiveItem on the Dialog
      */
     @Override
     public void onArrowLeft() {
-        currentInteractiveItem().onRelease();
-        previousInteractiveItem().onSelect();
+        currentActiveItem().onRelease();
+        previousActiveItem().onSelect();
     }
 
     /**
-     * Performs an action based on the currently selected interactiveItem
+     * Performs an action based on the currently selected ActiveItem
      */
     @Override
     public void onCarriageReturn() {
-        currentInteractiveItem().onCarriageReturn();
+        currentActiveItem().onCarriageReturn();
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog
+     * Selects the next ActiveItem on the Dialog
      */
     @Override
     public void onTab() {
@@ -157,7 +160,7 @@ public abstract class InputDialog extends Dialog {
     }
 
     /**
-     * Selects the previous InteractiveItem on the Dialog
+     * Selects the previous ActiveItem on the Dialog
      */
     @Override
     public void onArrowUp() {
@@ -165,7 +168,7 @@ public abstract class InputDialog extends Dialog {
     }
 
     /**
-     * Selects the next InteractiveItem on the Dialog
+     * Selects the next ActiveItem on the Dialog
      */
     @Override
     public void onArrowDown() {

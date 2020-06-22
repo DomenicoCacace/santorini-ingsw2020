@@ -24,7 +24,7 @@ public class SimpleListItem extends ActiveItem {
      *
      * @param parent    the Window containing this
      * @param initCoord the item coordinates
-     * @param item        the object ID
+     * @param item        the object id
      */
     public SimpleListItem(WindowItem parent, CursorPosition initCoord, String item) {
         super(parent, initCoord, item);

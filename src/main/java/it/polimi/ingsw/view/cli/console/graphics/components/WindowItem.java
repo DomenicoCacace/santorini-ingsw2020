@@ -22,17 +22,17 @@ public abstract class WindowItem extends Rectangle {
     protected final WindowItem parent;
 
     /**
-     * The item ID
+     * The item id
      */
-    protected final String ID;
+    protected final String id;
 
     /**
-     * A list containing all the interactive items
+     * A list containing all the active items
      */
     protected final Deque<ActiveItem> activeItems;
 
     /**
-     * A list containing all non-interactive items (e.g. {@linkplain DetailPane})
+     * A list containing all non-active items (e.g. {@linkplain DetailPane})
      */
     protected final List<WindowItem> passiveItems;
 
@@ -43,12 +43,12 @@ public abstract class WindowItem extends Rectangle {
      * </p>
      *
      * @param parent the Window containing this
-     * @param ID the object ID
+     * @param id the object id
      */
-    protected WindowItem(Window parent, String ID) {
+    protected WindowItem(Window parent, String id) {
         super();
         this.parent = parent;
-        this.ID = ID;
+        this.id = id;
         this.activeItems = new ArrayDeque<>();
         this.passiveItems = new ArrayList<>();
     }
@@ -62,13 +62,13 @@ public abstract class WindowItem extends Rectangle {
      *
      * @param parent    the Window containing this
      * @param initCoord the item coordinates
-     * @param ID the object ID
+     * @param id the object id
      */
-    protected WindowItem(WindowItem parent, CursorPosition initCoord, String ID) {
+    protected WindowItem(WindowItem parent, CursorPosition initCoord, String id) {
         this.parent = parent;
         this.initCoord.setCoordinates(initCoord.getRow() + parent.getInitCoord().getRow(),
                 initCoord.getCol() + parent.getInitCoord().getCol());
-        this.ID = ID;
+        this.id = id;
         this.activeItems = new ArrayDeque<>();
         this.passiveItems = new ArrayList<>();
     }
@@ -84,14 +84,14 @@ public abstract class WindowItem extends Rectangle {
      * @param initCoord the item coordinates
      * @param width     the object width
      * @param height    the object height
-     * @param ID  the object ID
+     * @param id  the object id
      */
-    protected WindowItem(WindowItem parent, CursorPosition initCoord, int width, int height, String ID) {
+    protected WindowItem(WindowItem parent, CursorPosition initCoord, int width, int height, String id) {
         super(initCoord, width, height);
         this.parent = parent;
         this.initCoord.setCoordinates(initCoord.getRow() + parent.getInitCoord().getRow(),
                 initCoord.getCol() + parent.getInitCoord().getCol());
-        this.ID = ID;
+        this.id = id;
         this.activeItems = new ArrayDeque<>();
         this.passiveItems = new ArrayList<>();
     }
@@ -106,11 +106,11 @@ public abstract class WindowItem extends Rectangle {
     }
 
     /**
-     * Adds a new interactive item to the items list
+     * Adds a new active item to the items list
      *
      * @param item the item to add
      */
-    protected void addInteractiveItem(ActiveItem item) {
+    protected void addActiveItem(ActiveItem item) {
         activeItems.addLast(item);
     }
 
@@ -119,16 +119,16 @@ public abstract class WindowItem extends Rectangle {
      *
      * @param item the item to add
      */
-    protected void addNonInteractiveItem(WindowItem item) {
+    protected void addPassiveItem(WindowItem item) {
         passiveItems.add(item);
     }
 
     /**
      * Provides the dialog item which is currently selected
      *
-     * @return the currently selected interactive item
+     * @return the currently selected active item
      */
-    protected ActiveItem currentInteractiveItem() {
+    protected ActiveItem currentActiveItem() {
         return activeItems.peekFirst();
     }
 
@@ -137,7 +137,7 @@ public abstract class WindowItem extends Rectangle {
      *
      * @return the next item in the deque
      */
-    protected ActiveItem nextInteractiveItem() {
+    protected ActiveItem nextActiveItem() {
         activeItems.addLast(activeItems.pollFirst());
         return activeItems.peekFirst();
     }
@@ -147,7 +147,7 @@ public abstract class WindowItem extends Rectangle {
      *
      * @return the previous item in the deque
      */
-    protected ActiveItem previousInteractiveItem() {
+    protected ActiveItem previousActiveItem() {
         activeItems.addFirst(activeItems.pollLast());
         return activeItems.peekFirst();
     }
@@ -172,12 +172,12 @@ public abstract class WindowItem extends Rectangle {
     }
 
     /**
-     * <i>ID</i> getter
+     * <i>id</i> getter
      *
-     * @return the WindowItem ID
+     * @return the WindowItem id
      */
     public String getID() {
-        return ID;
+        return id;
     }
 
     /**

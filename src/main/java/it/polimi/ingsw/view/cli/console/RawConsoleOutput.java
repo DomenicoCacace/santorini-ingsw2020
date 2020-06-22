@@ -75,7 +75,8 @@ public class RawConsoleOutput {
      * @param str the string to print
      */
     public void print(String str) {
-        printAt(Console.cursor, str);
+        System.out.print(str);
+        //printAt(Console.cursor, str);
     }
 
     /**
@@ -101,9 +102,8 @@ public class RawConsoleOutput {
     public void println(String str) {
         List<String> strings = splitMessage(str, Console.currentWindow().getWidth() - Console.cursor.getCol() - 2);
         for (String string : strings)
-            System.out.print(String.format("%s", /*Console.currentWindow().getColor() +*/ string));
+            System.out.print(String.format("%s", string));
         Console.placeCursor(Console.cursor.getRow() + strings.size(), 0);
-        //Console.cursor.moveCursorTo();
     }
 
     /**
@@ -115,12 +115,12 @@ public class RawConsoleOutput {
      * @param string   the string to print
      */
     public void printlnAt(CursorPosition position, String string) {
-        System.out.print((String.format("\033[%d;%dH%s\n", position.getRow(), position.getCol(), string)));
+        System.out.print((String.format("\033[%d;%dH%s%n", position.getRow(), position.getCol(), string)));
         Console.placeCursor(position.getRow() + 1, position.getCol());
     }
 
     /**
-     * Shows a matrix on the console
+     * Shows a matrix on the console; requires the terminal to be in non-canonical mode
      *
      * @param matrix    the matrix to show
      * @param initCoord the matrix initial position
@@ -138,9 +138,10 @@ public class RawConsoleOutput {
      * @param matrix    the matrix to show
      */
     public void drawMatrix(String[][] matrix) {
-        for (int row = 0; row < matrix.length; row++) {
+        for (String[] strings : matrix) {
             for (int col = 0; col < matrix[0].length; col++)
-                Console.out.print(matrix[row][col]);
+                System.out.print(strings[col]);
+            System.out.println();
         }
     }
 

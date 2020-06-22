@@ -1,10 +1,12 @@
 package it.polimi.ingsw.view.cli.console.graphics;
 
 import it.polimi.ingsw.model.Cell;
-import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
-import it.polimi.ingsw.view.cli.console.graphics.components.*;
-import it.polimi.ingsw.view.cli.console.prettyPrinters.FancyPrinter;
+import it.polimi.ingsw.view.cli.console.graphics.components.ActiveItem;
+import it.polimi.ingsw.view.cli.console.graphics.components.PrintableObject;
+import it.polimi.ingsw.view.cli.console.graphics.components.Toggleable;
+import it.polimi.ingsw.view.cli.console.graphics.components.Window;
+import it.polimi.ingsw.view.cli.console.printers.fancyPrinter.FancyPrinterBoardUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,9 +15,9 @@ import java.util.List;
 /**
  * An invisible overlay to select the cells on the board
  */
-public class GridOverlay extends ActiveItem implements Toggleable {
+public final class GridOverlay extends ActiveItem implements Toggleable {
 
-    private final FancyPrinter printer;
+    private final FancyPrinterBoardUtils printer;
     private final List<PrintableObject> cellOverlays;   // 0: red; 1: blue; 2: yellow;
     private List<Cell> highlightedCells = new ArrayList<>();
 
@@ -23,8 +25,8 @@ public class GridOverlay extends ActiveItem implements Toggleable {
     private int coordX;
     private int coordY;
 
-    public GridOverlay(Window parent, CursorPosition initCoord, FancyPrinter printer, String ID) throws IOException {
-        super(parent, initCoord, ID);
+    public GridOverlay(Window parent, CursorPosition initCoord, FancyPrinterBoardUtils printer, String id) throws IOException {
+        super(parent, initCoord, id);
         this.printer = printer;
         cellOverlays = new ArrayList<>();
         cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellRedBorder")),
@@ -99,7 +101,6 @@ public class GridOverlay extends ActiveItem implements Toggleable {
         this.highlightedCells = new ArrayList<>();
     }
 
-
     /**
      * Moves to the cell immediately above the current one, highlighting it;
      */
@@ -149,8 +150,12 @@ public class GridOverlay extends ActiveItem implements Toggleable {
     }
 
     /**
-     * Prints the object on the screen
+     * (Does not) print the object on the screen
      */
     @Override
-    public void show() {}
+    public void show() {
+        /*
+         * This item is supposed to be invisible, so its show() method is empty
+         */
+    }
 }

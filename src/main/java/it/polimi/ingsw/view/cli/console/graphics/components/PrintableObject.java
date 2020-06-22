@@ -1,9 +1,6 @@
 package it.polimi.ingsw.view.cli.console.graphics.components;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 import static it.polimi.ingsw.view.Constants.ANSI_RESET;
@@ -73,6 +70,10 @@ public class PrintableObject {
 
     public static PrintableObject load(Object caller, String filename, int width, int height) throws IOException {
         return new PrintableObject(caller.getClass().getResourceAsStream(filename), width, height);
+    }
+
+    public static PrintableObject load(String filePath, int width, int height) throws IOException {
+        return new PrintableObject(new FileInputStream(filePath), width, height);
     }
 
     /**

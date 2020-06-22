@@ -89,5 +89,4 @@ public class TextBox extends ActiveItem {
         Console.cursor.stopBlink();
         hideShadows();
     }
-
 }

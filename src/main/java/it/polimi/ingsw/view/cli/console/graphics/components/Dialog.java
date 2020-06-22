@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.cli.console.graphics.components;
 import it.polimi.ingsw.view.cli.console.Console;
 import it.polimi.ingsw.view.cli.console.CursorPosition;
 import it.polimi.ingsw.view.cli.console.RawConsoleOutput;
+
 import java.util.List;
 
 import static it.polimi.ingsw.view.Constants.*;
@@ -34,10 +35,10 @@ public abstract class Dialog extends Window {
      * @param title   the dialog title
      * @param message the dialog message
      * @param parent  the window which invoked this
-     * @param ID the object ID
+     * @param id the object id
      */
-    protected Dialog(String title, String message, Window parent, String ID) {
-        super(parent, ID);
+    protected Dialog(String title, String message, Window parent, String id) {
+        super(parent, id);
         this.title = title;
         this.message = message;
         Console.in.disableConsoleInput();
@@ -57,8 +58,8 @@ public abstract class Dialog extends Window {
      * @param message the dialog message
      * @param caller  the window which invoked this
      */
-    protected Dialog(String title, String message, int width, int height, Window caller, String ID) {
-        super(caller, width, height, new CursorPosition(findCenter(caller.getHeight(), height), findCenter(caller.getWidth(), width)), ID);
+    protected Dialog(String title, String message, int width, int height, Window caller, String id) {
+        super(caller, width, height, new CursorPosition(findCenter(caller.getHeight(), height), findCenter(caller.getWidth(), width)), id);
         this.title = title;
         this.message = message;
         Console.in.disableConsoleInput();
@@ -76,15 +77,24 @@ public abstract class Dialog extends Window {
      * @param title   the dialog title
      * @param message the dialog message
      * @param caller  the window which invoked this
-     * @param ID the object ID
+     * @param id the object id
      */
-    protected Dialog(String title, String message, int width, int height, CursorPosition position, Window caller, String ID) {
-        super(caller, width, height, position, ID);
+    protected Dialog(String title, String message, int width, int height, CursorPosition position, Window caller, String id) {
+        super(caller, width, height, position, id);
         this.title = title;
         this.message = message;
         Console.in.disableConsoleInput();
     }
 
+    /**
+     * <i>background</i> getter
+     *
+     * @return the <b>parent's</b> background color
+     */
+    @Override
+    public String getBackgroundColor() {
+        return color.backgroundDark;
+    }
 
     /**
      * Determines if the dialog can be closed; by default, a dialog can be closed anytime
@@ -99,7 +109,6 @@ public abstract class Dialog extends Window {
      * Determines the Dialog behaviour when it is asked to close itself
      */
     public abstract void onQuit();
-
 
     /**
      * Draws the dialog title
@@ -121,17 +130,9 @@ public abstract class Dialog extends Window {
     }
 
     /**
-     * <i>background</i> getter
-     *
-     * @return the <b>parent's</b> background color
-     */
-    public String getBackgroundColor() {
-        return color.backgroundDark;
-    }
-
-    /**
      * Draws the dialog background
      */
+    @Override
     protected void drawBackground() {
         Console.out.drawMatrix(background, initCoord);
     }
@@ -141,6 +142,7 @@ public abstract class Dialog extends Window {
      * <br>
      * Uses the caller's color as background, because it looks better
      */
+    @Override
     protected void drawShadows() {
         for (int row = 1; row < height - 1; row++)
             Console.out.printAt(CursorPosition.offset(initCoord, row, width), parent.getBackgroundColor() + LINE_SHADOW_RIGHT);
@@ -153,7 +155,6 @@ public abstract class Dialog extends Window {
         Console.out.printAt(CursorPosition.offset(initCoord, height - 1, width), parent.getBackgroundColor() + LINE_SHADOW_RIGHT);
     }
 
-
     /**
      * Draws itself
      */
@@ -164,11 +165,11 @@ public abstract class Dialog extends Window {
         drawShadows();
         drawMessage();
         drawTitle();
-        if (activeItems.size() > 0) {
+        if (!activeItems.isEmpty()) {
             activeItems.forEach(ActiveItem::show);
-            currentInteractiveItem().onSelect();
+            currentActiveItem().onSelect();
         }
-        if (passiveItems.size() > 0) {
+        if (!passiveItems.isEmpty()) {
             passiveItems.forEach(WindowItem::show);
         }
     }
@@ -179,9 +180,9 @@ public abstract class Dialog extends Window {
     @Override
     public void remove() {
         super.remove();
-        if (passiveItems.size() > 0)
+        if (!passiveItems.isEmpty())
             passiveItems.forEach(WindowItem::remove);
-        if (activeItems.size() > 0)
+        if (!activeItems.isEmpty())
             activeItems.forEach(ActiveItem::remove);
         if (enableInputOnReturn)
             Console.in.enableConsoleInput();
