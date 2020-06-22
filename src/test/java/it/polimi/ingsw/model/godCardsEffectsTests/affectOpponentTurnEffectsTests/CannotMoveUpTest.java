@@ -19,8 +19,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CannotMoveUpTest {
-    private List<Player> players;
-    private List<God> gods;
     private Game game;
     private Cell targetCell;
     private Action moveAction, buildAction;
@@ -28,8 +26,8 @@ class CannotMoveUpTest {
     private Block targetBlock;
 
     @BeforeEach
-    void setUp() throws IOException, AddingFailedException {
-        gods = new ArrayList<>();
+    void setUp() throws AddingFailedException {
+        List<God> gods = new ArrayList<>();
         gods.add(new God("minotaur",2,""));
         gods.get(0).setStrategy(new Push());
         gods.add(new God("Athena",2, ""));
@@ -37,7 +35,7 @@ class CannotMoveUpTest {
         gods.add(new God("Atlas",2, ""));
         gods.get(2).setStrategy(new BuildDome());
 
-        players = new ArrayList<>();
+        List<Player> players = new ArrayList<>();
         players.add(new Player("P1", gods.get(0), Color.BLUE));
         players.add(new Player("P2", gods.get(1), Color.PURPLE));
         players.add(new Player("P3", gods.get(2), Color.RED));
@@ -68,58 +66,58 @@ class CannotMoveUpTest {
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(1, 1));
+        assertEquals(game.getGameBoard().getCell(1, 1), targetWorker.getPosition());
 
         targetCell = game.getGameBoard().getCell(1, 0);
         targetBlock = Block.LEVEL1;
         buildAction = new BuildAction(targetWorker, targetCell, targetBlock);
         buildAction.getValidation(game);
 
-        assertEquals(game.getGameBoard().getCell(1, 0).getBlock(), Block.LEVEL1);
+        assertEquals(Block.LEVEL1, game.getGameBoard().getCell(1, 0).getBlock());
 
         targetCell = game.getGameBoard().getCell(3, 3);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(3, 3));
+        assertEquals(game.getGameBoard().getCell(3, 3), targetWorker.getPosition());
 
         targetCell = game.getGameBoard().getCell(4, 4);
         targetBlock = Block.LEVEL1;
         buildAction = new BuildAction(targetWorker, targetCell, targetBlock);
         buildAction.getValidation(game);
 
-        assertEquals(game.getGameBoard().getCell(4, 4).getBlock(), Block.LEVEL1);
+        assertEquals(Block.LEVEL1, game.getGameBoard().getCell(4, 4).getBlock());
 
-        assertEquals(game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable(), 0);
-        assertEquals(game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable(), 0);
-        assertEquals(game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable(), 1);
+        assertEquals(0, game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(0, game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(1, game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable());
 
         targetCell = game.getGameBoard().getCell(1, 4);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(1, 4));
+        assertEquals(game.getGameBoard().getCell(1, 4), targetWorker.getPosition());
 
         targetCell = game.getGameBoard().getCell(0, 4);
         targetBlock = Block.DOME;
         buildAction = new BuildAction(targetWorker, targetCell, targetBlock);
         buildAction.getValidation(game);
 
-        assertEquals(game.getGameBoard().getCell(0, 4).getBlock(), Block.DOME);
+        assertEquals(Block.DOME, game.getGameBoard().getCell(0, 4).getBlock());
 
         targetCell = game.getGameBoard().getCell(1, 2);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
@@ -131,32 +129,32 @@ class CannotMoveUpTest {
         }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
         assertNotEquals(targetWorker.getPosition(), targetCell);
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(1, 1));
+        assertEquals(game.getGameBoard().getCell(1, 1), targetWorker.getPosition());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(targetWorker.getPosition(), moveAction.getStartingCell());
-        assertEquals(game.getGameBoard().getCell(1, 2).getOccupiedBy(), game.getPlayers().get(2).getWorkers().get(1));
+        assertEquals(moveAction.getStartingCell(), targetWorker.getPosition());
+        assertEquals(game.getPlayers().get(2).getWorkers().get(1), game.getGameBoard().getCell(1, 2).getOccupiedBy());
 
         targetCell = game.getGameBoard().getCell(0, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(0, 1));
-        assertEquals(game.getGameBoard().getCell(0, 1).getBlock(), Block.LEVEL0);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
+        assertEquals(game.getGameBoard().getCell(0, 1), targetWorker.getPosition());
+        assertEquals(Block.LEVEL0, game.getGameBoard().getCell(0, 1).getBlock());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
 
 
         game.generateNextTurn();
         game.generateNextTurn();
-        assertEquals(game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable(), 1);
-        assertEquals(game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable(), 1);
-        assertEquals(game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable(), 1);
+        assertEquals(1, game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(1, game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(1, game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable());
     }
 
     @Test
@@ -166,76 +164,76 @@ class CannotMoveUpTest {
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(1, 1));
+        assertEquals(game.getGameBoard().getCell(1, 1), targetWorker.getPosition());
 
         targetCell = game.getGameBoard().getCell(1, 0);
         targetBlock = Block.LEVEL1;
         buildAction = new BuildAction(targetWorker, targetCell, targetBlock);
         buildAction.getValidation(game);
 
-        assertEquals(game.getGameBoard().getCell(1, 0).getBlock(), Block.LEVEL1);
+        assertEquals(Block.LEVEL1, game.getGameBoard().getCell(1, 0).getBlock());
 
         targetCell = game.getGameBoard().getCell(4, 4);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(4, 4));
+        assertEquals(game.getGameBoard().getCell(4, 4), targetWorker.getPosition());
 
         targetCell = game.getGameBoard().getCell(4, 3);
         targetBlock = Block.LEVEL1;
         buildAction = new BuildAction(targetWorker, targetCell, targetBlock);
         buildAction.getValidation(game);
 
-        assertEquals(game.getGameBoard().getCell(4, 3).getBlock(), Block.LEVEL1);
+        assertEquals(Block.LEVEL1, game.getGameBoard().getCell(4, 3).getBlock());
 
-        assertEquals(game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable(), 1);
-        assertEquals(game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable(), 1);
-        assertEquals(game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable(), 1);
+        assertEquals(1, game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(1, game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(1, game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable());
 
         targetCell = game.getGameBoard().getCell(1, 4);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(targetWorker.getPosition(), game.getGameBoard().getCell(1, 4));
+        assertEquals(game.getGameBoard().getCell(1, 4), targetWorker.getPosition());
 
         targetCell = game.getGameBoard().getCell(0, 4);
         targetBlock = Block.DOME;
         buildAction = new BuildAction(targetWorker, targetCell, targetBlock);
         buildAction.getValidation(game);
 
-        assertEquals(game.getGameBoard().getCell(0, 4).getBlock(), Block.DOME);
+        assertEquals(Block.DOME, game.getGameBoard().getCell(0, 4).getBlock());
 
         targetCell = game.getGameBoard().getCell(1, 2);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), targetWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesUpAvailable(), 0);
-        assertEquals(targetWorker.getPosition(), targetCell);
+        assertEquals(targetWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesUpAvailable());
+        assertEquals(targetCell, targetWorker.getPosition());
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(game.getGameBoard().getCell(1, 3).getOccupiedBy(), game.getPlayers().get(2).getWorkers().get(1));
+        assertEquals(game.getPlayers().get(2).getWorkers().get(1), game.getGameBoard().getCell(1, 3).getOccupiedBy());
 
 
         game.generateNextTurn();
         game.generateNextTurn();
-        assertEquals(game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable(), 1);
-        assertEquals(game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable(), 1);
-        assertEquals(game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable(), 1);
+        assertEquals(1, game.getPlayers().get(0).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(1, game.getPlayers().get(2).getGod().getStrategy().getMovesUpAvailable());
+        assertEquals(1, game.getPlayers().get(1).getGod().getStrategy().getMovesUpAvailable());
     }
 }

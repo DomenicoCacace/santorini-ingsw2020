@@ -66,7 +66,7 @@ public class Client {
                 boolean nonCanonical = true;
                 if (System.getProperty("os.name").toUpperCase().contains("WIN"))
                     nonCanonical = false;
-                view = new CLI(false);  //fixme: invert
+                view = new CLI(nonCanonical);
                 initClient(view);
             }
         }
@@ -87,16 +87,17 @@ public class Client {
         List<String> savedUsers = new ArrayList<>();
         try {
             if (!CONFIG_FILE.createNewFile()) {
-                FileReader fileReader = new FileReader(CONFIG_FILE);
-                BufferedReader bufferedReader = new BufferedReader(fileReader);
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    savedUsers.add(line);
-                    savedUsers.add(bufferedReader.readLine());
+                try (FileReader fileReader = new FileReader(CONFIG_FILE)) {
+                    try (BufferedReader bufferedReader = new BufferedReader(fileReader)){
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            savedUsers.add(line);
+                            savedUsers.add(bufferedReader.readLine());
+                        }
+                        viewInterface.setInputManager(new LoginManager(client, savedUsers));
+                        viewInterface.askToReloadLastSettings(savedUsers);
+                    }
                 }
-                bufferedReader.close();
-                viewInterface.setInputManager(new LoginManager(client, savedUsers));
-                viewInterface.askToReloadLastSettings(savedUsers);
             } else { //the file is empty
                 viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askIP();
@@ -178,21 +179,27 @@ public class Client {
         String ipLine;
         String nameLine;
         int storedSetting = 0;
-        FileReader fileReader = new FileReader(CONFIG_FILE);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        while (((ipLine = bufferedReader.readLine()) != null && !ipLine.equals("")) && storedSetting < MAX_SETTINGS_STORED - 1) {
-            nameLine = bufferedReader.readLine();
-            if (!nameLine.equals(username) || !ipLine.equals(ip)) {
-                otherUsers.append(ipLine).append("\n").append(nameLine).append("\n");
-                storedSetting++;
+        try (FileReader fileReader = new FileReader(CONFIG_FILE)) {
+            try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+                while (((ipLine = bufferedReader.readLine()) != null && !ipLine.equals("")) && storedSetting < MAX_SETTINGS_STORED - 1) {
+                    nameLine = bufferedReader.readLine();
+                    if (!nameLine.equals(username) || !ipLine.equals(ip)) {
+                        otherUsers.append(ipLine).append("\n").append(nameLine).append("\n");
+                        storedSetting++;
+                    }
+                }
+                String builder = ip + "\n" + username + "\n";
+                try (FileWriter fileWriter = new FileWriter(CONFIG_FILE)) {
+                    try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+                        bufferedWriter.write(builder);
+                        bufferedWriter.append(otherUsers.toString());
+                    }
+                }
             }
         }
-        String builder = ip + "\n" + username + "\n";
-        FileWriter fileWriter = new FileWriter(CONFIG_FILE);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        bufferedWriter.write(builder);
-        bufferedWriter.append(otherUsers.toString());
-        bufferedWriter.close();
+        catch (Exception e) {
+            throw new IOException();
+        }
     }
 
     /**

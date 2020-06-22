@@ -33,7 +33,7 @@ public class LoginManager extends InputManager {
     @Override
     public synchronized void manageInput(String input) {
         if (isWaitingForInput) {
-            if (savedConfigs.size() > 0) { //If there are saved configs saved locally
+            if (!savedConfigs.isEmpty()) { //If there are saved configs saved locally
                 if (!wantsToLoadSetting) { //If it's false but there are saved configs than the user had to input y or n
                     chooseToReloadSetting(input);
                 } else {
@@ -70,7 +70,7 @@ public class LoginManager extends InputManager {
             } else {
                 view.askIP();
                 savedConfigs.clear(); //If he answered " insert ip manually " i clear the savedCinfigs so that he want be able to load them
-                startTimer(Constants.TIMER_DEFAULT);
+                startTimer(Constants.INPUT_TIMER);
             }
         } else {
             view.showErrorMessage("Insert a valid option");
@@ -87,12 +87,12 @@ public class LoginManager extends InputManager {
             stopTimer();
             view.askIP();
             savedConfigs.clear(); //If he doesn't want to reload setting i clear the list so that the next input will be managed without passing through this if
-            startTimer(Constants.TIMER_DEFAULT);
+            startTimer(Constants.INPUT_TIMER);
         } else {
             stopTimer();
             view.showErrorMessage("Insert a valid option");
             view.askToReloadLastSettings(savedConfigs); //If he doesn't answer with yes or no i repeat the question
-            startTimer(Constants.TIMER_DEFAULT);
+            startTimer(Constants.INPUT_TIMER);
         }
     }
 
@@ -103,6 +103,5 @@ public class LoginManager extends InputManager {
             configOptions.add(savedConfigs.get(i) + " -- " + savedConfigs.get(i - 1)); //This convert
         }
         view.printUserServerCombos(configOptions);
-        //view.printOptions(configOptions);
     }
 }

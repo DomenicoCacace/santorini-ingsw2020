@@ -119,7 +119,6 @@ public interface ClientMessageManagerVisitor {
      */
     void onPlayerBuild(PlayerBuildEvent message);
 
-
     /**
      * Visitor for {@linkplain EndTurnEvent}
      *
@@ -140,7 +139,6 @@ public interface ClientMessageManagerVisitor {
      * @param message the message to visit
      */
     void onWorkerAdd(WorkerAddedEvent message);
-
 
     /**
      * Visitor for {@linkplain WinnerDeclaredEvent}

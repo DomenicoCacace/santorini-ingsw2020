@@ -65,19 +65,19 @@ class MoveAgainTest {
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker1);
         assertTrue(possibleActions.contains(PossibleActions.MOVE));
         assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
-        assertEquals(possibleActions.size(), 2);
+        assertEquals(2, possibleActions.size());
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
         possibleActions = game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker1);
         assertTrue(possibleActions.contains(PossibleActions.MOVE));
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
-        assertEquals(possibleActions.size(), 2);
+        assertEquals(2, possibleActions.size());
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(worker1, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker1.getPosition(), targetCell);
+        assertEquals(targetCell, worker1.getPosition());
 
         targetCell = game.getGameBoard().getCell(0, 2);
         moveAction = new MoveAction(worker1, targetCell);
@@ -85,12 +85,12 @@ class MoveAgainTest {
 
         possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker1);
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
-        assertEquals(possibleActions.size(), 1);
+        assertEquals(1, possibleActions.size());
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(worker1, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker1.getPosition(), targetCell);
+        assertEquals(targetCell, worker1.getPosition());
     }
 
     @Test
@@ -99,19 +99,19 @@ class MoveAgainTest {
         moveAction = new MoveAction(worker2, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker2);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(worker2, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker2.getPosition(), targetCell);
+        assertEquals(targetCell, worker2.getPosition());
 
         targetCell = game.getGameBoard().getCell(3, 3);
         moveAction = new MoveAction(worker2, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker2);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(worker2, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker2.getPosition(), targetCell);
+        assertEquals(targetCell, worker2.getPosition());
     }
 
     @Test
@@ -120,10 +120,10 @@ class MoveAgainTest {
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(worker1, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker1.getPosition(), targetCell);
+        assertEquals(targetCell, worker1.getPosition());
 
         targetCell = game.getGameBoard().getCell(2, 2);
         moveAction = new MoveAction(worker1, targetCell);
@@ -132,10 +132,10 @@ class MoveAgainTest {
         } catch (IllegalActionException e){
             e.getMessage();
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(worker1, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker1.getPosition(), game.getGameBoard().getCell(1,2));
+        assertEquals(game.getGameBoard().getCell(1,2), worker1.getPosition());
     }
 
     @Test
@@ -149,11 +149,11 @@ class MoveAgainTest {
         moveAction.getValidation(game);
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker2);
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
-        assertEquals(possibleActions.size(), 1);
+        assertEquals(1, possibleActions.size());
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker2);
+        assertEquals(worker2, game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker2.getPosition(), targetCell);
+        assertEquals(targetCell, worker2.getPosition());
 
     }
 
@@ -163,17 +163,17 @@ class MoveAgainTest {
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(worker1, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker1.getPosition(), targetCell);
+        assertEquals(targetCell, worker1.getPosition());
 
         targetCell = game.getGameBoard().getCell(1, 3);
         Action buildAction = new BuildAction(worker1, targetCell, Block.LEVEL1);
         buildAction.getValidation(game);
 
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
-        assertEquals(targetCell.getBlock(), Block.LEVEL1);
+        assertEquals(players.get(1), game.getCurrentTurn().getCurrentPlayer());
+        assertEquals(Block.LEVEL1, targetCell.getBlock());
 
     }
 
@@ -182,10 +182,10 @@ class MoveAgainTest {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(worker1, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(worker1.getPosition(), targetCell);
+        assertEquals(targetCell, worker1.getPosition());
 
         targetCell = game.getGameBoard().getCell(4, 2);
         moveAction = new MoveAction(worker2, targetCell);
@@ -193,17 +193,17 @@ class MoveAgainTest {
             moveAction.getValidation(game);
         } catch (IllegalActionException e){
             e.getMessage();
-        }        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), worker1);
+        }        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(worker1, game.getCurrentRuleSet().getStrategy().getMovedWorker());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertNotEquals(worker2.getPosition(), targetCell);
-        assertEquals(worker2.getPosition(), game.getGameBoard().getCell(3,2));
+        assertEquals(game.getGameBoard().getCell(3,2), worker2.getPosition());
 
         targetCell = game.getGameBoard().getCell(0, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(worker1.getPosition(), game.getGameBoard().getCell(0, 2));
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(game.getGameBoard().getCell(0, 2), worker1.getPosition());
 
     }
 

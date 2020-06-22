@@ -47,6 +47,8 @@ public class BasicPrinterBoardUtils extends BoardUtils {
      */
     @Override
     public void highlightWorkers(List<Cell> cells) {
-
+        /*
+         * Does nothing
+         */
     }
 }

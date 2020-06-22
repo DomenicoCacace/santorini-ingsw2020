@@ -76,7 +76,6 @@ public class RawConsoleOutput {
      */
     public void print(String str) {
         System.out.print(str);
-        //printAt(Console.cursor, str);
     }
 
     /**

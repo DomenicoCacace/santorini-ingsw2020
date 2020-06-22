@@ -57,6 +57,11 @@ public class User {
         virtualClient.closeConnection();
     }
 
+    /**
+     * Provides the lobby in which the user is currently in
+     *
+     * @return the Lobby object where this user is contained
+     */
     public Lobby getRoom() {
         return server.getUsers().get(this);
     }

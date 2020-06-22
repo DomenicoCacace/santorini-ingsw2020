@@ -18,12 +18,14 @@ import java.util.List;
 public final class GridOverlay extends ActiveItem implements Toggleable {
 
     private final FancyPrinterBoardUtils printer;
-    private final List<PrintableObject> cellOverlays;   // 0: red; 1: blue; 2: yellow;
+    private final List<PrintableObject> cellOverlays;   // 0: red 1: blue 2: yellow
     private List<Cell> highlightedCells = new ArrayList<>();
 
     // coordinates range from 0 to 4
     private int coordX;
     private int coordY;
+
+    private int defaultCellFrame;
 
     public GridOverlay(Window parent, CursorPosition initCoord, FancyPrinterBoardUtils printer, String id) throws IOException {
         super(parent, initCoord, id);
@@ -31,10 +33,11 @@ public final class GridOverlay extends ActiveItem implements Toggleable {
         cellOverlays = new ArrayList<>();
         cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellRedBorder")),
                 Integer.parseInt(properties.getProperty("cellWidth")), Integer.parseInt(properties.getProperty("cellHeight"))));
-        /*cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellBlueBorder")),
-                Integer.parseInt(properties.getProperty("cellWidth")), Integer.parseInt(properties.getProperty("cellHeight"))));*/
-        /*cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellYellowBorder")),
-                Integer.parseInt(properties.getProperty("cellWidth")), Integer.parseInt(properties.getProperty("cellHeight"))));*/
+        cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellBlueBorder")),
+                Integer.parseInt(properties.getProperty("cellWidth")), Integer.parseInt(properties.getProperty("cellHeight"))));
+        cellOverlays.add(new PrintableObject(this.getClass().getResourceAsStream(properties.getProperty("cellYellowBorder")),
+                Integer.parseInt(properties.getProperty("cellWidth")), Integer.parseInt(properties.getProperty("cellHeight"))));
+        defaultCellFrame = 1;
     }
 
 
@@ -45,13 +48,18 @@ public final class GridOverlay extends ActiveItem implements Toggleable {
      */
     public void setHighlightedCells(List<Cell> highlightedCells) {
         this.highlightedCells = highlightedCells;
+        if (!highlightedCells.isEmpty())
+            defaultCellFrame = 1;
     }
 
     /**
      * Highlights the current cell
      */
     private void select() {
-        printer.selectCell(new Cell(coordX, coordY), cellOverlays.get(0));
+        if (highlightedCells.stream().anyMatch(c -> c.getCoordX() == coordY && c.getCoordY() == coordX))
+            printer.selectCell(new Cell(coordX, coordY), cellOverlays.get(1));
+        else
+            printer.selectCell(new Cell(coordX, coordY), cellOverlays.get(0));
     }
 
     /**
@@ -59,7 +67,7 @@ public final class GridOverlay extends ActiveItem implements Toggleable {
      */
     private void deselect() {
         if (highlightedCells.stream().anyMatch(c -> c.getCoordX() == coordY && c.getCoordY() == coordX))
-            printer.selectCell(new Cell(coordX, coordY), cellOverlays.get(0));  //FIXME: use another color
+            printer.selectCell(new Cell(coordX, coordY), cellOverlays.get(2));
         else
             printer.deselectCell(new Cell(coordX, coordY));
     }

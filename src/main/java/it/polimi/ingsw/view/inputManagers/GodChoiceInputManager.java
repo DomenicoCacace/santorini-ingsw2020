@@ -49,6 +49,7 @@ public class GodChoiceInputManager extends InputManager {
     public void manageInput(String input) {
         GodData chosenGod;
         if (isWaitingForInput) {
+
             switch (state) {
                 case CHOOSE_INITIAL_GODS:
                     chosenGod = askGod(input);
@@ -78,6 +79,10 @@ public class GodChoiceInputManager extends InputManager {
                         view.showErrorMessage("Invalid choice");
                         view.chooseUserGod(availableGods);
                     }
+                    break;
+
+                default:
+                    break;
             }
         }
     }

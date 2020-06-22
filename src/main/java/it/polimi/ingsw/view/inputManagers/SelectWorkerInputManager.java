@@ -8,7 +8,6 @@ import it.polimi.ingsw.view.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class SelectWorkerInputManager extends InputManager {
 
@@ -30,15 +29,17 @@ public class SelectWorkerInputManager extends InputManager {
         if (isWaitingForInput) {
             try {
                 int coord = Integer.parseInt(input);
+                String invalidCellError = "Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD;
                 if (coord < MIN_COORD || coord > MAX_COORD) {
                     if (row == -1)
-                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
+                        invalidCellError += "\nrow:";
                     else
-                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
+                        invalidCellError += ", the row selected is: " + (row + 1) + "\ncol: ";
+                    view.showErrorMessage(invalidCellError);
                 } else if (row == -1) {
                     row = coord - 1;
                     view.printCol();
-                    startTimer(Constants.TIMER_DEFAULT);
+                    startTimer(Constants.INPUT_TIMER);
                 } else if (col == -1) {
                     col = coord - 1;
                     Optional<Cell> workerCell = workerCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).findFirst();

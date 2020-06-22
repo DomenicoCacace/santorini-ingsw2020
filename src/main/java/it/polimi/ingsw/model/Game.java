@@ -81,6 +81,7 @@ public class Game implements GameInterface {
      * @param winner         the winner, in case of a server failure at the end of the game
      * @param currentRuleSet the current ruleSet
      */
+    @SuppressWarnings("unused") //used by Jackson, but the IDE does not recognize it
     private Game(@JsonProperty("gameBoard") GameBoard gameBoard, @JsonProperty("players") List<Player> players,
                  @JsonProperty("currentTurn") Turn currentTurn, @JsonProperty("nextTurn") Turn nextTurn,
                  @JsonProperty("winner") Player winner, @JsonProperty("currentRuleset") RuleSetContext currentRuleSet) {
@@ -460,7 +461,8 @@ public class Game implements GameInterface {
     public void restoreState() {
         for (Player player : this.players) {
             player.setGame(this);
-            int x, y;
+            int x;
+            int y;
             for (Worker worker : player.getWorkers()) {
                 x = worker.getPosition().getCoordX();
                 y = worker.getPosition().getCoordY();

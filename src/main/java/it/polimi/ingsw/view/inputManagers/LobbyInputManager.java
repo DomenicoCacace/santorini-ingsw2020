@@ -87,13 +87,14 @@ public class LobbyInputManager extends InputManager {
             messageManagerParser.setCreatingLobby(true);
             messageManagerParser.setLookingForLobbies(false);
             view.askLobbyName();
-            startTimer(Constants.TIMER_DEFAULT);
-        } else if (input.equals(Constants.JOIN_LOBBY) && lobbiesAvailable.keySet().size() > 0) {  // Join existing lobby
+            startTimer(Constants.INPUT_TIMER);
+        } else if (input.equals(Constants.JOIN_LOBBY) && !lobbiesAvailable.keySet().isEmpty()) {  // Join existing
+            // lobby
             stopTimer();
             this.state = State.JOIN;
             messageManagerParser.setLookingForLobbies(true);
             view.chooseLobbyToJoin(lobbiesAvailable);
-            startTimer(Constants.TIMER_DEFAULT);
+            startTimer(Constants.INPUT_TIMER);
         } else {
             messageManagerParser.enterLobby(lobbiesAvailable);
         }
@@ -104,7 +105,7 @@ public class LobbyInputManager extends InputManager {
         stopTimer();
         this.lobbyName = lobbyName;
         view.askLobbySize();
-        startTimer(Constants.TIMER_DEFAULT);
+        startTimer(Constants.INPUT_TIMER);
     }
 
     private void onLobbySize(int chosenSize) {

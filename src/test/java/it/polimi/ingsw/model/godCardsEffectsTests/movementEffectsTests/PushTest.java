@@ -63,21 +63,21 @@ public class PushTest {
             if (cell.equals(pushedCell)) {
                 assertNotNull(pushedCell.getOccupiedBy());
                 assertTrue(players.get(1).getWorkers().contains(pushedCell.getOccupiedBy()));
-                assertEquals(pushedCell.getOccupiedBy(), players.get(1).getWorkers().get(0));
-                assertEquals(pushedCell, players.get(1).getWorkers().get(0).getPosition());
+                assertEquals(players.get(1).getWorkers().get(0), pushedCell.getOccupiedBy());
+                assertEquals(players.get(1).getWorkers().get(0).getPosition(), pushedCell);
                 continue;
             }
 
             if (cell.equals(targetCell)) {
                 assertTrue(currentPlayer.getWorkers().contains(targetCell.getOccupiedBy()));
-                assertEquals(targetCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
-                assertEquals(targetCell, players.get(0).getWorkers().get(0).getPosition());
+                assertEquals(players.get(0).getWorkers().get(0), targetCell.getOccupiedBy());
+                assertEquals(players.get(0).getWorkers().get(0).getPosition(), targetCell);
                 continue;
             }
             assertNull(cell.getOccupiedBy());
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 
@@ -121,19 +121,19 @@ public class PushTest {
             if (cell.equals(startingCell)) {
                 assertNotNull(currentWorker.getPosition().getOccupiedBy());
                 assertTrue(players.get(0).getWorkers().contains(startingCell.getOccupiedBy()));
-                assertEquals(startingCell.getOccupiedBy(), players.get(0).getWorkers().get(0));
+                assertEquals(players.get(0).getWorkers().get(0), startingCell.getOccupiedBy());
                 continue;
             }
             if (cell.equals(targetCell)) {
                 assertNotNull(players.get(1).getWorkers().get(0).getPosition().getOccupiedBy());
                 assertTrue(players.get(1).getWorkers().contains(targetCell.getOccupiedBy()));
-                assertEquals(targetCell.getOccupiedBy(), players.get(1).getWorkers().get(0));
+                assertEquals(players.get(1).getWorkers().get(0), targetCell.getOccupiedBy());
                 continue;
             }
             assertNull(cell.getOccupiedBy());
         }
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 }

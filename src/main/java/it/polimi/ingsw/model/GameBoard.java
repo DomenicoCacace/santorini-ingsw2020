@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Representation of the game field
@@ -32,9 +33,10 @@ public class GameBoard {
      * @param allCells the gameBoard to restore, as array of cells
      */
     @JsonCreator
-    public GameBoard(@JsonProperty("allCells") ArrayList<Cell> allCells) {
+    public GameBoard(@JsonProperty("allCells") List<Cell> allCells) {
         this.board = new Cell[DIMENSION][DIMENSION];
-        int tmpX, tmpY;
+        int tmpX;
+        int tmpY;
         for (int i = 0; i < DIMENSION * DIMENSION; i++) {
             tmpX = allCells.get(i).getCoordX();
             tmpY = allCells.get(i).getCoordY();
@@ -121,7 +123,7 @@ public class GameBoard {
      *
      * @return an {@linkplain ArrayList} containing all the cells of the board
      */
-    public ArrayList<Cell> getAllCells() {
+    public List<Cell> getAllCells() {
         ArrayList<Cell> cells = new ArrayList<>();
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
@@ -131,7 +133,7 @@ public class GameBoard {
         return cells;
     }
 
-    public ArrayList<Cell> cloneAllCells() {
+    public List<Cell> cloneAllCells() {
         ArrayList<Cell> cells = new ArrayList<>();
         for (int i = 0; i < DIMENSION; i++) {
             for (int j = 0; j < DIMENSION; j++) {
@@ -161,7 +163,8 @@ public class GameBoard {
      * @return the cell behind the dest Cell if exists, <i>null</i> otherwise
      */
     public Cell getCellBehind(Cell src, Cell dest) {
-        int x, y;
+        int x;
+        int y;
 
         if (src.getCoordX() == dest.getCoordX())
             x = dest.getCoordX();
@@ -203,7 +206,7 @@ public class GameBoard {
      * @param cell the cell to analyze
      * @return an {@linkplain ArrayList} containing the cells adjacent to <i>cell</i>
      */
-    public ArrayList<Cell> getAdjacentCells(Cell cell) {
+    public List<Cell> getAdjacentCells(Cell cell) {
         ArrayList<Cell> cells = new ArrayList<>();
         for (int x = cell.getCoordX() - 1; x <= cell.getCoordX() + 1; x++) {
             for (int y = cell.getCoordY() - 1; y <= cell.getCoordY() + 1; y++) {

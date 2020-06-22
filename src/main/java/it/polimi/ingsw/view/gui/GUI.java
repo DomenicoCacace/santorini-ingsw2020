@@ -48,7 +48,6 @@ public class GUI extends Application implements ViewInterface {
         try {
             scene.setRoot(fxmlLoader.load());
         } catch (IOException e) {
-            e.printStackTrace();
             Thread.currentThread().interrupt();
         } finally {
             lock.unlock();
@@ -85,7 +84,7 @@ public class GUI extends Application implements ViewInterface {
     public void askToReloadLastSettings(List<String> savedUsers) {
         Platform.runLater(() -> {
             LoginController loginController = ((FXMLLoader) scene.getUserData()).getController();
-            if (savedUsers.size() > 0) {
+            if (!savedUsers.isEmpty()) {
                 for (int i = 1; i <= savedUsers.size(); i += 2) {
                     loginController.getOldConfigs().getItems().add(savedUsers.get(i) + " -- " + savedUsers.get(i - 1)); //This convert
                 }
@@ -178,13 +177,7 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void askLobbyName() {
-        /*Platform.runLater(() -> {
-            if(currentView == ViewType.LOBBY) {
-                LobbyController lobbyController = ((FXMLLoader) scene.getUserData()).getController();
-                lobbyController.enableCreateButton();
-            }
-        });
-         */
+        // do nothing, the lobby name gets already asked in askLobbySize
     }
 
     @Override
@@ -232,7 +225,6 @@ public class GUI extends Application implements ViewInterface {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
             controller.getTextArea().appendText("\nSelect the cell where you want to to build! ");
-            //controller.setGui(this);
             controller.makeCellsClickable(buildableCells);
         });
     }

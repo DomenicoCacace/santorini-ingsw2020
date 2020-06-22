@@ -25,7 +25,6 @@ public final class Console extends Window implements KeyEventListener {
      * </p>
      */
     private Console(CLI cli) {
-        //TODO: manage non compatible stuff
         super(cli);
         if (cli.enableRawMode()) {
             enableRawMode();

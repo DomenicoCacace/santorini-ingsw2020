@@ -114,16 +114,16 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
             } else if (movesAvailable == 0 && worker == builder) { //this is useful for the view: highlighting the correct cells
                 possibleActions = super.getPossibleActions(worker);
             } else if (movesAvailable == 1 && !hasBuiltBefore) {
-                if (getWalkableCells(worker).size() == 0) {
+                if (getWalkableCells(worker).isEmpty()) {
                     if (stuckWorkers == 2) {
                         List<Cell> buildableCells = new ArrayList<>();
                         addBuildableCells(worker, buildableCells);
-                        if (buildableCells.size() > 0)
+                        if (!buildableCells.isEmpty())
                             possibleActions.add(PossibleActions.BUILD);
                     }
-                } else if (buildableCellsBeforeMoving(worker).size() > 0)
+                } else if (!buildableCellsBeforeMoving(worker).isEmpty())
                     possibleActions.add(PossibleActions.BUILD);
-                if (getWalkableCells(worker).size() > 0)
+                if (!getWalkableCells(worker).isEmpty())
                     possibleActions.add(PossibleActions.MOVE);
                 possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
 
@@ -196,12 +196,12 @@ public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
         List<Cell> legalCells = new ArrayList<>();
         for (Worker worker : game.getCurrentTurn().getCurrentPlayer().getWorkers()) {
             legalCells = getWalkableCells(worker);
-            if (legalCells.size() == 0) {
+            if (legalCells.isEmpty()) {
                 stuckWorkers++;
                 legalCells = getBuildableCells(worker);
             }
         }
-        return legalCells.size() == 0;
+        return legalCells.isEmpty();
     }
 
     /**

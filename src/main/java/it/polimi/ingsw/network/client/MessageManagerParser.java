@@ -118,6 +118,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     view.showErrorMessage("Login error, please retry");
                 client.stopConnection();
                 break;
+            default:
+                break;
         }
     }
 
@@ -133,11 +135,11 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         view.setInputManager(inputManager);
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
-        if (lobbiesAvailable.keySet().size() > 0) {
+        if (!lobbiesAvailable.keySet().isEmpty()) {
             options.add("Join lobby");
         }
         view.lobbyOptions(options);
-        inputManager.startTimer(Constants.TIMER_DEFAULT);
+        inputManager.startTimer(Constants.INPUT_TIMER);
     }
 
     /**
@@ -156,7 +158,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     inputManager = new LobbyInputManager(client, message.getLobbies(), this, true);
                     view.setInputManager(inputManager);
                     view.chooseLobbyToJoin(message.getLobbies());
-                    inputManager.startTimer(Constants.TIMER_DEFAULT);
+                    inputManager.startTimer(Constants.INPUT_TIMER);
 
                 } catch (CancellationException exception) {
                     //
@@ -164,7 +166,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             } else if (message.getType().equals(Type.OK)) {
                 view.showSuccessMessage("You successfully created your lobby \n Waiting for other player to join");
             } else {
-                view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+                view.showErrorMessage(message.getType().toString());
                 enterLobby(message.getLobbies());
             }
         }
@@ -198,16 +200,18 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     try {
                         inputManager = new LoginManager(client, true);
                         view.setInputManager(inputManager);
-                        inputManager.startTimer(Constants.TIMER_DEFAULT);
+                        inputManager.startTimer(Constants.INPUT_TIMER);
                         view.askUsername();
                     } catch (CancellationException exception) {
-                        return;
+                        // do nothing
                     }
                     break;
                 case LOBBY_FULL:
                     view.showErrorMessage("The lobby is full");
                     enterLobby(message.getAvailableLobbies());
-                    //TODO: maybe ask if the user wants to change username or lobby
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -222,7 +226,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new ReloadGameInputManager(client);
         view.setInputManager(inputManager);
-        inputManager.startTimer(Constants.TIMER_DEFAULT);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.chooseMatchReload();
     }
 
@@ -248,10 +252,12 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void onGodChosen(ChosenGodsEvent message) {
         if (message.getType().equals(Type.OK)) {
+            StringBuilder msg = new StringBuilder("The chosen gods are: \n\n");
             view.showSuccessMessage("The chosen gods are: ");
-            message.getPayload().forEach(godData -> view.showSuccessMessage(godData.getName())); //TODO: create the concatenated string instead of multiple showMessage
+            message.getPayload().forEach(godData -> msg.append(godData.getName()).append("\n"));
+            view.showSuccessMessage(msg.toString());
         } else
-            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+            view.showErrorMessage(message.getType().toString());
     }
 
     /**
@@ -272,9 +278,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             }
             inputManager = new GodChoiceInputManager(client, message.getGods(), 1);
             view.setInputManager(inputManager);
-            inputManager.startTimer(Constants.TIMER_DEFAULT);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.chooseUserGod(message.getGods());
-        } catch (CancellationException ignored) {   //FIXME check if thrown
+        } catch (CancellationException ignored) {
+            // do nothing
         }
     }
 
@@ -288,7 +295,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new ChooseStartingPlayerInputManager(client, message.getPayload());
         view.setInputManager(inputManager);
-        inputManager.startTimer(Constants.TIMER_DEFAULT);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.chooseStartingPlayer(message.getPayload());
     }
 
@@ -348,7 +355,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             gameBoard = message.getPayload();
             //payload to be saved internally on the view
         else
-            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+            view.showErrorMessage(message.getType().toString());
         view.showGameBoard(gameBoard);
     }
 
@@ -389,7 +396,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 client.setCurrentPlayer(true);
                 inputManager = new SelectWorkerInputManager(client,message.getWorkersCells(), this);
                 view.setInputManager(inputManager);
-                inputManager.startTimer(Constants.TIMER_DEFAULT);
+                inputManager.startTimer(Constants.INPUT_TIMER);
                 view.chooseWorker(message.getWorkersCells());
             } else
                 client.setCurrentPlayer(false);
@@ -407,7 +414,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new AddWorkersInputManager(client, this);
         view.setInputManager(inputManager);
-        inputManager.startTimer(Constants.TIMER_DEFAULT);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.placeWorker();
     }
 
@@ -450,7 +457,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             message.getPayload().getCurrentTurn().getCurrentPlayer().getWorkers().forEach(worker -> workersCell.add(worker.getPosition()));
             inputManager = new SelectWorkerInputManager(client, workersCell, this);
             view.setInputManager(inputManager);
-            inputManager.startTimer(Constants.TIMER_DEFAULT);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.chooseWorker(workersCell);
             inputManager.setWaitingForInput(true);
         } else
@@ -538,7 +545,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             } else {
                 inputManager = new SelectActionInputManager(client, message.getPossibleActions(),workersCells, this);
                 view.setInputManager(inputManager);
-                inputManager.startTimer(Constants.TIMER_DEFAULT);
+                inputManager.startTimer(Constants.INPUT_TIMER);
                 view.chooseAction(message.getPossibleActions());
             }
         } else {
@@ -560,7 +567,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), true, this);
             view.setInputManager(inputManager);
-            inputManager.startTimer(Constants.TIMER_DEFAULT);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.moveAction(gameBoard, message.getPayload());
         } else {
             //we should never enter here
@@ -581,7 +588,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), false, this);
             view.setInputManager(inputManager);
-            inputManager.startTimer(Constants.TIMER_DEFAULT);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.buildAction(gameBoard, message.getPayload());
         } else {
             //we should never enter here
@@ -601,7 +608,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
         inputManager = new SelectBlockInputManager(client, this, message.getBlocks());
         view.setInputManager(inputManager);
-        inputManager.startTimer(Constants.TIMER_DEFAULT);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.chooseBlockToBuild(message.getBlocks());
     }
 
@@ -625,7 +632,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             case SELECT_OTHER_WORKER:
                 inputManager = new SelectWorkerInputManager(client, workersCell, this);
                 view.setInputManager(inputManager);
-                inputManager.startTimer(Constants.TIMER_DEFAULT);
+                inputManager.startTimer(Constants.INPUT_TIMER);
                 view.chooseWorker(workersCell);
                 break;
         }
@@ -651,7 +658,5 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void printOnBuild(List<Cell> buildableCells) {
         view.buildAction(gameBoard, buildableCells);
     }
-
-
 }
 
