@@ -10,7 +10,7 @@
     <entry key="cellWidth">22</entry>
     <entry key="cellHeight">11</entry>
     <entry key="emptyBoardPath">/it/polimi/ingsw/view/cli/console/printers/graphics/board.art</entry>
-    <entry key="standardCellFramePath">/it/polimi/ingsw/view/cli/console/printers/graphics/cellFrame.art</entry>
+    <entry key="standardCellFramePath">/it/polimi/ingsw/view/cli/console/printers/graphics/yellowCellFrame.art</entry>
     <entry key="firstLevelTopPath">/it/polimi/ingsw/view/cli/console/printers/graphics/blocks/firstLevelTop.art</entry>
     <entry key="secondLevelTopPath">/it/polimi/ingsw/view/cli/console/printers/graphics/blocks/secondLevelTop.art</entry>
     <entry key="thirdLevelTopPath">/it/polimi/ingsw/view/cli/console/printers/graphics/blocks/thirdLevelTop.art</entry>
