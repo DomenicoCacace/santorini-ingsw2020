@@ -62,15 +62,15 @@ class BuildDomeTest {
 
     @Test
     void canBuildDomeAnywhereTest() throws IOException, IllegalActionException {
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
 
         targetCell = game.getGameBoard().getCell(3, 3);//LEVEL2
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);
         buildAction.getValidation(game);
 
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
-        assertEquals(targetCell.getBlock(), block);
+        assertEquals(players.get(1), game.getCurrentTurn().getCurrentPlayer());
+        assertEquals(block, targetCell.getBlock());
     }
 
     @Test
@@ -84,9 +84,9 @@ class BuildDomeTest {
             e.getMessage();
         }
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), Block.DOME);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
+        assertEquals(Block.DOME, targetCell.getBlock());
     }
 
 }

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.client;
 
 
-import com.fasterxml.jackson.databind.node.NumericNode;
 import it.polimi.ingsw.network.message.JacksonMessageBuilder;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.MessageFromServerToClient;
@@ -12,14 +11,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.*;
 
 /**
  * Client-side client communication and message handler
  */
 public class NetworkHandler implements Runnable {
-    private final static String PING = "ping";
+    private static final String PING = "ping";
     private final BufferedReader inputSocket;
     private final OutputStreamWriter outputSocket;
     private final Socket serverConnection;
@@ -38,24 +36,23 @@ public class NetworkHandler implements Runnable {
      * @param client the client to connect
      * @throws IOException if an I/O error occurs while opening the socket streams
      */
-    public NetworkHandler(Client client) throws IOException, NumberFormatException, InterruptedException, ExecutionException, TimeoutException {
+    public NetworkHandler(Client client) throws IOException, InterruptedException, ExecutionException, TimeoutException {
         this.jacksonParser = new JacksonMessageBuilder();
         this.client = client;
         this.parser = new MessageManagerParser(client);
-        //TODO: add timeout
         String address;
         int port;
         String clientInput = client.getIpAddress();
         if (clientInput.contains(":")) {
-            int index = clientInput.indexOf(":");
+            int index = clientInput.indexOf(':');
             address = clientInput.substring(0, index).trim();
             port = Integer.parseInt(clientInput.substring(index + 1).trim());
         } else {
             address = clientInput;
             port = 4321;
         }
-        ExecutorService ex = Executors.newSingleThreadExecutor();
-        Future<Socket> socketFuture = ex.submit(() -> new Socket(address, port));
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<Socket> socketFuture = executorService.submit(() -> new Socket(address, port));
         this.serverConnection = socketFuture.get(5, TimeUnit.SECONDS);
         this.inputSocket = new BufferedReader(new InputStreamReader(serverConnection.getInputStream()));
         this.outputSocket = new OutputStreamWriter(serverConnection.getOutputStream());
@@ -135,7 +132,6 @@ public class NetworkHandler implements Runnable {
         if (!serverConnection.isClosed()) {
             outputSocket.write(json + "\n");
             outputSocket.flush();
-            //System.out.println(json + "message sent from " + client.getUsername() + " to Server");
         } else throw new IOException();
     }
 
@@ -150,7 +146,6 @@ public class NetworkHandler implements Runnable {
         if (!serverConnection.isClosed()) {
             outputSocket.write(string + "\n");
             outputSocket.flush();
-            //System.out.println(json + "message sent from " + client.getUsername() + " to Server");
         } else throw new IOException();
     }
 
@@ -170,12 +165,15 @@ public class NetworkHandler implements Runnable {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.err.println("InterruptedException on ping sleep");
+            Thread.currentThread().interrupt();
         }
         try {
             sendMessage(PING);
         } catch (IOException e) {
-            //TODO:
+           /*
+            * Mistakes were made
+            */
         }
         if (!serverConnection.isClosed()) {
             ex = new ScheduledThreadPoolExecutor(5);

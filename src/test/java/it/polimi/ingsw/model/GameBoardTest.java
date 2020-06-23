@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +28,7 @@ class GameBoardTest {
     }
 
     @Test
-    void cellBehindOutOfGameboardTest(){
+    void cellBehindOutOfGameBoardTest(){
         Cell cell1 = board.getCell(1,2);
         Cell cell2 = board.getCell(0,2);
         Cell cellBehind = board.getCellBehind(cell1, cell2);
@@ -37,7 +38,7 @@ class GameBoardTest {
 
     @Test
     void getAdjacentCellsTest(){
-        ArrayList<Cell> cells = new ArrayList<Cell>();
+        List<Cell> cells;
         Cell cell = board.getCell(2,3);
         cells = board.getAdjacentCells(cell);
         assertEquals(cells.get(0), board.getCell(1,2));

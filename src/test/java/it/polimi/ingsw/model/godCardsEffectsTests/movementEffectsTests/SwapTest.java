@@ -25,7 +25,7 @@ class SwapTest {
     Player currentPlayer;
 
     @BeforeEach
-    void SetUp () throws IOException {
+    void SetUp () {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Apollo",2, ""));
         gods.get(0).setStrategy(new Swap());
@@ -67,7 +67,7 @@ class SwapTest {
         moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker.getPosition(), myCell);
@@ -93,7 +93,7 @@ class SwapTest {
         moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker.getPosition(), myCell);
@@ -118,7 +118,7 @@ class SwapTest {
         moveAction.getValidation(game);
 
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker.getPosition(), myCell);
@@ -147,7 +147,7 @@ class SwapTest {
             e.getMessage();
         }
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
         assertEquals(opponentWorker.getPosition(), opponentCell);
@@ -177,7 +177,7 @@ class SwapTest {
         }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
         assertEquals(opponentWorker.getPosition(), opponentCell);
@@ -213,7 +213,7 @@ class SwapTest {
             e.getMessage();
         }
         assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), myWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), opponentCell);
         assertEquals(opponentWorker1.getPosition(), myCell);
@@ -247,7 +247,7 @@ class SwapTest {
             e.getMessage();
         }
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         assertEquals(myWorker.getPosition(), myCell);
         assertEquals(myWorker2.getPosition(), opponentCell);

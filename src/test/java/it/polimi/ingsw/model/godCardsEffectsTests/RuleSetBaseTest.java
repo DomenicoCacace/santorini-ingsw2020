@@ -65,34 +65,34 @@ class RuleSetBaseTest {
     }
 
     @Test
-    void getWalkableCellsTest() throws IOException {
+    void getWalkableCellsTest() {
         List<Cell> walkableCells;
         walkableCells = game.getWalkableCells(currentWorker);
-        assertEquals(walkableCells.size(), 5);
-        assertEquals(walkableCells.get(0),game.getGameBoard().getCell(1,1) );
-        assertEquals(walkableCells.get(1),game.getGameBoard().getCell(1,2) );
-        assertEquals(walkableCells.get(2),game.getGameBoard().getCell(1,3) );
-        assertEquals(walkableCells.get(3),game.getGameBoard().getCell(2,1) );
-        assertEquals(walkableCells.get(4),game.getGameBoard().getCell(2,3) );
+        assertEquals(5, walkableCells.size());
+        assertEquals(game.getGameBoard().getCell(1,1),walkableCells.get(0) );
+        assertEquals(game.getGameBoard().getCell(1,2),walkableCells.get(1) );
+        assertEquals(game.getGameBoard().getCell(1,3),walkableCells.get(2) );
+        assertEquals(game.getGameBoard().getCell(2,1),walkableCells.get(3) );
+        assertEquals(game.getGameBoard().getCell(2,3),walkableCells.get(4) );
     }
 
 
 
     @Test
-    void getBuildableCellsTest() throws IOException, IllegalActionException {
+    void getBuildableCellsTest() throws IllegalActionException {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
         List<Cell> buildableCells;
         buildableCells = game.getBuildableCells(currentWorker);
-        assertEquals(buildableCells.size(), 6);
-        assertEquals(buildableCells.get(0),game.getGameBoard().getCell(1,2) );
-        assertEquals(buildableCells.get(1),game.getGameBoard().getCell(1,3) );
-        assertEquals(buildableCells.get(2),game.getGameBoard().getCell(1,4) );
-        assertEquals(buildableCells.get(3),game.getGameBoard().getCell(2,2) );
-        assertEquals(buildableCells.get(4),game.getGameBoard().getCell(2,4) );
-        assertEquals(buildableCells.get(5),game.getGameBoard().getCell(3,3) );
+        assertEquals(6, buildableCells.size());
+        assertEquals(game.getGameBoard().getCell(1,2),buildableCells.get(0) );
+        assertEquals(game.getGameBoard().getCell(1,3),buildableCells.get(1) );
+        assertEquals(game.getGameBoard().getCell(1,4),buildableCells.get(2) );
+        assertEquals(game.getGameBoard().getCell(2,2),buildableCells.get(3) );
+        assertEquals(game.getGameBoard().getCell(2,4),buildableCells.get(4) );
+        assertEquals(game.getGameBoard().getCell(3,3),buildableCells.get(5) );
     }
 
 
@@ -103,10 +103,10 @@ class RuleSetBaseTest {
         moveAction.getValidation(game);
         List<PossibleActions> possibleActions = game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
-        assertEquals(possibleActions.size(), 1);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(currentWorker.getPosition(), targetCell);
+        assertEquals(1, possibleActions.size());
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(targetCell, currentWorker.getPosition());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 
@@ -117,9 +117,9 @@ class RuleSetBaseTest {
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(currentWorker.getPosition(), targetCell);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(targetCell, currentWorker.getPosition());
         assertTrue(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 
@@ -130,9 +130,9 @@ class RuleSetBaseTest {
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(currentWorker.getPosition(), targetCell);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(targetCell, currentWorker.getPosition());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 
@@ -147,10 +147,10 @@ class RuleSetBaseTest {
         }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertNotEquals(currentWorker.getPosition(), targetCell);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(currentWorker.getPosition(), moveAction.getStartingCell());
+        assertEquals(moveAction.getStartingCell(), currentWorker.getPosition());
     }
 
     @Test
@@ -165,10 +165,10 @@ class RuleSetBaseTest {
         }
 
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertNotEquals(currentWorker.getPosition(), targetCell);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(currentWorker.getPosition(), moveAction.getStartingCell());
+        assertEquals(moveAction.getStartingCell(), currentWorker.getPosition());
     }
 
     @Test
@@ -182,10 +182,10 @@ class RuleSetBaseTest {
             e.getMessage();
         }
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertNotEquals(currentWorker.getPosition(), targetCell);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
-        assertEquals(currentWorker.getPosition(), moveAction.getStartingCell());
+        assertEquals(moveAction.getStartingCell(), currentWorker.getPosition());
     }
 
     @Test
@@ -201,9 +201,9 @@ class RuleSetBaseTest {
         } catch (IllegalActionException e) {
             e.getMessage();
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(currentWorker.getPosition(), targetCell);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(targetCell, currentWorker.getPosition());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
     }
 
@@ -213,17 +213,17 @@ class RuleSetBaseTest {
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
 
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
         buildAction.getValidation(game);
 
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
-        assertEquals(targetCell.getBlock(), block);
+        assertEquals(players.get(1), game.getCurrentTurn().getCurrentPlayer());
+        assertEquals(block, targetCell.getBlock());
         assertNull(game.getCurrentRuleSet().getStrategy().getMovedWorker());
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
 
     }
 
@@ -237,8 +237,8 @@ class RuleSetBaseTest {
         } catch (IllegalActionException e) {
             e.getMessage();
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), Block.LEVEL2);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
+        assertEquals(Block.LEVEL2, targetCell.getBlock());
         assertFalse(targetCell.hasDome());
     }
 
@@ -248,16 +248,16 @@ class RuleSetBaseTest {
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
 
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
 
         targetCell = game.getGameBoard().getCell(3, 3);
         block = Block.LEVEL3;
         buildAction = new BuildAction(currentWorker, targetCell, block);
         buildAction.getValidation(game);
 
-        assertEquals(targetCell.getBlock(), block);
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
+        assertEquals(block, targetCell.getBlock());
+        assertEquals(players.get(1), game.getCurrentTurn().getCurrentPlayer());
     }
 
     @Test
@@ -274,9 +274,9 @@ class RuleSetBaseTest {
         } catch (IllegalActionException e) {
             e.getMessage();
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), Block.LEVEL2);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
+        assertEquals(Block.LEVEL2, targetCell.getBlock());
     }
 
     @Test
@@ -295,8 +295,8 @@ class RuleSetBaseTest {
             e.getMessage();
         }
         assertNotEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), Block.LEVEL2);
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
+        assertEquals(Block.LEVEL2, targetCell.getBlock());
     }
 
     @Test
@@ -313,9 +313,9 @@ class RuleSetBaseTest {
         } catch (IllegalActionException e) {
             e.getMessage();
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), Block.DOME);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
+        assertEquals(Block.DOME, targetCell.getBlock());
     }
 
     @Test
@@ -331,8 +331,8 @@ class RuleSetBaseTest {
         } catch (IllegalActionException e) {
             e.getMessage();
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getBuildsAvailable(), 1);
-        assertEquals(targetCell.getBlock(), Block.LEVEL0);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(1, game.getCurrentRuleSet().getStrategy().getBuildsAvailable());
+        assertEquals(Block.LEVEL0, targetCell.getBlock());
     }
 }

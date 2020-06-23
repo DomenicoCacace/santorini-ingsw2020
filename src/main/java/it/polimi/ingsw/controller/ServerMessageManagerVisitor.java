@@ -43,7 +43,6 @@ public interface ServerMessageManagerVisitor {
         cannotHandleMessage(message);
     }
 
-
     /**
      * Visitor for {@linkplain ChooseInitialGodsResponse}
      *

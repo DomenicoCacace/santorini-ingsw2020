@@ -13,12 +13,10 @@ import java.util.List;
 
 public class ChooseGodsController {
 
+    private final List<ResizableImageView> enabledGods = new ArrayList<>();
     private GUI gui;
-
     @FXML
     private VBox godImageContainer;
-
-    private final List<ResizableImageView> enabledGods = new ArrayList<>();
 
     public VBox getGodImageContainer() {
         return godImageContainer;
@@ -41,7 +39,7 @@ public class ChooseGodsController {
         ((ResizableImageView) event.getSource()).setOpacity(0.2);
     }
 
-    public void addEnabledGod(ResizableImageView resizableImageView){
+    public void addEnabledGod(ResizableImageView resizableImageView) {
         enabledGods.add(resizableImageView);
     }
 }

@@ -192,7 +192,7 @@ public class MessageManagerParser implements ServerMessageManagerVisitor {
      * Handles a {@linkplain EndTurnRequest} message
      *
      * @param message the message to handle
-     * @see ServerController#onTurnEnd(String)
+     * @see ServerController#onTurnEnd(String, List) 
      */
     @Override
     public void endTurn(EndTurnRequest message) {

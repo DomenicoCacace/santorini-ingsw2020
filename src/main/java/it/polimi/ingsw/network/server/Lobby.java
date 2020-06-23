@@ -13,10 +13,6 @@ import it.polimi.ingsw.network.ReservedUsernames;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.fromServerToClient.*;
-import it.polimi.ingsw.network.message.fromServerToClient.ChosenGodsEvent;
-import it.polimi.ingsw.network.message.fromServerToClient.GameBoardUpdate;
-import it.polimi.ingsw.network.message.fromServerToClient.UserJoinedLobbyEvent;
-import it.polimi.ingsw.network.message.fromServerToClient.WinnerDeclaredEvent;
 import it.polimi.ingsw.network.server.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.network.server.exceptions.RoomFullException;
 
@@ -36,7 +32,7 @@ import java.util.stream.Collectors;
  * start a new game
  */
 public class Lobby implements PlayerLostListener, EndGameListener {
-    private final static Logger logger = Logger.getLogger(Logger.class.getName());
+    private static final Logger logger = Logger.getLogger(Lobby.class.getName());
     private final List<String> usersInLobby;
     private final MessageManagerParser messageParser;
     private final Map<GodData, God> godsMap;
@@ -83,6 +79,39 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         }
     }
 
+    /**
+     * <i>roomName</i> getter
+     *
+     * @return the lobby name
+     */
+    public String getRoomName() {
+        return this.roomName;
+    }
+
+    /**
+     * <i>messageParser</i> getter
+     *
+     * @return this lobby's message parser
+     */
+    public MessageManagerParser getRoomParser() {
+        return messageParser;
+    }
+
+    /**
+     * Determines if a given user has lost the game in this lobby
+     *
+     * @param user the user to check for loss
+     * @return <code>true</code> if the player has lost
+     */
+    public boolean hasLost(User user) {
+        return !playerMap.containsKey(user);
+    }
+
+    /**
+     * Checks if exists a saved file to restore a game with the current players
+     *
+     * @return <code>true</code> if such a file exists, <code>false</code> otherwise
+     */
     private boolean checkSavedGame() {
         File savedGameDir = new File("./savedGames");
         savedGameDir.mkdir();
@@ -99,6 +128,17 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         return false;
     }
 
+    /**
+     * Determines the name to save the game on a file
+     * <p>
+     *     The filename will be in the format
+     *     <br>
+     *         <code>LOBBYNAME_USER1_USER2(_USER3).json</code>
+     *         <br>
+     *             The usernames are ordered alphabetically; the third username is present only for 3 players matches.
+     *
+     * @return the filename, built following the up mentioned rules
+     */
     private String getFileName() {
         StringBuilder orderedNames = new StringBuilder(this.getRoomName());
         orderedNames.append("_");
@@ -128,7 +168,6 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         else if (recipient != null)
             recipient.notify(message);
     }
-
 
     /**
      * Sends a message to all the users in the room
@@ -167,6 +206,11 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         }
     }
 
+    /**
+     * Creates the savefile on disk, or retrieves an already existing file from disk
+     *
+     * @return the file to save the game to
+     */
     private File fileCreation() {
         File gameToSave;
         String fileName = getFileName();
@@ -178,12 +222,17 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             if (!gameToSave.exists())
                 gameToSave.createNewFile();
         } catch (IOException e) { //Cannot create file
-            e.printStackTrace();
+            System.err.println("IO error while creating save file");
         }
         return gameToSave;
     }
 
 
+    /**
+     * Based on the user choice, reloads a previously saved match or creates a new one
+     *
+     * @param wantToReload the user choice
+     */
     public void reloadMatch(boolean wantToReload) {
         if (wantToReload) {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -211,7 +260,11 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             askGods(new ArrayList<>(godsMap.keySet()));
     }
 
-
+    /**
+     * Receives the list of chosen gods from the lobby owner and, if correct, asks the next player to choose its god
+     *
+     * @param gods the list of chosen gods
+     */
     public void chooseGods(List<GodData> gods) {
         if ((int) gods.stream().distinct().count() == maxRoomSize && gods.size() == maxRoomSize) {
             availableGods = gods;
@@ -235,6 +288,10 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         messageParser.parseMessageFromServerToClient(new ChooseInitialGodsRequest(firstPlayerName, godData));
     }
 
+    /**
+     * Asks a player to choose its personal god for the game
+     * @param username the user's username to ask to choose to
+     */
     public void askToChooseGod(String username) {
         messageParser.parseMessageFromServerToClient(new ChooseYourGodRequest(username, availableGods));
     }
@@ -259,6 +316,10 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         }
     }
 
+    /**
+     * <i>Rotates</i> the players' list, based on the first player chosen, then starts the game
+     * @param username the first player's username
+     */
     public void selectStartingPlayer(String username) {
         List<String> usernames = new LinkedList<>();
         usersInLobby.stream().filter(u -> !u.equals(ReservedUsernames.BROADCAST.toString())).forEach(usernames::add);
@@ -270,6 +331,9 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         createGame();
     }
 
+    /**
+     * Creates and starts a new game
+     */
     public void createGame() {
         Map<User, PlayerInterface> playerInterfaceMap = new LinkedHashMap<>();
         playerMap.keySet().forEach(u -> playerInterfaceMap.put(u, playerMap.get(u)));
@@ -285,10 +349,19 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         messageParser.parseMessageFromServerToClient(new ChooseWorkerPositionRequest(players.get(0).getName(), gameInterface.buildBoardData()));
     }
 
+    /**
+     * <i>gameStarted</i> getter
+     * @return <i>true</i> if  the game started
+     */
     public boolean gameStarted() {
         return gameStarted;
     }
 
+    /**
+     * Removes a user from the lobby
+     *
+     * @param user the user to remove
+     */
     public void removeUser(User user) {
         playerMap.remove(user);
         usersInLobby.remove(user.getUsername());
@@ -296,28 +369,34 @@ public class Lobby implements PlayerLostListener, EndGameListener {
             server.getGameLobbies().put(this.roomName, this);
     }
 
+    /**
+     * Creates a list containing this lobby information, with the following format:
+     *
+     * <ul>
+     *     <li>lobby name</li>
+     *     <li>number of users in the lobby</li>
+     *     <li>number of available slots</li>
+     *     <li>list of users in the lobby</li>
+     * </ul>
+     *
+     * @return a list containing the lobby information as described above
+     */
     public List<String> lobbyInfo() {
         List<String> info = new ArrayList<>();
         info.add(this.roomName);
-        info.add(String.valueOf(usersInLobby.size() - 1));
+        info.add(String.valueOf(usersInLobby.size() - 1));  // "BROADCAST" has to be removed, hence the -1
         info.add(String.valueOf(this.maxRoomSize - usersInLobby.size() + 1));
         info.addAll(this.usersInLobby);
         info.remove(ReservedUsernames.BROADCAST.toString());
         return info;
     }
 
-    public String getRoomName() {
-        return this.roomName;
-    }
-
-    public MessageManagerParser getRoomParser() {
-        return messageParser;
-    }
-
-    public boolean hasLost(User user) {
-        return !playerMap.containsKey(user);
-    }
-
+    /**
+     * Removes the user which lost from the <i>in-game players</i>, and overrides the saved file
+     *
+     * @param username  the loser's username
+     * @param gameBoard the changed gameBoard without the loser's workers as a list of cells
+     */
     @Override
     public void onPlayerLoss(String username, List<Cell> gameBoard) {
         playerMap.remove(server.getUser(username, this));
@@ -325,6 +404,12 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         controller.setFile(savedGame);
     }
 
+    /**
+     * Sends a {@linkplain WinnerDeclaredEvent} to all users, deletes the saved game, moves all the player to the
+     * waiting room and removes the lobby from the server's lobby list
+     *
+     * @param name the winner's username
+     */
     @Override
     public void onEndGame(String name) {
         Message message = new WinnerDeclaredEvent(name);

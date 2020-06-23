@@ -18,11 +18,7 @@ public class ReloadGameInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(Constants.QUIT)) {
-            stopTimer();
-            client.stopConnection();
-            new Thread(() -> Client.initClient(view)).start();
-        } else if (isWaitingForInput) {
+        if (isWaitingForInput) {
             if (input.equals(Constants.YES)) {
                 reloadMatch(true);
                 isWaitingForInput = false;

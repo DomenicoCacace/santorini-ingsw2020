@@ -32,26 +32,24 @@ public class SelectActionCellInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
-        if (input.equals(Constants.QUIT)) {
-            stopTimer();
-            client.stopConnection();
-            new Thread(() -> Client.initClient(view)).start();
-        } else if (isWaitingForInput) {
+        if (isWaitingForInput) {
             List<Cell> selectedCell;
-            input = cleanInput(input);
+            String invalidSelectionError = "Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD;
+
             switch (state) {
                 case MOVE:
                     try {
                         int coord = Integer.parseInt(input);
                         if (coord < MIN_COORD || coord > MAX_COORD) {
                             if (row == -1)
-                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
+                                view.showErrorMessage(invalidSelectionError + "\nrow: ");
                             else
-                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
+                                view.showErrorMessage(invalidSelectionError + ", the row selected is: " + (row + 1) + "\ncol: ");
+                            view.showErrorMessage(invalidSelectionError);
                         } else if (row == -1) {
                             row = coord - 1;
                             view.printCol();
-                            startTimer(60);
+                            startTimer(Constants.INPUT_TIMER);
                         } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
@@ -67,21 +65,22 @@ public class SelectActionCellInputManager extends InputManager {
                             }
                         }
                     } catch (NumberFormatException e) {
-                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD);
+                        view.showErrorMessage(invalidSelectionError);
                     }
                     break;
+
                 case BUILD:
                     try {
                         int coord = Integer.parseInt(input);
                         if (coord < MIN_COORD || coord > MAX_COORD) {
                             if (row == -1)
-                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ");
+                                view.showErrorMessage(invalidSelectionError + "\nrow: ");
                             else
-                                view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + ", the row selected is: " + (row + 1) + "\ncol: ");
+                                view.showErrorMessage(invalidSelectionError + ", the row selected is: " + (row + 1) + "\ncol: ");
                         } else if (row == -1) {
                             row = coord - 1;
                             view.printCol();
-                            startTimer(60);
+                            startTimer(Constants.INPUT_TIMER);
                         } else if (col == -1) {
                             col = coord - 1;
                             selectedCell = validCells.stream().filter(cell -> cell.getCoordX() == row && cell.getCoordY() == col).collect(Collectors.toList());
@@ -98,8 +97,11 @@ public class SelectActionCellInputManager extends InputManager {
                             }
                         }
                     } catch (NumberFormatException e) {
-                        view.showErrorMessage("Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD);
+                        view.showErrorMessage(invalidSelectionError);
                     }
+                    break;
+
+                default:
                     break;
             }
         }

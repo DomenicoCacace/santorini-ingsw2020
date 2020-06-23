@@ -198,10 +198,10 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<PossibleActions> getPossibleActions(Worker worker) {
         List<PossibleActions> possibleActions = new ArrayList<>();
-        if (getWalkableCells(worker).size() > 0) {
+        if (!getWalkableCells(worker).isEmpty()) {
             possibleActions.add(PossibleActions.MOVE);
             possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
-        } else if (getBuildableCells(worker).size() > 0) {
+        } else if (!getBuildableCells(worker).isEmpty()) {
             possibleActions.add(PossibleActions.BUILD);
         } else
             possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);
@@ -321,7 +321,7 @@ public class RuleSetBase implements RuleSetStrategy {
      */
     @Override
     public boolean checkLoseCondition(MoveAction moveAction) {
-        return (getBuildableCells(moveAction.getTargetWorker()).size() == 0);
+        return (getBuildableCells(moveAction.getTargetWorker()).isEmpty());
     }
 
     /**
@@ -409,11 +409,9 @@ public class RuleSetBase implements RuleSetStrategy {
     @Override
     public List<Cell> getBuildableCells(Worker worker) {
         List<Cell> cells = new ArrayList<>();
-        if (buildsAvailable > 0) {
-            if (worker.equals(movedWorker)) {
-                addBuildableCells(worker, cells);
-            }
-        }
+        if (buildsAvailable > 0 && worker.equals(movedWorker))
+            addBuildableCells(worker, cells);
+
         return cells;
     }
 

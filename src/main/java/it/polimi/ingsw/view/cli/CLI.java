@@ -5,14 +5,17 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.model.dataClass.PlayerData;
-import it.polimi.ingsw.view.Constants;
+import it.polimi.ingsw.network.server.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.cli.utils.PrettyPrinter;
+import it.polimi.ingsw.view.cli.console.Console;
+import it.polimi.ingsw.view.cli.console.printers.Printer;
+import it.polimi.ingsw.view.cli.console.printers.basicPrinter.BasicPrinter;
+import it.polimi.ingsw.view.cli.console.printers.fancyPrinter.FancyPrinter;
 import it.polimi.ingsw.view.inputManagers.InputManager;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.CancellationException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,215 +24,297 @@ import java.util.concurrent.locks.ReentrantLock;
  * Command Line Interface manager
  */
 public class CLI implements ViewInterface {
-
-    private final PrettyPrinter printer;
-    private final Lock lock = new ReentrantLock();
+    protected static Lock lock = new ReentrantLock();
+    private final Printer printer;
     private InputManager inputManager;
-    private List<PlayerData> players = new ArrayList<>();
+    private final boolean enableRawMode;
 
-    public CLI() throws IOException {
-        printer = new PrettyPrinter();
+    /**
+     * Default constructor
+     *
+     * @param enableRawMode determines if the terminal in which the program is running allows non-canonical mode
+     */
+    public CLI(boolean enableRawMode) throws IOException {
+        this.enableRawMode = enableRawMode;
+        if (enableRawMode)
+            printer = new FancyPrinter(Console.init(this), this);
+        else
+            printer = new BasicPrinter(Console.init(this), this);
         new Thread(this::readInput).start();
     }
 
+    /**
+     * Determines if the terminal running the application allows non-canonical mode
+     *
+     * @return true if the terminal allows non-canonical mode, false otherwise
+     */
+    public boolean enableRawMode() {
+        return this.enableRawMode;
+    }
+
+    /**
+     * Sets the {@linkplain InputManager} to parse the inputs
+     *
+     * @param inputManager te inputManager to use
+     */
+    @Override
     public void setInputManager(InputManager inputManager) {
         lock.lock();
         this.inputManager = inputManager;
         lock.unlock();
     }
 
-    @Override
-    public void printCol() {
-        printer.printMessage("col: ");
-    }
-
-    @Override
-    public void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) {
-        List<String> lobbies = new LinkedList<>(lobbiesAvailable.keySet());
-        List<String> lobbiesWithInfos = new LinkedList<>();
-        System.out.println("Choose which lobby to join!");
-        lobbies.forEach(lobby -> {
-            List<String> info = lobbiesAvailable.get(lobby);
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder
-                    .append(" has ")
-                    .append(info.get(1))
-                    .append(" players connected,\n")
-                    .append("   is waiting for ")
-                    .append(info.get(2))
-                    .append(" players to start.\n");
-            if (info.size() > 3) {
-                stringBuilder.append("   The players connected are:\n");
-                for (int i = 3; i < info.size(); i++) {
-                    stringBuilder.append("   -").append(info.get(i)).append("\n");
-                }
-            }
-            lobbiesWithInfos.add(lobby + stringBuilder);
-        });
-        lobbiesWithInfos.add("Go back");
-        printOptions(lobbiesWithInfos);
-    }
-
-    @Override
-    public void chooseUserGod(List<GodData> possibleGods) {
-        System.out.println("Choose your god: ");
-        possibleGods.forEach(g -> System.out.println(possibleGods.indexOf(g) + 1 + "-" + g.getName() + " -> Effect: " + g.getDescriptionStrategy()));
-    }
-
-    @Override
-    public void chooseGameGods(List<GodData> allGods, int size) {
-        System.out.println("Choose the game gods:");
-        allGods.forEach(g -> System.out.println(allGods.indexOf(g) + 1 + "-" + g.getName() + " -> Effect: " + g.getDescriptionStrategy()));
+    /**
+     * Passes a string to the inputManager
+     *
+     * @param input the inputString
+     */
+    public void evaluateInput(String input) {
+        lock.lock();
+        inputManager.manageInput(input);
+        lock.unlock();
     }
 
     private void readInput() {
-        Scanner scanner = new Scanner(System.in);
         while (true) {
-            if (scanner.hasNext()) {
+            if (Console.in.hasNext()) {
                 lock.lock();
-                String input = scanner.nextLine();
-                if (!input.isBlank())
-                    inputManager.manageInput(input.trim());
+                inputManager.manageInput(Console.in.nextLine());
                 lock.unlock();
             }
         }
     }
 
-    @Override
-    public void askToReloadLastSettings(List<String> savedUsers) {
-        System.out.print("\t\tThere are some settings saved! do you want to load one of them? [" + Constants.YES + "/" + Constants.NO + "]: ");
-    }
-
-    @Override
-    public void printLogo() {
-        printer.printLogin();
-    }
-
-    @Override
-    public void askIP() throws CancellationException {
-        System.out.print("\t\tInsert the server address: ");
-    }
-
-    @Override
-    public void askUsername() throws CancellationException {
-        System.out.print("\t\tInsert your username: ");
-    }
-
-    @Override
-    public void gameStartScreen(List<Cell> gameBoard, List<PlayerData> players) {
-        System.out.println("Let the game begin!");
-        initGameScreen(gameBoard, players);
-        //TODO: enhance
-    }
-
-    @Override
-    public void lobbyOptions(List<String> options) throws CancellationException {
-        printOptions(options);
-    }
-
-    @Override
-    public void askLobbyName() throws CancellationException {
-        System.out.print("Choose your lobby name:\n");
-    }
-
-    @Override
-    public void askLobbySize() throws CancellationException {
-        System.out.print("Choose the room size:\n");
-    }
-
-    @Override
-    public void showGameBoard(List<Cell> gameBoard) {
-        printer.printBoard(gameBoard);
-    }
-
-    @Override
-    public void initGameScreen(List<Cell> gameBoard, List<PlayerData> players) {
-        printer.setCachedBoard(gameBoard);
-        showGameBoard(gameBoard);
-        if(this.players.isEmpty()) {
-            this.players = players;
-            StringBuilder builder = new StringBuilder();
-            players.forEach(playerData ->
-                    builder.append("The player ")
-                            .append(playerData.getName())
-                            .append(" is the color ")
-                            .append(playerData.getColor().toString())
-                            .append(" and is playing with the God ")
-                            .append(playerData.getGod().getName())
-                            .append("\n"));
-            System.out.println(builder.toString());
-        }
-    }
-
-    @Override
-    public void chooseWorker(List<Cell> cells) throws CancellationException {
-        printer.highlightWorkers(cells);
-        System.out.println("Choose your worker! \nrow: ");
-    }
-
-    @Override
-    public void chooseMatchReload() throws CancellationException {
-        System.out.println("I found a match to reload! do you want to reload? (" + Constants.YES + "/" + Constants.NO + ")");
-    }
-
-    @Override
-    public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) throws CancellationException {
-        printer.printBoard(gameBoard, walkableCells);
-        printer.printMessage("Select the cell where you want to to move! \nrow: ");
-    }
-
-    @Override
-    public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) throws CancellationException {
-        printer.printBoard(gameBoard, buildableCells);
-        printer.printMessage("Select the cell where you want to to build! \nrow: ");
-    }
-
-    @Override
-    public void chooseBlockToBuild(List<Block> buildableBlocks) throws CancellationException {
-        //buildableBlocks.size always > 1, see player in model
-        System.out.println("Choose the block to build: ");
-        List<String> blocks = new ArrayList<>();
-        buildableBlocks.forEach(b -> blocks.add(b.toString()));
-        printOptions(blocks);
-    }
-
+    /**
+     * Shows an error message
+     *
+     * @param error the error message
+     */
     @Override
     public void showErrorMessage(String error) {
-        printer.printError(error);   //TODO: enhance
+        printer.printError(error);
     }
 
+    /**
+     * Shows a success message
+     *
+     * @param message the message
+     */
     @Override
     public void showSuccessMessage(String message) {
-        printer.printMessage(message);   //TODO: enhance
-
+        printer.printMessage(message);
     }
 
+    /**
+     * Prints the start screen
+     */
     @Override
-    public void placeWorker() throws CancellationException {
-        System.out.println("Place your Worker!");
-        System.out.println("row: ");
+    public void printLogo() {
+        printer.printStartingScreen();
     }
 
+    /**
+     * Asks the user if it wants to reload a previously saved address/username combo
+     *
+     * @param savedUsers the address/username combos
+     */
     @Override
-    public void chooseStartingPlayer(List<String> players) throws CancellationException {
-        System.out.println("Choose the first player:");
-        printOptions(players);
+    public void askToReloadLastSettings(List<String> savedUsers) {
+        printer.askToReloadSettings();
     }
 
+    /**
+     * Shows the user the address/username combos
+     *
+     * @param options the address/username combos
+     */
     @Override
-    public void chooseAction(List<PossibleActions> possibleActions) throws CancellationException {
-        System.out.println("Select an action: ");
-        List<String> actions = new ArrayList<>();
-        possibleActions.forEach(a -> actions.add(a.toString()));
-        printOptions(actions);
+    public void printUserServerCombos(List<String> options) {
+        printer.showSavedSettings(options);
     }
 
-
+    /**
+     * Asks the user the server address to connect to
+     */
     @Override
-    public void printOptions(List<String> list) throws CancellationException {
-        for (int i = 1; i < list.size() + 1; i++)
-            System.out.println(i + "- " + list.get(i - 1));
+    public void askIP() {
+        printer.askIp();
+    }
+
+    /**
+     * Asks the user the username it wants to use
+     */
+    @Override
+    public void askUsername() {
+        printer.askUsername();
+    }
+
+    /**
+     * Asks the user if it wants to join or create a lobby
+     *
+     * @param options the possible options
+     */
+    @Override
+    public void lobbyOptions(List<String> options) {
+        printer.lobbyOptions(options);
+    }
+
+    /**
+     * Asks the user the name for the lobby to be created
+     */
+    @Override
+    public void askLobbyName() {
+        printer.askLobbyName();
+    }
+
+    /**
+     * Asks the user the number of players for its lobby
+     */
+    @Override
+    public void askLobbySize() {
+        printer.askLobbySize();
+    }
+
+    /**
+     * Asks the user which lobby it wants to join
+     *
+     * @param lobbiesAvailable a map containing lobbies and their info
+     * @see Lobby#lobbyInfo()
+     */
+    @Override
+    public void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) {
+        printer.chooseLobbyToJoin(lobbiesAvailable);
+    }
+
+    /**
+     * Asks the user if it wants to reload an existing saved match
+     */
+    @Override
+    public void chooseMatchReload() {
+        printer.chooseToReloadMatch();
+    }
+
+    /**
+     * Asks the user to choose the gods for the game
+     *
+     * @param allGods the list of available gods
+     * @param size    the number of players
+     */
+    @Override
+    public void chooseGameGods(List<GodData> allGods, int size) {
+        printer.chooseGameGods(allGods, size);
+    }
+
+    /**
+     * Asks the user to choose its personal god for the game
+     *
+     * @param possibleGods a list containing the available gods
+     */
+    @Override
+    public void chooseUserGod(List<GodData> possibleGods) {
+        printer.chooseUserGod(possibleGods);
+    }
+
+    /**
+     * Asks the user which player will play first
+     *
+     * @param players the list of players
+     */
+    @Override
+    public void chooseStartingPlayer(List<String> players) {
+        printer.chooseStartingPlayer(players);
+    }
+
+    /**
+     * Updates information about the players and the game
+     *
+     * @param gameBoard the starting game board
+     * @param playerData the players data
+     */
+    public void gameStartScreen(List<Cell> gameBoard, List<PlayerData> playerData) {
+        printer.updateGameData(gameBoard, playerData);
+        showSuccessMessage("All set!\nLet the game begin!");
+    }
+
+    /**
+     * Prints the game board on the screen
+     *
+     * @param gameBoard the board to print
+     */
+    @Override
+    public void showGameBoard(List<Cell> gameBoard) {
+        printer.showGameBoard(gameBoard);
+    }
+
+    /**
+     * Refreshes the game screen
+     *
+     * @param gameBoard the board to start with
+     * @param players information about the players
+     */
+    public void gameBoardUpdate(List<Cell> gameBoard, List<PlayerData> players) {
+        printer.updateGameData(gameBoard, players);
+        printer.showGameBoard(gameBoard);
+    }
+
+    /**
+     * Asks the user to place its worker on the board
+     */
+    @Override
+    public void placeWorker() {
+        printer.placeWorker();
+    }
+
+    /**
+     * Asks the user to choose a worker
+     *
+     * @param cells the cells containing the user's workers
+     */
+    @Override
+    public void chooseWorker(List<Cell> cells) {
+        printer.chooseWorker(cells);
+    }
+
+    /**
+     * Asks the user which action to perform
+     *
+     * @param possibleActions a list of possible actions
+     */
+    @Override
+    public void chooseAction(List<PossibleActions> possibleActions) {
+        printer.chooseAction(possibleActions);
+    }
+
+    /**
+     * Asks the user to select a cell to move its current worker on
+     *
+     * @param gameBoard     the current game board
+     * @param walkableCells the cells on which the worker can be moved to
+     */
+    @Override
+    public void moveAction(List<Cell> gameBoard, List<Cell> walkableCells) {
+        printer.moveAction(gameBoard, walkableCells);
+    }
+
+    /**
+     * Asks the user to select a cell to build on
+     *
+     * @param gameBoard      the current game board
+     * @param buildableCells the cells on which the worker can build
+     */
+    @Override
+    public void buildAction(List<Cell> gameBoard, List<Cell> buildableCells) {
+        printer.buildAction(gameBoard, buildableCells);
+    }
+
+    /**
+     * Asks the user which block to build on a cell
+     *
+     * @param buildableBlocks the possible blocks (always more than one)
+     */
+    @Override
+    public void chooseBlockToBuild(List<Block> buildableBlocks) {
+        printer.chooseBlockToBuild(buildableBlocks);
+        //buildableBlocks.size always > 1, see player in model
     }
 }
-
-

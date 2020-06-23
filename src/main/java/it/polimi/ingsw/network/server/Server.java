@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
  * Manages the client connections
  */
 public class Server extends Thread {
-    private final static int MAX_STORED_LOGS = 100;
-    private final static Logger logger = Logger.getLogger(Logger.class.getName());
-    private final static int MAX_WAITING_CLIENTS = 15;    //FIXME: load from file
+    private static final Logger logger = Logger.getLogger(Server.class.getName());
+    private static final int MAX_WAITING_CLIENTS = 15;    //FIXME: load from file
+
     private final Map<String, Lobby> gameLobbies;
     private final List<User> waitingRoom;
     private final HashMap<User, Lobby> users;
@@ -74,19 +74,7 @@ public class Server extends Thread {
             fileHandler.setFormatter(formatter);
             logger.addHandler(fileHandler);
         } catch (SecurityException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void deleteOldFiles(File directory){
-        final long time = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000);
-        File[] filesJson = directory.listFiles();
-        if (filesJson!=null) {
-            for (File file : filesJson){
-                if (file.lastModified() < time) {
-                    file.delete();
-                }
-            }
+            logger.log(Level.SEVERE, e.toString());
         }
     }
 
@@ -101,19 +89,35 @@ public class Server extends Thread {
         server.startServer();
     }
 
+    /**
+     * <i>gameLobbies</i> getter
+     *
+     * @return the LobbyName-Lobby map
+     */
+    public Map<String, Lobby> getGameLobbies() {
+        return gameLobbies;
+    }
 
     /**
-     * Opens the Socket connection
+     * <i>users</i> getter
+     *
+     * @return the user-lobby map
      */
-    public void startServer() {
-        try {
-            serverSocket = new ServerSocket(socketGreeterPort);
-            logger.log(Level.INFO, "Socket server is up and listening on port " + socketGreeterPort);
-        } catch (IOException ioException) {    // mainly because the port is already in use, should never happen
-            logger.log(Level.SEVERE, ioException.getMessage());
-            System.exit(1);
-        }
-        this.start();
+    public Map<User, Lobby> getUsers() {
+        return users;
+    }
+
+    /**
+     * Finds an User, looking for its username in a lobby
+     *
+     * @param username the user's username
+     * @param lobby the lobby to search for the user
+     *
+     * @return the User object corresponding to the up mentioned description
+     */
+    public User getUser(String username, Lobby lobby) {
+        return users.keySet().stream()
+                .filter(u -> (username.equals(u.getUsername()) && lobby.equals(u.getRoom()))).collect(Collectors.toList()).get(0);
     }
 
     /**
@@ -144,6 +148,19 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * Opens the Socket connection
+     */
+    public void startServer() {
+        try {
+            serverSocket = new ServerSocket(socketGreeterPort);
+            logger.log(Level.INFO, "Socket server is up and listening on port " + socketGreeterPort);
+        } catch (IOException ioException) {    // mainly because the port is already in use, should never happen
+            logger.log(Level.SEVERE, ioException.getMessage());
+            System.exit(1);
+        }
+        this.start();
+    }
 
     /**
      * Adds a new User to the server
@@ -161,7 +178,6 @@ public class Server extends Thread {
             virtualClient.getUser().setUsername(username);
             waitingRoom.add(virtualClient.getUser());
             users.put(virtualClient.getUser(), null);
-            //QOL: loginReponse now has the info about the lobbies
             Map<String, List<String>> lobbies = new LinkedHashMap<>();
             gameLobbies.values().forEach(lobby -> lobbies.put(lobby.getRoomName(), lobby.lobbyInfo()));
             virtualClient.getUser().notify(new LoginResponse(Type.OK, username, lobbies));
@@ -169,7 +185,6 @@ public class Server extends Thread {
         } else
             throw new RoomFullException();
     }
-
 
     /**
      * Provides a list of the users in a lobby
@@ -181,12 +196,15 @@ public class Server extends Thread {
         return users.keySet().stream().filter(u -> users.get(u) != null).filter(u -> users.get(u).equals(lobby)).collect(Collectors.toList());
     }
 
+    /**
+     * Sends a message to all the clients in the waiting room
+     * @param message the message to send
+     */
     public void sendMessageToWaitingRoom(Message message) {
         waitingRoom.forEach(user -> user.notify(message));
     }
 
     /**
-     * _
      * Provides a list of the users in a lobby
      *
      * @return the list of users in the waiting room
@@ -219,7 +237,7 @@ public class Server extends Thread {
             users.replace(user, null);
             if (!lobby.gameStarted() || lobby.hasLost(user)) {
                 lobby.removeUser(user);
-                if (getUsersInRoom(lobby).size() == 0)
+                if (getUsersInRoom(lobby).isEmpty())
                     gameLobbies.remove(lobby.getRoomName());
             } else {
                 lobby.removeUser(user);
@@ -228,12 +246,8 @@ public class Server extends Thread {
         } else
             waitingRoom.remove(user);
         users.remove(user);
-        logger.log(Level.INFO, user.getUsername() + " has been kicked from the lobby");
+        logger.log(Level.INFO, user.getUsername() + " has been removed from the lobby");
         user.closeConnection();
-    }
-
-    public HashMap<User, Lobby> getUsers() {
-        return users;
     }
 
     /**
@@ -249,11 +263,16 @@ public class Server extends Thread {
             waitingRoom.remove(user);
         } else {
             logger.log(Level.INFO, user.getUsername() + " moved from " + oldRoom.getRoomName() + " to " + lobby.getRoomName());
-            if (getUsersInRoom(oldRoom).size() == 0)
+            if (getUsersInRoom(oldRoom).isEmpty())
                 removeRoom(oldRoom);
         }
     }
 
+    /**
+     * Moves an user to the waiting room
+     *
+     * @param user the user to move
+     */
     public void moveToWaitingRoom(User user) {
         Lobby oldRoom = users.replace(user, null);
         if (oldRoom != null) {
@@ -265,15 +284,20 @@ public class Server extends Thread {
         }
     }
 
-
-    public User getUser(String username, Lobby lobby) {
-        return users.keySet().stream()
-                .filter(u -> (username.equals(u.getUsername()) && lobby.equals(u.getRoom()))).collect(Collectors.toList()).get(0);
+    /**
+     * Deletes log files older than 7 days
+     *
+     * @param directory the directory containing the log files
+     */
+    private void deleteOldFiles(File directory){
+        final long time = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000);
+        File[] filesJson = directory.listFiles();
+        if (filesJson!=null) {
+            for (File file : filesJson){
+                if (file.lastModified() < time) {
+                    file.delete();
+                }
+            }
+        }
     }
-
-    public Map<String, Lobby> getGameLobbies() {
-        return gameLobbies;
-    }
-
-
 }

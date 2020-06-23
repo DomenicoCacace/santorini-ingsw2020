@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 public class ServerController implements AddWorkerListener, BuildableCellsListener, BuildActionListener, BuildingBlocksListener,
         EndTurnListener, MoveActionListener, WalkableCellsListener, PlayerLostListener, SelectWorkerListener {
 
-    private final static Logger logger = Logger.getLogger(Logger.class.getName());
+    private static final Logger logger = Logger.getLogger(ServerController.class.getName());
     private final GameInterface game;
     private final Map<String, PlayerInterface> playerMap;
     private final MessageManagerParser parser;
@@ -93,7 +93,6 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
                 currPlayerInterface.setSelectedWorker(currPlayerData.getSelectedWorker());//simulate a setWorker, in this way the player will call the SelectWorkerlistener.
             } catch (NotYourWorkerException e) {
                 logger.log(Level.SEVERE, "Entered a forbidden catch clause while restoring a saved game");
-                e.printStackTrace(); //shouldn't go here
             }
         } else
             parser.parseMessageFromServerToClient(new GameStartEvent(Type.OK, game.buildGameData()));
@@ -290,7 +289,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValue(file, game);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error while saving the game state");
         }
     }
 

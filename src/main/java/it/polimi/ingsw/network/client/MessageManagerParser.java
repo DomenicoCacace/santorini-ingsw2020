@@ -6,6 +6,7 @@ import it.polimi.ingsw.network.message.Type;
 import it.polimi.ingsw.network.message.fromClientToServer.*;
 import it.polimi.ingsw.network.message.fromServerToClient.*;
 import it.polimi.ingsw.network.message.fromClientToServer.ChooseYourGodResponse;
+import it.polimi.ingsw.view.Constants;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.inputManagers.*;
 
@@ -84,7 +85,6 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         isLookingForLobbies = lookingForLobbies;
     }
 
-
     /**
      * Manages the login response
      * <p>
@@ -118,6 +118,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     view.showErrorMessage("Login error, please retry");
                 client.stopConnection();
                 break;
+            default:
+                break;
         }
     }
 
@@ -133,11 +135,11 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         view.setInputManager(inputManager);
         List<String> options = new LinkedList<>();
         options.add("Create lobby");
-        if (lobbiesAvailable.keySet().size() > 0) {
+        if (!lobbiesAvailable.keySet().isEmpty()) {
             options.add("Join lobby");
         }
         view.lobbyOptions(options);
-        inputManager.startTimer(60);
+        inputManager.startTimer(Constants.INPUT_TIMER);
     }
 
     /**
@@ -156,16 +158,15 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     inputManager = new LobbyInputManager(client, message.getLobbies(), this, true);
                     view.setInputManager(inputManager);
                     view.chooseLobbyToJoin(message.getLobbies());
-                    inputManager.startTimer(60);
+                    inputManager.startTimer(Constants.INPUT_TIMER);
 
                 } catch (CancellationException exception) {
                     //
                 }
             } else if (message.getType().equals(Type.OK)) {
-                view.showSuccessMessage("You created lobby");
-                view.showSuccessMessage("Waiting for other players to connect");
+                view.showSuccessMessage("You successfully created your lobby \n Waiting for other player to join");
             } else {
-                view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+                view.showErrorMessage(message.getType().toString());
                 enterLobby(message.getLobbies());
             }
         }
@@ -179,7 +180,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void joinLobby(UserJoinedLobbyEvent message) {
         if (!client.getUsername().equals(message.getJoinedUser()) && message.getJoinedUser() != null)
-            view.showSuccessMessage("The user " + message.getJoinedUser() + " joined the lobby!");
+            view.showSuccessMessage(message.getJoinedUser() + " joined the lobby");
         else {
             switch (message.getType()) {
                 case OK:
@@ -199,16 +200,18 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                     try {
                         inputManager = new LoginManager(client, true);
                         view.setInputManager(inputManager);
-                        inputManager.startTimer(60);
+                        inputManager.startTimer(Constants.INPUT_TIMER);
                         view.askUsername();
                     } catch (CancellationException exception) {
-                        return;
+                        // do nothing
                     }
                     break;
                 case LOBBY_FULL:
                     view.showErrorMessage("The lobby is full");
                     enterLobby(message.getAvailableLobbies());
-                    //TODO: maybe ask if the user wants to change username or lobby
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -223,7 +226,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new ReloadGameInputManager(client);
         view.setInputManager(inputManager);
-        inputManager.startTimer(60);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.chooseMatchReload();
     }
 
@@ -249,10 +252,11 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void onGodChosen(ChosenGodsEvent message) {
         if (message.getType().equals(Type.OK)) {
-            view.showSuccessMessage("The chosen gods are: ");
-            message.getPayload().forEach(godData -> view.showSuccessMessage(godData.getName())); //TODO: create the concatenated string instead of multiple showMessage
+            StringBuilder msg = new StringBuilder("The chosen gods are: \n\n");
+            message.getPayload().forEach(godData -> msg.append(godData.getName()).append("\n"));
+            view.showSuccessMessage(msg.toString());
         } else
-            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+            view.showErrorMessage(message.getType().toString());
     }
 
     /**
@@ -268,14 +272,15 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         try {
             if (message.getGods().size() == 1) {
                 client.sendMessage(new ChooseYourGodResponse(client.getUsername(), message.getGods().get(0)));
-                view.showSuccessMessage("Your God is: " + message.getGods().get(0).getName());
+                view.showSuccessMessage("Your God is " + message.getGods().get(0).getName());
                 return;
             }
             inputManager = new GodChoiceInputManager(client, message.getGods(), 1);
             view.setInputManager(inputManager);
-            inputManager.startTimer(60);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.chooseUserGod(message.getGods());
         } catch (CancellationException ignored) {
+            // do nothing
         }
     }
 
@@ -289,7 +294,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new ChooseStartingPlayerInputManager(client, message.getPayload());
         view.setInputManager(inputManager);
-        inputManager.startTimer(60);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.chooseStartingPlayer(message.getPayload());
     }
 
@@ -329,7 +334,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override
     public void onGameBoardUpdate(GameBoardUpdate message) {
         gameBoard = message.getGameBoard();
-        view.initGameScreen(message.getGameBoard(), message.getPlayers());
+        view.gameBoardUpdate(message.getGameBoard(), message.getPlayers());
     }
 
     /**
@@ -349,7 +354,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             gameBoard = message.getPayload();
             //payload to be saved internally on the view
         else
-            view.showErrorMessage(message.getType().toString()); //TODO: replace with standardized message
+            view.showErrorMessage(message.getType().toString());
         view.showGameBoard(gameBoard);
     }
 
@@ -390,7 +395,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
                 client.setCurrentPlayer(true);
                 inputManager = new SelectWorkerInputManager(client,message.getWorkersCells(), this);
                 view.setInputManager(inputManager);
-                inputManager.startTimer(60);
+                inputManager.startTimer(Constants.INPUT_TIMER);
                 view.chooseWorker(message.getWorkersCells());
             } else
                 client.setCurrentPlayer(false);
@@ -406,9 +411,10 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     @Override // Place worker request
     public void chooseYourWorkerPosition(ChooseWorkerPositionRequest message) {
         client.setCurrentPlayer(true);
+        view.showSuccessMessage("Place your worker");
         inputManager = new AddWorkersInputManager(client, this);
         view.setInputManager(inputManager);
-        inputManager.startTimer(60);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.placeWorker();
     }
 
@@ -427,10 +433,13 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void onWorkerAdd(WorkerAddedEvent message) {
         if (message.getType().equals(Type.OK)) {
             gameBoard = message.getPayload();
-            view.showSuccessMessage("\nWorker placed!");
+            if (client.getUsername().equals(message.getUsername()))
+                view.showSuccessMessage("\nWorker placed!");
             view.showGameBoard(message.getPayload());
-        } else
-            view.showErrorMessage("Can't place a worker in that cell :(");
+        } else {
+            if (client.getUsername().equals(message.getUsername()))
+                view.showErrorMessage("Can't place a worker in that cell :(");
+        }
     }
 
     /**
@@ -451,7 +460,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             message.getPayload().getCurrentTurn().getCurrentPlayer().getWorkers().forEach(worker -> workersCell.add(worker.getPosition()));
             inputManager = new SelectWorkerInputManager(client, workersCell, this);
             view.setInputManager(inputManager);
-            inputManager.startTimer(60);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.chooseWorker(workersCell);
             inputManager.setWaitingForInput(true);
         } else
@@ -539,7 +548,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             } else {
                 inputManager = new SelectActionInputManager(client, message.getPossibleActions(),workersCells, this);
                 view.setInputManager(inputManager);
-                inputManager.startTimer(60);
+                inputManager.startTimer(Constants.INPUT_TIMER);
                 view.chooseAction(message.getPossibleActions());
             }
         } else {
@@ -561,8 +570,9 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), true, this);
             view.setInputManager(inputManager);
-            inputManager.startTimer(60);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.moveAction(gameBoard, message.getPayload());
+            view.showSuccessMessage("Select a cell to move to");
         } else {
             //we should never enter here
             view.showErrorMessage(message.getType().toString());
@@ -582,8 +592,9 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         if (message.getType().equals(Type.OK)) {
             inputManager = new SelectActionCellInputManager(client, message.getPayload(), false, this);
             view.setInputManager(inputManager);
-            inputManager.startTimer(60);
+            inputManager.startTimer(Constants.INPUT_TIMER);
             view.buildAction(gameBoard, message.getPayload());
+            view.showSuccessMessage("Select a cell to build on");
         } else {
             //we should never enter here
             view.showErrorMessage(message.getType().toString());
@@ -593,8 +604,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     /**
      * Manages a PossibleBuildingBlockResponse
      * <p>
-     * If the response type is {@linkplain Type#OK}, the user is shown a game board highlighting the cells on which
-     * its chosen worker can be moved; otherwise, an error message is shown
+     * If the response type is {@linkplain Type#OK}, the user is asked to choose which block it wants to build on the
+     * selected cell; otherwise, an error message is shown
      *
      * @param message the message to visit
      */
@@ -602,8 +613,9 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
     public void onBuildingCellSelected(PossibleBuildingBlockResponse message) {
         inputManager = new SelectBlockInputManager(client, this, message.getBlocks());
         view.setInputManager(inputManager);
-        inputManager.startTimer(60);
+        inputManager.startTimer(Constants.INPUT_TIMER);
         view.chooseBlockToBuild(message.getBlocks());
+        view.showSuccessMessage("Select which block to build");
     }
 
     /**
@@ -626,7 +638,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
             case SELECT_OTHER_WORKER:
                 inputManager = new SelectWorkerInputManager(client, workersCell, this);
                 view.setInputManager(inputManager);
-                inputManager.startTimer(60);
+                inputManager.startTimer(Constants.INPUT_TIMER);
                 view.chooseWorker(workersCell);
                 break;
         }
@@ -641,6 +653,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * @param walkableCells a list of walkable cells
      */
     public void printOnMove(List<Cell> walkableCells) {
+        view.showSuccessMessage("Select where you want to move your worker");
         view.moveAction(gameBoard, walkableCells);
     }
 
@@ -650,9 +663,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
      * @param buildableCells a list of buildable cells
      */
     public void printOnBuild(List<Cell> buildableCells) {
+        view.showSuccessMessage("Select where you want to build");
         view.buildAction(gameBoard, buildableCells);
     }
-
-
 }
 

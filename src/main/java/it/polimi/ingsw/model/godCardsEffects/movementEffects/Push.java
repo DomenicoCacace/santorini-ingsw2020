@@ -111,18 +111,12 @@ public class Push extends MovementStrategy {
         if (movesAvailable > 0) {
             for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {
 
-                if (canGo(worker, cell)) {
-                    if ((cell.getOccupiedBy() == null) || (
-                            cell.getOccupiedBy() != null &&
-                                    canPush(worker.getPosition(), cell) &&
-                                    isNotSameOwner(cell))) {
-
+                if (canGo(worker, cell) &&
+                        ((cell.getOccupiedBy() == null) ||
+                                (cell.getOccupiedBy() != null && canPush(worker.getPosition(), cell) && isNotSameOwner(cell))))
                         cells.add(cell);
                     }
                 }
-
-            }
-        }
         return cells;
     }
 

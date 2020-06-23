@@ -8,14 +8,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class LoginController {
 
     private static final Lock lock = new ReentrantLock();
-    private static final Condition condition = lock.newCondition();
     @FXML
     public Button loginBtn;
     private GUI gui;
@@ -42,30 +40,23 @@ public class LoginController {
         this.gui = gui;
         usernameID.focusedProperty().addListener((observable, oldValue, newValue) -> {
             this.username = usernameID.getText();
-            if (!this.username.isBlank()) {
-                if (isReloading) {
-                    gui.setInputString(Constants.NO);
-                    isReloading = false;
-                    oldConfigs.setDisable(true);
-                    oldConfigs.setOpacity(0.2);
-                }
+            if (!this.username.isBlank() && isReloading) {
+                gui.setInputString(Constants.NO);
+                isReloading = false;
+                oldConfigs.setDisable(true);
+                oldConfigs.setOpacity(0.2);
             }
-            //oldConfigs.setDisable(!(this.username.isBlank() && this.ipAddress.isBlank()));
         });
         ipID.focusedProperty().addListener((observable, oldValue, newValue) -> {
             this.ipAddress = ipID.getText();
-            if (!this.ipAddress.isBlank()) {
-                if (isReloading) {
-                    gui.setInputString(Constants.NO);
-                    isReloading = false;
-                    oldConfigs.setDisable(true);
-                    oldConfigs.setOpacity(0.2);
-                }
+            if (!this.ipAddress.isBlank() && isReloading) {
+                gui.setInputString(Constants.NO);
+                isReloading = false;
+                oldConfigs.setDisable(true);
+                oldConfigs.setOpacity(0.2);
             }
-            //oldConfigs.setDisable(!(this.username.isBlank() && this.ipAddress.isBlank()));
         });
     }
-
 
 
     public TextField getUsernameID() {
@@ -103,7 +94,7 @@ public class LoginController {
 
     public void onOldConfigSelected() {
         lock.lock();
-        if (isReloading && oldConfigs.getSelectionModel().getSelectedItem()!=null) {
+        if (isReloading && oldConfigs.getSelectionModel().getSelectedItem() != null) {
             gui.setInputString(Constants.YES);
             gui.setInputString(String.valueOf(oldConfigs.getSelectionModel().getSelectedIndex() + 2));
         }

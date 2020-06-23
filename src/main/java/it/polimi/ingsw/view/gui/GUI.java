@@ -1,4 +1,5 @@
 package it.polimi.ingsw.view.gui;
+
 import it.polimi.ingsw.model.Block;
 import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
@@ -36,10 +37,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 
 public class GUI extends Application implements ViewInterface {
-    private enum ViewType{
-        LOGIN, LOBBY, GAME
-    }
-
     private static final Lock lock = new ReentrantLock();
     private static Scene scene;
     private ViewType currentView;
@@ -52,7 +49,6 @@ public class GUI extends Application implements ViewInterface {
         try {
             scene.setRoot(fxmlLoader.load());
         } catch (IOException e) {
-            e.printStackTrace();
             Thread.currentThread().interrupt();
         } finally {
             lock.unlock();
@@ -89,7 +85,7 @@ public class GUI extends Application implements ViewInterface {
     public void askToReloadLastSettings(List<String> savedUsers) {
         Platform.runLater(() -> {
             LoginController loginController = ((FXMLLoader) scene.getUserData()).getController();
-            if (savedUsers.size() > 0) {
+            if (!savedUsers.isEmpty()) {
                 for (int i = 1; i <= savedUsers.size(); i += 2) {
                     loginController.getOldConfigs().getItems().add(savedUsers.get(i) + " -- " + savedUsers.get(i - 1)); //This convert
                 }
@@ -116,8 +112,8 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public void setInputManager(InputManager manager) {
-        this.inputManager = manager;
+    public void setInputManager(InputManager inputManager) {
+        this.inputManager = inputManager;
     }
 
     @Override
@@ -163,7 +159,7 @@ public class GUI extends Application implements ViewInterface {
     @Override
     public void gameStartScreen(List<Cell> gameBoard, List<PlayerData> players) {
         //TODO: Print popUp
-        initGameScreen(gameBoard, players);
+        gameBoardUpdate(gameBoard, players);
     }
 
     @Override
@@ -182,25 +178,18 @@ public class GUI extends Application implements ViewInterface {
 
     @Override
     public void askLobbyName() {
-        /*Platform.runLater(() -> {
-            if(currentView == ViewType.LOBBY) {
-                LobbyController lobbyController = ((FXMLLoader) scene.getUserData()).getController();
-                lobbyController.enableCreateButton();
-            }
-        });
-         */
+        // do nothing, the lobby name gets already asked in askLobbySize
     }
 
     @Override
     public void askLobbySize() {
         Platform.runLater(() -> {
-            if(currentView == ViewType.LOBBY) {
+            if (currentView == ViewType.LOBBY) {
                 LobbyController lobbyController = ((FXMLLoader) scene.getUserData()).getController();
                 lobbyController.enableCreateButton();
             }
         });
     }
-
 
     @Override
     public void chooseLobbyToJoin(Map<String, List<String>> lobbiesAvailable) {
@@ -237,7 +226,6 @@ public class GUI extends Application implements ViewInterface {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
             controller.getTextArea().appendText("\nSelect the cell where you want to to build! ");
-            //controller.setGui(this);
             controller.makeCellsClickable(buildableCells);
         });
     }
@@ -272,25 +260,24 @@ public class GUI extends Application implements ViewInterface {
             controller.getGodImageContainer().getChildren().forEach(hBox -> hBoxes.add((HBox) hBox));
             List<Node> hBoxChildren = new ArrayList<>();
             hBoxes.forEach(hBox -> hBoxChildren.addAll(hBox.getChildren()));
-            for(Node node: hBoxChildren){
+            for (Node node : hBoxChildren) {
                 ListIterator<GodData> godDataListIterator = possibleGods.listIterator();
                 boolean nameFound = false;
                 GodData god;
-                while (godDataListIterator.hasNext() && !nameFound){
+                while (godDataListIterator.hasNext() && !nameFound) {
                     god = godDataListIterator.next();
                     if (god.getName().equals(node.getId())) {
                         controller.addEnabledGod((ResizableImageView) node);
                         ((ResizableImageView) node).setIndex(possibleGods.indexOf(god));
                         node.setDisable(false);
                         node.setOpacity(1);
-                        nameFound=true;
+                        nameFound = true;
                     }
                 }
             }
             controller.setGUI(this);
         });
     }
-
 
     @Override
     public void chooseStartingPlayer(List<String> players) {
@@ -320,7 +307,6 @@ public class GUI extends Application implements ViewInterface {
         });
     }
 
-
     @Override
     public void showGameBoard(List<Cell> gameBoard) {
         Platform.runLater(() -> {
@@ -348,7 +334,7 @@ public class GUI extends Application implements ViewInterface {
     }
 
     @Override
-    public void initGameScreen(List<Cell> gameBoard, List<PlayerData> players) {
+    public void gameBoardUpdate(List<Cell> gameBoard, List<PlayerData> players) {
         Platform.runLater(() -> {
             if (currentView != ViewType.GAME) {
                 setRoot("allMap");
@@ -406,24 +392,18 @@ public class GUI extends Application implements ViewInterface {
         });
     }
 
-    @Override
-    public void printOptions(List<String> options) {
-
-    }
-
-    @Override
-    public void printCol() {
-
-    }
 
     @Override
     public void showSuccessMessage(String message) {
-        if(currentView.equals(ViewType.GAME)){
+        if (currentView.equals(ViewType.GAME)) {
             Platform.runLater(() -> {
                 GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
                 controller.getTextArea().appendText(message + "\n");
             });
-        }
-        else System.out.println(message);
+        } else System.out.println(message);
+    }
+
+    private enum ViewType {
+        LOGIN, LOBBY, GAME
     }
 }

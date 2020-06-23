@@ -21,8 +21,6 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class MoveAgain extends MovementStrategy {
 
-    private Cell startingCell;
-
     /**
      * Default constructor
      *
@@ -95,7 +93,7 @@ public class MoveAgain extends MovementStrategy {
         List<PossibleActions> possibleActions = new ArrayList<>();
         if (movesAvailable == 1) {
             possibleActions.add(PossibleActions.BUILD);
-            if (getWalkableCells(worker).size() > 0)
+            if (!getWalkableCells(worker).isEmpty())
                 possibleActions.add(PossibleActions.MOVE);
         } else possibleActions = super.getPossibleActions(worker);
         return possibleActions;
@@ -117,7 +115,8 @@ public class MoveAgain extends MovementStrategy {
      */
     @Override
     public boolean isMoveActionValid(MoveAction action) {
-        int x, y;
+        int x;
+        int y;
         if (movedWorker == null && super.isMoveActionValid(action)) {
             x = action.getTargetWorker().getPosition().getCoordX();
             y = action.getTargetWorker().getPosition().getCoordY();
@@ -157,7 +156,7 @@ public class MoveAgain extends MovementStrategy {
      */
     @Override
     public boolean checkLoseCondition(MoveAction moveAction) {
-        return (getBuildableCells(moveAction.getTargetWorker()).size() == 0 && movesAvailable == 0);
+        return (getBuildableCells(moveAction.getTargetWorker()).isEmpty() && movesAvailable == 0);
     }
 
     /**

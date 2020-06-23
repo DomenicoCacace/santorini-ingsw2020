@@ -36,8 +36,8 @@ import java.util.logging.Logger;
  * Note that <i>connecting</i> means establishing a connection with the server, even without choosing an username.
  */
 public class VirtualClient extends Thread implements ServerMessageManagerVisitor {
-    private final static String PING = "ping";
-    private final static Logger logger = Logger.getLogger(Logger.class.getName());
+    private static final String PING = "ping";
+    private static final Logger logger = Logger.getLogger(VirtualClient.class.getName());
     private final Server server;
     private final Socket clientConnection;
     private final JacksonMessageBuilder jsonParser;
@@ -93,12 +93,31 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
-
+    /**
+     * <i>user</i> getter
+     * @return the User object associated to this
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Provides all the info about the server available lobbies.
+     *
+     * @return a Map containing lobby name and its information
+     * @see Lobby#lobbyInfo()
+     */
+    private Map<String, List<String>> getAvailableLobbies() {
+        Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
+        server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
+        return availableLobbies;
+    }
 
+    /**
+     * Sends a {@link Message} to this user's client
+     *
+     * @param message the Message to send
+     */
     public void notify(Message message) {
         String stringMessage = jsonParser.fromMessageToString(message);
         try {
@@ -119,6 +138,11 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
+    /**
+     * Sends a string to this user's client
+     *
+     * @param string the string to send
+     */
     public void notify(String string) {
         try {
             outputSocket.write(string + "\n");
@@ -136,6 +160,9 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
+    /**
+     * Terminates the connection with the corresponding client
+     */
     public void closeConnection() {
         try {
             clientConnection.close();
@@ -144,10 +171,14 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
+    /**
+     * Disconnects this user from the server
+     *
+     * @see Server#onDisconnect(User)
+     */
     public void disconnectFromServer() {
         server.onDisconnect(user);
     }
-
 
     /**
      * Manages the {@linkplain LoginRequest}
@@ -164,7 +195,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             this.user.setUsername(message.getUsername());
             server.addClient(this);
         } catch (RoomFullException roomFullException) {
-            logger.log(Level.WARNING, "Server full, won't accept new clients");
+            logger.log(Level.WARNING, "Server full, will not accept new clients");
             server.onDisconnect(this.getUser());
         }
     }
@@ -187,7 +218,6 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
                 logger.log(Level.INFO, message.getUsername() + " joined " + message.getLobbyName());
                 lobby.addUser(this.user);
                 server.getUsersInWaitingRoom().remove(user);
-                //server.moveToRoom(this.getUser(), lobby);
             } catch (RoomFullException e) {
                 server.getUsersInWaitingRoom().remove(user);
                 logger.log(Level.INFO, message.getUsername() + " failed to join " + message.getLobbyName() + ": lobby full");
@@ -204,7 +234,15 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
-
+    /**
+     * Manages the {@link CreateLobbyRequest}
+     *
+     * Tries to create a new lobby, based on the user input; if the parameters are correct (name not already taken, size
+     * between 2 and 3), the lobby is created and a confirmation {@linkplain LobbyCreatedEvent} is sent to the lobby
+     * creator and all the users in the waiting room; otherwise, an error message is sent to the creator only.
+     *
+     * @param message the message to manage
+     */
     @Override
     public synchronized void createLobby(CreateLobbyRequest message) {
         if (server.getGameLobbies().containsKey(message.getLobbyName())) {
@@ -220,13 +258,13 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
-    private Map<String, List<String>> getAvailableLobbies() {
-        Map<String, List<String>> availableLobbies = new LinkedHashMap<>();
-        server.getGameLobbies().values().forEach(l -> availableLobbies.put(l.getRoomName(), l.lobbyInfo()));
-        return availableLobbies;
-    }
-
-
+    /**
+     * Manages all non-lobby related messages (e.g. game messages), redirecting them to the user's corresponding
+     * lobby, which will take care of it; if the user is not associated to any lobby, the message is ignored and the
+     * incident is reported in the server log
+     *
+     * @param message the message to handle
+     */
     @Override
     public synchronized void cannotHandleMessage(Message message) {
         Lobby lobby = user.getRoom();
@@ -239,14 +277,18 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         }
     }
 
-
+    /**
+     * Manages the ping mechanism <i>manually</i>, disconnecting the user if no pong message is received after a
+     * certain amount of time after the ping is sent
+     */
     public void ping() {
         if (ex != null)
             ex.shutdownNow();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.toString());
+            Thread.currentThread().interrupt();
         }
         notify(PING);
         ex = new ScheduledThreadPoolExecutor(5);

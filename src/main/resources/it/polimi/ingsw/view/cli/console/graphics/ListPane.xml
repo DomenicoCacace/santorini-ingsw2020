@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="height">20</entry>
+    <entry key="width">40</entry>
+    <entry key="bgColorLight">[48;5;12m</entry> <!--Turquoise background-->
+    <entry key="bgColorDark">[48;5;12m</entry> <!--Turquoise background-->
+    <entry key="fgColorDark">[38;2;0;0;0m</entry>   <!--Black foreground-->
+    <entry key="fgColorLight">[38;5;231m</entry>   <!--White foreground-->
+</properties>

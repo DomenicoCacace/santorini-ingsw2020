@@ -40,16 +40,6 @@ public class ResizableImageView extends ImageView {
         return 40;
     }
 
-    /*@Override
-    public double prefWidth(double height)
-    {
-        Image I=getImage();
-        if (I==null) return minWidth(height);
-        return I.getWidth();
-    }
-
-     */
-
     @Override
     public double maxWidth(double height) {
         return 16384;
@@ -59,16 +49,6 @@ public class ResizableImageView extends ImageView {
     public double minHeight(double width) {
         return 40;
     }
-
-    /*@Override
-    public double prefHeight(double width)
-    {
-        Image I=getImage();
-        if (I==null) return minHeight(width);
-        return I.getHeight();
-    }
-
-     */
 
     @Override
     public double maxHeight(double width) {

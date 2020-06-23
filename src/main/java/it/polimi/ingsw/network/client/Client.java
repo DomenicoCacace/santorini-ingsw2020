@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.client;
 
-import com.fasterxml.jackson.databind.node.NumericNode;
 import it.polimi.ingsw.network.message.Message;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.cli.CLI;
@@ -8,7 +7,6 @@ import it.polimi.ingsw.view.gui.GUI;
 import it.polimi.ingsw.view.inputManagers.LoginManager;
 
 import java.io.*;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -18,20 +16,24 @@ import java.util.concurrent.TimeoutException;
  * Representation of a client,
  */
 public class Client {
-    private static final File CONFIG_FILE = new File("../config.txt");
     private static final int MAX_SETTINGS_STORED = 5;
+    private static final File CONFIG_FILE = new File("../config.txt");
+
     private final ViewInterface view;
     private String username;
     private String ipAddress;
     private NetworkHandler networkHandler;
     private boolean currentPlayer;
 
+
     /**
-     * First constructor
+     * Default constructor
+     *<p>
+     *     Creates a new Client instance, assigning its viewInterface
      *
-     * @param viewInterface the UI to use
+     * @param viewInterface the viewInterface to use
      */
-    public Client(ViewInterface viewInterface) {
+    public Client(ViewInterface viewInterface){
         this.view = viewInterface;
     }
 
@@ -40,9 +42,8 @@ public class Client {
      *
      * @param username      the client's username
      * @param ipAddress     the server address
-     * @param viewInterface the UI to use
      */
-    public Client(String username, String ipAddress, ViewInterface viewInterface) {
+    public Client(ViewInterface viewInterface, String username, String ipAddress) {
         this.view = viewInterface;
         this.username = username;
         this.ipAddress = ipAddress;
@@ -57,17 +58,21 @@ public class Client {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        ViewInterface viewInterface;
+        ViewInterface view;
         try {
             if (args.length == 0 || !args[0].equals("--CLI")) {
                 GUI.launchGui();
             } else {
-                viewInterface = new CLI();
-                initClient(viewInterface);
+                boolean nonCanonical = true;
+                if (System.getProperty("os.name").toUpperCase().contains("WIN"))
+                    nonCanonical = false;
+                view = new CLI(nonCanonical);
+                initClient(view);
             }
-        } catch (IOException e) {
-            System.out.println("Error: resources not found");
-            System.exit(1);
+        }
+        catch (Exception e) {
+            System.err.println("Could not start the game, exiting...");
+            System.exit(-1);
         }
     }
 
@@ -82,52 +87,34 @@ public class Client {
         List<String> savedUsers = new ArrayList<>();
         try {
             if (!CONFIG_FILE.createNewFile()) {
-                FileReader fileReader = new FileReader(CONFIG_FILE);
-                BufferedReader bufferedReader = new BufferedReader(fileReader);
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    savedUsers.add(line);
-                    savedUsers.add(bufferedReader.readLine());
+                try (FileReader fileReader = new FileReader(CONFIG_FILE)) {
+                    try (BufferedReader bufferedReader = new BufferedReader(fileReader)){
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            savedUsers.add(line);
+                            savedUsers.add(bufferedReader.readLine());
+                        }
+                        viewInterface.setInputManager(new LoginManager(client, savedUsers));
+                        viewInterface.askToReloadLastSettings(savedUsers);
+                    }
                 }
-                bufferedReader.close();
-                viewInterface.setInputManager(new LoginManager(client, savedUsers));
-                viewInterface.askToReloadLastSettings(savedUsers);
             } else { //the file is empty
                 viewInterface.setInputManager(new LoginManager(client, savedUsers));
                 viewInterface.askIP();
             }
+
         } catch (IOException e) {
             Client.initClient(viewInterface);
-            e.printStackTrace();
         }
     }
 
     /**
-     * Saves a new login configuration to a file
+     * <i>viewInterface</i> getter
      *
-     * @param ip       the server address
-     * @param username the username
-     * @throws IOException if an I/O error occurs
+     * @return the client's viewInterface
      */
-    public void writeSettingsToFile(String ip, String username) throws IOException {
-        StringBuilder otherUsers = new StringBuilder();
-        String ipLine;
-        String nameLine;
-        int storedSetting = 0;
-        FileReader fileReader = new FileReader(CONFIG_FILE);
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        while (((ipLine = bufferedReader.readLine()) != null && !ipLine.equals("")) && storedSetting < MAX_SETTINGS_STORED - 1) {
-            if (!(nameLine = bufferedReader.readLine()).equals(username) || !ipLine.equals(ip)) {
-                otherUsers.append(ipLine).append("\n").append(nameLine).append("\n");
-                storedSetting++;
-            }
-        }
-        String builder = ip + "\n" + username + "\n";
-        FileWriter fileWriter = new FileWriter(CONFIG_FILE);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        bufferedWriter.write(builder);
-        bufferedWriter.append(otherUsers.toString());
-        bufferedWriter.close();
+    public ViewInterface getView() {
+        return view;
     }
 
     /**
@@ -137,6 +124,15 @@ public class Client {
      */
     public String getUsername() {
         return username;
+    }
+
+    /**
+     * <i>ipAddress</i> getter
+     *
+     * @return the server address
+     */
+    public String getIpAddress() {
+        return ipAddress;
     }
 
     /**
@@ -154,21 +150,56 @@ public class Client {
     }
 
     /**
-     * <i>ipAddress</i> getter
-     *
-     * @return the server address
-     */
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    /**
      * <i>ipAddress</i> setter
      *
      * @param ipAddress the server address
      */
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    /**
+     * Sets a flag allowing the user to send messages
+     *
+     * @param currentPlayer a boolean value
+     */
+    public void setCurrentPlayer(boolean currentPlayer) {
+        this.currentPlayer = currentPlayer;
+    }
+
+    /**
+     * Saves a new login configuration to a file
+     *
+     * @param ip       the server address
+     * @param username the username
+     * @throws IOException if an I/O error occurs
+     */
+    public void writeSettingsToFile(String ip, String username) throws IOException {
+        StringBuilder otherUsers = new StringBuilder();
+        String ipLine;
+        String nameLine;
+        int storedSetting = 0;
+        try (FileReader fileReader = new FileReader(CONFIG_FILE)) {
+            try (BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+                while (((ipLine = bufferedReader.readLine()) != null && !ipLine.equals("")) && storedSetting < MAX_SETTINGS_STORED - 1) {
+                    nameLine = bufferedReader.readLine();
+                    if (!nameLine.equals(username) || !ipLine.equals(ip)) {
+                        otherUsers.append(ipLine).append("\n").append(nameLine).append("\n");
+                        storedSetting++;
+                    }
+                }
+                String builder = ip + "\n" + username + "\n";
+                try (FileWriter fileWriter = new FileWriter(CONFIG_FILE)) {
+                    try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+                        bufferedWriter.write(builder);
+                        bufferedWriter.append(otherUsers.toString());
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            throw new IOException();
+        }
     }
 
     /**
@@ -182,17 +213,9 @@ public class Client {
             new Thread(networkHandler).start();
         } catch (IOException | NumberFormatException | InterruptedException | ExecutionException | TimeoutException e) {
             view.showErrorMessage("Couldn't connect to ip address: " + ipAddress);
-            initClient(view);
+            Thread.currentThread().interrupt();
+            Client.initClient(view);
         }
-    }
-
-    /**
-     * Sets a flag allowing the user to send messages
-     *
-     * @param currentPlayer a boolean value
-     */
-    public void setCurrentPlayer(boolean currentPlayer) {
-        this.currentPlayer = currentPlayer;
     }
 
     /**
@@ -200,7 +223,7 @@ public class Client {
      *
      * @param message the message to be sent
      */
-    public void sendMessage(Message message) { //View -> Client -> handler -> JsonParser -> VirtualClient -> Server
+    public void sendMessage(Message message) {
         if (currentPlayer) {
             try {
                 networkHandler.sendMessage(message);
@@ -218,16 +241,10 @@ public class Client {
     }
 
     /**
-     * <i>view</i> getter
-     *
-     * @return the UI in use
+     * Disconnects the client when the user does not respond for a certain amount of time
      */
-    public ViewInterface getView() {
-        return this.view;
-    }
-
     public void inputTimeout() {
         stopConnection();
-        new Thread(()->Client.initClient(view)).start();
+        Client.initClient(view);
     }
 }

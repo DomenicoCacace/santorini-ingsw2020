@@ -1,10 +1,9 @@
-package it.polimi.ingsw.view.cli.utils;
+package it.polimi.ingsw.view.cli.console.graphics.components;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+
+import static it.polimi.ingsw.view.Constants.ANSI_RESET;
 
 /**
  * Allows the use of graphics via ANSI arts, loading the corresponding files from the resources folder
@@ -54,7 +53,7 @@ public class PrintableObject {
 
             charRead = (char) rawInput;
             if (charRead == '\n') {
-                object[row][col] = "\033[0m";
+                object[row][col] = ANSI_RESET;
                 row++;
                 col = -1;
                 System.out.println();
@@ -67,6 +66,14 @@ public class PrintableObject {
 
         }
         reader.close();
+    }
+
+    public static PrintableObject load(Object caller, String filename, int width, int height) throws IOException {
+        return new PrintableObject(caller.getClass().getResourceAsStream(filename), width, height);
+    }
+
+    public static PrintableObject load(String filePath, int width, int height) throws IOException {
+        return new PrintableObject(new FileInputStream(filePath), width, height);
     }
 
     /**
@@ -95,6 +102,4 @@ public class PrintableObject {
     public String[][] getObject() {
         return object;
     }
-
-
 }

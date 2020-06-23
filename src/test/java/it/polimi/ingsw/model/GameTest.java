@@ -14,21 +14,17 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
     private List<Player> players;
-    private List<God> gods;
     private Game game;
-    private final Map playermap = new LinkedHashMap<>();
 
     @BeforeEach
     void setUp() throws AddingFailedException {
-        gods = new ArrayList<>();
+        List<God> gods = new ArrayList<>();
         gods.add(new God("minotaur", 2, ""));
         gods.get(0).setStrategy(new Push());
         gods.add(new God("base", 2, ""));
@@ -82,13 +78,14 @@ class GameTest {
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL3);
         game.generateNextTurn();
 
-        assertEquals(game.getCurrentTurn().getTurnNumber(), 3);
-        assertEquals(game.getPlayers().size(), 2);
-        assertEquals(game.getPlayers().get(0), players.get(0));
-        assertEquals(game.getPlayers().get(1), players.get(1));
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
-        assertEquals(players.get(0).getName(), "P1" );
-        assertEquals(players.get(1).getName(), "P3" );
+
+        assertEquals(3, game.getCurrentTurn().getTurnNumber());
+        assertEquals(2, game.getPlayers().size());
+        assertEquals(players.get(0), game.getPlayers().get(0));
+        assertEquals(players.get(1), game.getPlayers().get(1));
+        assertEquals(players.get(1), game.getCurrentTurn().getCurrentPlayer());
+        assertEquals("P1", players.get(0).getName() );
+        assertEquals("P3", players.get(1).getName() );
         assertNull(game.getGameBoard().getCell(4,3).getOccupiedBy());
         assertNull(game.getGameBoard().getCell(4,2).getOccupiedBy());
 
@@ -101,12 +98,12 @@ class GameTest {
         game.getGameBoard().getCell(0,2).setBlock(Block.DOME);
         game.generateNextTurn();
 
-        assertEquals(game.getPlayers().size(), 1);
-        assertEquals(game.getPlayers().get(0), players.get(0));
-        assertEquals(players.get(0).getName(), "P3" );
+        assertEquals(1, game.getPlayers().size());
+        assertEquals(players.get(0), game.getPlayers().get(0));
+        assertEquals("P3", players.get(0).getName() );
         assertNull(game.getGameBoard().getCell(2,2).getOccupiedBy());
         assertNull(game.getGameBoard().getCell(3,2).getOccupiedBy());
-        assertEquals(game.getWinner(), players.get(0));
+        assertEquals(players.get(0), game.getWinner());
     }
 
     @Test
@@ -124,12 +121,12 @@ class GameTest {
         game.generateNextTurn();
 
 
-        assertEquals(game.getPlayers().size(), 1);
-        assertEquals(game.getPlayers().get(0), players.get(0));
-        assertEquals(players.get(0).getName(), "P1" );
+        assertEquals(1, game.getPlayers().size());
+        assertEquals(players.get(0), game.getPlayers().get(0));
+        assertEquals("P1", players.get(0).getName() );
         assertNull(game.getGameBoard().getCell(1,2).getOccupiedBy());
         assertNull(game.getGameBoard().getCell(2,4).getOccupiedBy());
-        assertEquals(game.getWinner(), players.get(0));
+        assertEquals(players.get(0), game.getWinner());
     }
 
     @Test
@@ -137,17 +134,17 @@ class GameTest {
         ObjectMapper objectMapper = new ObjectMapper();
         Game savedGame = game.saveStateToVariable(); //Save the current state in savedGame
 
-        String gameToSTring = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(game);
+        String gametostring = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(game);
         String savedGameToString = objectMapper.writerFor(Game.class).withDefaultPrettyPrinter().writeValueAsString(savedGame);
 
-        assertEquals(savedGameToString, gameToSTring);
+        assertEquals(savedGameToString, gametostring);
 
         Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         Cell targetCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertEquals(currentWorker.getPosition(), targetCell);
         assertEquals(currentWorker, targetCell.getOccupiedBy());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
@@ -159,17 +156,17 @@ class GameTest {
         } catch (IllegalActionException e){
             e.getMessage();
         }
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
         assertNotEquals(currentWorker.getPosition(), targetCell);
         assertNull(targetCell.getOccupiedBy());
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
         game = savedGame; //Restore to previous state
 
-        gameToSTring = objectMapper.writeValueAsString(game);
+        gametostring = objectMapper.writeValueAsString(game);
 
         savedGameToString = objectMapper.writeValueAsString(savedGame);
-        assertEquals(savedGameToString, gameToSTring);
+        assertEquals(savedGameToString, gametostring);
 
 
         //The Player is able to do a different move
@@ -177,19 +174,19 @@ class GameTest {
         targetCell = game.getGameBoard().getCell(2, 3);
         moveAction = new MoveAction(currentWorker, targetCell);
         moveAction.getValidation(game);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
-        assertEquals(game.getCurrentRuleSet().getStrategy().getMovesAvailable(), 0);
-        assertEquals(currentWorker.getPosition(), targetCell);
-        assertEquals(currentWorker, targetCell.getOccupiedBy());
+        assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+        assertEquals(0, game.getCurrentRuleSet().getStrategy().getMovesAvailable());
+        assertEquals(targetCell, currentWorker.getPosition());
+        assertEquals(targetCell.getOccupiedBy(), currentWorker);
         assertFalse(game.getCurrentRuleSet().getStrategy().hasMovedUp());
 
         //Save game
         savedGame = game.saveStateToVariable();
 
-        gameToSTring = objectMapper.writeValueAsString(game);
+        gametostring = objectMapper.writeValueAsString(game);
 
         savedGameToString = objectMapper.writeValueAsString(savedGame);
-        assertEquals(savedGameToString, gameToSTring);
+        assertEquals(gametostring, savedGameToString);
 
 
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
@@ -197,11 +194,11 @@ class GameTest {
         BuildAction buildAction = new BuildAction(currentWorker, targetCell, Block.LEVEL1);
         buildAction.getValidation(game);
         assertEquals(Block.LEVEL1 , targetCell.getBlock());
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
+        assertEquals(players.get(1), game.getCurrentTurn().getCurrentPlayer());
 
-        gameToSTring = objectMapper.writeValueAsString(game);
+        gametostring = objectMapper.writeValueAsString(game);
         savedGameToString = objectMapper.writeValueAsString(savedGame);
-        assertNotEquals(savedGameToString, gameToSTring);
+        assertNotEquals(savedGameToString, gametostring);
 
         //Restore game
         game = savedGame;
@@ -210,9 +207,9 @@ class GameTest {
         currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(1);
         targetCell = game.getGameBoard().getCell(1,4);
         buildAction = new BuildAction(currentWorker, targetCell, Block.LEVEL1);
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(0));
+        assertEquals(players.get(0), game.getCurrentTurn().getCurrentPlayer());
         buildAction.getValidation(game);
         assertEquals(Block.LEVEL1 , targetCell.getBlock());
-        assertEquals(game.getCurrentTurn().getCurrentPlayer(), players.get(1));
+        assertEquals(players.get(1), game.getCurrentTurn().getCurrentPlayer());
     }
 }
