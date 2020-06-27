@@ -63,9 +63,10 @@ public class Client {
             if (args.length == 0 || !args[0].equals("--CLI")) {
                 GUI.launchGui();
             } else {
-                boolean nonCanonical = true;
-                if (System.getProperty("os.name").toUpperCase().contains("WIN"))
-                    nonCanonical = false;
+                boolean nonCanonical = false;
+                if(args.length>1 && args[1].equals("--beta")){
+                    nonCanonical= true;
+                }
                 view = new CLI(nonCanonical);
                 initClient(view);
             }
@@ -91,11 +92,19 @@ public class Client {
                     try (BufferedReader bufferedReader = new BufferedReader(fileReader)){
                         String line;
                         while ((line = bufferedReader.readLine()) != null) {
-                            savedUsers.add(line);
-                            savedUsers.add(bufferedReader.readLine());
+                            if (!line.isBlank()) {
+                                savedUsers.add(line);
+                                savedUsers.add(bufferedReader.readLine());
+                            }
                         }
-                        viewInterface.setInputManager(new LoginManager(client, savedUsers));
-                        viewInterface.askToReloadLastSettings(savedUsers);
+                        if(!savedUsers.isEmpty()) {
+                            viewInterface.setInputManager(new LoginManager(client, savedUsers));
+                            viewInterface.askToReloadLastSettings(savedUsers);
+                        }
+                        else { //the file is empty
+                            viewInterface.setInputManager(new LoginManager(client, savedUsers));
+                            viewInterface.askIP();
+                        }
                     }
                 }
             } else { //the file is empty

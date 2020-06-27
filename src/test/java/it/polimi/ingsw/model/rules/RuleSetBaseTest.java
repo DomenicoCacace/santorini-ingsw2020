@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests;
+package it.polimi.ingsw.model.rules;
 
 import it.polimi.ingsw.controller.ServerController;
 import it.polimi.ingsw.exceptions.AddingFailedException;

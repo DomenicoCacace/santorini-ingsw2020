@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.inputManagers;
 
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.message.fromClientToServer.ChooseStartingPlayerResponse;
+import it.polimi.ingsw.view.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,12 @@ public class ChooseStartingPlayerInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
+        if (input.equals(Constants.QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+            return;
+        }
         if (isWaitingForInput) {
             try {
                 int index = Integer.parseInt(input) - 1;

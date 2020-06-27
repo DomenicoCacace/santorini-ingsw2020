@@ -32,6 +32,12 @@ public class SelectActionCellInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
+        if (input.equals(Constants.QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+            return;
+        }
         if (isWaitingForInput) {
             List<Cell> selectedCell;
             String invalidSelectionError = "Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD;

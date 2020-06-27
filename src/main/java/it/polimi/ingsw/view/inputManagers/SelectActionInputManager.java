@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.Cell;
 import it.polimi.ingsw.model.PossibleActions;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.client.MessageManagerParser;
+import it.polimi.ingsw.view.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,12 @@ public class SelectActionInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
+        if (input.equals(Constants.QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+            return;
+        }
         if (isWaitingForInput) {
             try {
                 int index = Integer.parseInt(input) - 1;

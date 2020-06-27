@@ -32,6 +32,12 @@ public class LobbyInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
+        if (input.equals(Constants.QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+            return;
+        }
         if (isWaitingForInput) {
             switch (state) {
                 case CREATE_OR_JOIN:

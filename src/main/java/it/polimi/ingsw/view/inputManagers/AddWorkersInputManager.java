@@ -19,6 +19,12 @@ public class AddWorkersInputManager extends InputManager {
 
     @Override
     public void manageInput(String input) {
+        if (input.equals(Constants.QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+            return;
+        }
         if (isWaitingForInput) {
             try {
                 int coord = Integer.parseInt(input);

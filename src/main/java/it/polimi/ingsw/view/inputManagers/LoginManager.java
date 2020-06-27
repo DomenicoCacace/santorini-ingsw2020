@@ -32,6 +32,12 @@ public class LoginManager extends InputManager {
      */
     @Override
     public synchronized void manageInput(String input) {
+        if (input.equals(Constants.QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+            return;
+        }
         if (isWaitingForInput) {
             if (!savedConfigs.isEmpty()) { //If there are saved configs saved locally
                 if (!wantsToLoadSetting) { //If it's false but there are saved configs than the user had to input y or n

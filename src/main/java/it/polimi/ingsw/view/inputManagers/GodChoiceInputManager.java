@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.dataClass.GodData;
 import it.polimi.ingsw.network.client.Client;
 import it.polimi.ingsw.network.message.fromClientToServer.ChooseInitialGodsResponse;
 import it.polimi.ingsw.network.message.fromClientToServer.ChooseYourGodResponse;
+import it.polimi.ingsw.view.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,13 @@ public class GodChoiceInputManager extends InputManager {
     @Override
     public void manageInput(String input) {
         GodData chosenGod;
+        if (input.equals(Constants.QUIT)) {
+            stopTimer();
+            client.stopConnection();
+            new Thread(() -> Client.initClient(view)).start();
+            return;
+        }
         if (isWaitingForInput) {
-
             switch (state) {
                 case CHOOSE_INITIAL_GODS:
                     chosenGod = askGod(input);
@@ -80,7 +86,6 @@ public class GodChoiceInputManager extends InputManager {
                         view.chooseUserGod(availableGods);
                     }
                     break;
-
                 default:
                     break;
             }
