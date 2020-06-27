@@ -222,8 +222,8 @@ public class Client {
             new Thread(networkHandler).start();
         } catch (IOException | NumberFormatException | InterruptedException | ExecutionException | TimeoutException e) {
             view.showErrorMessage("Couldn't connect to ip address: " + ipAddress);
+            initClient(view);
             Thread.currentThread().interrupt();
-            Client.initClient(view);
         }
     }
 

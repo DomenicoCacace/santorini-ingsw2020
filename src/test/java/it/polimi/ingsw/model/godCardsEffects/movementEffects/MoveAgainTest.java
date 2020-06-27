@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.movementEffectsTests;
+package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetBase;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.MoveAgain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MoveAgainTest {
+public class MoveAgainTest {
     private Game game;
     private Action moveAction;
     private Worker worker1, worker2;
@@ -26,7 +25,7 @@ class MoveAgainTest {
 
 
     @BeforeEach
-    void SetUp() throws AddingFailedException {
+    public void SetUp() throws AddingFailedException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Artemis",2,""));
         gods.get(0).setStrategy(new MoveAgain());
@@ -61,7 +60,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveSameLevelTest() throws IOException, IllegalActionException {
+    public void correctDoubleMoveSameLevelTest() throws IOException, IllegalActionException {
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(worker1);
         assertTrue(possibleActions.contains(PossibleActions.MOVE));
         assertTrue(possibleActions.contains(PossibleActions.SELECT_OTHER_WORKER));
@@ -94,7 +93,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void correctDoubleMoveUpTest() throws IllegalActionException {
+    public void correctDoubleMoveUpTest() throws IllegalActionException {
         targetCell = game.getGameBoard().getCell(4, 2);
         moveAction = new MoveAction(worker2, targetCell);
         moveAction.getValidation(game);
@@ -115,7 +114,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void cannotGoBackStartingCellTest() throws IllegalActionException {
+    public void cannotGoBackStartingCellTest() throws IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -139,7 +138,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void mustBuildAfterFirstMovementTest() throws IllegalActionException {
+    public void mustBuildAfterFirstMovementTest() throws IllegalActionException {
         game.getGameBoard().getCell(4,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(2,1).setBlock(Block.LEVEL2);
@@ -158,7 +157,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterBuildTest() throws IOException, IllegalActionException {
+    public void endTurnAutomaticallyAfterBuildTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);
@@ -178,7 +177,7 @@ class MoveAgainTest {
     }
 
     @Test
-    void CannotMoveWithDifferentWorkers() throws IllegalActionException {
+    public void CannotMoveWithDifferentWorkers() throws IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 2);
         moveAction = new MoveAction(worker1, targetCell);
         moveAction.getValidation(game);

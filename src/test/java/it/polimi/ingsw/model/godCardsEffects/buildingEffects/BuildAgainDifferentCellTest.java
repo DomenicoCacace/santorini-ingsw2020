@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.buildingEffectsTests;
+package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
@@ -8,7 +8,6 @@ import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetBase;
-import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildAgainDifferentCell;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BuildAgainDifferentCellTest {
+public class BuildAgainDifferentCellTest {
     private Game game;
     private Worker currentWorker, worker2;
     private BuildAction buildAction;
@@ -28,7 +27,7 @@ class BuildAgainDifferentCellTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException, AddingFailedException, IllegalActionException {
+    public void SetUp() throws IOException, AddingFailedException, IllegalActionException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Demeter",2, ""));
         gods.get(0).setStrategy(new BuildAgainDifferentCell());
@@ -63,7 +62,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void correctBuildAgainDifferentCellTest() throws IOException, IllegalActionException {
+    public void correctBuildAgainDifferentCellTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -93,7 +92,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildOnTheSameCellTest() throws IOException, IllegalActionException {
+    public void cannotBuildOnTheSameCellTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -121,7 +120,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void cannotBuildWith2DifferentWorkersTest() throws IllegalActionException {
+    public void cannotBuildWith2DifferentWorkersTest() throws IllegalActionException {
         firstCell = game.getGameBoard().getCell(4, 2);
         firstBlock = Block.LEVEL2;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -149,7 +148,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void endTurnAutomaticallyAfterSecondBuildTest() throws IOException, IllegalActionException {
+    public void endTurnAutomaticallyAfterSecondBuildTest() throws IOException, IllegalActionException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);
@@ -173,7 +172,7 @@ class BuildAgainDifferentCellTest {
     }
 
     @Test
-    void canEndTurnAfter1BuildTest() throws IOException, IllegalActionException, IllegalEndingTurnException {
+    public void canEndTurnAfter1BuildTest() throws IOException, IllegalActionException, IllegalEndingTurnException {
         firstCell = game.getGameBoard().getCell(2, 3);
         firstBlock = Block.LEVEL1;
         buildAction = new BuildAction(currentWorker, firstCell, firstBlock);

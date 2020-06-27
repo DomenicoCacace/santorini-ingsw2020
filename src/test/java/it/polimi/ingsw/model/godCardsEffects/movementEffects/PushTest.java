@@ -1,11 +1,10 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.movementEffectsTests;
+package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
 import it.polimi.ingsw.model.God;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetBase;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import it.polimi.ingsw.model.*;
@@ -23,7 +22,7 @@ public class PushTest {
     private MoveAction moveAction;
 
     @BeforeEach
-    void SetUp () throws IOException {
+    public void SetUp () throws IOException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("minotaur",2,""));
         gods.get(0).setStrategy(new Push());
@@ -46,7 +45,7 @@ public class PushTest {
 
 
     @Test
-    void correctPushTest () throws IOException, AddingFailedException, IllegalActionException {
+    public void correctPushTest () throws IOException, AddingFailedException, IllegalActionException {
         players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
         game.generateNextTurn();
@@ -82,7 +81,31 @@ public class PushTest {
     }
 
     @Test
+<<<<<<< Updated upstream:src/test/java/it/polimi/ingsw/model/godCardsEffectsTests/movementEffectsTests/PushTest.java
     void cannotPushOutsideTest() throws IOException, AddingFailedException, IllegalActionException {
+=======
+    public void getWalkableCellsTest() throws AddingFailedException {
+        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
+        game.generateNextTurn();
+        Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
+
+        // TODO: assert forSystem.out.println(game.getWalkableCells(currentWorker));
+    }
+
+    @Test
+    public void getBuildableCellsTest() throws IOException, AddingFailedException {
+        players.get(0).addWorker(game.getGameBoard().getCell(3, 2));
+        players.get(1).addWorker(game.getGameBoard().getCell(3, 1));
+        game.generateNextTurn();
+        Worker currentWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
+
+        // TODO: assert for System.out.println(game.getBuildableCells(currentWorker));
+    }
+
+    @Test
+    public void cannotPushOutsideTest() throws IOException, AddingFailedException, IllegalActionException {
+>>>>>>> Stashed changes:src/test/java/it/polimi/ingsw/model/godCardsEffects/movementEffects/PushTest.java
         players.get(0).addWorker(game.getGameBoard().getCell(1, 2));
         players.get(1).addWorker(game.getGameBoard().getCell(0, 2));
         game.generateNextTurn();

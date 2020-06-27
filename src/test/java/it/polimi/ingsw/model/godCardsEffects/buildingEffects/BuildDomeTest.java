@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.buildingEffectsTests;
+package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
 
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetBase;
-import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildDome;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BuildDomeTest {
+public class BuildDomeTest {
     private Game game;
     private Worker currentWorker;
     private BuildAction buildAction;
@@ -27,7 +26,7 @@ class BuildDomeTest {
 
 
     @BeforeEach
-    void SetUp() throws IOException, AddingFailedException, IllegalActionException {
+    public void SetUp() throws IOException, AddingFailedException, IllegalActionException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Atlas",2,""));
         gods.get(0).setStrategy(new BuildDome());
@@ -61,8 +60,13 @@ class BuildDomeTest {
     }
 
     @Test
+<<<<<<< Updated upstream:src/test/java/it/polimi/ingsw/model/godCardsEffectsTests/buildingEffectsTests/BuildDomeTest.java
     void canBuildDomeAnywhereTest() throws IOException, IllegalActionException {
         assertEquals(currentWorker, game.getCurrentRuleSet().getStrategy().getMovedWorker());
+=======
+    public void canBuildDomeAnywhereTest() throws IOException, IllegalActionException {
+        assertEquals(game.getCurrentRuleSet().getStrategy().getMovedWorker(), currentWorker);
+>>>>>>> Stashed changes:src/test/java/it/polimi/ingsw/model/godCardsEffects/buildingEffects/BuildDomeTest.java
 
         targetCell = game.getGameBoard().getCell(3, 3);//LEVEL2
         block = Block.DOME;
@@ -74,7 +78,7 @@ class BuildDomeTest {
     }
 
     @Test
-    void cannotBuildDomeOverDomeTest() throws IOException, IllegalActionException {
+    public void cannotBuildDomeOverDomeTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(3, 4);//DOME
         block = Block.DOME;
         buildAction = new BuildAction(currentWorker, targetCell, block);

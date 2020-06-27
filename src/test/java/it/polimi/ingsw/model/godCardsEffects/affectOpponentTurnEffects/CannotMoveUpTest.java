@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.affectOpponentTurnEffectsTests;
+package it.polimi.ingsw.model.godCardsEffects.affectOpponentTurnEffects;
 
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.godCardsEffects.affectOpponentTurnEffects.CannotMoveUp;
 import it.polimi.ingsw.model.godCardsEffects.buildingEffects.BuildDome;
 import it.polimi.ingsw.model.godCardsEffects.movementEffects.Push;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+<<<<<<< Updated upstream:src/test/java/it/polimi/ingsw/model/godCardsEffectsTests/affectOpponentTurnEffectsTests/CannotMoveUpTest.java
 class CannotMoveUpTest {
+=======
+public class CannotMoveUpTest {
+    private List<Player> players;
+    private List<God> gods;
+>>>>>>> Stashed changes:src/test/java/it/polimi/ingsw/model/godCardsEffects/affectOpponentTurnEffects/CannotMoveUpTest.java
     private Game game;
     private Cell targetCell;
     private Action moveAction, buildAction;
@@ -26,8 +31,13 @@ class CannotMoveUpTest {
     private Block targetBlock;
 
     @BeforeEach
+<<<<<<< Updated upstream:src/test/java/it/polimi/ingsw/model/godCardsEffectsTests/affectOpponentTurnEffectsTests/CannotMoveUpTest.java
     void setUp() throws AddingFailedException {
         List<God> gods = new ArrayList<>();
+=======
+    public void setUp() throws IOException, AddingFailedException {
+        gods = new ArrayList<>();
+>>>>>>> Stashed changes:src/test/java/it/polimi/ingsw/model/godCardsEffects/affectOpponentTurnEffects/CannotMoveUpTest.java
         gods.add(new God("minotaur",2,""));
         gods.get(0).setStrategy(new Push());
         gods.add(new God("Athena",2, ""));
@@ -60,7 +70,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCannotMoveUpTest() throws IOException, IllegalActionException {
+    public void opponentsCannotMoveUpTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);
@@ -158,7 +168,7 @@ class CannotMoveUpTest {
     }
 
     @Test
-    void opponentsCanMoveUpTest() throws IOException, IllegalActionException {
+    public void opponentsCanMoveUpTest() throws IOException, IllegalActionException {
         targetCell = game.getGameBoard().getCell(1, 1);
         targetWorker = game.getCurrentTurn().getCurrentPlayer().getWorkers().get(0);
         moveAction = new MoveAction(targetWorker, targetCell);

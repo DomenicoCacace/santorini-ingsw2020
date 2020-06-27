@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.affectMyTurnEffectsTests;
+package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
 
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.BuildAction;
 import it.polimi.ingsw.model.action.MoveAction;
-import it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects.BuildBeforeAfterMovement;
 import it.polimi.ingsw.model.rules.RuleSetBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class BuildBeforeAfterMovementTest {
+public class BuildBeforeAfterMovementTest {
     private Game game;
     private Worker currentWorker;
     private Cell toMoveCell;
@@ -25,7 +24,7 @@ class BuildBeforeAfterMovementTest {
 
 
     @BeforeEach
-    void SetUp() throws AddingFailedException {
+    public void SetUp() throws AddingFailedException {
         List<God> gods = new ArrayList<>();
         gods.add(new God("Prometheus", 2, ""));
         gods.get(0).setStrategy(new BuildBeforeAfterMovement());
@@ -56,7 +55,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveSameCellTest() throws IllegalActionException {
+    public void correctBuildBeforeAfterMoveSameCellTest() throws IllegalActionException {
         List<PossibleActions> possibleActions = game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
         assertTrue(possibleActions.contains(PossibleActions.BUILD));
         assertTrue(possibleActions.contains(PossibleActions.MOVE));
@@ -98,7 +97,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctBuildBeforeAfterMoveDifferentCellsTest() throws IOException, IllegalActionException {
+    public void correctBuildBeforeAfterMoveDifferentCellsTest() throws IOException, IllegalActionException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -135,7 +134,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void correctMoveUpAndBuildTest() throws IllegalActionException {
+    public void correctMoveUpAndBuildTest() throws IllegalActionException {
 
         toMoveCell = game.getGameBoard().getCell(2, 1);
         Action moveAction = new MoveAction(currentWorker, toMoveCell);
@@ -163,7 +162,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildThenMoveUpTest() throws IllegalActionException {
+    public void cannotBuildThenMoveUpTest() throws IllegalActionException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -192,7 +191,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotBuildTwiceInARowTest() throws IOException, IllegalActionException {
+    public void cannotBuildTwiceInARowTest() throws IOException, IllegalActionException {
         Cell firstBuildingCell = game.getGameBoard().getCell(1,2);
         Action firstBuildAction = new BuildAction(currentWorker, firstBuildingCell, Block.LEVEL1);
         firstBuildAction.getValidation(game);
@@ -219,7 +218,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotKillYourselfTest() throws IOException {
+    public void cannotKillYourselfTest() throws IOException {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL1);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL0);
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(currentWorker);
@@ -243,7 +242,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void mustMoveAndBuildTest() {
+    public void mustMoveAndBuildTest() {
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL1);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL1);
         List<PossibleActions> possibleActions =  game.getCurrentTurn().getRuleSetStrategy().getPossibleActions(players.get(0).getWorkers().get(1));
@@ -266,7 +265,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void buildAndLoseIfItIsTheOnlyActionYouCanDo() throws IllegalActionException {
+    public void buildAndLoseIfItIsTheOnlyActionYouCanDo() throws IllegalActionException {
         game.generateNextTurn();
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL2);
@@ -324,7 +323,7 @@ class BuildBeforeAfterMovementTest {
     }
 
     @Test
-    void cannotKillHimselfWhenOnlyOneWorkerIsStuckTest() throws IllegalActionException {
+    public void cannotKillHimselfWhenOnlyOneWorkerIsStuckTest() throws IllegalActionException {
         game.generateNextTurn();
         game.getGameBoard().getCell(3,2).setBlock(Block.LEVEL2);
         game.getGameBoard().getCell(4,4).setBlock(Block.LEVEL0);

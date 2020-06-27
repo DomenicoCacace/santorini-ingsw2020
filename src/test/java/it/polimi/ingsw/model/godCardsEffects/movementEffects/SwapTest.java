@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.godCardsEffectsTests.movementEffectsTests;
+package it.polimi.ingsw.model.godCardsEffects.movementEffects;
 
 import it.polimi.ingsw.exceptions.AddingFailedException;
 import it.polimi.ingsw.exceptions.IllegalActionException;
@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.action.Action;
 import it.polimi.ingsw.model.action.MoveAction;
 import it.polimi.ingsw.model.rules.RuleSetBase;
-import it.polimi.ingsw.model.godCardsEffects.movementEffects.Swap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SwapTest {
+public class SwapTest {
 
     private List<Player> players;
     private Game game;
@@ -25,7 +24,11 @@ class SwapTest {
     Player currentPlayer;
 
     @BeforeEach
+<<<<<<< Updated upstream:src/test/java/it/polimi/ingsw/model/godCardsEffectsTests/movementEffectsTests/SwapTest.java
     void SetUp () {
+=======
+    public void SetUp () throws IOException {
+>>>>>>> Stashed changes:src/test/java/it/polimi/ingsw/model/godCardsEffects/movementEffects/SwapTest.java
         List<God> gods = new ArrayList<>();
         gods.add(new God("Apollo",2, ""));
         gods.get(0).setStrategy(new Swap());
@@ -50,7 +53,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapSameLevelTest() throws IOException, AddingFailedException, IllegalActionException {
+    public void correctSwapSameLevelTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(4, 3);
 
@@ -77,7 +80,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapHigherOneLevelTest() throws IOException, AddingFailedException, IllegalActionException {
+    public void correctSwapHigherOneLevelTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(4, 2);
 
@@ -102,7 +105,7 @@ class SwapTest {
     }
 
     @Test
-    void correctSwapLowerAnyLevelTest() throws IOException, AddingFailedException, IllegalActionException {
+    public void correctSwapLowerAnyLevelTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 3);
         opponentCell = game.getGameBoard().getCell(3, 2);
 
@@ -127,7 +130,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooHighTest() throws IOException, AddingFailedException, IllegalActionException {
+    public void cannotSwapTooHighTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(3, 3);
 
@@ -156,7 +159,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTooFarTest() throws IOException, AddingFailedException, IllegalActionException {
+    public void cannotSwapTooFarTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(1, 2);
 
@@ -186,7 +189,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapTwiceTest() throws IOException, AddingFailedException, IllegalActionException {
+    public void cannotSwapTwiceTest() throws IOException, AddingFailedException, IllegalActionException {
         Cell secondCellOpponent;
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(2, 2);
@@ -227,7 +230,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotSwapWithMyWorkerTest() throws IOException, AddingFailedException, IllegalActionException {
+    public void cannotSwapWithMyWorkerTest() throws IOException, AddingFailedException, IllegalActionException {
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(4, 3);
 
@@ -256,7 +259,7 @@ class SwapTest {
     }
 
     @Test
-    void cannotKillYourselfIfYouCanMoveWithOtherWorkerTest() throws AddingFailedException {
+    public void cannotKillYourselfIfYouCanMoveWithOtherWorkerTest() throws AddingFailedException {
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(4, 2);
         game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
@@ -284,7 +287,7 @@ class SwapTest {
     }
 
     @Test
-    void canKillYourselfIfIsTheOnlyOptionTest() throws AddingFailedException {
+    public void canKillYourselfIfIsTheOnlyOptionTest() throws AddingFailedException {
         myCell = game.getGameBoard().getCell(3, 2);
         opponentCell = game.getGameBoard().getCell(4, 2);
         game.getGameBoard().getCell(3,1).setBlock(Block.DOME);
