@@ -92,7 +92,7 @@ public class FancyPrinterBoardUtils extends BoardUtils implements KeyEventListen
             playerData.forEach(p -> {
                 List<String> description = new ArrayList<>();
                 description.add("---" + p.getName() + "---");
-                description.add("Color: " + p.getWorkerColor().toString());
+                description.add("Color: " + p.getColor().toString());
                 description.add("God: " + p.getGod().getName() + "(" + p.getGod().getName() + " workers)");
                 description.add("");
                 description.add("-- Effect description -- ");

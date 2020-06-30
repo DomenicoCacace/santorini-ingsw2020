@@ -5,6 +5,7 @@ import it.polimi.ingsw.server.controller.ServerMessageManagerVisitor;
 import it.polimi.ingsw.server.network.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.server.network.exceptions.RoomFullException;
 import it.polimi.ingsw.shared.ReservedUsernames;
+import it.polimi.ingsw.shared.SharedConstants;
 import it.polimi.ingsw.shared.messages.JacksonMessageBuilder;
 import it.polimi.ingsw.shared.messages.Message;
 import it.polimi.ingsw.shared.messages.MessageFromClientToServer;
@@ -37,7 +38,6 @@ import java.util.logging.Logger;
  * Note that <i>connecting</i> means establishing a connection with the server, even without choosing an username.
  */
 public class VirtualClient extends Thread implements ServerMessageManagerVisitor {
-    private static final String PING = "ping";
     private static final Logger logger = Logger.getLogger(VirtualClient.class.getName());
     private final Server server;
     private final Socket clientConnection;
@@ -74,13 +74,13 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
      */
     @Override
     public void run() {
-        notify(PING);
+        notify(SharedConstants.PING);
         String input = null;
         try {
             while (true) {
                 Message message;
                 input = inputSocket.readLine();
-                if (input.equals(PING))
+                if (SharedConstants.PING.equals(input))
                     new Thread(this::ping).start();
                 else {
                     logger.log(Level.FINE, "Message received");
@@ -89,7 +89,7 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
                 }
             }
         } catch (IOException | NullPointerException e) {
-            logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()) + "\n" + input, e);
+            logger.log(Level.SEVERE, ("Message format non valid, kicking " + user.getUsername() + ": " + e.getMessage()) + "\n" + input);
             server.onDisconnect(this.user);
         }
     }
@@ -271,8 +271,8 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
         Lobby lobby = user.getRoom();
 
         if (lobby != null) {
-            ((MessageFromClientToServer) message).callVisitor(lobby.getRoomParser());
             logger.log(Level.INFO, "Forwarding message: " + message.getClass().toGenericString() + " to lobby: " + lobby.getRoomName());
+            ((MessageFromClientToServer) message).callVisitor(lobby.getRoomParser());
         } else {
             logger.log(Level.WARNING, "No lobby associated with user, cannot handle message");
         }
@@ -291,11 +291,11 @@ public class VirtualClient extends Thread implements ServerMessageManagerVisitor
             logger.log(Level.SEVERE, e.toString());
             Thread.currentThread().interrupt();
         }
-        notify(PING);
+        notify(SharedConstants.PING);
         ex = new ScheduledThreadPoolExecutor(5);
         ex.schedule(() -> {
             System.out.println("User " + user.getUsername() + " disconnected!");
             disconnectFromServer();
-        }, 5, TimeUnit.SECONDS);
+        }, SharedConstants.PING_TIME, TimeUnit.SECONDS);
     }
 }

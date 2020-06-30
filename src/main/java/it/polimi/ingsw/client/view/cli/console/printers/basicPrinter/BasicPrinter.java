@@ -237,7 +237,6 @@ public class BasicPrinter extends Printer {
      */
     @Override
     public void placeWorker() {
-        System.out.println("Place your Worker!");
         System.out.println("Select row and column! ");
     }
 

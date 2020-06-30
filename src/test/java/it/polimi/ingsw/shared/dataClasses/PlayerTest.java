@@ -49,8 +49,8 @@ public class PlayerTest implements BuildableCellsListener, AddWorkerListener, Bu
 
 
         players = new ArrayList<>();
-        players.add(new Player("player1", gods.get(0), WorkerColor.BLUE));
-        players.add(new Player("player2", gods.get(1), WorkerColor.PURPLE));
+        players.add(new Player("player1", gods.get(0), Color.BLUE));
+        players.add(new Player("player2", gods.get(1), Color.PURPLE));
 
         players.forEach(player -> {
             player.addWorkerListener(this);
@@ -193,7 +193,7 @@ public class PlayerTest implements BuildableCellsListener, AddWorkerListener, Bu
     void buildDataClassTest(){
         PlayerData playerData = players.get(0).buildDataClass();
         assertEquals(playerData.getName(), players.get(0).getName());
-        assertEquals(playerData.getWorkerColor(), players.get(0).getWorkerColor());
+        assertEquals(playerData.getColor(), players.get(0).getColor());
         assertEquals(playerData.getGod().getName(), players.get(0).getGod().getName());
         assertEquals(playerData.getGod().getDescriptionStrategy(), players.get(0).getGod().getDescriptionStrategy());
         assertEquals(playerData.getGod().getWorkersNumber(), players.get(0).getGod().getWorkersNumber());

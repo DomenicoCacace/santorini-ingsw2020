@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.network;
 
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.shared.SharedConstants;
 import it.polimi.ingsw.shared.messages.JacksonMessageBuilder;
 import it.polimi.ingsw.shared.messages.Message;
 import it.polimi.ingsw.shared.messages.MessageFromServerToClient;
@@ -18,7 +19,6 @@ import java.util.concurrent.*;
  * Client-side client communication and message handler
  */
 public class NetworkHandler implements Runnable {
-    private static final String PING = "ping";
     private final BufferedReader inputSocket;
     private final OutputStreamWriter outputSocket;
     private final Socket serverConnection;
@@ -54,7 +54,7 @@ public class NetworkHandler implements Runnable {
         }
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<Socket> socketFuture = executorService.submit(() -> new Socket(address, port));
-        this.serverConnection = socketFuture.get(5, TimeUnit.SECONDS);
+        this.serverConnection = socketFuture.get(SharedConstants.PING_TIME, TimeUnit.SECONDS);
         this.inputSocket = new BufferedReader(new InputStreamReader(serverConnection.getInputStream()));
         this.outputSocket = new OutputStreamWriter(serverConnection.getOutputStream());
         this.outputSocket.flush();
@@ -77,12 +77,13 @@ public class NetworkHandler implements Runnable {
                 if (ioData == null) {
                     client.getView().showErrorMessage("You have been disconnected");
                     break;
-                } else if (ioData.equals(PING))
+                } else if (ioData.equals(SharedConstants.PING))
                     new Thread(this::ping).start();
                 else {
                     MessageFromServerToClient message;
                     message = (MessageFromServerToClient) jacksonParser.fromStringToMessage(ioData);
                     message.callVisitor(parser);
+                    System.out.println(message);
                 }
             } catch (IOException e) {
                 return;
@@ -170,7 +171,7 @@ public class NetworkHandler implements Runnable {
             Thread.currentThread().interrupt();
         }
         try {
-            sendMessage(PING);
+            sendMessage(SharedConstants.PING);
         } catch (IOException e) {
            /*
             * Mistakes were made
@@ -182,9 +183,9 @@ public class NetworkHandler implements Runnable {
             ex.setRemoveOnCancelPolicy(true);
             pingTask = ex.schedule(() -> {
                 closeConnection();
-                client.getView().showErrorMessage("The Server crashed!!");
+                client.getView().showErrorMessage("No ping received from the server, disconnecting...");
                 new Thread(() -> Client.initClient(client.getView())).start();
-            }, 5, TimeUnit.SECONDS);
+            }, SharedConstants.PING_TIME, TimeUnit.SECONDS);
         }
     }
 }

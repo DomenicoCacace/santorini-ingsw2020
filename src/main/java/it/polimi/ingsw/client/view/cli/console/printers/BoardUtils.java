@@ -224,7 +224,7 @@ public abstract class BoardUtils extends Window {
     private void placeWorker(Cell cell) {
         PrintableObject worker;
         if (cell.getOccupiedBy() != null) {
-            switch (cell.getOccupiedBy().getWorkerColor()) {
+            switch (cell.getOccupiedBy().getColor()) {
                 case BLUE:
                     worker = workers.get(0);
                     break;

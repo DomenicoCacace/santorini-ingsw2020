@@ -35,8 +35,8 @@ public class RuleSetBaseTest {
 
 
         players = new ArrayList<>();
-        players.add(new Player("player1", gods.get(0), WorkerColor.BLUE));
-        players.add(new Player("player2", gods.get(1), WorkerColor.PURPLE));
+        players.add(new Player("player1", gods.get(0), Color.BLUE));
+        players.add(new Player("player2", gods.get(1), Color.PURPLE));
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);

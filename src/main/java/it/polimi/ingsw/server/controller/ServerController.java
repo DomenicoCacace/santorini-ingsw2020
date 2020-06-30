@@ -116,7 +116,7 @@ public class ServerController implements AddWorkerListener, BuildableCellsListen
      * Adds a worker for the player
      * <p>
      * Tries to add a new worker for the player requesting it. This action can end with one and one only of the following
-     * omes:
+     * outcomes:
      * <ul>
      *     <li>the worker is added successfully on the board, but the player still has workers to place: a new
      *     {@linkplain ChooseWorkerPositionRequest} is sent to the same player;</li>

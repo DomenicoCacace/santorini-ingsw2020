@@ -13,17 +13,17 @@ import java.util.Objects;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "workerId", scope = Worker.class)
 public class Worker {
 
-    private final WorkerColor workerColor;
+    private final Color Color;
     private Cell position;
 
     /**
      * Jackson constructor
      *
-     * @param workerColor the worker's color
+     * @param Color the worker's color
      */
     @JsonCreator
-    private Worker(@JsonProperty("color") WorkerColor workerColor) {
-        this.workerColor = workerColor;
+    private Worker(@JsonProperty("color") Color Color) {
+        this.Color = Color;
     }
 
     /**
@@ -35,12 +35,12 @@ public class Worker {
      * This constructor is also used to restore a previous state in case of a server failure.
      *
      * @param position the cell to place the new worker on
-     * @param workerColor    the color of the worker
+     * @param Color    the color of the worker
      */
-    public Worker(Cell position, WorkerColor workerColor) {
+    public Worker(Cell position, Color Color) {
         this.position = position;
         position.setOccupiedBy(this);
-        this.workerColor = workerColor;
+        this.Color = Color;
     }
 
     /**
@@ -48,8 +48,8 @@ public class Worker {
      *
      * @return the color of the worker
      */
-    public WorkerColor getWorkerColor() {
-        return workerColor;
+    public Color getColor() {
+        return Color;
     }
 
     /**
@@ -81,13 +81,13 @@ public class Worker {
      * @return a clone of the worker
      */
     public Worker cloneWorker() {
-        return new Worker(this.position.cloneCell(), this.workerColor);
+        return new Worker(this.position.cloneCell(), this.Color);
     }
 
     @Override
     public String toString() {
         return "Worker{" +
-                "color=" + workerColor +
+                "color=" + Color +
                 '}';
     }
 
@@ -103,11 +103,11 @@ public class Worker {
         if (!(o instanceof Worker)) return false;
         Worker worker = (Worker) o;
         return position.equals(worker.position) &&
-                workerColor == worker.workerColor;
+                Color == worker.Color;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, workerColor);
+        return Objects.hash(position, Color);
     }
 }

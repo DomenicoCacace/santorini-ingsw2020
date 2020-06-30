@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class PlayerData {
     private final String name;
-    private final WorkerColor workerColor;
+    private final Color Color;
     private final List<Worker> workers;
     private final GodData god;
     private final Worker selectedWorker;
@@ -22,17 +22,17 @@ public class PlayerData {
      * Default constructor
      *
      * @param name           the player's username
-     * @param workerColor          the player's workers' color
+     * @param Color          the player's workers' color
      * @param workers        the player0s workers
      * @param god            the player's god
      * @param selectedWorker the last worker selected to perform an action
      */
     @JsonCreator
-    public PlayerData(@JsonProperty("name") String name, @JsonProperty("color") WorkerColor workerColor,
+    public PlayerData(@JsonProperty("name") String name, @JsonProperty("color") Color Color,
                       @JsonProperty("workers") List<Worker> workers, @JsonProperty("god") GodData god,
                       @JsonProperty("selectedWorker") Worker selectedWorker) {
         this.name = name;
-        this.workerColor = workerColor;
+        this.Color = Color;
         this.workers = workers;
         this.god = god;
         this.selectedWorker = selectedWorker;
@@ -61,8 +61,8 @@ public class PlayerData {
      *
      * @return the player's workers' color
      */
-    public WorkerColor getWorkerColor() {
-        return workerColor;
+    public Color getColor() {
+        return Color;
     }
 
     /**

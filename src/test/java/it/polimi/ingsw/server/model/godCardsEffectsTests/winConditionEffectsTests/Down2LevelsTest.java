@@ -5,7 +5,7 @@ import it.polimi.ingsw.server.exceptions.IllegalActionException;
 import it.polimi.ingsw.server.model.*;
 import it.polimi.ingsw.server.model.action.MoveAction;
 import it.polimi.ingsw.shared.dataClasses.GameBoard;
-import it.polimi.ingsw.shared.dataClasses.WorkerColor;
+import it.polimi.ingsw.shared.dataClasses.Color;
 import it.polimi.ingsw.shared.dataClasses.Block;
 import it.polimi.ingsw.shared.dataClasses.Worker;
 import it.polimi.ingsw.server.model.rules.RuleSetBase;
@@ -32,8 +32,8 @@ class Down2LevelsTest {
         gods.add(new God("base", 2,""));
         gods.get(1).setStrategy(new RuleSetBase());
 
-        players.add(new Player("player1", gods.get(0), WorkerColor.BLUE));
-        players.add(new Player("player2", gods.get(1), WorkerColor.PURPLE));
+        players.add(new Player("player1", gods.get(0), Color.BLUE));
+        players.add(new Player("player2", gods.get(1), Color.PURPLE));
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.client.view.gui.utils;
 
 import it.polimi.ingsw.client.view.gui.viewController.GameScreenController;
-import it.polimi.ingsw.shared.dataClasses.WorkerColor;
+import it.polimi.ingsw.shared.dataClasses.Color;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -85,8 +85,8 @@ public class MapTileImage extends ResizableImageView {
         }
     }
 
-    private Image chooseWorker(WorkerColor workerColor) {
-        switch (workerColor) {
+    private Image chooseWorker(Color Color) {
+        switch (Color) {
             case BLUE:
                 return new Image(this.getClass().getResourceAsStream(BLUE_WORKER_DIR));
             case RED:
@@ -98,11 +98,11 @@ public class MapTileImage extends ResizableImageView {
         }
     }
 
-    public void printWorker(WorkerColor workerColor) {
+    public void printWorker(Color Color) {
         if (isOccupied)
             removeWorker();
         StackPane stackPane = ((StackPane) this.getParent());
-        printedWorker = new MapTileImage(chooseWorker(workerColor));
+        printedWorker = new MapTileImage(chooseWorker(Color));
         printedWorker.isCellTile = false;
         printedWorker.setFitHeight(this.getFitHeight() - 0.5);
         printedWorker.setFitWidth(this.getFitWidth() - 0.5);

@@ -289,7 +289,6 @@ public class GUI extends Application implements ViewInterface {
     public void placeWorker() {
         Platform.runLater(() -> {
             GameScreenController controller = ((FXMLLoader) scene.getUserData()).getController();
-            controller.getTextArea().appendText("\nPlace your Worker! ");
             controller.allCellsClickable();
         });
     }
@@ -321,7 +320,7 @@ public class GUI extends Application implements ViewInterface {
                     mapTile.printBlock(cell.getBlock().getHeight());
                 boolean cellIsOccupied = cell.getOccupiedBy() != null;
                 if (cellIsOccupied)
-                    mapTile.printWorker(cell.getOccupiedBy().getWorkerColor());
+                    mapTile.printWorker(cell.getOccupiedBy().getColor());
                 else if (mapTile.isOccupied())
                     mapTile.removeWorker();
             }
@@ -342,7 +341,7 @@ public class GUI extends Application implements ViewInterface {
             int i = 0;
             for(PlayerData player : players){
                 ((Label)labels.get(i)).setText(" " + player.getName() + "\n " +
-                        player.getWorkerColor() + "\n " + player.getGod().getName());
+                        player.getColor() + "\n " + player.getGod().getName());
                 labels.get(i).setDisable(false);
                 labels.get(i).setOpacity(1);
                 labels.get(i).setOnMouseClicked(mouseEvent -> {
@@ -361,7 +360,7 @@ public class GUI extends Application implements ViewInterface {
                     mapTile.printBuilding(cell.getBlock().getHeight());
                 boolean cellIsOccupied = cell.getOccupiedBy() != null;
                 if (cellIsOccupied)
-                    mapTile.printWorker(cell.getOccupiedBy().getWorkerColor());
+                    mapTile.printWorker(cell.getOccupiedBy().getColor());
                 else if (mapTile.isOccupied())
                     mapTile.removeWorker();
             }

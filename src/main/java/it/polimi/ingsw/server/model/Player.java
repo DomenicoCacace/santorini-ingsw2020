@@ -20,7 +20,7 @@ import java.util.Objects;
 public class Player implements PlayerInterface {
 
     private final String name;
-    private final WorkerColor workerColor;
+    private final Color Color;
     private final List<Worker> workers;
     private final God god;
     private final List<AddWorkerListener> addWorkerListener = new ArrayList<>();
@@ -37,23 +37,23 @@ public class Player implements PlayerInterface {
      *
      * @param name           the player's name
      * @param god            the player's god
-     * @param workerColor          the player's workers color
+     * @param Color          the player's workers color
      * @param workers        the player's workers
      * @param selectedWorker the last worker selected (might be null)
      */
     //Used by jackson to deserialize, might marked as not used by IntelliJ; do NOT delete
     @JsonCreator
-    private Player(@JsonProperty("name") String name, @JsonProperty("god") God god, @JsonProperty("color") WorkerColor workerColor,
+    private Player(@JsonProperty("name") String name, @JsonProperty("god") God god, @JsonProperty("color") Color Color,
                    @JsonProperty("workers") List<Worker> workers, @JsonProperty("selectedWorker") Worker selectedWorker) {
         this.name = name;
         this.god = god;
-        this.workerColor = workerColor;
+        this.Color = Color;
         this.workers = workers;
         this.selectedWorker = selectedWorker;
     }
 
     /**
-     * Creates a new Player, assigning its {@link #name}, the {@link #god} it chose and the {@link #workerColor}
+     * Creates a new Player, assigning its {@link #name}, the {@link #god} it chose and the {@link #Color}
      * assigned to its workers.
      * <p>
      * Since some Gods allow the player to have more than two workers, the constructor initializes the
@@ -65,12 +65,12 @@ public class Player implements PlayerInterface {
      *
      * @param name  the player's username
      * @param god   the player's God card, chosen before the game is created
-     * @param workerColor the player's workers color, automatically determined before the game is created
+     * @param Color the player's workers color, automatically determined before the game is created
      */
-    public Player(String name, God god, WorkerColor workerColor) {
+    public Player(String name, God god, Color Color) {
         this.name = name;
         this.god = god;
-        this.workerColor = workerColor;
+        this.Color = Color;
         this.workers = new ArrayList<>();
 
     }
@@ -78,7 +78,7 @@ public class Player implements PlayerInterface {
     private Player(Player player, Game game) {
         this.game = game;
         this.name = player.name;
-        this.workerColor = player.workerColor;
+        this.Color = player.Color;
         this.workers = new ArrayList<>();
         for (Worker worker : player.workers) {
             this.workers.add(worker.cloneWorker());
@@ -117,7 +117,7 @@ public class Player implements PlayerInterface {
     @Override
     public void addWorker(Cell cell) throws AddingFailedException {
         if (cell.getOccupiedBy() == null && workers.size() < god.getWorkersNumber()) {
-            Worker worker = new Worker(game.getGameBoard().getCell(cell), workerColor);
+            Worker worker = new Worker(game.getGameBoard().getCell(cell), Color);
             workers.add(worker);
             addWorkerListener.forEach(addWorkerListener1 -> addWorkerListener1.onWorkerAdd(game.buildBoardData()));
         } else {
@@ -176,8 +176,8 @@ public class Player implements PlayerInterface {
      * @return the player's workers color
      */
     @SuppressWarnings("unused")
-    public WorkerColor getWorkerColor() {
-        return workerColor;
+    public Color getColor() {
+        return Color;
     }
 
     /**
@@ -296,8 +296,8 @@ public class Player implements PlayerInterface {
         List<Worker> workersData = new ArrayList<>();
         this.workers.forEach(worker -> workersData.add(worker.cloneWorker()));
         if (selectedWorker != null)
-            return new PlayerData(this.name, this.workerColor, workersData, god.buildDataClass(), selectedWorker.cloneWorker());
-        return new PlayerData(this.name, this.workerColor, workersData, god.buildDataClass(), null);
+            return new PlayerData(this.name, this.Color, workersData, god.buildDataClass(), selectedWorker.cloneWorker());
+        return new PlayerData(this.name, this.Color, workersData, god.buildDataClass(), null);
     }
 
     /**

@@ -83,7 +83,7 @@ public class Cell implements Serializable {
         this.hasDome = cell.hasDome;
         this.block = cell.block;
         if (cell.occupiedBy != null)
-            this.occupiedBy = new Worker(this, cell.occupiedBy.getWorkerColor());
+            this.occupiedBy = new Worker(this, cell.occupiedBy.getColor());
         else this.occupiedBy = null;
     }
 

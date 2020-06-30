@@ -5,14 +5,14 @@ package it.polimi.ingsw.shared.dataClasses;
  * <p>
  * The workers' pawn color.
  */
-public enum WorkerColor {
+public enum Color {
     BLUE(0),
     RED(1),
     PURPLE(2);
 
     private final int colorID;
 
-    WorkerColor(int colorID) {
+    Color(int colorID) {
         this.colorID = colorID;
     }
 }

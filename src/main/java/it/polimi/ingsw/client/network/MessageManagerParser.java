@@ -10,6 +10,7 @@ import it.polimi.ingsw.shared.messages.Type;
 import it.polimi.ingsw.shared.messages.fromClientToServer.*;
 import it.polimi.ingsw.shared.messages.fromServerToClient.*;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -242,7 +243,7 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         inputManager = new GodChoiceInputManager(client, message.getGods(), chosenSize);
         view.setInputManager(inputManager);
-        inputManager.startTimer(120);
+        inputManager.startTimer(2* Constants.INPUT_TIMER);
         view.chooseGameGods(message.getGods(), chosenSize);
     }
 
@@ -543,8 +544,8 @@ public class MessageManagerParser implements ClientMessageManagerVisitor {
         client.setCurrentPlayer(true);
         if (message.getType().equals(Type.OK)) {
             selectedWorker = message.getSelectedWorker();
-            WorkerColor playerColor = selectedWorker.getWorkerColor();
-            List<Cell> workersCells = gameBoard.stream().filter(cell -> cell.getOccupiedBy()!=null).filter(cell -> cell.getOccupiedBy().getWorkerColor().equals(playerColor)).collect(Collectors.toList());
+            Color playerColor = selectedWorker.getColor();
+            List<Cell> workersCells = gameBoard.stream().filter(cell -> cell.getOccupiedBy()!=null).filter(cell -> cell.getOccupiedBy().getColor().equals(playerColor)).collect(Collectors.toList());
             if (message.getPossibleActions().size() == 1) {
                 messageToSend(message.getPossibleActions().get(0), workersCells);
             } else {

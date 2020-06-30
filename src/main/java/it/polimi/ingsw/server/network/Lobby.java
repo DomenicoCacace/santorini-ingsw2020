@@ -306,7 +306,7 @@ public class Lobby implements PlayerLostListener, EndGameListener {
         List<String> usernames = new ArrayList<>();
         usersInLobby.stream().filter(u -> !u.equals(ReservedUsernames.BROADCAST.toString())).forEach(usernames::add);
         User user = server.getUser(usersInLobby.get((((int) playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count() + 1) % usernames.size()) + 1), this);
-        playerMap.replace(user, new Player(username, godsMap.get(godData), WorkerColor.values()[(int) playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count()]));
+        playerMap.replace(user, new Player(username, godsMap.get(godData), Color.values()[(int) playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count()]));
         availableGods.remove(godData);
         if ((int) playerMap.keySet().stream().filter(u -> playerMap.get(u) != null).count() == maxRoomSize) {
             messageParser.parseMessageFromServerToClient(new ChooseStartingPlayerRequest(usernames.get(0), usernames));

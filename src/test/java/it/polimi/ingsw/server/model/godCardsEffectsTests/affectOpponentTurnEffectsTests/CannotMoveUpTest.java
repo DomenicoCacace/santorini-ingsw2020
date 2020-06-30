@@ -37,9 +37,9 @@ class CannotMoveUpTest {
         gods.get(2).setStrategy(new BuildDome());
 
         List<Player> players = new ArrayList<>();
-        players.add(new Player("P1", gods.get(0), WorkerColor.BLUE));
-        players.add(new Player("P2", gods.get(1), WorkerColor.PURPLE));
-        players.add(new Player("P3", gods.get(2), WorkerColor.RED));
+        players.add(new Player("P1", gods.get(0), Color.BLUE));
+        players.add(new Player("P2", gods.get(1), Color.PURPLE));
+        players.add(new Player("P3", gods.get(2), Color.RED));
 
         GameBoard gameBoard = new GameBoard();
         game = new Game(gameBoard, players);
