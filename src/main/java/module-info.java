@@ -6,7 +6,7 @@ open module AM37 {
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.databind;
 
-    exports it.polimi.ingsw.view.gui to javafx.graphics;
-    exports it.polimi.ingsw.view.gui.utils to javafx.graphics;
-    exports it.polimi.ingsw.model to com.fasterxml.jackson.databind;
+    exports it.polimi.ingsw.client.view.gui to javafx.graphics;
+    exports it.polimi.ingsw.client.view.gui.utils to javafx.graphics;
+    exports it.polimi.ingsw.shared.messages to com.fasterxml.jackson.databind;
 }

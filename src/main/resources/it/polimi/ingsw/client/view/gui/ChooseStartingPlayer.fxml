@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import it.polimi.ingsw.client.view.gui.utils.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="541.0" prefWidth="868.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.view.gui.viewController.StartingPlayerController">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="364.0" prefWidth="633.0" VBox.vgrow="ALWAYS">
+         <children>
+            <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ResizableImageView>
+                     <image>
+                        <Image url="@LoginResources/initialBackground.png" />
+                     </image>
+                  </ResizableImageView>
+                  <VBox>
+                     <children>
+                        <HBox fillHeight="false" prefHeight="176.0" prefWidth="868.0" VBox.vgrow="ALWAYS" />
+                        <AnchorPane prefHeight="210.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
+                           <children>
+                              <HBox layoutX="250.0" layoutY="79.0" prefHeight="257.0" prefWidth="868.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <VBox prefHeight="257.0" prefWidth="350.0" HBox.hgrow="ALWAYS" />
+                                    <VBox fillWidth="false" prefHeight="252.0" prefWidth="192.0" HBox.hgrow="NEVER">
+                                       <children>
+                                          <Pane prefHeight="229.0" prefWidth="184.0">
+                                             <children>
+                                                <Label prefHeight="16.0" prefWidth="184.0" text="Choose The Starting Player!" textAlignment="CENTER" />
+                                                <ListView fx:id="playersList" layoutX="12.0" layoutY="15.0" onMouseClicked="#onPlayerSelected" prefHeight="129.0" prefWidth="160.0" />
+                                             </children>
+                                          </Pane>
+                                          <AnchorPane prefHeight="26.0" prefWidth="199.0">
+                                             <children>
+                                                <HBox layoutX="54.0" prefHeight="26.0" prefWidth="84.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="54.0" AnchorPane.rightAnchor="54.0" AnchorPane.topAnchor="0.0" />
+                                             </children>
+                                          </AnchorPane>
+                                          <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="257.0" prefWidth="350.0" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+    </AnchorPane>
+  </children>
+</VBox>
