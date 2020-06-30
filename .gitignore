@@ -31,3 +31,4 @@ logs/
 savedGames/
 # ignore txt files
 out/
+config.txt
