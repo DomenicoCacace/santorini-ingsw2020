@@ -35,16 +35,14 @@ public class SelectWorkerInputManager extends InputManager {
         if (isWaitingForInput) {
             try {
                 int coord = Integer.parseInt(input);
-                String invalidCellError = "Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD;
+                String invalidCellError = "Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ";
                 if (coord < MIN_COORD || coord > MAX_COORD) {
                     if (row == -1)
-                        invalidCellError += "\nrow:";
+                        view.showErrorMessage(invalidCellError);
                     else
-                        invalidCellError += ", the row selected is: " + (row + 1) + "\ncol: ";
-                    view.showErrorMessage(invalidCellError);
+                        view.showErrorMessage(invalidCellError + (row+1) + "\ncol: ");
                 } else if (row == -1) {
                     row = coord - 1;
-                    view.printCol();
                     startTimer(Constants.INPUT_TIMER);
                 } else if (col == -1) {
                     col = coord - 1;

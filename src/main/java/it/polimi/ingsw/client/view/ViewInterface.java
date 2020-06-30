@@ -11,11 +11,6 @@ import java.util.Map;
  */
 public interface ViewInterface {
 
-    //FIXME
-    default void printCol(){
-        // defined by the children, if needed
-    }
-
     /**
      * Sets the {@linkplain InputManager} to parse the inputs
      *

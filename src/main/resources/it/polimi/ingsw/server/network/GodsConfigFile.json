@@ -1,0 +1,121 @@
+[ {
+  "name" : "Human",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "Move and Build",
+  "strategy" : {
+    "Effect Name" : "RuleSetBase",
+    "stratId" : 1,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Apollo",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "Your Worker may move into an opponent Worker’s space by forcing their Worker to the space yours just vacated",
+  "strategy" : {
+    "Effect Name" : "Swap",
+    "stratId" : 2,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Minotaur",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "Your Worker may move into an opponent Worker’s space, if their Worker can be forced one space straight backwards to an unoccupied space at any level",
+  "strategy" : {
+    "Effect Name" : "Push",
+    "stratId" : 3,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Artemis",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "Your Worker may move one additional time, but not back to its initial space.",
+  "strategy" : {
+    "Effect Name" : "Move Again",
+    "stratId" : 4,
+    "movesAvailable" : 2,
+    "movesUpAvailable" : 2,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Atlas",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "Your Worker may build a dome at any level",
+  "strategy" : {
+    "Effect Name" : "Build Dome",
+    "stratId" : 5,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Demeter",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "Your Worker may build one additional time, but not on the same space",
+  "strategy" : {
+    "Effect Name" : "Build again in different cell",
+    "stratId" : 6,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 2,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Hephaestus",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "Your Worker may build one additional block (not dome) on top of your first block",
+  "strategy" : {
+    "Effect Name" : "Build again in same cell",
+    "stratId" : 7,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 2,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Prometheus",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "If your Worker does not move up, it may build both before and after moving",
+  "strategy" : {
+    "Effect Name" : "BuildBeforeAfterMovement",
+    "stratId" : 8,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 2,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Athena",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "If one of your Workers moved up on your last turn, opponent Workers cannot move up this turn",
+  "strategy" : {
+    "Effect Name" : "Cannot move up",
+    "stratId" : 9,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+}, {
+  "name" : "Pan",
+  "workersNumber" : 2,
+  "descriptionStrategy" : "You also win if your Worker moves down two or more levels",
+  "strategy" : {
+    "Effect Name" : "Down 2 Levels",
+    "stratId" : 10,
+    "movesAvailable" : 1,
+    "movesUpAvailable" : 1,
+    "buildsAvailable" : 1,
+    "movedWorker" : null
+  }
+} ]

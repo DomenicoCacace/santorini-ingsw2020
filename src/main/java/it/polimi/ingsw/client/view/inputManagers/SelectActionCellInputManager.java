@@ -40,7 +40,8 @@ public class SelectActionCellInputManager extends InputManager {
         }
         if (isWaitingForInput) {
             List<Cell> selectedCell;
-            String invalidSelectionError = "Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD;
+            String invalidSelectionError =
+                    "Please insert a valid number between " + MIN_COORD + " and " + MAX_COORD + "\nrow: ";
 
             switch (state) {
                 case MOVE:
@@ -48,13 +49,11 @@ public class SelectActionCellInputManager extends InputManager {
                         int coord = Integer.parseInt(input);
                         if (coord < MIN_COORD || coord > MAX_COORD) {
                             if (row == -1)
-                                view.showErrorMessage(invalidSelectionError + "\nrow: ");
+                                view.showErrorMessage(invalidSelectionError);
                             else
-                                view.showErrorMessage(invalidSelectionError + ", the row selected is: " + (row + 1) + "\ncol: ");
-                            view.showErrorMessage(invalidSelectionError);
+                                view.showErrorMessage(invalidSelectionError + (row + 1) + "\ncol: ");
                         } else if (row == -1) {
                             row = coord - 1;
-                            view.printCol();
                             startTimer(Constants.INPUT_TIMER);
                         } else if (col == -1) {
                             col = coord - 1;
@@ -80,12 +79,11 @@ public class SelectActionCellInputManager extends InputManager {
                         int coord = Integer.parseInt(input);
                         if (coord < MIN_COORD || coord > MAX_COORD) {
                             if (row == -1)
-                                view.showErrorMessage(invalidSelectionError + "\nrow: ");
+                                view.showErrorMessage(invalidSelectionError);
                             else
-                                view.showErrorMessage(invalidSelectionError + ", the row selected is: " + (row + 1) + "\ncol: ");
+                                view.showErrorMessage(invalidSelectionError + (row + 1) + "\ncol: ");
                         } else if (row == -1) {
                             row = coord - 1;
-                            view.printCol();
                             startTimer(Constants.INPUT_TIMER);
                         } else if (col == -1) {
                             col = coord - 1;
