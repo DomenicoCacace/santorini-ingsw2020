@@ -32,7 +32,7 @@ public class CLI implements ViewInterface {
     public CLI(boolean enableRawMode) throws IOException {
         this.enableRawMode = enableRawMode;
         if (enableRawMode)
-            printer = new FancyPrinter(Console.init(this));
+            printer = new FancyPrinter(Console.init(this), this);
         else
             printer = new BasicPrinter(Console.init(this), this);
         new Thread(this::readInput).start();

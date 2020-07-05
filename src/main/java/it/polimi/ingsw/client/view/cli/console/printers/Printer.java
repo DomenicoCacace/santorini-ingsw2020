@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.cli.console.printers;
 
+import it.polimi.ingsw.client.view.cli.CLI;
 import it.polimi.ingsw.client.view.cli.console.Console;
 import it.polimi.ingsw.client.view.cli.console.graphics.components.PrintableObject;
 import it.polimi.ingsw.shared.dataClasses.*;
@@ -20,6 +21,7 @@ public abstract class Printer {
     /**
      * The UI which created the printer
      */
+    protected final CLI cli;
     protected BoardUtils boardUtils;
     protected final Console console;
     protected final PrintableObject mainLogo;
@@ -30,9 +32,11 @@ public abstract class Printer {
     /**
      * Default constructor
      *
+     * @param cli the view which created the lobby
      * @param console the Console object containing this
      */
-    protected Printer(Console console) throws IOException {
+    protected Printer(CLI cli, Console console) throws IOException {
+        this.cli = cli;
         this.console = console;
         properties.loadFromXML(this.getClass().getResourceAsStream(this.getClass().getSimpleName() + ".xml"));
         mainLogo = PrintableObject.load(this, properties.getProperty("logoPath"), 151, 24);

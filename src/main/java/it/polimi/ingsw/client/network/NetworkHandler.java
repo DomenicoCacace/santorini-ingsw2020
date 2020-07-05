@@ -83,7 +83,6 @@ public class NetworkHandler implements Runnable {
                     MessageFromServerToClient message;
                     message = (MessageFromServerToClient) jacksonParser.fromStringToMessage(ioData);
                     message.callVisitor(parser);
-                    System.out.println(message);
                 }
             } catch (IOException e) {
                 return;

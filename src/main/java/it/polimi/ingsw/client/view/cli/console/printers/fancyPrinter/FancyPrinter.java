@@ -1,5 +1,6 @@
 package it.polimi.ingsw.client.view.cli.console.printers.fancyPrinter;
 
+import it.polimi.ingsw.client.view.cli.CLI;
 import it.polimi.ingsw.client.view.cli.console.Console;
 import it.polimi.ingsw.client.view.cli.console.CursorPosition;
 import it.polimi.ingsw.client.view.cli.console.graphics.*;
@@ -24,10 +25,11 @@ public class FancyPrinter extends Printer {
     /**
      * Default constructor
      *  @param console the console in which the output will be printed
+     * @param cli     the UI object
      *
      */
-    public FancyPrinter(Console console) throws IOException {
-        super(console);
+    public FancyPrinter(Console console, CLI cli) throws IOException {
+        super(cli, console);
     }
 
     /**

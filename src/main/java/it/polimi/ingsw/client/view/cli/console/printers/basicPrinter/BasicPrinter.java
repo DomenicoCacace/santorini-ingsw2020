@@ -21,7 +21,7 @@ public class BasicPrinter extends Printer {
      * @param cli the view which created the printer
      */
     public BasicPrinter(Console console, CLI cli) throws IOException {
-        super(console);
+        super(cli, console);
     }
 
     /**
