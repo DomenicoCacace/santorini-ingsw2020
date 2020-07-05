@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class Client {
     private static final int MAX_SETTINGS_STORED = 5;
-    private static final File CONFIG_FILE = new File("../config.txt");
+    private static final File CONFIG_FILE = new File("./config.txt");
 
     private final ViewInterface view;
     private String username;
@@ -114,7 +114,8 @@ public class Client {
             }
 
         } catch (IOException e) {
-            Client.initClient(viewInterface);
+            viewInterface.setInputManager(new LoginManager(client, savedUsers));
+            viewInterface.askIP();
         }
     }
 

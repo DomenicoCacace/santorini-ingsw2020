@@ -25,12 +25,14 @@ import java.util.stream.Collectors;
  */
 public class Server extends Thread {
     private static final Logger logger = Logger.getLogger(Server.class.getName());
-    private static final int MAX_WAITING_CLIENTS = 15;    //FIXME: load from file
+    private static final int MAX_CLIENTS = 15;
+    private static final int DEFAULT_PORT = 4321;
 
     private final Map<String, Lobby> gameLobbies;
     private final List<User> waitingRoom;
     private final HashMap<User, Lobby> users;
     private final int socketGreeterPort;
+    private final int waitingRoomSize;
     private ServerSocket serverSocket;
     private Socket newClientSocket;
 
@@ -41,20 +43,43 @@ public class Server extends Thread {
      *
      * @throws IOException if an I/O error occurs while creating the log file
      */
-    public Server() throws IOException {
-        int port;
+    public Server(int port, int maxClients) throws IOException {
         this.gameLobbies = new LinkedHashMap<>();
         this.users = new LinkedHashMap<>();
         this.waitingRoom = new LinkedList<>();
-        try {
-            InputStream socketPort = this.getClass().getResourceAsStream("socketPort.txt");
-            InputStreamReader inputStreamReader = new InputStreamReader(socketPort);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            port = Integer.parseInt(bufferedReader.readLine().trim());
-        }catch (Exception e){
-            port = 4321;
+
+        if (port < 1024 || port > 65535) {
+            logger.log(Level.WARNING, "Port value invalid, using default");
+            int defaultPort;
+            try {
+                InputStream socketPort = this.getClass().getResourceAsStream("socketPort.txt");
+                InputStreamReader inputStreamReader = new InputStreamReader(socketPort);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                defaultPort = Integer.parseInt(bufferedReader.readLine().trim());
+            } catch (Exception e) {
+                defaultPort = DEFAULT_PORT;
+            }
+            socketGreeterPort = defaultPort;
         }
-        socketGreeterPort = port;
+        else {
+            socketGreeterPort = port;
+        }
+        if (maxClients < 2) {
+            logger.log(Level.WARNING,"maxClients value invalid, using defaults");
+            int maximumClientsInWaitingRoom;
+            try {
+                InputStream maxClientsStream = this.getClass().getResourceAsStream("maxClients.txt");
+                InputStreamReader inputStreamReader = new InputStreamReader(maxClientsStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                maximumClientsInWaitingRoom = Integer.parseInt(bufferedReader.readLine().trim());
+            } catch (Exception e) {
+                maximumClientsInWaitingRoom = MAX_CLIENTS;
+            }
+            waitingRoomSize = maximumClientsInWaitingRoom;
+        }
+        else {
+            waitingRoomSize = maxClients;
+        }
         File logDir = new File("./logs");
         logDir.mkdir();
         File logFile = new File(logDir + File.separator + new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new Date()) + ".txt");
@@ -88,7 +113,33 @@ public class Server extends Thread {
      * @throws IOException if an I/O error occurs
      */
     public static void main(String[] args) throws IOException {
-        Server server = new Server();
+        int port = 0;
+        int maxClients = 0;
+        List<String> arguments = Arrays.stream(args).collect(Collectors.toList());
+
+        if (arguments.contains("--port")) {
+            int ind = arguments.indexOf("--port") + 1;
+            if (ind < arguments.size()) {
+                try {
+                    port = Integer.parseInt(arguments.get(ind));
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "--port argument invalid, using default value (4321)");
+                }
+            }
+        }
+
+        if (arguments.contains("--maxClients")) {
+            int ind = arguments.indexOf("--maxClients") + 1;
+            if (ind < arguments.size()) {
+                try {
+                    maxClients = Integer.parseInt(arguments.get(ind));
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "--maxClients argument invalid, using default value (15)");
+                }
+            }
+        }
+
+        Server server = new Server(port, maxClients);
         server.startServer();
     }
 
@@ -177,7 +228,7 @@ public class Server extends Thread {
      */
     public synchronized void addClient(VirtualClient virtualClient) throws RoomFullException {        // Login of the player
         String username = virtualClient.getUser().getUsername();
-        if (waitingRoom.size() < MAX_WAITING_CLIENTS) {
+        if (waitingRoom.size() < waitingRoomSize) {
             virtualClient.getUser().setUsername(username);
             waitingRoom.add(virtualClient.getUser());
             users.put(virtualClient.getUser(), null);

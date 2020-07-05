@@ -90,7 +90,7 @@ public abstract class BoardUtils extends Window {
     public void updateGameData(List<Cell> board, List<PlayerData> players) {
         this.playerData = players;
         setCachedBoard(board);
-        showGameBoard(board);
+        showGameBoard();
     }
 
     /**

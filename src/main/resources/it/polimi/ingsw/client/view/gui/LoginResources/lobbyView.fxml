@@ -25,7 +25,7 @@
                   </ResizableImageView>
                   <VBox>
                      <children>
-                        <HBox fillHeight="false" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#onQuit" prefHeight="286.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
+                        <HBox fillHeight="false" nodeOrientation="RIGHT_TO_LEFT" prefHeight="286.0" prefWidth="868.0" VBox.vgrow="ALWAYS">
                            <children>
                               <Button mnemonicParsing="false" onMouseClicked="#onQuit" text="Quit" />
                            </children></HBox>

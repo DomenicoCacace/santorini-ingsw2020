@@ -214,9 +214,7 @@ public class BasicPrinter extends Printer {
      */
     @Override
     public void updateGameData(List<Cell> board, List<PlayerData> players) {
-        /*
-         * Does nothing, in this CLI version it has been decided not to implement too many details
-         */
+        boardUtils.updateGameData(board,players);
     }
 
     /**
