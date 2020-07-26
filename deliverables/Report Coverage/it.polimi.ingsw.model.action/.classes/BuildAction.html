@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BuildAction</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.action</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BuildAction (it.polimi.ingsw.model.action)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BuildAction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.action;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.fasterxml.jackson.annotation.JsonCreator;
+<i>4</i>&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
+<i>5</i>&nbsp;import it.polimi.ingsw.exceptions.IllegalActionException;
+<i>6</i>&nbsp;import it.polimi.ingsw.model.Block;
+<i>7</i>&nbsp;import it.polimi.ingsw.model.Cell;
+<i>8</i>&nbsp;import it.polimi.ingsw.model.Game;
+<i>9</i>&nbsp;import it.polimi.ingsw.model.Worker;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;/**
+<i>12</i>&nbsp; * Describes and manages a build action
+<i>13</i>&nbsp; */
+<i>14</i>&nbsp;public class BuildAction extends Action {
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    protected final Block targetBlock;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    /**
+<i>19</i>&nbsp;     * Default constructor
+<i>20</i>&nbsp;     *
+<i>21</i>&nbsp;     * @param targetWorker the worker performing the action
+<i>22</i>&nbsp;     * @param targetCell   the cell to build on
+<i>23</i>&nbsp;     * @param targetBlock  the block to build on the target cell
+<i>24</i>&nbsp;     */
+<i>25</i>&nbsp;    @JsonCreator
+<i>26</i>&nbsp;    public BuildAction(@JsonProperty(&quot;targetWorker&quot;) Worker targetWorker, @JsonProperty(&quot;targetCell&quot;) Cell targetCell, @JsonProperty(&quot;targetBlock&quot;) Block targetBlock) {
+<b class="fc"><i>27</i>&nbsp;        super(targetWorker, targetCell);</b>
+<b class="fc"><i>28</i>&nbsp;        this.targetBlock = targetBlock;</b>
+<b class="fc"><i>29</i>&nbsp;    }</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    /**
+<i>32</i>&nbsp;     * &lt;i&gt;targetBlock&lt;/i&gt; getter
+<i>33</i>&nbsp;     *
+<i>34</i>&nbsp;     * @return the block to build
+<i>35</i>&nbsp;     */
+<i>36</i>&nbsp;    public Block getTargetBlock() {
+<b class="fc"><i>37</i>&nbsp;        return targetBlock;</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    /**
+<i>41</i>&nbsp;     * Forces an action to be applied
+<i>42</i>&nbsp;     */
+<i>43</i>&nbsp;    public void apply() {
+<b class="fc"><i>44</i>&nbsp;        targetCell.setBlock(targetBlock);</b>
+<b class="fc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * Checks if the action can be performed, based on the game status
+<i>49</i>&nbsp;     *
+<i>50</i>&nbsp;     * @param game the game object which validates the action
+<i>51</i>&nbsp;     * @throws IllegalActionException if the action cannot be performed
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    public void getValidation(Game game) throws IllegalActionException {
+<b class="fc"><i>54</i>&nbsp;        game.validateBuildAction(this);</b>
+<b class="fc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>

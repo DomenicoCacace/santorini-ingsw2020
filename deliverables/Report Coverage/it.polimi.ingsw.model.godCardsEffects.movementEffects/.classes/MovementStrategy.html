@@ -1,0 +1,120 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MovementStrategy</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.godCardsEffects.movementEffects</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MovementStrategy (it.polimi.ingsw.model.godCardsEffects.movementEffects)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MovementStrategy</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.godCardsEffects.movementEffects;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Cell;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Worker;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.rules.RuleSetBase;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * Effects subclass
+<i>9</i>&nbsp; * &lt;p&gt;
+<i>10</i>&nbsp; * Generalizes all the gods effects that affect player&#39;s movement actions
+<i>11</i>&nbsp; */
+<b class="fc"><i>12</i>&nbsp;public class MovementStrategy extends RuleSetBase {</b>
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;    /**
+<i>15</i>&nbsp;     * Determines if a given cell is reachable by a worker
+<i>16</i>&nbsp;     * &lt;p&gt;
+<i>17</i>&nbsp;     * By reachable we mean that the worker&#39;s cell and the target cell are adjacent and there is no dome on the
+<i>18</i>&nbsp;     * target cell
+<i>19</i>&nbsp;     *
+<i>20</i>&nbsp;     * @param worker the worker to be moved
+<i>21</i>&nbsp;     * @param cell   the target cell
+<i>22</i>&nbsp;     * @return true if the worker can reach the cell, false otherwise
+<i>23</i>&nbsp;     */
+<i>24</i>&nbsp;    protected boolean canGo(Worker worker, Cell cell) {
+<b class="fc"><i>25</i>&nbsp;        return !cell.hasDome() &amp;&amp; super.isCorrectDistance(worker, cell);</b>
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    /**
+<i>29</i>&nbsp;     * Determines if a cell contains a worker which owner is the same as the strategy user
+<i>30</i>&nbsp;     *
+<i>31</i>&nbsp;     * @param cell the cell to check for a worker
+<i>32</i>&nbsp;     * @return true if the target cell contains a worker owned by another player, false otherwise
+<i>33</i>&nbsp;     */
+<i>34</i>&nbsp;    protected boolean isNotSameOwner(Cell cell) {
+<b class="fc"><i>35</i>&nbsp;        return !game.getCurrentTurn().getCurrentPlayer().getWorkers().contains(cell.getOccupiedBy());</b>
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>

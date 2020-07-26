@@ -1,0 +1,155 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PlayerInterface</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PlayerInterface (it.polimi.ingsw.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PlayerInterface</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.exceptions.*;
+<i>4</i>&nbsp;import it.polimi.ingsw.listeners.*;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.action.Action;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; * Player interface
+<i>9</i>&nbsp; * &lt;p&gt;
+<i>10</i>&nbsp; * Offers a series of methods to change the player state
+<i>11</i>&nbsp; */
+<i>12</i>&nbsp;public interface PlayerInterface {
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;    /**
+<i>15</i>&nbsp;     * Adds a worker to the board
+<i>16</i>&nbsp;     *
+<i>17</i>&nbsp;     * @param cell the cell to place the worker to
+<i>18</i>&nbsp;     * @throws AddingFailedException if the worker could not be added
+<i>19</i>&nbsp;     */
+<i>20</i>&nbsp;    void addWorker(Cell cell) throws AddingFailedException;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    /**
+<i>23</i>&nbsp;     * Sets the worker to perform the next action
+<i>24</i>&nbsp;     *
+<i>25</i>&nbsp;     * @param selectedWorker the worker to select
+<i>26</i>&nbsp;     * @throws NotYourWorkerException if the worker is not owned by the player
+<i>27</i>&nbsp;     */
+<i>28</i>&nbsp;    void setSelectedWorker(Worker selectedWorker) throws NotYourWorkerException;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    /**
+<i>31</i>&nbsp;     * Provides a list of cells on which the selected player can walk to
+<i>32</i>&nbsp;     *
+<i>33</i>&nbsp;     * @throws WrongSelectionException if no worker has been selected
+<i>34</i>&nbsp;     */
+<i>35</i>&nbsp;    void obtainWalkableCells() throws WrongSelectionException;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    /**
+<i>38</i>&nbsp;     * Provides a list of cells on which the selected player can build on
+<i>39</i>&nbsp;     *
+<i>40</i>&nbsp;     * @throws WrongSelectionException if no worker has been selected
+<i>41</i>&nbsp;     */
+<i>42</i>&nbsp;    void obtainBuildableCells() throws WrongSelectionException;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    /**
+<i>45</i>&nbsp;     * Provides a list of blocks which the selected worker can build on the given cell
+<i>46</i>&nbsp;     *
+<i>47</i>&nbsp;     * @param selectedCell the cell to perform the build action on
+<i>48</i>&nbsp;     * @throws IllegalActionException if no worker has been selected
+<i>49</i>&nbsp;     */
+<i>50</i>&nbsp;    void obtainBuildingBlocks(Cell selectedCell) throws IllegalActionException;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * Applies the given action
+<i>54</i>&nbsp;     *
+<i>55</i>&nbsp;     * @param action the action to be applied
+<i>56</i>&nbsp;     * @throws IllegalActionException if the action cannot be performed
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    void useAction(Action action) throws IllegalActionException;
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Ends the player&#39;s turn
+<i>62</i>&nbsp;     *
+<i>63</i>&nbsp;     * @throws IllegalEndingTurnException if the turn cannot be ended
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    void askPassTurn() throws IllegalEndingTurnException;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Adds a new listener
+<i>69</i>&nbsp;     *
+<i>70</i>&nbsp;     * @param addWorkerListener the listener to add to the list
+<i>71</i>&nbsp;     */
+<i>72</i>&nbsp;    void addWorkerListener(AddWorkerListener addWorkerListener);
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    /**
+<i>75</i>&nbsp;     * Adds a new listener
+<i>76</i>&nbsp;     *
+<i>77</i>&nbsp;     * @param buildableCellsListener the listener to add to the list
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    void addBuildableCellsListener(BuildableCellsListener buildableCellsListener);
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * Adds a new listener
+<i>83</i>&nbsp;     *
+<i>84</i>&nbsp;     * @param walkableCellsListener the listener to add to the list
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    void addWalkableCellsListener(WalkableCellsListener walkableCellsListener);
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * Adds a new listener
+<i>90</i>&nbsp;     *
+<i>91</i>&nbsp;     * @param selectWorkerListener the listener to add to the list
+<i>92</i>&nbsp;     */
+<i>93</i>&nbsp;    void addSelectWorkerListener(SelectWorkerListener selectWorkerListener);
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Adds a new listener
+<i>97</i>&nbsp;     *
+<i>98</i>&nbsp;     * @param buildingBlocksListener the listener to add to the list
+<i>99</i>&nbsp;     */
+<i>100</i>&nbsp;    void addBuildingBlocksListener(BuildingBlocksListener buildingBlocksListener);
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    /**
+<i>103</i>&nbsp;     * Checks if the player has placed all of its workers
+<i>104</i>&nbsp;     *
+<i>105</i>&nbsp;     * @return true if all the player&#39;s workers have been placed, false otherwise
+<i>106</i>&nbsp;     */
+<i>107</i>&nbsp;    boolean allWorkersArePlaced();
+<i>108</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>

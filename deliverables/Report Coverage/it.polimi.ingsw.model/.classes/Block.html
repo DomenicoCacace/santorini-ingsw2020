@@ -1,0 +1,123 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Block</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Block (it.polimi.ingsw.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Block</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;/**
+<i>4</i>&nbsp; * The buildings&#39; level
+<i>5</i>&nbsp; * &lt;ul&gt;
+<i>6</i>&nbsp; *     &lt;li&gt;Level 0: Ground level, no building&lt;/li&gt;
+<i>7</i>&nbsp; *     &lt;li&gt;Level 1, 2, 3: Normal blocks, can be walked/built on (based on the rules)&lt;/li&gt;
+<i>8</i>&nbsp; *     &lt;li&gt;Dome: final block, cannot be built or walked on (no exceptions, with the implemented rules)&lt;/li&gt;
+<i>9</i>&nbsp; * &lt;/ul&gt;
+<i>10</i>&nbsp; */
+<b class="fc"><i>11</i>&nbsp;public enum Block {</b>
+<b class="fc"><i>12</i>&nbsp;    LEVEL0(0),</b>
+<b class="fc"><i>13</i>&nbsp;    LEVEL1(1),</b>
+<b class="fc"><i>14</i>&nbsp;    LEVEL2(2),</b>
+<b class="fc"><i>15</i>&nbsp;    LEVEL3(3),</b>
+<b class="fc"><i>16</i>&nbsp;    DOME(4);</b>
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    private final int height;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    /**
+<i>21</i>&nbsp;     * Default constructor
+<i>22</i>&nbsp;     * &lt;p&gt;
+<i>23</i>&nbsp;     * Creates a block by its height.
+<i>24</i>&nbsp;     *
+<i>25</i>&nbsp;     * @param height the height (int value, 0 to 4) of the block to create
+<i>26</i>&nbsp;     */
+<b class="fc"><i>27</i>&nbsp;    Block(int height) {</b>
+<b class="fc"><i>28</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>29</i>&nbsp;    }</b>
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    /**
+<i>32</i>&nbsp;     * &lt;i&gt;height&lt;/i&gt; getter
+<i>33</i>&nbsp;     *
+<i>34</i>&nbsp;     * @return the height (integer value) og the building
+<i>35</i>&nbsp;     */
+<i>36</i>&nbsp;    public int getHeight() {
+<b class="fc"><i>37</i>&nbsp;        return height;</b>
+<i>38</i>&nbsp;    }
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>

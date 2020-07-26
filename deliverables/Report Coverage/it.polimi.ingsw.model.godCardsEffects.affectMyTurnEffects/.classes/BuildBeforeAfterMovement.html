@@ -1,0 +1,398 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BuildBeforeAfterMovement</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BuildBeforeAfterMovement (it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BuildBeforeAfterMovement</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (11/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86.4%
+  </span>
+  <span class="absValue">
+    (95/ 110)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.godCardsEffects.affectMyTurnEffects;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.fasterxml.jackson.annotation.JsonAutoDetect;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Cell;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.Game;
+<i>6</i>&nbsp;import it.polimi.ingsw.model.PossibleActions;
+<i>7</i>&nbsp;import it.polimi.ingsw.model.Worker;
+<i>8</i>&nbsp;import it.polimi.ingsw.model.action.BuildAction;
+<i>9</i>&nbsp;import it.polimi.ingsw.model.action.MoveAction;
+<i>10</i>&nbsp;import it.polimi.ingsw.model.rules.RuleSetStrategy;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;import java.util.ArrayList;
+<i>13</i>&nbsp;import java.util.List;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;/**
+<i>16</i>&nbsp; * Build (optional), Move, Build
+<i>17</i>&nbsp; * * &lt;br&gt;
+<i>18</i>&nbsp; * This effect alters the player&#39;s turn order; either, the player can:
+<i>19</i>&nbsp; * &lt;ul&gt;
+<i>20</i>&nbsp; *     &lt;li&gt;Play the turn as usual, following the {@link it.polimi.ingsw.model.rules.RuleSetBase}&lt;/li&gt;
+<i>21</i>&nbsp; *     &lt;li&gt;Build a block, move on a level not higher than the current one, then build again&lt;/li&gt;
+<i>22</i>&nbsp; * &lt;/ul&gt;
+<i>23</i>&nbsp; */
+<i>24</i>&nbsp;@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+<i>25</i>&nbsp;public class BuildBeforeAfterMovement extends AffectMyTurnStrategy {
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    private boolean hasBuiltBefore;
+<i>28</i>&nbsp;    private Worker builder;
+<i>29</i>&nbsp;    private int stuckWorkers;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    /**
+<i>32</i>&nbsp;     * Copy constructor
+<i>33</i>&nbsp;     *
+<i>34</i>&nbsp;     * @param buildBeforeAfterMovement the strategy to clone
+<i>35</i>&nbsp;     * @param game                     the game in which the effect is used
+<i>36</i>&nbsp;     */
+<b class="nc"><i>37</i>&nbsp;    private BuildBeforeAfterMovement(BuildBeforeAfterMovement buildBeforeAfterMovement, Game game) {</b>
+<b class="nc"><i>38</i>&nbsp;        this.game = game;</b>
+<b class="nc"><i>39</i>&nbsp;        this.movesAvailable = buildBeforeAfterMovement.getMovesAvailable();</b>
+<b class="nc"><i>40</i>&nbsp;        this.movesUpAvailable = buildBeforeAfterMovement.getMovesUpAvailable();</b>
+<b class="nc"><i>41</i>&nbsp;        this.buildsAvailable = buildBeforeAfterMovement.getBuildsAvailable();</b>
+<b class="nc"><i>42</i>&nbsp;        this.hasMovedUp = buildBeforeAfterMovement.hasMovedUp();</b>
+<b class="nc"><i>43</i>&nbsp;        if (buildBeforeAfterMovement.getMovedWorker() != null)</b>
+<b class="nc"><i>44</i>&nbsp;            this.movedWorker = game.getGameBoard().getCell(buildBeforeAfterMovement.getMovedWorker().getPosition()).getOccupiedBy();</b>
+<b class="nc"><i>45</i>&nbsp;        else this.movedWorker = null;</b>
+<b class="nc"><i>46</i>&nbsp;        this.hasBuiltBefore = buildBeforeAfterMovement.hasBuiltBefore;</b>
+<b class="nc"><i>47</i>&nbsp;        this.builder = game.getGameBoard().getCell(buildBeforeAfterMovement.builder.getPosition()).getOccupiedBy();</b>
+<b class="nc"><i>48</i>&nbsp;        this.stuckWorkers = buildBeforeAfterMovement.stuckWorkers;</b>
+<b class="nc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    /**
+<i>52</i>&nbsp;     * Default constructor
+<i>53</i>&nbsp;     *
+<i>54</i>&nbsp;     * @see #initialize()
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    public BuildBeforeAfterMovement() {
+<b class="fc"><i>57</i>&nbsp;        super();</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Sets the parameters for a new turn
+<i>62</i>&nbsp;     * &lt;p&gt;
+<i>63</i>&nbsp;     * Using this ruleSet, a player is granted one movement and two building action, to be performed by the same worker
+<i>64</i>&nbsp;     * following the rules mentioned in the class documentation.
+<i>65</i>&nbsp;     * &lt;br&gt;
+<i>66</i>&nbsp;     * The attribute {@link #stuckWorkers} is needed because, using this effect, it is possible to lose after
+<i>67</i>&nbsp;     * performing a build action; this counter keeps track of the number of the controlled workers that can perform
+<i>68</i>&nbsp;     * no action during the turn
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    @Override
+<i>71</i>&nbsp;    public void initialize() {
+<b class="fc"><i>72</i>&nbsp;        this.movesAvailable = 1;</b>
+<b class="fc"><i>73</i>&nbsp;        this.movesUpAvailable = 1;</b>
+<b class="fc"><i>74</i>&nbsp;        this.buildsAvailable = 2;</b>
+<b class="fc"><i>75</i>&nbsp;        this.hasMovedUp = false;</b>
+<b class="fc"><i>76</i>&nbsp;        this.hasBuiltBefore = false;</b>
+<b class="fc"><i>77</i>&nbsp;        this.movedWorker = null;</b>
+<b class="fc"><i>78</i>&nbsp;        this.builder = null;</b>
+<b class="fc"><i>79</i>&nbsp;        this.stuckWorkers = 0;</b>
+<b class="fc"><i>80</i>&nbsp;    }</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * Applies end turn effects
+<i>84</i>&nbsp;     * &lt;p&gt;
+<i>85</i>&nbsp;     * Using this ruleSet, the end turn effects simply resets the attributes changed during the turn
+<i>86</i>&nbsp;     */
+<i>87</i>&nbsp;    @Override
+<i>88</i>&nbsp;    public void doEffect() {
+<b class="fc"><i>89</i>&nbsp;        initialize();</b>
+<b class="fc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    /**
+<i>93</i>&nbsp;     * Provides a list of possible actions for a player to perform, based on the chosen worker
+<i>94</i>&nbsp;     * &lt;p&gt;
+<i>95</i>&nbsp;     * g this ruleSet, the possible actions for a worker are:
+<i>96</i>&nbsp;     * &lt;ul&gt;
+<i>97</i>&nbsp;     *     &lt;li&gt;Change Worker/Move/Build, if the worker  has not been moved yet&lt;/li&gt;
+<i>98</i>&nbsp;     *     &lt;li&gt;Move, if the worker built as its first action&lt;/li&gt;
+<i>99</i>&nbsp;     *     &lt;li&gt;Build, if the worker has been moved&lt;/li&gt;
+<i>100</i>&nbsp;     *     &lt;li&gt;None, in any other case&lt;/li&gt;
+<i>101</i>&nbsp;     * &lt;/ul&gt;
+<i>102</i>&nbsp;     * Note that in the rare case that all the possible actions lead the player to a loss, it must
+<i>103</i>&nbsp;     * perform a move anyway, since the game board has to be altered before removing its workers from the board
+<i>104</i>&nbsp;     *
+<i>105</i>&nbsp;     * @param worker the worker to perform an action with
+<i>106</i>&nbsp;     * @return a list of possible performable actions
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    @Override
+<i>109</i>&nbsp;    public List&lt;PossibleActions&gt; getPossibleActions(Worker worker) {
+<b class="fc"><i>110</i>&nbsp;        List&lt;PossibleActions&gt; possibleActions = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>111</i>&nbsp;        if (buildsAvailable &gt; 0) {</b>
+<b class="fc"><i>112</i>&nbsp;            if (movesAvailable == 0 &amp;&amp; !hasBuiltBefore) {</b>
+<b class="fc"><i>113</i>&nbsp;                possibleActions = super.getPossibleActions(worker);</b>
+<b class="fc"><i>114</i>&nbsp;            } else if (movesAvailable == 0 &amp;&amp; worker == builder) { //this is useful for the view: highlighting the correct cells</b>
+<b class="fc"><i>115</i>&nbsp;                possibleActions = super.getPossibleActions(worker);</b>
+<b class="fc"><i>116</i>&nbsp;            } else if (movesAvailable == 1 &amp;&amp; !hasBuiltBefore) {</b>
+<b class="fc"><i>117</i>&nbsp;                if (getWalkableCells(worker).isEmpty()) {</b>
+<b class="fc"><i>118</i>&nbsp;                    if (stuckWorkers == 2) {</b>
+<b class="fc"><i>119</i>&nbsp;                        List&lt;Cell&gt; buildableCells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>120</i>&nbsp;                        addBuildableCells(worker, buildableCells);</b>
+<b class="fc"><i>121</i>&nbsp;                        if (!buildableCells.isEmpty())</b>
+<b class="fc"><i>122</i>&nbsp;                            possibleActions.add(PossibleActions.BUILD);</b>
+<b class="fc"><i>123</i>&nbsp;                    }</b>
+<b class="fc"><i>124</i>&nbsp;                } else if (!buildableCellsBeforeMoving(worker).isEmpty())</b>
+<b class="fc"><i>125</i>&nbsp;                    possibleActions.add(PossibleActions.BUILD);</b>
+<b class="fc"><i>126</i>&nbsp;                if (!getWalkableCells(worker).isEmpty())</b>
+<b class="fc"><i>127</i>&nbsp;                    possibleActions.add(PossibleActions.MOVE);</b>
+<b class="fc"><i>128</i>&nbsp;                possibleActions.add(PossibleActions.SELECT_OTHER_WORKER);</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;
+<b class="fc"><i>131</i>&nbsp;            } else if (movesAvailable == 1 &amp;&amp; worker == builder)</b>
+<b class="fc"><i>132</i>&nbsp;                possibleActions.add(PossibleActions.MOVE);</b>
+<i>133</i>&nbsp;        }
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;        return possibleActions;</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    /**
+<i>139</i>&nbsp;     * Determines if a moveAction is legal and applies it
+<i>140</i>&nbsp;     * &lt;p&gt;
+<i>141</i>&nbsp;     * g this ruleSet, a movement action is considered valid if the following conditions are all true:
+<i>142</i>&nbsp;     * &lt;ul&gt;
+<i>143</i>&nbsp;     *     &lt;li&gt;no worker has been moved yet during the turn OR the worker has built but has not been moved&lt;/li&gt;
+<i>144</i>&nbsp;     *     &lt;li&gt;the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved&lt;/li&gt;
+<i>145</i>&nbsp;     * &lt;/ul&gt;
+<i>146</i>&nbsp;     *
+<i>147</i>&nbsp;     * @param action the movement action to validate
+<i>148</i>&nbsp;     * @return true if the action has been applied, false otherwise
+<i>149</i>&nbsp;     */
+<i>150</i>&nbsp;    @Override
+<i>151</i>&nbsp;    public boolean isMoveActionValid(MoveAction action) {
+<b class="fc"><i>152</i>&nbsp;        if (!hasBuiltBefore &amp;&amp; super.isMoveActionValid(action)) {</b>
+<b class="fc"><i>153</i>&nbsp;            buildsAvailable--;</b>
+<b class="fc"><i>154</i>&nbsp;            startingCell = action.getStartingCell();</b>
+<b class="fc"><i>155</i>&nbsp;            return true;</b>
+<i>156</i>&nbsp;        }
+<b class="fc"><i>157</i>&nbsp;        return super.isMoveActionValid(action);</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    /**
+<i>161</i>&nbsp;     * Determines if a buildAction is legal and applies it
+<i>162</i>&nbsp;     * &lt;p&gt;
+<i>163</i>&nbsp;     * g this ruleSet, a build action is considered valid if the following conditions are all true:
+<i>164</i>&nbsp;     * &lt;ul&gt;
+<i>165</i>&nbsp;     *     &lt;li&gt;no worker has been moved yet OR the worker to perform the action has already been moved&lt;/li&gt;
+<i>166</i>&nbsp;     *     &lt;li&gt;the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker&lt;/li&gt;
+<i>167</i>&nbsp;     * &lt;/ul&gt;
+<i>168</i>&nbsp;     *
+<i>169</i>&nbsp;     * @param action the build action to validate
+<i>170</i>&nbsp;     * @return true if the action has been applied, false otherwise
+<i>171</i>&nbsp;     */
+<i>172</i>&nbsp;    @Override
+<i>173</i>&nbsp;    public boolean isBuildActionValid(BuildAction action) {
+<b class="fc"><i>174</i>&nbsp;        if (this.buildsAvailable &gt; 0 &amp;&amp; isInsideBuildableCells(action) &amp;&amp; isCorrectBlock(action)) {</b>
+<b class="fc"><i>175</i>&nbsp;            if (movedWorker == null) {</b>
+<b class="fc"><i>176</i>&nbsp;                hasBuiltBefore = true;</b>
+<b class="fc"><i>177</i>&nbsp;                builder = action.getTargetWorker();</b>
+<b class="fc"><i>178</i>&nbsp;                buildsAvailable--;</b>
+<b class="fc"><i>179</i>&nbsp;            } else if (movedWorker == action.getTargetWorker())</b>
+<b class="fc"><i>180</i>&nbsp;                buildsAvailable = 0;</b>
+<b class="fc"><i>181</i>&nbsp;            return true;</b>
+<i>182</i>&nbsp;        }
+<b class="fc"><i>183</i>&nbsp;        return false;</b>
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    /**
+<i>187</i>&nbsp;     * Checks if the turn can begin
+<i>188</i>&nbsp;     * &lt;p&gt;
+<i>189</i>&nbsp;     * Using this ruleSet, a player&#39;s turn can start if at least one of the player&#39;s workers can perform a movement
+<i>190</i>&nbsp;     * action
+<i>191</i>&nbsp;     *
+<i>192</i>&nbsp;     * @return true if there is at least one action to perform, false otherwise
+<i>193</i>&nbsp;     */
+<i>194</i>&nbsp;    @Override
+<i>195</i>&nbsp;    public boolean checkLoseCondition() {
+<b class="fc"><i>196</i>&nbsp;        List&lt;Cell&gt; legalCells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>197</i>&nbsp;        for (Worker worker : game.getCurrentTurn().getCurrentPlayer().getWorkers()) {</b>
+<b class="fc"><i>198</i>&nbsp;            legalCells = getWalkableCells(worker);</b>
+<b class="fc"><i>199</i>&nbsp;            if (legalCells.isEmpty()) {</b>
+<b class="fc"><i>200</i>&nbsp;                stuckWorkers++;</b>
+<b class="fc"><i>201</i>&nbsp;                legalCells = getBuildableCells(worker);</b>
+<i>202</i>&nbsp;            }
+<b class="fc"><i>203</i>&nbsp;        }</b>
+<b class="fc"><i>204</i>&nbsp;        return legalCells.isEmpty();</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * Determines if the lose conditions are satisfied upon a build action
+<i>209</i>&nbsp;     * &lt;p&gt;
+<i>210</i>&nbsp;     * Using this ruleSet, the player can lose after performing a build action: since the worker cannot be moved
+<i>211</i>&nbsp;     * upwards if the player decides to build first, it can lose if, after placing the building block, all the
+<i>212</i>&nbsp;     * cells around him become inaccessible
+<i>213</i>&nbsp;     *
+<i>214</i>&nbsp;     * @param buildAction the action to analyze
+<i>215</i>&nbsp;     * @return true if the action led to a loss, false otherwise
+<i>216</i>&nbsp;     */
+<i>217</i>&nbsp;    @Override
+<i>218</i>&nbsp;    public boolean checkLoseCondition(BuildAction buildAction) {
+<b class="fc"><i>219</i>&nbsp;        return stuckWorkers == 2;</b>
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    /**
+<i>223</i>&nbsp;     * Provides a list of cells on which the worker can walk on
+<i>224</i>&nbsp;     * &lt;p&gt;
+<i>225</i>&nbsp;     * Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
+<i>226</i>&nbsp;     * at most one compared to the starting cell (domes do not count), is not occupied by another worker and has no dome built on it
+<i>227</i>&nbsp;     *
+<i>228</i>&nbsp;     * @param worker the worker to be moved
+<i>229</i>&nbsp;     * @return a list of &lt;i&gt;walkable&lt;/i&gt; cells
+<i>230</i>&nbsp;     */
+<i>231</i>&nbsp;    @Override
+<i>232</i>&nbsp;    public List&lt;Cell&gt; getWalkableCells(Worker worker) {
+<b class="fc"><i>233</i>&nbsp;        List&lt;Cell&gt; canGoCells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>234</i>&nbsp;        if (hasBuiltBefore) {</b>
+<b class="fc"><i>235</i>&nbsp;            if (worker == builder) {</b>
+<b class="fc"><i>236</i>&nbsp;                for (Cell cell : super.getWalkableCells(worker)) {</b>
+<b class="fc"><i>237</i>&nbsp;                    if (worker.getPosition().heightDifference(cell) &lt;= 0)</b>
+<b class="fc"><i>238</i>&nbsp;                        canGoCells.add(cell);</b>
+<b class="fc"><i>239</i>&nbsp;                }</b>
+<i>240</i>&nbsp;            }
+<b class="fc"><i>241</i>&nbsp;            return canGoCells;</b>
+<i>242</i>&nbsp;        }
+<b class="fc"><i>243</i>&nbsp;        return super.getWalkableCells(worker);</b>
+<i>244</i>&nbsp;    }
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;    /**
+<i>247</i>&nbsp;     * Provides a list of cells on which the worker can build on
+<i>248</i>&nbsp;     * &lt;p&gt;
+<i>249</i>&nbsp;     * Using this ruleSet, a worker can build on any cell adjacent to its cell, in both the cases mentioned above
+<i>250</i>&nbsp;     *
+<i>251</i>&nbsp;     * @param worker the worker to build with
+<i>252</i>&nbsp;     * @return a list of &lt;i&gt;buildable&lt;/i&gt; cells
+<i>253</i>&nbsp;     */
+<i>254</i>&nbsp;    @Override
+<i>255</i>&nbsp;    public List&lt;Cell&gt; getBuildableCells(Worker worker) {
+<b class="fc"><i>256</i>&nbsp;        List&lt;Cell&gt; cells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>257</i>&nbsp;        if (stuckWorkers &lt; 2) {</b>
+<b class="fc"><i>258</i>&nbsp;            if (buildsAvailable &gt; 0) {</b>
+<b class="fc"><i>259</i>&nbsp;                if (movesAvailable == 0 &amp;&amp; !hasBuiltBefore) {</b>
+<b class="fc"><i>260</i>&nbsp;                    cells = super.getBuildableCells(worker);</b>
+<b class="fc"><i>261</i>&nbsp;                } else if (movesAvailable == 0 &amp;&amp; worker == builder) { //this is useful for the view: highlighting the correct cells</b>
+<b class="fc"><i>262</i>&nbsp;                    cells = super.getBuildableCells(worker);</b>
+<b class="fc"><i>263</i>&nbsp;                } else if (movesAvailable == 1 &amp;&amp; !hasBuiltBefore) {</b>
+<b class="fc"><i>264</i>&nbsp;                    cells = buildableCellsBeforeMoving(worker);</b>
+<i>265</i>&nbsp;                }
+<i>266</i>&nbsp;            }
+<b class="fc"><i>267</i>&nbsp;        } else addBuildableCells(worker, cells);</b>
+<b class="fc"><i>268</i>&nbsp;        return cells;</b>
+<i>269</i>&nbsp;    }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;    /**
+<i>272</i>&nbsp;     * Provides the list of cells the given worker can build on before the player performs a movement action
+<i>273</i>&nbsp;     *
+<i>274</i>&nbsp;     * @param worker the worker to build with
+<i>275</i>&nbsp;     * @return a list of &lt;i&gt;buildable&lt;/i&gt; cells
+<i>276</i>&nbsp;     */
+<i>277</i>&nbsp;    private List&lt;Cell&gt; buildableCellsBeforeMoving(Worker worker) {
+<b class="fc"><i>278</i>&nbsp;        List&lt;Cell&gt; buildableCells = new ArrayList&lt;&gt;();</b>
+<i>279</i>&nbsp;
+<b class="fc"><i>280</i>&nbsp;        int cellsOnMyLevel = 0;</b>
+<i>281</i>&nbsp;        int heightDifference;
+<b class="fc"><i>282</i>&nbsp;        Cell cellOnMyLevel = null;</b>
+<b class="fc"><i>283</i>&nbsp;        super.addBuildableCells(worker, buildableCells);</b>
+<b class="fc"><i>284</i>&nbsp;        for (Cell cell : buildableCells) {</b>
+<b class="fc"><i>285</i>&nbsp;            heightDifference = worker.getPosition().heightDifference(cell);</b>
+<b class="fc"><i>286</i>&nbsp;            if (heightDifference &lt; 0) {</b>
+<b class="nc"><i>287</i>&nbsp;                return buildableCells;</b>
+<b class="fc"><i>288</i>&nbsp;            } else if (heightDifference == 0) {</b>
+<b class="fc"><i>289</i>&nbsp;                cellsOnMyLevel++;</b>
+<b class="fc"><i>290</i>&nbsp;                if (cellsOnMyLevel &gt; 1)</b>
+<b class="fc"><i>291</i>&nbsp;                    return buildableCells;</b>
+<i>292</i>&nbsp;                else
+<b class="fc"><i>293</i>&nbsp;                    cellOnMyLevel = cell;</b>
+<i>294</i>&nbsp;            }
+<b class="fc"><i>295</i>&nbsp;        }</b>
+<b class="fc"><i>296</i>&nbsp;        if (cellsOnMyLevel == 1) {</b>
+<b class="fc"><i>297</i>&nbsp;            buildableCells.remove(cellOnMyLevel);</b>
+<i>298</i>&nbsp;        } else
+<b class="fc"><i>299</i>&nbsp;            buildableCells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>300</i>&nbsp;        return buildableCells;</b>
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    /**
+<i>304</i>&nbsp;     * Creates a clone of this object
+<i>305</i>&nbsp;     *
+<i>306</i>&nbsp;     * @param game the current game
+<i>307</i>&nbsp;     * @return a clone of this object
+<i>308</i>&nbsp;     */
+<i>309</i>&nbsp;    @Override
+<i>310</i>&nbsp;    public RuleSetStrategy cloneStrategy(Game game) {
+<b class="nc"><i>311</i>&nbsp;        return new BuildBeforeAfterMovement(this, game);</b>
+<i>312</i>&nbsp;    }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>

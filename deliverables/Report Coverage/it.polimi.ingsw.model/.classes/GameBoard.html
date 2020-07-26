@@ -1,0 +1,339 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GameBoard</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GameBoard (it.polimi.ingsw.model)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GameBoard</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.9%
+  </span>
+  <span class="absValue">
+    (10/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    79%
+  </span>
+  <span class="absValue">
+    (49/ 62)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.fasterxml.jackson.annotation.JsonCreator;
+<i>4</i>&nbsp;import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+<i>5</i>&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
+<i>6</i>&nbsp;import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.ArrayList;
+<i>9</i>&nbsp;import java.util.Arrays;
+<i>10</i>&nbsp;import java.util.List;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;/**
+<i>13</i>&nbsp; * Representation of the game field
+<i>14</i>&nbsp; * &lt;p&gt;
+<i>15</i>&nbsp; * The GameBoard class contains the actual representation of the board via a square {@link Cell} matrix (the single
+<i>16</i>&nbsp; * cells contain each further information about the buildings and, if present, the occupant).
+<i>17</i>&nbsp; * &lt;br&gt;
+<i>18</i>&nbsp; * During the development, we decided to allow the board to be transformed, via a dedicated method, into a
+<i>19</i>&nbsp; * {@link ArrayList}, since it can be easier to manipulate (e.g. during tests or to be sent over the network).
+<i>20</i>&nbsp; * &lt;br&gt;
+<i>21</i>&nbsp; * This class uses the {@link JsonCreator}, {@link JsonProperty} and {@link JsonIdentityInfo} in order to
+<i>22</i>&nbsp; * serialize and save the board on a file (as a part of the {@link Game} class), to be able to restore the game
+<i>23</i>&nbsp; * status upon a server failure.
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = &quot;@id&quot;, scope = GameBoard.class)
+<i>26</i>&nbsp;public class GameBoard {
+<i>27</i>&nbsp;    private static final int DIMENSION = 5;
+<i>28</i>&nbsp;    private final Cell[][] board;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    /**
+<i>31</i>&nbsp;     * Jackson constructor
+<i>32</i>&nbsp;     *
+<i>33</i>&nbsp;     * @param allCells the gameBoard to restore, as array of cells
+<i>34</i>&nbsp;     */
+<i>35</i>&nbsp;    @JsonCreator
+<b class="nc"><i>36</i>&nbsp;    public GameBoard(@JsonProperty(&quot;allCells&quot;) List&lt;Cell&gt; allCells) {</b>
+<b class="nc"><i>37</i>&nbsp;        this.board = new Cell[DIMENSION][DIMENSION];</b>
+<i>38</i>&nbsp;        int tmpX;
+<i>39</i>&nbsp;        int tmpY;
+<b class="nc"><i>40</i>&nbsp;        for (int i = 0; i &lt; DIMENSION * DIMENSION; i++) {</b>
+<b class="nc"><i>41</i>&nbsp;            tmpX = allCells.get(i).getCoordX();</b>
+<b class="nc"><i>42</i>&nbsp;            tmpY = allCells.get(i).getCoordY();</b>
+<b class="nc"><i>43</i>&nbsp;            this.board[tmpX][tmpY] = new Cell(tmpX, tmpY, allCells.get(i).hasDome(), allCells.get(i).getOccupiedBy(), allCells.get(i).getBlock());</b>
+<i>44</i>&nbsp;        }
+<b class="nc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * Default constructor
+<i>49</i>&nbsp;     * Creates a matrix of 25 Cells
+<i>50</i>&nbsp;     */
+<b class="fc"><i>51</i>&nbsp;    public GameBoard() {</b>
+<b class="fc"><i>52</i>&nbsp;        this.board = new Cell[DIMENSION][DIMENSION];</b>
+<b class="fc"><i>53</i>&nbsp;        for (int i = 0; i &lt; DIMENSION; i++) {</b>
+<b class="fc"><i>54</i>&nbsp;            for (int j = 0; j &lt; DIMENSION; j++) {</b>
+<b class="fc"><i>55</i>&nbsp;                board[i][j] = new Cell(i, j);</b>
+<i>56</i>&nbsp;            }
+<i>57</i>&nbsp;        }
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Copy constructor
+<i>62</i>&nbsp;     *
+<i>63</i>&nbsp;     * @param gameBoard the gameBoard to restore
+<i>64</i>&nbsp;     */
+<b class="fc"><i>65</i>&nbsp;    private GameBoard(GameBoard gameBoard) {</b>
+<b class="fc"><i>66</i>&nbsp;        this.board = new Cell[DIMENSION][DIMENSION];</b>
+<b class="fc"><i>67</i>&nbsp;        for (int i = 0; i &lt; DIMENSION; i++) {</b>
+<b class="fc"><i>68</i>&nbsp;            for (int j = 0; j &lt; DIMENSION; j++) {</b>
+<b class="fc"><i>69</i>&nbsp;                this.board[i][j] = gameBoard.board[i][j].cloneCell();</b>
+<i>70</i>&nbsp;            }
+<i>71</i>&nbsp;        }
+<b class="fc"><i>72</i>&nbsp;    }</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    /**
+<i>75</i>&nbsp;     * Returns a cell by its coordinates
+<i>76</i>&nbsp;     * &lt;p&gt;
+<i>77</i>&nbsp;     * If the indexes are out of bounds, returns &lt;i&gt;null&lt;/i&gt;
+<i>78</i>&nbsp;     *
+<i>79</i>&nbsp;     * @param x the X coordinate of the cell to return
+<i>80</i>&nbsp;     * @param y the Y coordinate of the cell to return
+<i>81</i>&nbsp;     * @return the cell corresponding to the coordinates if exists, &lt;i&gt;null&lt;/i&gt; otherwise
+<i>82</i>&nbsp;     */
+<i>83</i>&nbsp;    public Cell getCell(int x, int y) {
+<b class="fc"><i>84</i>&nbsp;        if (isInsideGameBoard(x, y))</b>
+<b class="fc"><i>85</i>&nbsp;            return board[x][y];</b>
+<b class="nc"><i>86</i>&nbsp;        return null; //out of bound, will never happen</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * &quot;Proper&quot; &lt;i&gt;cell&lt;/i&gt; getter
+<i>91</i>&nbsp;     * &lt;p&gt;
+<i>92</i>&nbsp;     * Given a generic Cell object, returns the corresponding Cell object contained in the game board, based on its
+<i>93</i>&nbsp;     * coordinates
+<i>94</i>&nbsp;     *
+<i>95</i>&nbsp;     * @param cell the cell to get the coordinates from
+<i>96</i>&nbsp;     * @return the corresponding cell from the game board
+<i>97</i>&nbsp;     */
+<i>98</i>&nbsp;    public Cell getCell(Cell cell) {
+<b class="fc"><i>99</i>&nbsp;        int tmpX = cell.getCoordX();</b>
+<b class="fc"><i>100</i>&nbsp;        int tmpY = cell.getCoordY();</b>
+<b class="fc"><i>101</i>&nbsp;        return getCell(tmpX, tmpY);</b>
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    /**
+<i>105</i>&nbsp;     * Checks if cell coordinates are legal
+<i>106</i>&nbsp;     * &lt;p&gt;
+<i>107</i>&nbsp;     * The cell coordinates are considered legal if both of them are
+<i>108</i>&nbsp;     * between 0 and the board {@linkplain #DIMENSION}, minus one
+<i>109</i>&nbsp;     *
+<i>110</i>&nbsp;     * @param x the X coordinate of the cell to check
+<i>111</i>&nbsp;     * @param y the Y coordinate of the cell to check
+<i>112</i>&nbsp;     * @return true if the coordinates are legal, false otherwise
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public boolean isInsideGameBoard(int x, int y) {
+<b class="fc"><i>115</i>&nbsp;        return 0 &lt;= x &amp;&amp; x &lt; DIMENSION &amp;&amp; 0 &lt;= y &amp;&amp; y &lt; DIMENSION;</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     * Returns all the cells of the game board
+<i>120</i>&nbsp;     * &lt;p&gt;
+<i>121</i>&nbsp;     * This method creates an {@linkplain ArrayList} of {@linkplain Cell}s, containing all the
+<i>122</i>&nbsp;     * cells in the {@linkplain GameBoard}, sorted by row, low to high
+<i>123</i>&nbsp;     *
+<i>124</i>&nbsp;     * @return an {@linkplain ArrayList} containing all the cells of the board
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    public List&lt;Cell&gt; getAllCells() {
+<b class="fc"><i>127</i>&nbsp;        ArrayList&lt;Cell&gt; cells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>128</i>&nbsp;        for (int i = 0; i &lt; DIMENSION; i++) {</b>
+<b class="fc"><i>129</i>&nbsp;            for (int j = 0; j &lt; DIMENSION; j++) {</b>
+<b class="fc"><i>130</i>&nbsp;                cells.add(getCell(i, j));</b>
+<i>131</i>&nbsp;            }
+<i>132</i>&nbsp;        }
+<b class="fc"><i>133</i>&nbsp;        return cells;</b>
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public List&lt;Cell&gt; cloneAllCells() {
+<b class="fc"><i>137</i>&nbsp;        ArrayList&lt;Cell&gt; cells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>138</i>&nbsp;        for (int i = 0; i &lt; DIMENSION; i++) {</b>
+<b class="fc"><i>139</i>&nbsp;            for (int j = 0; j &lt; DIMENSION; j++) {</b>
+<b class="fc"><i>140</i>&nbsp;                cells.add(board[i][j].cloneCell());</b>
+<i>141</i>&nbsp;            }
+<i>142</i>&nbsp;        }
+<b class="fc"><i>143</i>&nbsp;        return cells;</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    /**
+<i>147</i>&nbsp;     * Calculates the Cell &lt;i&gt;behind&lt;/i&gt; a given Cell
+<i>148</i>&nbsp;     * &lt;p&gt;
+<i>149</i>&nbsp;     * Given two Cells (src, dest), the &lt;i&gt;Cell behind dest&lt;/i&gt;, if exists, is the cell
+<i>150</i>&nbsp;     * at distance 1 from the &lt;i&gt;dest&lt;/i&gt; cell, at distance (dist(src, dest) + 1) from &lt;i&gt;src&lt;/i&gt;
+<i>151</i>&nbsp;     * lying on the line passing by src and dest. If the resulting coordinates are outside the board,
+<i>152</i>&nbsp;     * the cell behind does not exists. This method DOES NOT check for height differences in any way.
+<i>153</i>&nbsp;     * &lt;br&gt;
+<i>154</i>&nbsp;     * &lt;b&gt;NOTE:&lt;/b&gt; this method is supposed to be used with cells which distance between
+<i>155</i>&nbsp;     * each other is one; it still works with &lt;i&gt;more distant&lt;/i&gt; cells, if the cells are
+<i>156</i>&nbsp;     * aligned on an axis (same X or Y coordinate) or on a diagonal (the modulus of the
+<i>157</i>&nbsp;     * difference between the X coordinates is equal to the modulus of the difference of the
+<i>158</i>&nbsp;     * Y coordinates of the two Cells. In any other case, for the sake of the project at
+<i>159</i>&nbsp;     * this state, the behavior of the method is not granted.
+<i>160</i>&nbsp;     *
+<i>161</i>&nbsp;     * @param src  the first point of the line
+<i>162</i>&nbsp;     * @param dest the second point of the line
+<i>163</i>&nbsp;     * @return the cell behind the dest Cell if exists, &lt;i&gt;null&lt;/i&gt; otherwise
+<i>164</i>&nbsp;     */
+<i>165</i>&nbsp;    public Cell getCellBehind(Cell src, Cell dest) {
+<i>166</i>&nbsp;        int x;
+<i>167</i>&nbsp;        int y;
+<i>168</i>&nbsp;
+<b class="fc"><i>169</i>&nbsp;        if (src.getCoordX() == dest.getCoordX())</b>
+<b class="fc"><i>170</i>&nbsp;            x = dest.getCoordX();</b>
+<b class="fc"><i>171</i>&nbsp;        else if (src.getCoordX() &gt; dest.getCoordX())</b>
+<b class="fc"><i>172</i>&nbsp;            x = dest.getCoordX() - 1;</b>
+<i>173</i>&nbsp;        else
+<b class="fc"><i>174</i>&nbsp;            x = dest.getCoordX() + 1;</b>
+<i>175</i>&nbsp;
+<b class="fc"><i>176</i>&nbsp;        if (src.getCoordY() == dest.getCoordY())</b>
+<b class="fc"><i>177</i>&nbsp;            y = dest.getCoordY();</b>
+<b class="fc"><i>178</i>&nbsp;        else if (src.getCoordY() &gt; dest.getCoordY())</b>
+<b class="fc"><i>179</i>&nbsp;            y = dest.getCoordY() - 1;</b>
+<i>180</i>&nbsp;        else
+<b class="fc"><i>181</i>&nbsp;            y = dest.getCoordY() + 1;</b>
+<i>182</i>&nbsp;
+<b class="fc"><i>183</i>&nbsp;        if (isInsideGameBoard(x, y))</b>
+<b class="fc"><i>184</i>&nbsp;            return this.getCell(x, y);</b>
+<b class="fc"><i>185</i>&nbsp;        return null;</b>
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    /**
+<i>189</i>&nbsp;     * Gets all the adjacent cells of a given one
+<i>190</i>&nbsp;     * &lt;p&gt;
+<i>191</i>&nbsp;     * A cell is defined &lt;i&gt;adjacent&lt;/i&gt; to another cell if the distance between them is
+<i>192</i>&nbsp;     * exactly one (diametrically opposed cells, e.g. (1,0) and (1,4), are not considered adjacent).
+<i>193</i>&nbsp;     * cular, the &lt;i&gt;adjacency&lt;/i&gt; relation is:
+<i>194</i>&nbsp;     * &lt;ul&gt;
+<i>195</i>&nbsp;     *     &lt;li&gt;symmetric: if A is adjacent to B, B is adjacent to A&lt;/li&gt;
+<i>196</i>&nbsp;     *     &lt;li&gt;non-transitive: if A is adjacent to B and B is adjacent to C, A and C are not adjacent&lt;/li&gt;
+<i>197</i>&nbsp;     *     &lt;li&gt;non-reflexive: A is not adjacent to itself&lt;/li&gt;
+<i>198</i>&nbsp;     * &lt;/ul&gt;
+<i>199</i>&nbsp;     * Given these premises, this method will never return an empty ArrayList: the size of the list is
+<i>200</i>&nbsp;     * &lt;ul&gt;
+<i>201</i>&nbsp;     *     &lt;li&gt;3, if &lt;i&gt;cell&lt;/i&gt; is one of the four corners&lt;/li&gt;
+<i>202</i>&nbsp;     *     &lt;li&gt;5, if &lt;i&gt;cell&lt;/i&gt; is a border cell&lt;/li&gt;
+<i>203</i>&nbsp;     *     &lt;li&gt;8, in any other case&lt;/li&gt;
+<i>204</i>&nbsp;     * &lt;/ul&gt;
+<i>205</i>&nbsp;     *
+<i>206</i>&nbsp;     * @param cell the cell to analyze
+<i>207</i>&nbsp;     * @return an {@linkplain ArrayList} containing the cells adjacent to &lt;i&gt;cell&lt;/i&gt;
+<i>208</i>&nbsp;     */
+<i>209</i>&nbsp;    public List&lt;Cell&gt; getAdjacentCells(Cell cell) {
+<b class="fc"><i>210</i>&nbsp;        ArrayList&lt;Cell&gt; cells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>211</i>&nbsp;        for (int x = cell.getCoordX() - 1; x &lt;= cell.getCoordX() + 1; x++) {</b>
+<b class="fc"><i>212</i>&nbsp;            for (int y = cell.getCoordY() - 1; y &lt;= cell.getCoordY() + 1; y++) {</b>
+<b class="fc"><i>213</i>&nbsp;                if (0 &lt;= x &amp;&amp; x &lt; DIMENSION &amp;&amp;</b>
+<i>214</i>&nbsp;                        0 &lt;= y &amp;&amp; y &lt; DIMENSION &amp;&amp;
+<b class="fc"><i>215</i>&nbsp;                        (!getCell(x, y).equals(cell)))</b>
+<i>216</i>&nbsp;
+<b class="fc"><i>217</i>&nbsp;                    cells.add(getCell(x, y));</b>
+<i>218</i>&nbsp;            }
+<i>219</i>&nbsp;        }
+<b class="fc"><i>220</i>&nbsp;        return cells;</b>
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    /**
+<i>224</i>&nbsp;     * Returns a clone of the current game board state
+<i>225</i>&nbsp;     * &lt;p&gt;
+<i>226</i>&nbsp;     * In order to save the state of the entire game, it is needed to save the game board and its cells
+<i>227</i>&nbsp;     * to preserve the references. To do so, we create a new GameBoard instance with the special constructor
+<i>228</i>&nbsp;     * ({@linkplain #GameBoard(GameBoard)}), which creates an exact replica of the cells of the current game board
+<i>229</i>&nbsp;     * in the new board.
+<i>230</i>&nbsp;     *
+<i>231</i>&nbsp;     * @return a &lt;i&gt;clone&lt;/i&gt; of the game board
+<i>232</i>&nbsp;     */
+<i>233</i>&nbsp;    public GameBoard cloneGameBoard() {
+<b class="fc"><i>234</i>&nbsp;        return new GameBoard(this);</b>
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    /**
+<i>239</i>&nbsp;     * Compares the argument to the receiver, and answers true if their representation as Arrays is the same
+<i>240</i>&nbsp;     *
+<i>241</i>&nbsp;     * @param o the object to be compared with this
+<i>242</i>&nbsp;     * @return true if the object is the same as the cell, false otherwise
+<i>243</i>&nbsp;     */
+<i>244</i>&nbsp;    @Override
+<i>245</i>&nbsp;    public boolean equals(Object o) {
+<b class="nc"><i>246</i>&nbsp;        if (this == o) return true;</b>
+<b class="nc"><i>247</i>&nbsp;        if (!(o instanceof GameBoard)) return false;</b>
+<b class="nc"><i>248</i>&nbsp;        GameBoard board1 = (GameBoard) o;</b>
+<b class="nc"><i>249</i>&nbsp;        return Arrays.equals(board, board1.board);</b>
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    @Override
+<i>253</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>254</i>&nbsp;        return Arrays.hashCode(board);</b>
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>

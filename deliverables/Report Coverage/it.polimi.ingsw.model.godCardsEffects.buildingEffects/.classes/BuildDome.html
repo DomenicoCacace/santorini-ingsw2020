@@ -1,0 +1,174 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BuildDome</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.godCardsEffects.buildingEffects</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BuildDome (it.polimi.ingsw.model.godCardsEffects.buildingEffects)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BuildDome</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.7%
+  </span>
+  <span class="absValue">
+    (22/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.godCardsEffects.buildingEffects;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Block;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Cell;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.Game;
+<i>6</i>&nbsp;import it.polimi.ingsw.model.Worker;
+<i>7</i>&nbsp;import it.polimi.ingsw.model.action.BuildAction;
+<i>8</i>&nbsp;import it.polimi.ingsw.model.rules.RuleSetStrategy;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.util.ArrayList;
+<i>11</i>&nbsp;import java.util.List;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;public class BuildDome extends BuildingStrategy {
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    public BuildDome() {
+<b class="fc"><i>16</i>&nbsp;        super();</b>
+<b class="fc"><i>17</i>&nbsp;    }</b>
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    /**
+<i>20</i>&nbsp;     * Copy constructor
+<i>21</i>&nbsp;     *
+<i>22</i>&nbsp;     * @param buildDome the strategy to clone
+<i>23</i>&nbsp;     * @param game      the game in which the effect is used
+<i>24</i>&nbsp;     */
+<b class="fc"><i>25</i>&nbsp;    private BuildDome(BuildDome buildDome, Game game) {</b>
+<b class="fc"><i>26</i>&nbsp;        this.game = game;</b>
+<b class="fc"><i>27</i>&nbsp;        this.movesAvailable = buildDome.getMovesAvailable();</b>
+<b class="fc"><i>28</i>&nbsp;        this.movesUpAvailable = buildDome.getMovesUpAvailable();</b>
+<b class="fc"><i>29</i>&nbsp;        this.buildsAvailable = buildDome.getBuildsAvailable();</b>
+<b class="fc"><i>30</i>&nbsp;        this.hasMovedUp = buildDome.hasMovedUp();</b>
+<b class="fc"><i>31</i>&nbsp;        if (buildDome.getMovedWorker() != null)</b>
+<b class="nc"><i>32</i>&nbsp;            this.movedWorker = game.getGameBoard().getCell(buildDome.getMovedWorker().getPosition()).getOccupiedBy();</b>
+<b class="fc"><i>33</i>&nbsp;        else this.movedWorker = null;</b>
+<b class="fc"><i>34</i>&nbsp;    }</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     * Determines if a buildAction is legal and applies it
+<i>38</i>&nbsp;     * &lt;p&gt;
+<i>39</i>&nbsp;     * g this ruleSet, a build action is considered valid if the following conditions are all true:
+<i>40</i>&nbsp;     * &lt;ul&gt;
+<i>41</i>&nbsp;     *     &lt;li&gt;a worker has already been moved&lt;/li&gt;
+<i>42</i>&nbsp;     *     &lt;li&gt;the worker to perform the action is the same which has been moved&lt;/li&gt;
+<i>43</i>&nbsp;     *     &lt;li&gt;the cell to build on is a buildable cell (see {@linkplain #getBuildableCells(Worker)}) for the worker&lt;/li&gt;
+<i>44</i>&nbsp;     * &lt;/ul&gt;
+<i>45</i>&nbsp;     *
+<i>46</i>&nbsp;     * @param action the build action to validate
+<i>47</i>&nbsp;     * @return true if the action has been applied, false otherwise
+<i>48</i>&nbsp;     */
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public boolean isBuildActionValid(BuildAction action) {
+<b class="fc"><i>51</i>&nbsp;        if (isInsideBuildableCells(action) &amp;&amp; (isCorrectBlock(action) ||</b>
+<b class="fc"><i>52</i>&nbsp;                action.getTargetBlock().getHeight() == 4 &amp;&amp; movedWorker == action.getTargetWorker())) {</b>
+<b class="fc"><i>53</i>&nbsp;            buildsAvailable--;</b>
+<b class="fc"><i>54</i>&nbsp;            return true;</b>
+<i>55</i>&nbsp;        }
+<b class="fc"><i>56</i>&nbsp;        return false;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * Creates a clone of this object
+<i>61</i>&nbsp;     *
+<i>62</i>&nbsp;     * @param game the current game
+<i>63</i>&nbsp;     * @return a clone of this object
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    @Override
+<i>66</i>&nbsp;    public RuleSetStrategy cloneStrategy(Game game) {
+<b class="fc"><i>67</i>&nbsp;        return new BuildDome(this, game);</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * Provides the possible blocks buildable on a given cell
+<i>72</i>&nbsp;     * &lt;p&gt;
+<i>73</i>&nbsp;     * g this ruleSet, a worker can build
+<i>74</i>&nbsp;     * &lt;ul&gt;
+<i>75</i>&nbsp;     *     &lt;li&gt;a block which level is immediately taller than the cell to build on&lt;/li&gt;
+<i>76</i>&nbsp;     *     &lt;li&gt;a dome&lt;/li&gt;
+<i>77</i>&nbsp;     * &lt;/ul&gt;
+<i>78</i>&nbsp;     * Note that the standard rules about building on domes still apply
+<i>79</i>&nbsp;     *
+<i>80</i>&nbsp;     * @param selectedCell the cell to get the buildable blocks for
+<i>81</i>&nbsp;     * @return a list of blocks that can be built on the given cell
+<i>82</i>&nbsp;     */
+<i>83</i>&nbsp;    @Override
+<i>84</i>&nbsp;    public List&lt;Block&gt; getBlocks(Cell selectedCell) {
+<b class="fc"><i>85</i>&nbsp;        List&lt;Block&gt; buildingBlocks = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>86</i>&nbsp;        buildingBlocks.add(Block.values()[selectedCell.getBlock().getHeight() + 1]);</b>
+<b class="fc"><i>87</i>&nbsp;        if (buildingBlocks.get(0) != Block.DOME)</b>
+<b class="fc"><i>88</i>&nbsp;            buildingBlocks.add(Block.DOME);</b>
+<b class="fc"><i>89</i>&nbsp;        return buildingBlocks;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>

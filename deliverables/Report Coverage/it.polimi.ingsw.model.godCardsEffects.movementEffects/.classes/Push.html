@@ -1,0 +1,216 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Push</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">it.polimi.ingsw.model.godCardsEffects.movementEffects</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Push (it.polimi.ingsw.model.godCardsEffects.movementEffects)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Push</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (35/ 35)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package it.polimi.ingsw.model.godCardsEffects.movementEffects;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import it.polimi.ingsw.model.Cell;
+<i>4</i>&nbsp;import it.polimi.ingsw.model.Game;
+<i>5</i>&nbsp;import it.polimi.ingsw.model.Worker;
+<i>6</i>&nbsp;import it.polimi.ingsw.model.action.Action;
+<i>7</i>&nbsp;import it.polimi.ingsw.model.action.MoveAction;
+<i>8</i>&nbsp;import it.polimi.ingsw.model.rules.RuleSetStrategy;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.util.ArrayList;
+<i>11</i>&nbsp;import java.util.List;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;/**
+<i>14</i>&nbsp; * Kick opponent workers when moving
+<i>15</i>&nbsp; * &lt;p&gt;
+<i>16</i>&nbsp; * This effect alters the workers&#39; walkable cells: workers can push opponent an opponent worker in the cell behind
+<i>17</i>&nbsp; * them (see {@linkplain it.polimi.ingsw.model.GameBoard#getCellBehind(Cell, Cell)})
+<i>18</i>&nbsp; */
+<i>19</i>&nbsp;public class Push extends MovementStrategy {
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    /**
+<i>22</i>&nbsp;     * Default constructor
+<i>23</i>&nbsp;     *
+<i>24</i>&nbsp;     * @see #initialize()
+<i>25</i>&nbsp;     */
+<i>26</i>&nbsp;    public Push() {
+<b class="fc"><i>27</i>&nbsp;        super();</b>
+<b class="fc"><i>28</i>&nbsp;    }</b>
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    /**
+<i>31</i>&nbsp;     * Copy constructor
+<i>32</i>&nbsp;     *
+<i>33</i>&nbsp;     * @param push the strategy to clone
+<i>34</i>&nbsp;     * @param game the game in which the effect is used
+<i>35</i>&nbsp;     */
+<b class="fc"><i>36</i>&nbsp;    private Push(Push push, Game game) {</b>
+<b class="fc"><i>37</i>&nbsp;        this.game = game;</b>
+<b class="fc"><i>38</i>&nbsp;        this.movesAvailable = push.getMovesAvailable();</b>
+<b class="fc"><i>39</i>&nbsp;        this.movesUpAvailable = push.getMovesUpAvailable();</b>
+<b class="fc"><i>40</i>&nbsp;        this.buildsAvailable = push.getBuildsAvailable();</b>
+<b class="fc"><i>41</i>&nbsp;        this.hasMovedUp = push.hasMovedUp();</b>
+<b class="fc"><i>42</i>&nbsp;        if (push.getMovedWorker() != null)</b>
+<b class="fc"><i>43</i>&nbsp;            this.movedWorker = game.getGameBoard().getCell(push.getMovedWorker().getPosition()).getOccupiedBy();</b>
+<b class="fc"><i>44</i>&nbsp;        else this.movedWorker = null;</b>
+<b class="fc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * Determines if an opponent worker can be pushed
+<i>49</i>&nbsp;     * &lt;p&gt;
+<i>50</i>&nbsp;     * This method checks if the &lt;i&gt;cell behind&lt;/i&gt; the opponent worker exists and is not occupied by another worker
+<i>51</i>&nbsp;     * nor a dome
+<i>52</i>&nbsp;     *
+<i>53</i>&nbsp;     * @param myCell     the worker&#39;s starting position
+<i>54</i>&nbsp;     * @param targetCell the cell containing the worker to push
+<i>55</i>&nbsp;     * @return true if the the opponent&#39;s worker can be pushed
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    boolean canPush(Cell myCell, Cell targetCell) {
+<b class="fc"><i>58</i>&nbsp;        return game.getGameBoard().getCellBehind(myCell, targetCell) != null &amp;&amp;</b>
+<b class="fc"><i>59</i>&nbsp;                game.getGameBoard().getCellBehind(myCell, targetCell).getOccupiedBy() == null &amp;&amp;</b>
+<b class="fc"><i>60</i>&nbsp;                !game.getGameBoard().getCellBehind(myCell, targetCell).hasDome();</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * Forces the opponent worker to be moved on the cell behind it
+<i>65</i>&nbsp;     *
+<i>66</i>&nbsp;     * @param action the action performed by the current player&#39;s worker
+<i>67</i>&nbsp;     */
+<i>68</i>&nbsp;    void opponentAction(MoveAction action) {
+<b class="fc"><i>69</i>&nbsp;        if (action.getTargetCell().getOccupiedBy() != null) {</b>
+<b class="fc"><i>70</i>&nbsp;            Cell pushCell = game.getGameBoard().getCellBehind(action.getStartingCell(), action.getTargetCell()); //Assign to pushCell the Cell that&#39;s &quot;behind&quot; the opponent</b>
+<b class="fc"><i>71</i>&nbsp;            Action opponentMoveAction = new MoveAction(action.getTargetCell().getOccupiedBy(), pushCell);</b>
+<b class="fc"><i>72</i>&nbsp;            opponentMoveAction.apply();</b>
+<i>73</i>&nbsp;        }
+<b class="fc"><i>74</i>&nbsp;    }</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Determines if a moveAction is legal and applies it
+<i>78</i>&nbsp;     * &lt;p&gt;
+<i>79</i>&nbsp;     * g this ruleSet, a movement action is considered valid if the following conditions are all true:
+<i>80</i>&nbsp;     * &lt;ul&gt;
+<i>81</i>&nbsp;     *     &lt;li&gt;no worker has been moved yet during the turn&lt;/li&gt;
+<i>82</i>&nbsp;     *     &lt;li&gt;the target cell is a walkable cell (see {@linkplain #getWalkableCells(Worker)}) for the worker to be moved&lt;/li&gt;
+<i>83</i>&nbsp;     * &lt;/ul&gt;
+<i>84</i>&nbsp;     *
+<i>85</i>&nbsp;     * @param action the movement action to validate
+<i>86</i>&nbsp;     * @return true if the action has been applied, false otherwise
+<i>87</i>&nbsp;     */
+<i>88</i>&nbsp;    @Override
+<i>89</i>&nbsp;    public boolean isMoveActionValid(MoveAction action) {
+<b class="fc"><i>90</i>&nbsp;        if (super.isMoveActionValid(action)) {</b>
+<b class="fc"><i>91</i>&nbsp;            startingCell = action.getStartingCell();</b>
+<b class="fc"><i>92</i>&nbsp;            opponentAction(action);</b>
+<b class="fc"><i>93</i>&nbsp;            return true;</b>
+<i>94</i>&nbsp;        }
+<b class="fc"><i>95</i>&nbsp;        return false;</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    /**
+<i>99</i>&nbsp;     * Provides a list of cells on which the worker can walk on
+<i>100</i>&nbsp;     * &lt;p&gt;
+<i>101</i>&nbsp;     * Using this ruleSet, a worker can walk on the cells adjacent to its starting cell which height difference is
+<i>102</i>&nbsp;     * at most one compared to the starting cell (domes do not count) and has no dome built on it; a worker can walk
+<i>103</i>&nbsp;     * on a cell occupied by another worker if it can be pushed (see {@linkplain #canPush(Cell, Cell)})
+<i>104</i>&nbsp;     *
+<i>105</i>&nbsp;     * @param worker the worker to be moved
+<i>106</i>&nbsp;     * @return a list of &lt;i&gt;walkable&lt;/i&gt; cells
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    @Override
+<i>109</i>&nbsp;    public List&lt;Cell&gt; getWalkableCells(Worker worker) {
+<b class="fc"><i>110</i>&nbsp;        List&lt;Cell&gt; cells = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>111</i>&nbsp;        if (movesAvailable &gt; 0) {</b>
+<b class="fc"><i>112</i>&nbsp;            for (Cell cell : game.getGameBoard().getAdjacentCells(worker.getPosition())) {</b>
+<i>113</i>&nbsp;
+<b class="fc"><i>114</i>&nbsp;                if (canGo(worker, cell) &amp;&amp;</b>
+<b class="fc"><i>115</i>&nbsp;                        ((cell.getOccupiedBy() == null) ||</b>
+<b class="fc"><i>116</i>&nbsp;                                (cell.getOccupiedBy() != null &amp;&amp; canPush(worker.getPosition(), cell) &amp;&amp; isNotSameOwner(cell))))</b>
+<b class="fc"><i>117</i>&nbsp;                        cells.add(cell);</b>
+<b class="fc"><i>118</i>&nbsp;                    }</b>
+<i>119</i>&nbsp;                }
+<b class="fc"><i>120</i>&nbsp;        return cells;</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    /**
+<i>124</i>&nbsp;     * Creates a clone of this object
+<i>125</i>&nbsp;     *
+<i>126</i>&nbsp;     * @param game the current game
+<i>127</i>&nbsp;     * @return a clone of this object
+<i>128</i>&nbsp;     */
+<i>129</i>&nbsp;    @Override
+<i>130</i>&nbsp;    public RuleSetStrategy cloneStrategy(Game game) {
+<b class="fc"><i>131</i>&nbsp;        return new Push(this, game);</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-07-02 15:16</div>
+</div>
+</body>
+</html>
