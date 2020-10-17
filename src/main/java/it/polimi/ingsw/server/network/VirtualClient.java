@@ -1,7 +1,7 @@
 package it.polimi.ingsw.server.network;
 
 import it.polimi.ingsw.server.Server;
-import it.polimi.ingsw.server.controller.ServerMessageManagerVisitor;
+import it.polimi.ingsw.shared.ServerMessageManagerVisitor;
 import it.polimi.ingsw.server.network.exceptions.InvalidUsernameException;
 import it.polimi.ingsw.server.network.exceptions.RoomFullException;
 import it.polimi.ingsw.shared.ReservedUsernames;

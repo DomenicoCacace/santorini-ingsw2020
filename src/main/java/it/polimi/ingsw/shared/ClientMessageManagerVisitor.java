@@ -1,4 +1,4 @@
-package it.polimi.ingsw.client.network;
+package it.polimi.ingsw.shared;
 
 import it.polimi.ingsw.shared.messages.fromServerToClient.*;
 

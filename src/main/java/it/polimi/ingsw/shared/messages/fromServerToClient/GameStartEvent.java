@@ -3,7 +3,7 @@ package it.polimi.ingsw.shared.messages.fromServerToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.polimi.ingsw.client.network.ClientMessageManagerVisitor;
+import it.polimi.ingsw.shared.ClientMessageManagerVisitor;
 import it.polimi.ingsw.shared.ReservedUsernames;
 import it.polimi.ingsw.shared.dataClasses.GameData;
 import it.polimi.ingsw.shared.messages.MessageFromServerToClient;

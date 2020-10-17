@@ -1,6 +1,6 @@
 package it.polimi.ingsw.shared.messages;
 
-import it.polimi.ingsw.client.network.ClientMessageManagerVisitor;
+import it.polimi.ingsw.shared.ClientMessageManagerVisitor;
 import it.polimi.ingsw.client.network.NetworkHandler;
 
 /**

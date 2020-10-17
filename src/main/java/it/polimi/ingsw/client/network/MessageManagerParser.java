@@ -4,13 +4,13 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.view.Constants;
 import it.polimi.ingsw.client.view.ViewInterface;
 import it.polimi.ingsw.client.view.inputManagers.*;
+import it.polimi.ingsw.shared.ClientMessageManagerVisitor;
 import it.polimi.ingsw.shared.dataClasses.*;
 import it.polimi.ingsw.shared.messages.Message;
 import it.polimi.ingsw.shared.messages.Type;
 import it.polimi.ingsw.shared.messages.fromClientToServer.*;
 import it.polimi.ingsw.shared.messages.fromServerToClient.*;
 
-import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;

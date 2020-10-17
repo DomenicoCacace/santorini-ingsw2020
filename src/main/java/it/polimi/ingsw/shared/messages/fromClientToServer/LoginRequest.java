@@ -1,7 +1,7 @@
 package it.polimi.ingsw.shared.messages.fromClientToServer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import it.polimi.ingsw.server.controller.ServerMessageManagerVisitor;
+import it.polimi.ingsw.shared.ServerMessageManagerVisitor;
 import it.polimi.ingsw.shared.messages.MessageFromClientToServer;
 import it.polimi.ingsw.shared.messages.Type;
 

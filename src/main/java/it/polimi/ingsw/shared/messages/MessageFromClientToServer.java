@@ -1,6 +1,6 @@
 package it.polimi.ingsw.shared.messages;
 
-import it.polimi.ingsw.server.controller.ServerMessageManagerVisitor;
+import it.polimi.ingsw.shared.ServerMessageManagerVisitor;
 import it.polimi.ingsw.server.network.VirtualClient;
 
 /**

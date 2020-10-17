@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.network;
 
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.shared.ClientMessageManagerVisitor;
 import it.polimi.ingsw.shared.SharedConstants;
 import it.polimi.ingsw.shared.messages.JacksonMessageBuilder;
 import it.polimi.ingsw.shared.messages.Message;
